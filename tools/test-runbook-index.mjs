@@ -146,7 +146,10 @@ for (const carrier of carriers) {
     const text = read(carrier.agents);
     const all = headings(text);
     const preamble = normalize(text.split('\n').slice(0, all.find((heading) => heading.level === 2).line).join('\n'));
-    assert.match(preamble, /`AGENTS\.md` -> the \[`RUNBOOK\.md` operations index\]\(RUNBOOK\.md#operations-index\) -> `LEXICON\.md`\./, `${carrier.agents}: the opening names the entry route through the index`);
+    // S-004O TK-009F: the route continues to ARCHITECTURE.md, the Lexicon's routing successor.
+    assert.match(preamble, /`AGENTS\.md` -> the \[`RUNBOOK\.md` operations index\]\(RUNBOOK\.md#operations-index\) -> `ARCHITECTURE\.md`\./, `${carrier.agents}: the opening names the entry route through the index`);
+    assert.match(preamble, /the \[`ARCHITECTURE\.md` routes\]\(ARCHITECTURE\.md#routes\)/, `${carrier.agents}: the opening reads the architecture routes`);
+    assert.ok(resolvePointer(carrier.agents, 'ARCHITECTURE.md#routes').ok, `${carrier.agents}: the architecture routes link resolves`);
     assert.match(preamble, /Every session reads that index at entry/, `${carrier.agents}: the opening requires the index read at entry`);
     const traverse = all.find((heading) => heading.title === "Traverse, Don't Search");
     assert.ok(traverse, `${carrier.agents}: Traverse, Don't Search survives`);
@@ -473,7 +476,7 @@ const FAMILIES = [
       {
         section: 'Documentation Ownership And Proof',
         keeps: [
-          /Documentation is part of done/, /documentation owner/, /LEXICON\.md#artifact-ownership-schema/, /workbench\/wiki\//,
+          /Documentation is part of done/, /documentation owner/, /ARCHITECTURE\.md#ownership/, /workbench\/wiki\//,
           /architectural decisions/, /Docs checked; no update needed/, /[Ff]inal response proof/,
           /A citation into a file that changes must say which tree it reads at/, /workbench\/skills\/to-docs\/SKILL\.md#citation-anchors/
         ],
@@ -506,7 +509,7 @@ const FAMILIES = [
         carries: [
           'node workbench/tools/adr.mjs supersede ADR-#### --by ADR-####',
           '`accept` moves a `proposed/` record to the top level once its corrections are reconciled',
-          'Both kinds answer the five read words the Lexicon defines, and reads never write.',
+          'Both kinds answer the five read words the glossary defines, and reads never write.',
           '`normalize` is the explicit repair for a hand-authored record',
           '`workbench-layout.mjs init` creates it; for a room stamped before it',
           'Create a new ADR only when it adds a valuable distinct architectural lens or layer'
@@ -999,25 +1002,37 @@ test('S-003Z TK-008Y: the Runbooks and the implement skill name the Claimed by r
   assert.match(normalize(read('workbench/skills/implement/SKILL.md')), /appends the agent to its `Claimed by` list/, 'the implement skill names the Claimed by list');
 });
 
-// S-003Z TK-008Z: the Lexicon carriers describe the delivered LANDMARK.md
-// artifact (folders, statuses, prefix, retirement source, a Task's landmark
-// parent), and the room-checks skill lists the landmarks collection.
-function lexiconRow(text, term) {
-  return text.split('\n').find((line) => line.startsWith(`| **${term}** |`)) ?? '';
+// S-003Z TK-008Z: the vocabulary describes the delivered LANDMARK.md artifact
+// (folders, statuses, prefix, retirement source, a Task's landmark parent),
+// and the room-checks skill lists the landmarks collection.
+// S-004O TK-009D: in this room the Landmark, Landmark Wiki page and Map
+// Distinction text is read from their Wiki lexicon articles. S-004O TK-009H:
+// the Template Lexicon is removed, so a Template term is read from its
+// templates/GLOSSARY.md entry together with its `## Term` section in the
+// Template's grouped Wiki vocabulary articles.
+const lexiconArticle = (term) => normalize(read(`workbench/wiki/dictionary-${term}.md`));
+const TEMPLATE_VOCABULARY = fs.readdirSync(path.join(root, 'templates', 'wiki')).filter((name) => /^vocabulary-.+\.md$/.test(name)).sort();
+function templateTerm(term) {
+  const entry = read('templates/GLOSSARY.md').split(new RegExp(`^\\*\\*${term}\\*\\*:$`, 'm'))[1]?.split(/^\*\*|^#/m)[0];
+  assert.ok(entry, `templates/GLOSSARY.md defines ${term}`);
+  const sections = TEMPLATE_VOCABULARY.map((name) => read(`templates/wiki/${name}`).split(/^## /m).find((part) => part.split('\n')[0].trim() === term)).filter(Boolean);
+  assert.equal(sections.length, 1, `one Template Wiki vocabulary article explains ${term}`);
+  return normalize(`${entry} ${sections[0]}`);
 }
-for (const lexicon of ['LEXICON.md', 'templates/LEXICON.md']) {
-  test(`S-003Z TK-008Z: ${lexicon} describes the delivered landmark artifact`, () => {
-    const text = read(lexicon);
-    const landmark = lexiconRow(text, 'Landmark');
-    assert.doesNotMatch(landmark, /not installed yet/, 'the Landmark row no longer says the artifact is not installed');
-    assert.match(landmark, /`LANDMARK\.md` artifact/, 'the Landmark row names the artifact');
-    for (const phrase of ['`specs` folder', '`tasks` folder', '`planned`, `active` and `reached`', '`LMK-`', 'reviewed one size above a Spec']) assert.ok(landmark.includes(phrase), `the Landmark row names ${phrase}`);
-    assert.match(lexiconRow(text, 'Landmark Wiki page'), /a reached landmark retires into it/, 'the Landmark Wiki page row names the retirement');
-    assert.match(lexiconRow(text, 'Map'), /folder path carries every parent/, 'the Map row names the parent path');
-    const task = lexiconRow(text, 'Task');
-    assert.doesNotMatch(task, /Tasks directly under a landmark[^|]*no delivered home/, 'the Task row no longer says landmark-direct Tasks have no home');
-    assert.doesNotMatch(task, /today ordinary Tasks are Spec-bound/, 'the Task row no longer says every Task is Spec-bound');
-    assert.match(task, /a Task's parent is its Spec or, directly, (an assigned and active|its) landmark/, 'the Task row names a landmark as a possible parent');
+for (const label of ['room', 'Template']) {
+  test(`S-003Z TK-008Z: the ${label} vocabulary describes the delivered landmark artifact`, () => {
+    const room = label === 'room';
+    const landmark = room ? lexiconArticle('landmark') : templateTerm('Landmark');
+    assert.doesNotMatch(landmark, /not installed yet/, 'the Landmark explanation no longer says the artifact is not installed');
+    assert.match(landmark, /`LANDMARK\.md` artifact/, 'the Landmark explanation names the artifact');
+    for (const phrase of ['`specs` folder', '`tasks` folder', '`planned`, `active` and `reached`', '`LMK-`', 'reviewed one size above a Spec']) assert.ok(landmark.includes(phrase), `the Landmark explanation names ${phrase}`);
+    assert.match(room ? lexiconArticle('landmark-wiki-page') : templateTerm('Landmark Wiki page'), /a reached landmark retires into it/, 'the Landmark Wiki page explanation names the retirement');
+    assert.match(room ? lexiconArticle('map') : templateTerm('Map'), /folder path carries every parent/, 'the Map explanation names the parent path');
+    // S-004O TK-009I: in this room the Task Distinction is read from its Wiki lexicon article.
+    const task = room ? lexiconArticle('task') : templateTerm('Task');
+    assert.doesNotMatch(task, /Tasks directly under a landmark[^|]*no delivered home/, 'the Task explanation no longer says landmark-direct Tasks have no home');
+    assert.doesNotMatch(task, /today ordinary Tasks are Spec-bound/, 'the Task explanation no longer says every Task is Spec-bound');
+    assert.match(task, /a Task's parent is its Spec or, directly, (an assigned and active|its) landmark/, 'the Task explanation names a landmark as a possible parent');
   });
 }
 test('S-003Z TK-008Z: the room-checks skill lists the landmarks collection', () => {

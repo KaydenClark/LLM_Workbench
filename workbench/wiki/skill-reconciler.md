@@ -13,7 +13,7 @@ source_paths:
   - workbench/specs/S-01S-reconciler-skill-rebuild/SPEC.md
   - tools/test-reconciler-skill.mjs
   - AGENTS.md
-  - LEXICON.md
+  - GLOSSARY.md
 last_verified: 2026-10-01
 ---
 
@@ -111,8 +111,8 @@ personal skill copy is changed by this source rebuild.
 
 - [Reconciler source](../skills/reconciler/SKILL.md) and [reference](../skills/reconciler/references/reconcile.md)
 - [Assigned capability Spec](../specs/S-01S-reconciler-skill-rebuild/SPEC.md)
-- [Contract](../../AGENTS.md#state-resolution) and [stance terms](../../LEXICON.md#stance-terms)
-- [Feedback Dispositions](../../LEXICON.md#feedback-dispositions)
+- [Contract](../../AGENTS.md#state-resolution) and [stance terms](../../GLOSSARY.md#stance-terms)
+- [Feedback disposition](../../GLOSSARY.md#feedback-disposition)
 - [ADR-0036](../docs/adr/0036-stances-change-method-not-authority.md)
 - [Wiki router](MEMORY.md)
 

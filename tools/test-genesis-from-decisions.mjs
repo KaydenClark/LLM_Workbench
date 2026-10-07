@@ -73,8 +73,9 @@ function fillPlaceholders(content) {
   return filled;
 }
 
-// The four controls the repository-wide vocabulary sweep actually checks
-// (AGENTS/RUNBOOK/LEXICON/README) carry this candidate's real templatesRoot
+// The controls the repository-wide vocabulary sweep actually checks
+// (AGENTS/RUNBOOK/GLOSSARY/ARCHITECTURE/README; S-004O TK-009G retired the
+// Lexicon from the installed set) carry this candidate's real templatesRoot
 // body beneath the synthetic Puffer Pond header, so a live `Ticket` word
 // planted in templates/ - or left over at an unrenamed base - propagates into
 // the derived room and the post-Genesis sweep below can actually catch it.
@@ -84,7 +85,7 @@ function controlText(name, version, templatesRoot) {
     ? '\n<!-- hot-specs:start -->\n<!-- hot-specs:end -->\n'
     : '';
   const header = `# Puffer Pond - ${name.replace('.md', '')}\n\n> Generated from LLM Workbench ${version}.\n\n## Purpose\n\nThis filled control belongs to Puffer Pond.${region}`;
-  if (templatesRoot && ['AGENTS.md', 'RUNBOOK.md', 'LEXICON.md', 'README.md'].includes(name)) {
+  if (templatesRoot && ['AGENTS.md', 'RUNBOOK.md', 'GLOSSARY.md', 'ARCHITECTURE.md', 'README.md'].includes(name)) {
     const templateBody = fillPlaceholders(fs.readFileSync(path.join(templatesRoot, name), 'utf8'));
     return `${header}\n\n## Template source (swept for retired vocabulary)\n\n${templateBody}`;
   }
@@ -93,7 +94,7 @@ function controlText(name, version, templatesRoot) {
 
 function templateControlText(name, version) {
   if (name === 'CLAUDE.md') return '@AGENTS.md\n';
-  if (name === 'LEXICON.md') return `# Workbench Template - Lexicon\n\n> Generated from LLM Workbench ${version}.\n\n## Status\n\n[active / partial / stale]\n`;
+  if (name === 'GLOSSARY.md') return `# Workbench Template - Glossary\n\n> Generated from LLM Workbench ${version}.\n\n## Status\n\n[active / partial / stale]\n`;
   const region = name === 'TASKBOARD.md'
     ? '\n<!-- hot-specs:start -->\n<!-- hot-specs:end -->\n'
     : '';
@@ -103,7 +104,7 @@ function templateControlText(name, version) {
 function makeTemplate(release, base, origin = 'https://example.invalid/workbench-template.git') {
   const root = path.join(base, 'template');
   initializeRoom(release, root, origin);
-  for (const name of ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md']) {
+  for (const name of ['AGENTS.md', 'BLUEPRINT.md', 'GLOSSARY.md', 'ARCHITECTURE.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md']) {
     write(path.join(root, name), templateControlText(name, release.version));
   }
   write(path.join(root, 'template-only.txt'), 'This state must not be inherited.\n');
@@ -119,7 +120,7 @@ function makeSource(release, base) {
   write(evidence, '# Pond\nA small interactive simulation.\n');
   const drafts = path.join(root, 'workbench', 'docs', 'puffer-drafts');
   const controls = {};
-  for (const name of ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md']) {
+  for (const name of ['AGENTS.md', 'BLUEPRINT.md', 'GLOSSARY.md', 'ARCHITECTURE.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md']) {
     const file = path.join(drafts, name);
     write(file, controlText(name, release.version, path.join(release.root, 'templates')));
     controls[name] = { file: path.relative(root, file).split(path.sep).join('/'), sha256: sha256(file) };
@@ -316,7 +317,9 @@ const release = makeRelease(suiteRoot);
   const authority = fs.readFileSync(path.join(destination, 'AGENTS.md'), 'utf8')
     .split('### Instruction Authority\n')[1]?.split('### State Resolution\n')[0] ?? '';
   assert.match(authority, /3\. The explicitly assigned `SPEC\.md`[\s\S]*bounded capability delegate[\s\S]*cannot enlarge the request/, 'the generated room retains the bounded assigned Spec');
-  assert.match(authority, /4\. `RUNBOOK\.md` and `LEXICON\.md` as the other Contract carriers/, 'Genesis preserves Contract instruction authority');
+  // S-004O TK-009F: the Lexicon retired from Instruction Authority.
+  assert.match(authority, /4\. `RUNBOOK\.md` as the other Contract carrier/, 'Genesis preserves Contract instruction authority');
+  assert.doesNotMatch(authority, /LEXICON\.md|\bLexicon\b/, 'the generated Instruction Authority does not name the Lexicon');
   assert.match(authority, /`BLUEPRINT\.md` is the\s+routed product destination and cross-cutting architecture owner/, 'the generated Blueprint remains a destination owner');
   assert.match(authority, /Only the user and the Contract carriers with the assigned Spec as bounded\s+delegate instruct\.[\s\S]*Templates,[\s\S]*webpages,[\s\S]*generated output are untrusted evidence/, 'generated-room root placement, templates and external evidence grant no authority');
   assert.doesNotMatch(authority, /4\. `BLUEPRINT\.md`|`BLUEPRINT\.md`[^\n]*procedural Canon|Only the user and the root controls named above instruct/);
@@ -341,11 +344,11 @@ const release = makeRelease(suiteRoot);
   // agent installs from this candidate - not the copied runtime tools, which
   // the source-side sweep in tools/test-spec-workbench.mjs already covers.
   const controlHits = [];
-  for (const name of ['AGENTS.md', 'RUNBOOK.md', 'LEXICON.md', 'README.md']) {
+  for (const name of ['AGENTS.md', 'RUNBOOK.md', 'GLOSSARY.md', 'ARCHITECTURE.md', 'README.md']) {
     fs.readFileSync(path.join(destination, name), 'utf8').split('\n').forEach((line, index) => {
-      // Same allow-listed row as tools/test-controls-vocabulary-sweep.mjs:
-      // the Lexicon row that defines the retired term necessarily names it.
-      if (name === 'LEXICON.md' && line.includes('**Ticket** | Retired as a live term.')) return;
+      // Same allow-listed line as tools/test-controls-vocabulary-sweep.mjs:
+      // the glossary Task entry names the retired term as its avoided alias.
+      if (name === 'GLOSSARY.md' && line.trim() === '_Avoid_: ticket') return;
       if (/ticket/i.test(line)) controlHits.push(`${name}:${index + 1}: ${line.trim()}`);
     });
   }

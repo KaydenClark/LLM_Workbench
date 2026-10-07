@@ -10,7 +10,7 @@ source_paths:
   - workbench/skills/spec-planner/SKILL.md
   - workbench/specs/S-002F-spec-planner-stance/SPEC.md
   - tools/test-skill-catalog.mjs
-  - LEXICON.md
+  - GLOSSARY.md
   - workbench/docs/adr/000P-roles-scope-work-and-stances-define-the-job.md
   - workbench/docs/adr/0036-stances-change-method-not-authority.md
   - workbench/wiki/design-concepts/roles-and-stances.md
@@ -63,7 +63,7 @@ The GPT_OS Planner informed this model as an example of Task preparation, in the
 
 - [Spec Planner source](../skills/spec-planner/SKILL.md)
 - [Individual delivery Spec](../specs/S-002F-spec-planner-stance/SPEC.md)
-- [Stance terms in LEXICON](../../LEXICON.md#stance-terms)
+- [Stance terms in GLOSSARY](../../GLOSSARY.md#stance-terms)
 - [ADR-000P: roles scope work and stances define the job](../docs/adr/000P-roles-scope-work-and-stances-define-the-job.md)
 - [ADR-0036: stances change method, not authority](../docs/adr/0036-stances-change-method-not-authority.md)
 - [Role model](design-concepts/roles-and-stances.md)

@@ -39,7 +39,7 @@ decision: it selects no route, claims no work, and authorizes no migration.
 ## What Adoption Is For
 
 The owner should be able to point an agent at an existing repo - with its own
-code, tests, and a prior harness - and get back seven filled root controls plus
+code, tests, and a prior harness - and get back eight filled root controls plus
 the v3 `workbench/` support root that describe **what is actually true**, with
 none of the project's real content lost in the move.
 
@@ -143,20 +143,26 @@ Output: a `BLUEPRINT.md` that matches the running project, not the aspirational
 old one.
 
 Port accepted project-wide definitions from existing glossaries, design docs,
-and source vocabulary into `LEXICON.md`. Keep scoped terms in their owning spec
-until they become shared. Do not treat an old decision log as a glossary.
+and source vocabulary into `GLOSSARY.md`, copied from `templates/GLOSSARY.md`
+and kept in its format. Keep scoped terms in their owning spec until they
+become shared. Do not treat an old decision log as a glossary.
 
-Output: a `LEXICON.md` that records established meanings without duplicating
+Output: a `GLOSSARY.md` that records established meanings without duplicating
 requirements or architecture decisions.
 
 ### Phase 2 - Document the real architecture
 
-Fill `BLUEPRINT.md` -> Architecture and Design Decisions from what is actually
-built: languages, entry points, storage, tests, deployment - each a fact you
-confirmed in the repo, not a choice you made. Record notable decisions the code
-implies but no doc states.
+Copy `templates/ARCHITECTURE.md` to `ARCHITECTURE.md`, fill its bird's-eye
+view, and draft its codemap from what is actually built: languages, entry
+points, storage, tests, deployment and each top-level module or directory with
+its job - each a fact you confirmed in the project source, not a choice you made.
+A draft is not yet the owner's map: confirm it by grilling the owner (the
+`grilling` skill), one row at a time, and keep only the rows the owner
+confirmed. Record notable decisions the code implies but no doc states in
+decision records, not in the codemap.
 
-Output: an Architecture table that a new agent can trust against the source.
+Output: an `ARCHITECTURE.md` codemap drafted from the source and confirmed by
+grilling, which a new agent can trust against the source.
 
 ### Phase 3 - Map the old harness -> new control docs
 
@@ -173,7 +179,7 @@ Typical mappings (adjust to the actual dialect):
 - **Existing `AGENTS`/`CLAUDE`** -> reconcile into the current `AGENTS.md` and the thin
   `CLAUDE.md` bridge; keep any rule still true, drop what the code disproved.
 - **Glossary / ubiquitous-language / context docs** -> accepted shared
-  definitions into `LEXICON.md`; scoped decisions into the owning spec; archive
+  definitions into `GLOSSARY.md`; scoped decisions into the owning spec; archive
   the superseded container after verifying nothing was lost.
 - **Design / visual docs** -> keep as project-local references; link, do not fold.
 
@@ -251,10 +257,22 @@ room brain that routes to them.
 
 ### Phase 7 - Migrate the durable support root, retire the old layout, and hand off
 
-Before migration, reconcile the seven root controls (`AGENTS.md`,
-`BLUEPRINT.md`, `LEXICON.md`, `RUNBOOK.md`, `TASKBOARD.md`, `CLAUDE.md`, and
-`README.md`) with project-specific content. They must be ordinary files with no
-`[BRACKETED]` placeholder.
+Before migration, reconcile the eight root controls (`AGENTS.md`,
+`BLUEPRINT.md`, `GLOSSARY.md`, `ARCHITECTURE.md`, `RUNBOOK.md`, `TASKBOARD.md`,
+`CLAUDE.md`, and `README.md`) with project-specific content. They must be
+ordinary files with no `[BRACKETED]` placeholder.
+
+A project that still holds a Lexicon from an earlier Workbench (`LEXICON.md`)
+follows the update route's rule instead of being refused: the migration
+installs a missing `GLOSSARY.md` or `ARCHITECTURE.md` from the Template and
+retires the Lexicon, with a backup in the recovery collection, only after every
+one of its lines has landed in the room's glossary, architecture or Wiki (or
+is a line of the Template Lexicon while those homes carry the Template
+content; a term row lands as a `**Term**:` glossary entry with its definition,
+its distinction in a Wiki article). Otherwise it keeps the Lexicon and reports
+each unlanded line as a `lexicon-unlanded` finding; move those lines into
+their homes, confirmed by grilling, remove each landed row from `LEXICON.md`,
+and the next update retires it.
 
 Produce a missing or unfilled one in this order:
 
@@ -331,7 +349,7 @@ than a competing rulebook.
 
 ## What A Finished Adoption Must Prove
 
-- [ ] All seven root controls exist as filled ordinary files with **no remaining
+- [ ] All eight root controls exist as filled ordinary files with **no remaining
       `[BRACKETED]` placeholders**.
 - [ ] `workbench/manifest.json` validates, declares the canonical v3 support
       lanes, and is the only active support-path authority.

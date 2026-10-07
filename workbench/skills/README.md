@@ -199,7 +199,7 @@ candidates the review checked and found unreferenced.
 | `research` | `BLUEPRINT.md`, `README.md` | none | out of scope | The Blueprint names research as an activity reached as far as a named uncertainty requires, not the skill; README cites Simon Willison's external `research` repository as the pattern behind `tools/new-research-project.mjs`. |
 | `init` | `README.md` | none | out of scope | Claude Code's built-in `/init` command, named as a generated file Genesis rejects; not a skill. |
 | `path` | `RUNBOOK.md` | none | out of scope | `/path` is a project-relative path form in the permission matcher description; not a skill. |
-| `lexicon` | none | none | out of scope | "Lexicon" in the controls and lane skills names the root control `LEXICON.md`, which every clone carries; nothing names the skill. |
+| `lexicon` | none | none | out of scope | "Lexicon" in the lane skills names the retired root control `LEXICON.md`, whose successors are `GLOSSARY.md` and `ARCHITECTURE.md`; nothing names the skill. |
 | `land` | none | none | out of scope | Only the verb ("landed") appears; no reference composes the skill. |
 | `preflight` | none | none | out of scope | RUNBOOK's historical GPT_OS "Preflight" rules are explicitly not an imported Workbench algorithm; nothing names the skill. |
 | `sitrep` | none | none | out of scope | Appears only in the optional-source inventory above; the room-core sitrep planned with S-01X (the generated JSON taskboard Spec from S-00O) owns its return. |

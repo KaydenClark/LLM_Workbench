@@ -29,7 +29,7 @@ an initially empty design-concept collection.
 ## What It Does
 
 - **One router, one schema.** `MEMORY.md` is the Wiki's one router; `SCHEMA.md`
-  and lane guidance define shape, maintenance and handling. The Lexicon directs
+  and lane guidance define shape, maintenance and handling. `ARCHITECTURE.md` directs
   readers to the Wiki when they need a concept explained, and to work owners
   when they need current assignment or acceptance state.
 - **Notes carry distinct properties.** A note distinguishes knowledge role from
@@ -81,3 +81,4 @@ with the project.
 
 - 2026-09-19: Created on explicit owner direction for one article per legacy Spec. Preserved useful knowledge and historical limits; no source record retired or discarded.
 - 2026-10-04: Moved from `design-concepts/spec-S-025-portable-wiki-and-design-concepts.md` into the features collection under this name with `wiki.mjs move-note`, retyped `feature` and restructured into the four feature sections from its existing prose, for the Wiki Evolving-Synthesis Migration Spec (S-003W) Task TK-002 (Move And Retype The Remaining Per-Spec Articles). Every live link to it was rewritten by the move; no claim was changed. This move checked that the named current source paths (the first entry names the Spec's eventual retired route, which does not exist yet) and the immutable commit exist, not the behavior of the capability itself.
+- 2026-10-07: Re-pointed the retiring Lexicon's links and live routes to `GLOSSARY.md`, `ARCHITECTURE.md` and the Wiki lexicon articles (the Lexicon Retirement Spec (S-004O), its consumer re-pointing Task (TK-009F)); no claim changed.

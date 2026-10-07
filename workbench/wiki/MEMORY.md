@@ -160,9 +160,11 @@ evidence log here.
 
 ## AI Coding Dictionary Entries
 
-The owner adopted terms from the AI Coding Dictionary on 2026-10-03. These entries explain only the terms that need more than their row, in Workbench words, and authorize nothing.
+The owner adopted terms from the AI Coding Dictionary on 2026-10-03. Each entry below is its term's Workbench home. These entries explain each meaning in Workbench words, and authorize nothing.
+The dictionary link is attribution, not a live import: the dictionary's source carries no license, and an edit upstream changes no Workbench meaning until the owner adopts it.
+An entry defines a word and sets no policy for any role, model or cost.
+A general AI coding concept stays Wiki-only and needs no glossary entry ([the Lexicon retirement decision (DDR-001E)](../docs/ddr/001E-the-lexicon-retires-terms-live-in-the-wiki-and-ownership-routes-and-invariants-live-in-architecture-md.md)); Automated review and Grilling carry a distinct Workbench meaning, defined in [GLOSSARY.md](../../GLOSSARY.md#workbench-meanings-of-ai-coding-terms).
 
-- [Lexicon: AI Coding Terms section](../../LEXICON.md) - one row per adopted term
 - [S-004E - AI Coding Dictionary Terms](../specs/S-004E-ai-coding-dictionary-terms/SPEC.md) - the Spec that owns delivery of the terms and these entries
 - [S-004K - Workbench Term Dictionary Pages](../specs/S-004K-workbench-term-dictionary-pages/SPEC.md) - the Spec that owns brief Lexicon rows plus long dictionary pages for the Workbench's own terms, starting with the workflow verbs
 - [Harness: what the Workbench is loaded into](dictionary-harness.md): the Workbench is an agentic management system a harness such as Claude Code or Codex loads, never a harness itself
@@ -174,6 +176,190 @@ The owner adopted terms from the AI Coding Dictionary on 2026-10-03. These entri
 - [Cache tokens: why the start of a session stays stable](dictionary-cache-tokens.md): why always-loaded content is cheaper when it does not change mid-session
 - [Non-determinism: why one passing run is not proof](dictionary-non-determinism.md): why verification and repeated trials are required
 - [Automated review: the Review verb, after the Journey](dictionary-automated-review.md): what a separate-context review is, that it reviews Specs, landmarks or the whole Workbench and never a Task, and why it runs on the owner's chosen host
+- [Model: the predictor inside every agent](dictionary-model.md): why a model is neither the agent nor the harness, and why context and harness are suspected first
+- [Parameters: what a model knows without being told](dictionary-parameters.md): why nothing a session corrects is learned, so project knowledge arrives as context
+- [Effort: how hard the model thinks before answering](dictionary-effort.md): a per-request reasoning setting paid in output tokens, with no level set for any role
+- [Inference: what every request to a model costs](dictionary-inference.md): running a model, not training it, and why each tool round trip is paid again
+- [Token: the unit context, cost and speed are counted in](dictionary-token.md): why long identifiers in always-loaded files cost more than they look
+- [Next-token prediction: the one thing a model does](dictionary-next-token-prediction.md): why output is likely rather than true, and a tool call is text the harness runs
+- [Model provider: who runs the model](dictionary-model-provider.md): limits, pricing and caches live there, and why the Workbench's bare "provider" names mean the agent family
+- [Input tokens: what every request sends again](dictionary-input-tokens.md): why always-loaded files such as `AGENTS.md` stay short
+- [Output tokens: what the model writes, and what sets the pace](dictionary-output-tokens.md): the costlier direction, which effort and whole-file rewrites inflate
+- [Agent: the model and harness as one actor](dictionary-agent.md): the unit one delegates to, and how a Role and a Stance scope it without making a new one
+- [System prompt: the harness's standing instructions](dictionary-system-prompt.md): why `AGENTS.md` loads beside it rather than replacing it
+- [Smart zone: the stretch of a session worth planning for](dictionary-smart-zone.md): the useful part of the window that the smart zone decision and the Task ceiling size work to
+- [Attention budget: why every loaded token costs the others](dictionary-attention-budget.md): the reason progressive disclosure keeps loaded files small
+- [Attention degradation: how a session leaves its smart zone](dictionary-attention-degradation.md): why removing context recovers instruction-following and repeating rules does not
+- [Automated check: a verification with no judgement in it](dictionary-automated-check.md): tests, `doctor` and diagnostics, and how they differ from an automated review
+- [Human review: a person reading the change itself](dictionary-human-review.md): defined by what is read, and why it is not Human QA
+- [Environment: the world outside the harness](dictionary-environment.md): the layer that outlives a session, where a room keeps everything an agent needs
+- [Filesystem: where a project and its workbench live](dictionary-filesystem.md): the most common environment, distinct from host portability's machine concerns
+- [Software factory: sessions started by triggers, not people](dictionary-software-factory.md): the general idea behind the owner's Foundry
+
+## Workbench Term Dictionary
+
+Lexicon articles: one flat `dictionary-*.md` entry for each [GLOSSARY.md](../../GLOSSARY.md) term that needs more than its canonical definition, carrying the fuller meaning, the neighbouring words, an example in use and the owning sources. Each declares the term it explains in `glossary_term:` and links its glossary entry, which `wiki.mjs validate` checks; none authorizes anything. Batch one covers the glossary's Destination and direction and Workflow verbs groupings.
+
+### Destination and direction
+
+- [Destination Question Card (DQC)](dictionary-destination-question-card.md): one concept's evolving synthesis of grilling questions, and why it is temporary scaffolding with no authority
+- [Landmark](dictionary-landmark.md): the map at its largest scale below the Blueprint, how it nests Specs and Tasks, and how it retires
+- [Landmark Tracker](dictionary-landmark-tracker.md): the generated view of documentation progress, beside the Taskboard and its older step labels
+- [Landmark Wiki page](dictionary-landmark-wiki-page.md): the readable account of a landmark and what a reached landmark retires into
+- [Expected result](dictionary-expected-result.md): what an answer is meant to make durable, distinct from an achieved Result
+- [Design concept](dictionary-design-concept.md): the shared understanding of what the project is, which the Blueprint helps reconstruct
+- [Traverse, don't search](dictionary-traverse-don-t-search.md): reaching context by following links from known entry points, with search only as repair
+- [Map](dictionary-map.md): the direction to a destination at two scales, and the verb that writes it
+- [Decisions so far](dictionary-decisions-so-far.md): the Map's linked index of settled conclusions
+- [Fog](dictionary-fog.md): anticipated work that cannot yet be phrased as a decision question
+- [Frontier](dictionary-frontier.md): the open, unblocked and unclaimed Tasks at the Map's edge
+- [Align](dictionary-align.md): the inquiry, usually grilling, that turns an idea into a shared design concept
+
+### Workflow verbs
+
+- [Workflow](dictionary-workflow.md): a sequence composed from an open set of verbs, and the delivery workflow
+- [Workflow verb](dictionary-workflow-verb.md): one defined action workflows are built from, and what defining one changes
+- [Idea](dictionary-idea.md): the owner's starting thought, recorded as given, and how it differs from Fog
+- [Confirm](dictionary-confirm.md): the owner's agreement to a readback, what it authorizes and how it differs from Approve
+- [Prototype](dictionary-prototype.md): a rough version that answers what words cannot, needing no map
+- [Plan](dictionary-plan.md): slicing the map into Tasks with provable outcomes
+- [Implement](dictionary-implement.md): changing the source of truth or the working project, the Journey's first verb
+- [Check](dictionary-check.md): the building agent's deterministic verifications, with no judgement in them
+- [QA](dictionary-qa.md): the building agent's self-judgement of its own Task, not Human QA and not a Review
+- [Submit](dictionary-submit.md): handing a Task back through its merge request with its two merge answers
+- [Review](dictionary-review.md): judging a completed destination against its Map after the Journey, never a single Task
+- [Verify](dictionary-verify.md): confirming the work once it is integrated and has passed Review
+- [Journey](dictionary-journey.md): Implement, Check, QA and Submit, the build loop of one Task
+- [Approve](dictionary-approve.md): the owner's Human QA judgment that delivered work is viable, or the send-back
+- [Delivered](dictionary-delivered.md): approved work on main, and why the verb is not Complete
+- [Clean Up](dictionary-clean-up.md): clearing the scaffolding once its knowledge is kept
+- [Writer verb](dictionary-writer-verb.md): the verb at which a claim is written, read through its Governance Plane
+
+### Workbench, room and artifacts
+
+- [Context Map](dictionary-context-map.md): how the Workbench's owners connect through the routes in `ARCHITECTURE.md`, and why a rendered map is only a Projection
+- [Workbench](dictionary-workbench.md): the agentic management system a harness loads, never the harness, and how Workbenches and Projects nest
+- [Project](dictionary-project.md): the work a Workbench exists to deliver, with exactly one Workbench of its own
+- [Owner](dictionary-owner.md): the person above the roles who confirms, approves and alone promotes to main
+- [Room](dictionary-room.md): a project seen as the place its work happens, with the Workbench as the table in it
+- [Workbench Template](dictionary-workbench-template.md): LLM Workbench's product, distinct from any template and from the `templates/` folder
+- [Scaffolding](dictionary-scaffolding.md): the architecture artifacts taken together, cleared away once their knowledge is kept
+- [Contract artifact](dictionary-contract-artifact.md): what the agent loads and pays for on every turn, today `AGENTS.md` alone
+- [Routing artifact](dictionary-routing-artifact.md): a durable file reached by pointer that routes to the detail and binds nothing by itself
+- [Architecture artifact](dictionary-architecture-artifact.md): one piece of the scaffolding, neither Contract nor routing
+- [Control](dictionary-control.md): a one-action tool agents work the workbench through, and the retired "root controls"
+- [Portable Workbench](dictionary-portable-workbench.md): everything an agent needs is in the repository, so any agent anywhere can do the work
+- [Host portability](dictionary-host-portability.md): the same behavior on every configured machine, one thing a Portable Workbench depends on
+- [Ownership origin model](dictionary-ownership-origin-model.md): upstream or project-local ownership, and how a room's deliberate differences survive updates
+- [Workbench self-drift check](dictionary-workbench-self-drift-check.md): the read-only check of the Workbench's own current-facing artifacts around an update
+- [Skill](dictionary-skill.md): a capability read only when the task matches it, and how a pointed lane skill binds
+- [Context pointer](dictionary-context-pointer.md): a stable path plus when to follow it, and how a pointer gives a skill authority
+- [Flow](dictionary-flow.md): a short sequence of skills that composes them without copying their instructions
+- [Router](dictionary-router.md): a skill that recommends the next skill or flow without running it
+- [Blueprint](dictionary-blueprint.md): the four-part short page that asks questions rather than answering them, and what it is not
+
+### Specs and Tasks
+
+- [Spec](dictionary-spec.md): a PRD-shaped scoped objective with its own destination, and what it owns while delivery needs it
+- [Task](dictionary-task.md): one bounded slice toward a destination, when a miss continues it, and the retired "ticket"
+- [Destination Packet](dictionary-destination-packet.md): the links an agent needs to find, reach and verify its destination, with nothing copied
+- [Assembled-Spec review](dictionary-assembled-spec-review.md): whole-Spec QA and a separate review of the immutable candidate before integration
+- [Human QA](dictionary-human-qa.md): the owner's evaluation of delivered work, on the owner's timing, and what a failure returns to
+- [Retired](dictionary-retired.md): the transient staging place for reconciled Specs and Tasks before discard
+- [Archive](dictionary-archive.md): permanent storage for superseded decision records, never cleared
+- [Feature article](dictionary-feature-article.md): the Wiki page that keeps a delivered capability's knowledge before its Spec retires
+- [Uncaptured complete](dictionary-uncaptured-complete.md): a complete Spec still missing its feature article, and why it cannot retire yet
+- [Task receipt](dictionary-task-receipt.md): one appended row per run of a Task, written as the run proceeds
+- [Hot projection](dictionary-hot-projection.md): the generated `TASKBOARD.md` view of current work, never a second tracker
+
+### Chats and roles
+
+- [Chat](dictionary-chat.md): one owner-visible working context that works at most one Task, and why it is not a session
+- [Conversation](dictionary-conversation.md): the exchange in a Chat, and why durable state still goes to its owner
+- [Thread](dictionary-thread.md): related Chats taken together, grouping continuity without owning work
+- [Role](dictionary-role.md): an agent's scope of responsibility, one per scale, and how a stance differs
+- [Captain](dictionary-captain.md): the project-scale role of the accepted destination, today called the Director
+- [Director](dictionary-director.md): the landmark-lane role of the accepted destination and today's integration role
+- [Dispatcher](dictionary-dispatcher.md): the Spec-scale role that coordinates Tasks and owns assembled-Spec verification
+- [Worker](dictionary-worker.md): the Task-scale role that produces a self-checked result and hands back
+- [Coordination hand-back](dictionary-coordination-hand-back.md): a point where the owner had to do an agent's work, recorded as a defect
+
+### Feedback disposition
+
+- [Feedback disposition: the one outcome each finding gets](dictionary-feedback-disposition.md): why a disposition routes work to an owner without scheduling or permitting it, and how a report and finding ID identify an occurrence
+
+Batch three covers the glossary's Support root and skills lane, Feedback disposition, Workbench meanings of AI coding terms, Continuity terms, Stance terms, Governance core, Project-specific terms and Continuity and evidence boundaries groupings. The five disposition codes are explained in the Feedback disposition entry above, and the Automated review entry is routed under AI Coding Dictionary Entries.
+
+### Support root and skills lane
+
+- [Support root](dictionary-support-root.md): the lowercase `workbench/` directory whose manifest declares the lanes and collections, and how older manifests migrate
+- [Core skill bundle](dictionary-core-skill-bundle.md): the closed set of skills every room carries, counted from the manifest, and why it is not a personal catalog
+- [Skills lane](dictionary-skills-lane.md): the room's tracked copy of its core skills, its receipt and discovery adapters, and room-added skills
+- [Normal setup](dictionary-normal-setup.md): laying the skills lane down at Genesis or Adoption without reading the provider home
+- [Explicit skill update](dictionary-explicit-skill-update.md): the only route that replaces a core skill, with backup and rollback
+- [Control fidelity](dictionary-control-fidelity.md): the line-by-line report of how a room's root files relate to their templates, never a gate
+
+### Workbench meanings of AI coding terms
+
+- [Grilling](dictionary-grilling.md): building a design concept one decision at a time, and the mid-grilling handoff where the Workbench differs from the dictionary
+
+### Continuity terms
+
+- [Notepad](dictionary-notepad.md): an objective's local JSON working record, who owns it and why it is not Canon
+- [Scoped handoff](dictionary-scoped-handoff.md): the readable Markdown map to a notepad's high-fidelity context
+- [WBID](dictionary-wbid.md): an artifact's visible identifier, its width-four form and how old labels stay readable
+
+### Stance terms
+
+- [Stance](dictionary-stance.md): the job done inside a role, which grants no authority by being loaded
+- [Spec Planner](dictionary-spec-planner.md): planning one Spec into small Tasks and parallel slices at flight launch
+- [Spec Manager](dictionary-spec-manager.md): dispatching and monitoring a Spec's planned Tasks
+- [Builder](dictionary-builder.md): delivering a scoped, verified result with its documentation
+- [Auditor](dictionary-auditor.md): a bounded verdict on named claims that authorizes no repair
+- [Reviewer](dictionary-reviewer.md): challenging a candidate in a separate context without repairing it
+- [Reconciler](dictionary-reconciler.md): bringing records into line with achieved work without manufacturing completion
+
+### Governance core
+
+- [Governance Plane](dictionary-governance-plane.md): the role one claim plays in one operation, never a whole file
+- [Workbench Contract](dictionary-workbench-contract.md): the binding claim set `AGENTS.md` names, and the gap until its list follows the one-Contract-file decision
+- [Instruction authority](dictionary-instruction-authority.md): what an agent may do and in what order, and why a Spec cannot enlarge the request
+- [State resolution](dictionary-state-resolution.md): implementation gap, documentation drift or ambiguity, with no universal winner
+- [No-governance-tax rule](dictionary-no-governance-tax-rule.md): ordinary work needs only the Contract and its verification
+- [Diagnostic](dictionary-diagnostic.md): a registered finding with a code, severity, scope and blocking effect the consuming command enforces
+- [Support lane](dictionary-support-lane.md): one of the seven slots under `workbench/`, a structure and not a plane
+- [Collection](dictionary-collection.md): a declared, machine-used directory inside a lane, and the full set
+- [ADR](dictionary-adr.md): an architecture decision record and what in it is Canon
+- [Decision Record](dictionary-decision-record.md): ADR or DDR, one tool for both, and the test that chooses between them
+- [DDR](dictionary-ddr.md): a destination decision record, its landmark and what it is not
+- [Read words](dictionary-read-words.md): list, show, search, history and inspect, and the decision-record tool that answers all five
+- [Checkpoint](dictionary-checkpoint.md): a retained historical copy whose creation is retired
+- [Operational recovery](dictionary-operational-recovery.md): local, ignored rollback material kept out of notepads and provenance
+- [Design Concept article](dictionary-design-concept-article.md): an encyclopedic article on one durable design model or landmark synthesis
+- [Wiki profile](dictionary-wiki-profile.md): the manifest's `project` or `deployment` Wiki shape, which grants no authority
+- [Managed runtime tool](dictionary-managed-runtime-tool.md): a release-installed tool listed in the tools receipt, and the application-owned root `tools/`
+- [Managed skill marker](dictionary-managed-skill-marker.md): the `.workbench-skill.json` file that names an installed skill's generation
+- [Declared integration branch](dictionary-declared-integration-branch.md): the manifest-declared branch reviewed work merges into
+
+### Project-specific terms
+
+- [Foundry](dictionary-foundry.md): the owner's factory of many rooms, and why the workbench is a management system the Foundry never supplies
+
+### Continuity and evidence boundaries
+
+- [Workbench connection identity](dictionary-workbench-connection-identity.md): the `workbenchId` namespace for private session transport, shared by clones and worktrees
+- [Private session transport](dictionary-private-session-transport.md): optional sync of live working records that changes recoverability, not authority
+- [Direct promotion](dictionary-direct-promotion.md): reconciling selected confirmed claims into their durable owner, more than a copy or commit
+- [Configured-host capability](dictionary-configured-host-capability.md): what the actual host was seen to do, and what that does not prove
+- [Core compatibility](dictionary-core-compatibility.md): the declared range a core release supports, where a version gap alone proves nothing
+
+## General Reference Pages
+
+General programming concepts and Workbench history with no distinct project meaning. Each page is the concept's Workbench home, stays Wiki-only and needs no glossary entry, and authorizes nothing.
+
+- [Progressive disclosure: load the pointer, not the detail](dictionary-progressive-disclosure.md): why `AGENTS.md` is a short brief and map and the Runbook an index of pointers
+- [Seam: where behavior is tested without the internals](dictionary-seam.md): the public boundary a Spec's Testing Seams section agrees and red-green proof is written at
+- [Version labels: what each Workbench stamp means](version-labels.md): the v3 candidates and stamps, which were never released, and where the current version is declared
 
 ## Roles And Stances
 
@@ -217,7 +403,8 @@ entry.
 |---|---|
 | [AGENTS.md](../../AGENTS.md) | Authority, scope, safety, and the work loop |
 | [BLUEPRINT.md](../../BLUEPRINT.md) | What the product is, who it serves, the outcomes it promises and what it is not |
-| [LEXICON.md](../../LEXICON.md) | Shared terms, the Governance Core, the Artifact Ownership Schema, and design-concept routing |
+| [GLOSSARY.md](../../GLOSSARY.md) | Shared terms and the Governance core |
+| [ARCHITECTURE.md](../../ARCHITECTURE.md) | Which artifact owns each kind of truth, the routes to it, the invariants, and design-concept routing |
 | [TASKBOARD.md](../../TASKBOARD.md) | Generated work-state view; follow each row to its owning Spec |
 | [RUNBOOK.md](../../RUNBOOK.md) | Exact operating and verification commands |
 | `workbench/specs/` | Stable capability records, acceptance, evidence, and proof |
@@ -231,7 +418,7 @@ entry.
 
 | Question | Read first |
 |---|---|
-| How the Workbench is governed | [LEXICON.md](../../LEXICON.md) -> Governance Core, then `workbench/docs/adr/` |
+| How the Workbench is governed | [GLOSSARY.md](../../GLOSSARY.md#governance-core) -> Governance core, [ARCHITECTURE.md](../../ARCHITECTURE.md#ownership) -> Ownership, then `workbench/docs/adr/` |
 | What the Wiki is and how agents use it | [SCHEMA.md](SCHEMA.md), then the decision record [The Wiki is the evolving synthesis every agent reads and updates](../docs/adr/000R-the-wiki-is-the-evolving-synthesis-every-agent-reads-and-updates.md) |
 | Why a layout, stance or entry-route decision was made | [docs/adr/REGISTER.md](../docs/adr/REGISTER.md) |
 

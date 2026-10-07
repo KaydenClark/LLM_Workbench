@@ -206,7 +206,7 @@ in the [Tracker README](../../landmark-tracker/README.md) and the
 [Landmark Wiki procedure](../../landmark-tracker/LANDMARK-WIKI.md). The future
 shared browser view is
 [Shared Interactive Workbench Board (S-004D)](../../specs/S-004D-shared-interactive-board/SPEC.md),
-planned only. Definitions are in the [Lexicon](../../../LEXICON.md).
+planned only. Definitions are in the [glossary](../../../GLOSSARY.md#destination-and-direction).
 
 ## Related pages
 
@@ -224,3 +224,4 @@ planned only. Definitions are in the [Lexicon](../../../LEXICON.md).
 
 - 2026-10-04: created by the Wiki Evolving-Synthesis Migration Spec (S-003W), Task TK-004 (landmark synthesis pages), seeded from the cards' current answers.
 - 2026-10-06: The LANDMARK.md Artifact And Lane Runtime Spec (S-003Z), Task TK-008J (landmark templates and documentation), replaced the stale "its delivery is not installed" statement: the artifact half is installed and only the record migration and Tracker regrouping (S-004A) remain. The cards are unchanged.
+- 2026-10-07: Re-pointed the retiring Lexicon's links and live routes to `GLOSSARY.md`, `ARCHITECTURE.md` and the Wiki lexicon articles (the Lexicon Retirement Spec (S-004O), its consumer re-pointing Task (TK-009F)); no claim changed.

@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "operation": "carrier-landing-check",
+  "carrier": "LEXICON.md",
+  "carrierRemoved": true,
+  "base": "0059669f1e1b81c8048dfea9714d0ce7a9e1d914",
+  "candidate": "0011c9963a52bccfa7c34815654d1ab2267e8385",
+  "normalization": "trim; collapse whitespace runs to one space",
+  "entries": 308,
+  "classifiedEntries": 308,
+  "removedLines": 308,
+  "landed": 308,
+  "unlanded": [],
+  "inventoryErrors": [],
+  "ok": true
+}

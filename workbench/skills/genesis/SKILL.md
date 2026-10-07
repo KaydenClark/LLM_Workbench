@@ -34,7 +34,10 @@ inheriting the Template's room state.
 4. For an explicitly selected fresh Template copy, use the validated
    `tools/genesis-from-decisions.mjs derive` path documented in the protocol.
    It forms the room from reviewed drafts and recorded decisions; implementation
-   and remote recovery still follow. Otherwise create the seven filled root controls, run
+   and remote recovery still follow. Otherwise create the eight filled root
+   controls (`GLOSSARY.md` and `ARCHITECTURE.md` in place of the retired
+   Lexicon; the `ARCHITECTURE.md` codemap is drafted from project evidence and
+   confirmed by grilling, as the protocol says), run
    the release checkout's `node workbench/tools/workbench-layout.mjs init` for
    the schema 2 support root (it seeds the wiki contract and declares
    `git.defaultBranch` and `git.integrationBranch` from `--default-branch` and

@@ -1,6 +1,6 @@
 # [PROJECT_NAME] - Blueprint
 
-Its terms mean what the Lexicon says they mean.
+Its canonical project vocabulary belongs in a concise root `GLOSSARY.md`, with richer explanations and examples in the Wiki.
 
 ## What it is
 

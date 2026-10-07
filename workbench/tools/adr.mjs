@@ -29,6 +29,16 @@ export const ID_PATTERN = /^([0-9A-Za-z]{3,})-([a-z0-9]+(?:-[a-z0-9]+)*)\.md$/;
 // in. `retired` is deliberately excluded here: ADR-000I reserves it for
 // Specs and Tasks and keeps ADR history in permanent `archive` instead. TK-002
 // reuses this exact constant when it migrates lifecycle out of frontmatter.
+// The Lexicon retires (DDR-001E) and records that name `LEXICON.md` in
+// `canonicalized_in` keep that history unchanged, so once a room has retired its
+// Lexicon the missing root file is a retired owner, not an unknown target. A
+// record accepted now still needs a live owner.
+const RETIRED_OWNERS = Object.freeze(['LEXICON.md']);
+
+function retiredOwner(root, target) {
+  return RETIRED_OWNERS.some((name) => target === path.resolve(root, name)) && !fs.existsSync(target);
+}
+
 export const ADR_LIFECYCLE_FOLDERS = Object.freeze(['proposed', 'archive']);
 
 // S-003X TK-004X: the two kinds of decision record. `invalid` is the finding
@@ -317,6 +327,7 @@ export function validateAdrs(root, options = {}) {
       if (owners.length === 0) findings.push(finding(code, `${adr.relativePath} is accepted but names no canonicalized_in owner`, detail()));
       for (const owner of owners) {
         const target = path.resolve(root, owner);
+        if (retiredOwner(root, target)) continue;
         if (!target.startsWith(path.resolve(root) + path.sep) || !fs.existsSync(target)) {
           findings.push(finding(code, `${adr.relativePath} canonicalized_in target ${owner} does not exist`, detail({ owner })));
         }
@@ -687,7 +698,11 @@ export function rewriteAdrLinks(content, oldDir, newDir, locations, { directoryT
 // product mirror) is deliberately excluded.
 function collectExternalMarkdownFiles(root) {
   const files = [];
-  for (const name of ['AGENTS.md', 'RUNBOOK.md', 'LEXICON.md', 'BLUEPRINT.md', 'TASKBOARD.md', 'README.md', 'CLAUDE.md']) {
+  // ARCHITECTURE.md carries the routes the retiring Lexicon held and links
+  // records; a room the update has not reached still carries `LEXICON.md`, and
+  // every name is read only if present. The glossary links no record and only
+  // promotion writes it, so a reference repair never touches it.
+  for (const name of ['AGENTS.md', 'RUNBOOK.md', 'ARCHITECTURE.md', 'LEXICON.md', 'BLUEPRINT.md', 'TASKBOARD.md', 'README.md', 'CLAUDE.md']) {
     const file = path.join(root, name);
     if (fs.existsSync(file) && fs.statSync(file).isFile()) files.push(file);
   }
@@ -839,7 +854,11 @@ export function resolveRecord(root, id) {
 // `templates/` is the blank product and never names this room's records.
 export function collectRecordReferenceFiles(root) {
   const files = [];
-  for (const name of ['AGENTS.md', 'RUNBOOK.md', 'LEXICON.md', 'BLUEPRINT.md', 'TASKBOARD.md', 'README.md', 'CLAUDE.md']) {
+  // ARCHITECTURE.md carries the routes the retiring Lexicon held and links
+  // records; a room the update has not reached still carries `LEXICON.md`, and
+  // every name is read only if present. The glossary links no record and only
+  // promotion writes it, so a reference repair never touches it.
+  for (const name of ['AGENTS.md', 'RUNBOOK.md', 'ARCHITECTURE.md', 'LEXICON.md', 'BLUEPRINT.md', 'TASKBOARD.md', 'README.md', 'CLAUDE.md']) {
     const file = path.join(root, name);
     if (fs.existsSync(file) && fs.lstatSync(file).isFile()) files.push(file);
   }

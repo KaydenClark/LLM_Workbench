@@ -104,7 +104,7 @@ steps 1-5 touch only the draft wiki and step 6 only this skill's lane.
 The owner confirmed the author/recipient and assigner/assignee distinction and
 explicitly selected promotion. [AGENTS](../../../AGENTS.md#handoff-assignments-and-shared-context)
 owns role authority, delegation and shared scaffolding boundaries;
-[LEXICON](../../../LEXICON.md#artifact-boundaries) owns the artifact meanings;
+[ARCHITECTURE](../../../ARCHITECTURE.md#ownership) owns the artifact meanings;
 [RUNBOOK](../../../RUNBOOK.md#handoff-transfer) owns recipient-purpose and
 transfer preparation. These owners supersede a reading that the handoff
 itself grants authorization or that agents must obtain a new owner request

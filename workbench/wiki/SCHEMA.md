@@ -86,9 +86,31 @@ and may be revised when something does not fit.
 - **Entity pages**: one page per capability (`features/`), and per skill,
   role, stance and tool (flat notes beside the router).
 - **Concept pages**: durable cross-cutting models, in `design-concepts/`,
-  and a page for any term that needs more than its Lexicon row.
+  and a lexicon article for any glossary term that needs more than its
+  `GLOSSARY.md` definition (see Lexicon Articles below).
 - **Comparisons**: filed back as a flat note when answering a question
   produced one worth keeping.
+
+## Lexicon Articles
+
+A lexicon article explains one term whose canonical definition is a
+`**Term**:` entry in the room's root `GLOSSARY.md`. It is one flat
+`dictionary-*.md` note per term, or an existing article that already explains
+the term, carrying the fuller meaning, the neighbouring terms, an example of
+the term in use and the sources that own it; it is never a link stub. It
+declares the term in its frontmatter, spelled exactly as the glossary entry,
+and links `GLOSSARY.md`:
+
+```yaml
+glossary_term: Landmark
+```
+
+`wiki.mjs validate` refuses (`invalid-note`) an article whose declared term is
+not a glossary entry, one that does not link the root `GLOSSARY.md`, and one in
+a room that has no `GLOSSARY.md`. A general reference page, such as an AI
+coding term with no distinct project meaning, declares no term and needs no
+glossary entry. The glossary owns the definition; the article explains it and
+authorizes nothing.
 
 ## Required Properties
 
@@ -214,7 +236,8 @@ node workbench/tools/wiki.mjs normalize
 
 The validator checks the router, the declared collections, required
 properties and enums, relative source paths, the Design Concept and features
-article shapes, the absence of copied live task state and secret-like material,
+article shapes, a lexicon article's declared glossary term and its
+`GLOSSARY.md` link, the absence of copied live task state and secret-like material,
 and reports stale notes as attention. `validate` never writes.
 
 `validate` reports wiki facts only. Two findings it used to carry are not wiki

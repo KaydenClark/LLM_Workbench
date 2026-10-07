@@ -37,7 +37,7 @@
       "hash": "3056025d2b05701ff2198dc7bd41f592dc1e783c54cc8feb10eebc46adcb3f96",
       "homeKind": "glossary",
       "homePath": "templates/GLOSSARY.md",
-      "landedText": "The canonical vocabulary for terms whose meaning is shared across the project; read it when a request, spec, test, or skill uses project language that could be ambiguous.",
+      "landedText": "This glossary is the canonical vocabulary for terms whose meaning is shared across the project; read it when a request, spec, test, or skill uses project language that could be ambiguous.",
       "reason": null
     },
     {
@@ -46,7 +46,7 @@
       "hash": "0815939e7f30ce1c05a6d837ad487f305b8eeec250e7c22af4867456275fc7f7",
       "homeKind": "glossary",
       "homePath": "templates/GLOSSARY.md",
-      "landedText": "The canonical vocabulary for terms whose meaning is shared across the project; read it when a request, spec, test, or skill uses project language that could be ambiguous.",
+      "landedText": "This glossary is the canonical vocabulary for terms whose meaning is shared across the project; read it when a request, spec, test, or skill uses project language that could be ambiguous.",
       "reason": null
     },
     {
@@ -55,7 +55,7 @@
       "hash": "07abf31dd9d22afb4c32b93ebc1bf49e8cb6fdce8922d428d0d43e98bbc98d66",
       "homeKind": "glossary",
       "homePath": "templates/GLOSSARY.md",
-      "landedText": "The canonical vocabulary for terms whose meaning is shared across the project; read it when a request, spec, test, or skill uses project language that could be ambiguous.",
+      "landedText": "This glossary is the canonical vocabulary for terms whose meaning is shared across the project; read it when a request, spec, test, or skill uses project language that could be ambiguous.",
       "reason": null
     },
     {
@@ -903,7 +903,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Destination Question Card (DQC)**: A structured, evolving synthesis of related grilling questions about a concept, preserving understanding, unresolved matters, changes, expected results, source lineage and evidence-bearing alignment assessments.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-destination-question-card.md"
+      "explanationHome": "templates/wiki/vocabulary-destination-and-direction.md",
+      "explanationText": "It may exist before a landmark, Spec, Task or known Wiki destination. It is not each individual interview prompt and does not grant authority. It is temporary concept scaffolding: removal requires verified reconciliation of useful understanding, corrections, rationale and lineage into durable owners, with unresolved obligations and live references preserved; a Verified label alone is insufficient."
     },
     {
       "line": 129,
@@ -913,7 +914,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Landmark**: A direction toward the destination at the largest scale below the Blueprint: a `LANDMARK.md` artifact, PRD-shaped like a Spec but much bigger, saying where the work goes and what success looks like.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-landmark.md"
+      "explanationHome": "templates/wiki/vocabulary-destination-and-direction.md",
+      "explanationText": "Landmarks and Specs are the map at different scales; Tasks are the steps. A landmark parents Specs (nested in its `specs` folder) and may hold Tasks directly (in its `tasks` folder), and retires into its Landmark Wiki page once reached and all its children are done. A Spec has at most one landmark, otherwise it sits under the Blueprint. A landmark is a lane, not a branch, reviewed one size above a Spec. Its statuses are `planned`, `active` and `reached`, and its identifier prefix is `LMK-`."
     },
     {
       "line": 130,
@@ -923,7 +925,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Landmark Tracker**: The documentation and alignment view generated from DQCs, landmark records and related source evidence, displaying relationships and distributions across documentation workflow steps.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-landmark-tracker.md"
+      "explanationHome": "templates/wiki/vocabulary-destination-and-direction.md",
+      "explanationText": "Tracker monitors documenting; Taskboard monitors implementation. It replaces neither source records nor existing artifacts, and is not a manually assigned card stage or a source of authority. The installed view still prints Idea, Aligning, Confirmed, Mapped, Planned, Journey, Review and Verified; these evidence-assessed distributions describe documentation progress, not effort, Task state or runtime availability."
     },
     {
       "line": 131,
@@ -933,7 +936,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Landmark Wiki page**: The landmark's evolving synthesis page: a coherent, human-readable Markdown summary of what its question cards add up to, updated whenever a card changes.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-landmark-wiki-page.md"
+      "explanationHome": "templates/wiki/vocabulary-destination-and-direction.md",
+      "explanationText": "Its raw source is the landmark's `LANDMARK.md`, which it describes without being the same document; a reached landmark retires into it. Several Specs may contribute to one article. Identifiers appear only with the artifact's name and context. The structured records keep lineage and state; the page keeps the readable account; its claims remain subject to existing ownership and authority rules."
     },
     {
       "line": 132,
@@ -943,7 +947,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Expected result**: The intended change or knowledge to become durable once a question is answered, naming the destination when known.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-expected-result.md"
+      "explanationHome": "templates/wiki/vocabulary-destination-and-direction.md",
+      "explanationText": "Result describes achieved delivery, separately from intended Expected result; neither a Result field nor a completed Task establishes Verified. An unanswered question need not have an expected answer or a predetermined destination. These meanings do not establish that a room exposes a Result-writing operation."
     },
     {
       "line": 133,
@@ -953,7 +958,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Design concept**: The shared understanding between the parties working on a project about what that project is.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-design-concept.md"
+      "explanationHome": "templates/wiki/vocabulary-destination-and-direction.md",
+      "explanationText": "It exists between participants. `BLUEPRINT.md` helps them reconstruct it but is not itself the design concept."
     },
     {
       "line": 134,
@@ -963,7 +969,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Traverse, don't search**: The core Workbench navigation principle: reach task-relevant context by following links from known entry points to its owners.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-traverse-don-t-search.md"
+      "explanationHome": "templates/wiki/vocabulary-destination-and-direction.md",
+      "explanationText": "Bounded search repairs missing routes or investigates the selected source area; broad rediscovery is not ordinary entry. `AGENTS.md` owns the behavior."
     },
     {
       "line": 135,
@@ -971,9 +978,10 @@
       "hash": "15f41ae04b0fca83a4fb1f9b779c9bd08081d476fc381975c4d1df893975f123",
       "homeKind": "glossary",
       "homePath": "templates/GLOSSARY.md",
-      "landedText": "**Map**: The direction to a destination, at two scales: a landmark and a Spec are each a map, and Tasks are the steps taken on it. A low-resolution view around a destination shows decisions so far, Fog and out-of-scope work.",
+      "landedText": "**Map**: The direction to a destination, at two scales: a landmark and a Spec are each a map, and Tasks are the steps taken on it; a low-resolution view around a destination shows decisions so far, Fog and out-of-scope work. As a workflow verb, Map is writing the direction to a destination: landmarks, Specs and decision records.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-map.md"
+      "explanationHome": "templates/wiki/vocabulary-destination-and-direction.md",
+      "explanationText": "It links to the artifacts that own the detail rather than creating a second file or truth store; it is distinct from the project-wide Context Map. The landmark, Spec and Task folder path carries every parent. One entry serves the noun and the verb because the verb is writing the noun."
     },
     {
       "line": 136,
@@ -983,7 +991,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Decisions so far**: The Map's concise index of conclusions, linked to their current owners and evidence.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-decisions-so-far.md"
+      "explanationHome": "templates/wiki/vocabulary-destination-and-direction.md",
+      "explanationText": "Durable reasoning remains in its owning artifact; the Map does not copy it."
     },
     {
       "line": 137,
@@ -993,7 +1002,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Fog**: Anticipated work toward a destination that cannot yet be stated as a precise decision question.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-fog.md"
+      "explanationHome": "templates/wiki/vocabulary-destination-and-direction.md",
+      "explanationText": "It becomes plannable when the question can be phrased, not only when its answer is known. Deliberately excluded work stays out of scope."
     },
     {
       "line": 138,
@@ -1003,7 +1013,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Frontier**: The open, unblocked and unclaimed Tasks at the edge of the current Map.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-frontier.md"
+      "explanationHome": "templates/wiki/vocabulary-destination-and-direction.md",
+      "explanationText": "Taskboard projects implementation work across Specs; Landmark Tracker separately shows evolving documentation and understanding. Neither view authors the source state."
     },
     {
       "line": 139,
@@ -1013,7 +1024,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Align**: The inquiry, usually grilling, in which an idea becomes a design concept the owner and the agents share.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-align.md"
+      "explanationHome": "templates/wiki/vocabulary-workflow-verbs.md",
+      "explanationText": "Grilling supports that inquiry; Confirm is the owner's agreement to the readback that closes it, and what that agreement authorizes is in the Confirm entry."
     },
     {
       "line": 140,
@@ -1023,7 +1035,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Workflow**: Workflows are composed from workflow verbs, and the verb set stays open. The delivery workflow reads Idea, Align, Confirm, Map, Plan, Journey, Review, Verify, Approve, Delivered, Clean Up.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-workflow.md"
+      "explanationHome": "templates/wiki/vocabulary-workflow-verbs.md",
+      "explanationText": "The point is not a locked list but verbs defined one at a time, with workflows built from them. A verb can be passed through: when there is nothing to map, Confirm goes to Plan, and when everything is good, Review and Verify write nothing beyond saying so. A failed Review returns to Map, Plan and Journey before Verify; a send-back at Approve returns to Align."
     },
     {
       "line": 141,
@@ -1033,7 +1046,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Workflow verb**: A defined action or process that workflows are built from and that people use in ordinary language; each verb has its own glossary entry.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-workflow-verb.md"
+      "explanationHome": "templates/wiki/vocabulary-workflow-verbs.md",
+      "explanationText": "A verb entry defines a meaning; it changes no command, status, folder or gate."
     },
     {
       "line": 142,
@@ -1043,7 +1057,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Idea**: The owner's starting thought, recorded as given, before any alignment.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-idea.md"
+      "explanationHome": "templates/wiki/vocabulary-workflow-verbs.md",
+      "explanationText": "Not Fog: Fog is anticipated work toward a destination that cannot yet be stated as a precise decision question."
     },
     {
       "line": 143,
@@ -1053,7 +1068,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Confirm**: The owner's agreement to a readback that names the concept, its direction, cost, reason and what will be created. It authorizes the agents to carry the concept to its endpoint.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-confirm.md"
+      "explanationHome": "templates/wiki/vocabulary-workflow-verbs.md",
+      "explanationText": "A claim moves from Intent to Enduring Context only by the owner's confirmation of its readback, in a grilling session or ordinary conversation, for one answer or a batch; an agent's recommendation is intent too, and the owner's yes confirms it as written. A review surface whose items carry their own Confirm button is the one place the confirmation is that button rather than a chat reply. Once the owner confirms a concept, the agents are authorized to carry it to its endpoint, unless the confirmation names a nearer one. The Confirmed label the Landmark Tracker prints for a question card is evidence of understanding and, as `AGENTS.md` says, grants no authority by itself; the verb is the owner's agreement to a readback. Whether `AGENTS.md`'s sentence should say so would change a rule's meaning; it stays open for its own decision. Approve is the owner's later judgment of delivered work."
     },
     {
       "line": 144,
@@ -1063,7 +1079,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Prototype**: Building a rough version to answer a question words cannot. Optional; it needs no map and lands nothing in enduring context.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-prototype.md"
+      "explanationHome": "templates/wiki/vocabulary-workflow-verbs.md",
+      "explanationText": "It comes before Confirm or between Confirm and Plan. The `prototype` skill carries the method."
     },
     {
       "line": 145,
@@ -1073,7 +1090,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Plan**: The slicing of Map into bounded, executable, planned units of work with provable outcomes and results.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-plan.md"
+      "explanationHome": "templates/wiki/vocabulary-workflow-verbs.md",
+      "explanationText": "Tasks are written at Plan, through the `to-tasks` skill. When there is nothing to map, Confirm goes to Plan."
     },
     {
       "line": 146,
@@ -1083,7 +1101,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Implement**: Changing the source of truth, or what the project is working on.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-implement.md"
+      "explanationHome": "templates/wiki/vocabulary-workflow-verbs.md",
+      "explanationText": "The first verb of the Journey. What it writes, Canon or Actuality, is in the Writer verb entry."
     },
     {
       "line": 147,
@@ -1093,7 +1112,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Check**: The deterministic verifications the building agent runs in the environment on its own Task: tests, builds, lints and diagnostics.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-check.md"
+      "explanationHome": "templates/wiki/vocabulary-workflow-verbs.md",
+      "explanationText": "Checks are deterministic verifications that run in the environment. It is an Automated check, with no judgement in it; QA follows. Worker self-check names Check and QA together from the Worker's side."
     },
     {
       "line": 148,
@@ -1103,7 +1123,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**QA**: The building agent's self-judgement of its own Task: whether the work actually does what the Task asked, beyond what Check can prove.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-qa.md"
+      "explanationHome": "templates/wiki/vocabulary-workflow-verbs.md",
+      "explanationText": "QA is a self-judgement check on the work. It comes after Check and before Submit. It is not Human QA, the owner's evaluation of delivered work, and not a Review, which is another agent's judgement."
     },
     {
       "line": 149,
@@ -1113,7 +1134,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Submit**: Handing a Task back through its merge request into its parent branch, carrying its merge answers: can this merge into the branch it targets, and did it complete the Task or is a new one needed.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-submit.md"
+      "explanationHome": "templates/wiki/vocabulary-workflow-verbs.md",
+      "explanationText": "The last verb of the Journey for that Task. The Spec's Dispatcher, Director or next agent validates the answers and merges when the merge is green; a Task gets no Review ([the rule](../../AGENTS.md#task-merge-answers-and-verify-review))."
     },
     {
       "line": 150,
@@ -1123,7 +1145,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Review**: The judgement, after the Journey is over, of a completed destination against its Map by an agent that did not build it. It decides whether another Journey is needed.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-review.md"
+      "explanationHome": "templates/wiki/vocabulary-workflow-verbs.md",
+      "explanationText": "An Automated review. Not Human review. Independent review of an assembled Spec at its Verify step is required by `AGENTS.md` [Git Rules](../../AGENTS.md#git-rules); the [Runbook operations index](../../RUNBOOK.md#operations-index) row for reviewing a candidate independently points to the [`code-review` skill](../skills/code-review/SKILL.md#independent-review-boundaries) that prepares, records and checks it; this entry says what counts as one."
     },
     {
       "line": 151,
@@ -1133,7 +1156,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Verify**: Confirming the work once it has merged to integration and passed Review.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-verify.md"
+      "explanationHome": "templates/wiki/vocabulary-workflow-verbs.md",
+      "explanationText": "A failed Review goes back to Map, Plan and Journey before the work can be verified. `AGENTS.md`'s closure sequence also has a verification on main, after owner approval; this entry gives the verb's own meaning and changes neither."
     },
     {
       "line": 152,
@@ -1143,7 +1167,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Journey**: Journey is Implement, Check, QA and Submit. Map and Plan come before it; Review comes after it and decides whether another Journey is needed.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-journey.md"
+      "explanationHome": "templates/wiki/vocabulary-workflow-verbs.md",
+      "explanationText": "Journey is the build run for each planned Task; Map and Plan stay outside it, and a failed Review sends the work back to Map, Plan and Journey. It is the loop-level name, not a stage a card can sit at."
     },
     {
       "line": 153,
@@ -1153,7 +1178,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Approve**: The owner's Human QA judgment that the delivered result is viable; the alternative is sending it back.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-approve.md"
+      "explanationHome": "templates/wiki/vocabulary-workflow-verbs.md",
+      "explanationText": "The `approve` command records that judgment against integration content; Human QA is the owner-led evaluation that leads to it. Sending it back returns to Align and delivery at the implicated scope, as the Human QA entry says."
     },
     {
       "line": 154,
@@ -1163,7 +1189,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Delivered**: The verb is Delivered, not Complete: the owner's approved work is on main and the concept is delivered.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-delivered.md"
+      "explanationHome": "templates/wiki/vocabulary-workflow-verbs.md",
+      "explanationText": "The `complete` command and status keep their names. Two nearby uses are earlier and different: the `S-###:delivered` blocker qualifier is satisfied by a reviewed PASS contained in integration, and `AGENTS.md` calls that stage reviewed delivery on integration; both come before owner approval and main. Renaming the qualifier changes a public contract and is the owner's call."
     },
     {
       "line": 155,
@@ -1173,7 +1200,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Clean Up**: Clearing away the scaffolding once its knowledge is kept.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-clean-up.md"
+      "explanationHome": "templates/wiki/vocabulary-workflow-verbs.md",
+      "explanationText": "Scaffolding names what is cleared; the Retired entry is the staging place, and `retire-spec` and `discard` carry it out for Specs and Tasks."
     },
     {
       "line": 156,
@@ -1183,7 +1211,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Context Map**: The navigable relationships among Workbench concepts, root files, specs, Wiki context, and referenced source/evidence, entered through the routes in `ARCHITECTURE.md`.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-context-map.md"
+      "explanationHome": "templates/wiki/vocabulary-workbench-room-and-artifacts.md",
+      "explanationText": "Existing owners hold the information; any rendered map is a source-derived Projection, not another truth store or authority. No graph service or Obsidian dependency is required."
     },
     {
       "line": 157,
@@ -1193,7 +1222,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Workbench**: An agentic management system for a project: the safe rules, progressively disclosed project truth, executable work and proof requirements that agents running in a harness such as Claude Code or Codex load, so they can align the owner's ideas and implement the owner's design concepts.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-workbench.md"
+      "explanationHome": "templates/wiki/vocabulary-workbench-room-and-artifacts.md",
+      "explanationText": "Not a harness: Claude Code and Codex are the harnesses that load it. It governs the workflow; it is not the product being built. Nesting is the destination; tooling for a Workbench that holds other Workbenches is not built yet. A Workbench relates to Workbenches one-to-many and to Projects one-to-many; a Project relates to its own Workbench one-to-one."
     },
     {
       "line": 158,
@@ -1203,7 +1233,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Project**: The product or body of work a Workbench exists to deliver.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-project.md"
+      "explanationHome": "templates/wiki/vocabulary-workbench-room-and-artifacts.md",
+      "explanationText": "Every Project has exactly one Workbench of its own. The Project is the work; the Workbench is the management system around it. Room names the same project seen as the place its work happens."
     },
     {
       "line": 159,
@@ -1213,7 +1244,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Owner**: The person whose ideas the project realizes: the one who aligns, confirms, approves and unblocks, approves delivered work, and alone promotes it to main.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-owner.md"
+      "explanationHome": "templates/wiki/vocabulary-workbench-room-and-artifacts.md",
+      "explanationText": "Not an agent and not a Role: the owner is above the roles, and the current owner request is the first instruction authority. Human QA and promotion to main are owner acts."
     },
     {
       "line": 160,
@@ -1223,7 +1255,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Room**: A project, seen as the place its work happens. The workbench is the table set in it; agents take what they need from the table and work on the project in the center.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-room.md"
+      "explanationHome": "templates/wiki/vocabulary-workbench-room-and-artifacts.md",
+      "explanationText": "Room has always meant project, so it is not the Workbench: the Workbench entry says it is the table set in one. Environment and Filesystem are sibling definitions of Room. Not a Chat, a Conversation or a host."
     },
     {
       "line": 161,
@@ -1233,7 +1266,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Scaffolding**: The architecture artifacts used to reach a destination (Specs, Tasks, landmarks, handoffs and notepads), cleared away once their knowledge is kept.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-scaffolding.md"
+      "explanationHome": "templates/wiki/vocabulary-workbench-room-and-artifacts.md",
+      "explanationText": "The architecture artifacts taken together; an Architecture artifact is one of them, so the two words are one concept seen as a whole and as a single artifact, not two meanings. Transient is an accepted alternative word. It is cleared away once its knowledge, unfinished obligations and needed evidence have reached their durable owners; the Retired entry is the staging place for reconciled Spec and Task scaffolding."
     },
     {
       "line": 162,
@@ -1243,7 +1277,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Contract artifact**: An artifact the agent loads, and pays tokens for, on every turn of every session: today AGENTS.md, with the host adapter that loads it. It holds only lines that apply everywhere.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-contract-artifact.md"
+      "explanationHome": "templates/wiki/vocabulary-workbench-room-and-artifacts.md",
+      "explanationText": "Defined by being loaded every turn, which does not change because artifacts drifted. The Workbench Contract entry names the binding claim set and its carriers, which is a different thing."
     },
     {
       "line": 163,
@@ -1253,7 +1288,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Routing artifact**: A durable artifact an agent reaches by pointer when its work needs it, and that routes to the detail: the Blueprint, `ARCHITECTURE.md`, the Runbook and the README.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-routing-artifact.md"
+      "explanationHome": "templates/wiki/vocabulary-workbench-room-and-artifacts.md",
+      "explanationText": "What the contract routes to; a context pointer is how it is reached. It is not loaded every turn, which separates it from a Contract artifact."
     },
     {
       "line": 164,
@@ -1263,7 +1299,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Architecture artifact**: An artifact built to reach a destination and cleared away once its knowledge is kept: landmarks, Specs, Tasks, handoffs and notepads. Also called scaffolding, or transient.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-architecture-artifact.md"
+      "explanationHome": "templates/wiki/vocabulary-workbench-room-and-artifacts.md",
+      "explanationText": "One of the artifacts that Scaffolding names together. It is neither a Contract artifact nor a Routing artifact: nothing in it is durable once reconciled, and the Retired entry holds Spec and Task scaffolding that has been reconciled."
     },
     {
       "line": 165,
@@ -1273,7 +1310,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Control**: A one-action tool. Agents work the workbench through controls, each one action, and open the underlying record only to verify a claim, audit, debug a control, or when a control is missing or disagrees with its record.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-control.md"
+      "explanationHome": "templates/wiki/vocabulary-workbench-room-and-artifacts.md",
+      "explanationText": "\"Root controls\", and \"controls\" for files, are retired as stale: the files are Contract and routing artifacts. A Control sits beside the Source, tool and test entry (a tool performs an operation) and the Managed runtime tool entry; the dictionary's Tool is not adopted as a Workbench term."
     },
     {
       "line": 166,
@@ -1283,8 +1321,9 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "_Avoid_: root controls",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-control.md",
-      "aliasOf": "Control"
+      "explanationHome": "templates/wiki/vocabulary-workbench-room-and-artifacts.md",
+      "aliasOf": "Control",
+      "explanationText": "Retired 2026-10-03: \"controls\" now means one-action tools (Control). Public names that carry the word, such as the control fidelity check, keep it until they are renamed on their own. Historical records keep the old wording."
     },
     {
       "line": 167,
@@ -1294,7 +1333,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Portable Workbench**: A fully packaged, deployable agentic management system. Everything an agent needs to do the work is in the project's Git repository, so any agent on any machine, or several at once in the cloud, can clone it, do the authorized work, push it, and clean up after itself.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-portable-workbench.md"
+      "explanationHome": "templates/wiki/vocabulary-workbench-room-and-artifacts.md",
+      "explanationText": "It describes the repository, not a host or a session. Host portability and the support root are things it depends on, not the thing itself."
     },
     {
       "line": 168,
@@ -1304,7 +1344,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Host portability**: The property that the Workbench's plain files and tools behave the same on every configured host: case-sensitive and case-insensitive filesystems, Windows and POSIX paths, symlinked invocation.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-host-portability.md"
+      "explanationHome": "templates/wiki/vocabulary-workbench-room-and-artifacts.md",
+      "explanationText": "One thing a Portable Workbench depends on; it is not the Portable Workbench itself. Here \"host\" means the machine, not the harness."
     },
     {
       "line": 169,
@@ -1314,7 +1355,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Ownership origin model**: The model of where an ownership assignment comes from, upstream Workbench or project-local, and of how a room's deliberate differences from upstream are classified and preserved across updates.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-ownership-origin-model.md"
+      "explanationHome": "templates/wiki/vocabulary-workbench-room-and-artifacts.md",
+      "explanationText": "About upgrade compatibility between upstream and a room, not about a Portable Workbench."
     },
     {
       "line": 170,
@@ -1324,7 +1366,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Workbench self-drift check**: A read-only check of the canonical Workbench's own current-facing artifacts before and after a Workbench update.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-workbench-self-drift-check.md"
+      "explanationHome": "templates/wiki/vocabulary-workbench-room-and-artifacts.md",
+      "explanationText": "It is separate from a target project's drift check; structural render, doctor, or tests alone do not establish semantic freshness."
     },
     {
       "line": 171,
@@ -1334,7 +1377,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Blueprint**: A high-level summary of the direction we want to head and the choices that got us this far, written as the four-part short page (what it is, who it serves, promised outcomes, non-goals) for every room.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-blueprint.md"
+      "explanationHome": "templates/wiki/vocabulary-workbench-room-and-artifacts.md",
+      "explanationText": "The Blueprint makes us ask questions; it does not give definite answers. Definite answers and their details live on other artifacts, and a decision record answers why for one specific decision. A decision is placed by asking whether it maps to a destination at the Blueprint's scale or to a more bounded one. It supports the design concept; it is not current status, an ADR or DDR inventory, a work queue, a glossary, or a proof archive. The accepted destination keeps it standalone and written before the decisions that follow it, so it is never built from DDRs or ADRs: it is not a router to them and links no record that carries an identifier (a DDR, ADR, Spec, Task or Landmark); it may link other artifacts."
     },
     {
       "line": 172,
@@ -1353,7 +1397,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Spec**: A PRD-shaped scoped objective with its own destination, derived from Blueprint needs, active ADRs, verified Actuality and required evidence. It owns requirements, decisions, acceptance, verification, evidence and completion while needed for delivery.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-spec.md"
+      "explanationHome": "templates/wiki/vocabulary-specs-and-tasks.md",
+      "explanationText": "A Spec has many Tasks and Chats. Tasks reach its destination; useful knowledge moves to maintained durable owners after verified delivery. TASK.md owns each active Task state and proof; the Spec holds capability state and gates. Record-backed Tasks live under `tasks/`; table-backed compatibility and completed tables remain readable history. See AGENTS review/closure and Runbook lifecycle."
     },
     {
       "line": 174,
@@ -1363,7 +1408,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Task**: One bounded executable thin vertical slice that reaches or repairs a destination, with its own state, proof, blockers and assigned stance in TASK.md. Its Worker self-checks and hands back.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-task.md"
+      "explanationHome": "templates/wiki/vocabulary-specs-and-tasks.md",
+      "explanationText": "It is temporary execution structure. When a check finds a miss and the fix is more of the same work, the same Task continues with an adjusted handoff; a new Task opens only when the fix changes the Task enough that it has to be rewritten. A later gap against delivered work becomes a new Spec under its landmark or the Blueprint, never a revived Spec and never a correction anchored to a Wiki claim. Small direct Blueprint Tasks remain accepted destination design with no delivered home; a Task's parent is its Spec or, directly, its landmark, and a `wiki-claim` destination serves only a Task whose own destination is producing that Wiki page. AGENTS carries the room's actual branch route and any accepted exception."
     },
     {
       "line": 175,
@@ -1373,7 +1419,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Packet**: The bounded Task entry material: TASK.md, the active Spec acceptance lines it satisfies, cited source/test paths and the Contract. A Scoped handoff and objective notepad join only when they exist.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-packet.md"
+      "explanationHome": "templates/wiki/vocabulary-specs-and-tasks.md",
+      "explanationText": "Required material remains executable from tracked owners; optional local untracked context neither authorizes work nor proves claims. Traverse the owning Spec or Wiki rather than copying its body into the Packet. The Wiki is evidence for a Spec's direction and plan, never the destination a Packet carries."
     },
     {
       "line": 176,
@@ -1383,7 +1430,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Assembled-Spec review**: Destination-level verification of the complete Task results: the Dispatcher owns whole-Spec QA and a separate Director reviews the immutable assembled candidate before integration.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-assembled-spec-review.md"
+      "explanationHome": "templates/wiki/vocabulary-specs-and-tasks.md",
+      "explanationText": "Worker self-check is not independent approval. A failed review is corrected under the still-open Spec: each finding continues its Task with an adjusted handoff, or opens a new Task only when the fix rewrites it, keeping earlier Task proof as written; the fresh assembled candidate needs review. [AGENTS](../../AGENTS.md#assembled-review-and-corrective-return) owns the obligation."
     },
     {
       "line": 177,
@@ -1393,7 +1441,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Human QA**: The owner-led evaluation of delivered work, whose timing the owner chooses at useful milestones, accumulated work, valued Specs or escalations; failed findings remain visible until resolved.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-human-qa.md"
+      "explanationHome": "templates/wiki/vocabulary-specs-and-tasks.md",
+      "explanationText": "Version cadence is a default, not the sole trigger. Actual per-Spec content-bound approval is distinct from monitoring or a green suite; only the owner promotes integration to main. Failure returns to Align and delivery at the implicated scope, without assuming every defect changes design."
     },
     {
       "line": 178,
@@ -1403,7 +1452,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Retired**: A transient staging location for reconciled Spec and Task scaffolding, removed from ordinary pickup while needed history remains reachable.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-retired.md"
+      "explanationHome": "templates/wiki/vocabulary-specs-and-tasks.md",
+      "explanationText": "Its useful content reaches durable owners; discard requires closure/capture, verified main containment, clean current-reference checks and recovery identity. Task progress remains distinct from folder lifecycle."
     },
     {
       "line": 179,
@@ -1413,7 +1463,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Archive**: Permanent storage for superseded and deprecated decision records (ADRs and DDRs), preserving their original bodies and reachable decision history.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-archive.md"
+      "explanationHome": "templates/wiki/vocabulary-specs-and-tasks.md",
+      "explanationText": "It is never cleared by transient Spec/Task cleanup; each decision-record register routes active decisions and its history routes retained alternatives."
     },
     {
       "line": 180,
@@ -1423,7 +1474,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Chat**: One owner-visible working context in a host, in which participants have a Conversation. A Chat works at most one Task: a Chat that works a Task completes it, cleans up and ends.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-chat.md"
+      "explanationHome": "templates/wiki/vocabulary-chats-and-roles.md",
+      "explanationText": "A Chat is not a Task, assignment, durable record, or authority boundary, and it never works several Tasks. It is not a session either: a session is one run of the context window inside it (Session). Directing, review and grilling Chats work no Task. Several related Chats may belong to one Thread."
     },
     {
       "line": 181,
@@ -1433,7 +1485,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Conversation**: The human-agent exchange taking place in a Chat.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-conversation.md"
+      "explanationHome": "templates/wiki/vocabulary-chats-and-roles.md",
+      "explanationText": "It is ordinary descriptive language, not another artifact or workflow level; durable state must still reach its owning project record."
     },
     {
       "line": 182,
@@ -1443,7 +1496,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Thread**: A connected series or tree of related Chats.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-thread.md"
+      "explanationHome": "templates/wiki/vocabulary-chats-and-roles.md",
+      "explanationText": "It groups conversational continuity only. It does not replace a Spec, Task dependency, notepad, handoff, or project work owner."
     },
     {
       "line": 183,
@@ -1453,7 +1507,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Role**: The assigned scope of responsibility and action for an agent.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-role.md"
+      "explanationHome": "templates/wiki/vocabulary-chats-and-roles.md",
+      "explanationText": "Director covers the project/integration, Dispatcher its Spec/branch, and Worker its Task. Branches express work scope; the request and `AGENTS.md` still establish permission. Delegation through handoffs within a role follows [AGENTS](../../AGENTS.md#handoff-assignments-and-shared-context)."
     },
     {
       "line": 184,
@@ -1463,7 +1518,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Director**: The role scoped to the whole project and its integration branch: it coordinates Spec-bound Dispatchers and cross-Spec work.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-director.md"
+      "explanationHome": "templates/wiki/vocabulary-chats-and-roles.md",
+      "explanationText": "It oversees independent review before integration and escalates owner choices. The owner remains the human above the Director; Human QA and main promotion remain owner acts. It never executes a Task or acquires authority merely by occupying a branch."
     },
     {
       "line": 185,
@@ -1473,7 +1529,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Dispatcher**: The role scoped to one assigned Spec and its branch, coordinating parallel Task work and owning assembled-Spec verification.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-dispatcher.md"
+      "explanationHome": "templates/wiki/vocabulary-chats-and-roles.md",
+      "explanationText": "It uses an assigned Spec Planner, Spec Manager, Reviewer or Auditor stance for the job within that scope. It does not take responsibility for neighboring Specs or independently approve its own assembled candidate. The broader direct-Blueprint-Task design remains separately owned; this minimum role buildout is Spec-bound."
     },
     {
       "line": 186,
@@ -1483,7 +1540,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Worker**: The role scoped to one assigned Task and one attempt, producing a self-checked result and hand-back to its Dispatcher.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-worker.md"
+      "explanationHome": "templates/wiki/vocabulary-chats-and-roles.md",
+      "explanationText": "The assigned job can be implementation or Task-authoring assistance. A working Chat performs at most one Task; no new per-Task approval ceremony is implied. Shared Spec state retains one durable writer; a Worker cannot independently approve a candidate it implemented."
     },
     {
       "line": 187,
@@ -1493,8 +1551,9 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "_Avoid_: ticket",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-task.md",
-      "aliasOf": "Task"
+      "explanationHome": "templates/wiki/vocabulary-specs-and-tasks.md",
+      "aliasOf": "Task",
+      "explanationText": "Historical `TK-###` identifiers stay readable exactly as written in append-only evidence and are never rewritten; `TK` is the Task identifier prefix, so newly allocated slices keep the `TK-###` form."
     },
     {
       "line": 188,
@@ -1504,7 +1563,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Coordination hand-back**: A point during an assigned run where the owner had to supply something that was not a preference, tradeoff, authorization, or unavailable resource under `AGENTS.md`'s governing gate: a settled decision repeated, evidence already in the project located for the agent, a routine technical finding reconciled, or an already-authorized step prompted.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-coordination-hand-back.md"
+      "explanationHome": "templates/wiki/vocabulary-chats-and-roles.md",
+      "explanationText": "It is a defect in a record, route, skill, or tool, recorded per occurrence with its cause and smallest correction in the assigned spec's evidence log by the `carry` skill. Answering a genuine owner decision is not one, and neither is a new framework built in response to one. `AGENTS.md` Safety And Change Control owns when an owner is asked; these four reasons restate that gate and never widen it."
     },
     {
       "line": 192,
@@ -1520,7 +1580,7 @@
       "text": "in its owning Spec. The report points to that owner and the supporting evidence.",
       "hash": "14ce9c4b787afe6a2bd3637b328a2d55156d019fda0116e778e456a4eddc8d3d",
       "homeKind": "wiki",
-      "homePath": "templates/wiki/dictionary-feedback-disposition.md",
+      "homePath": "templates/wiki/vocabulary-feedback-disposition.md",
       "landedText": "The report points to that owner and the supporting evidence.",
       "reason": null
     },
@@ -1574,7 +1634,7 @@
       "text": "A disposition describes the supported outcome; it neither schedules a repair",
       "hash": "d87cad8076e0281dc0b39c2ccd2619f4e535f73ada00e576ccbabb004da8b2fd",
       "homeKind": "wiki",
-      "homePath": "templates/wiki/dictionary-feedback-disposition.md",
+      "homePath": "templates/wiki/vocabulary-feedback-disposition.md",
       "landedText": "A disposition describes the supported outcome; it neither schedules a repair nor grants permission.",
       "reason": null
     },
@@ -1583,7 +1643,7 @@
       "text": "nor grants permission. A report and finding ID together identify an occurrence.",
       "hash": "b4fce2dd553691e6b92d6b92bd7878611f96a6ddf045c0b037b4b4c96f8e1a8c",
       "homeKind": "wiki",
-      "homePath": "templates/wiki/dictionary-feedback-disposition.md",
+      "homePath": "templates/wiki/vocabulary-feedback-disposition.md",
       "landedText": "A report and finding ID together identify an occurrence.",
       "reason": null
     },
@@ -1592,8 +1652,8 @@
       "text": "The owner adopted these words from the [AI Coding Dictionary](https://www.aihero.dev/ai-coding-dictionary)",
       "hash": "a755a7b46b8f52f850e7d41f7bf64818215c0ae88659f71d1d859612e03a275c",
       "homeKind": "wiki",
-      "homePath": "templates/wiki/MEMORY.project.md",
-      "landedText": "The owner adopted these words from the AI Coding Dictionary as meanings the Workbench should know inside itself.",
+      "homePath": "templates/wiki/ai-coding-reference.md",
+      "landedText": "The LLM Workbench owner adopted these words from the AI Coding Dictionary as meanings the Workbench should know inside itself.",
       "reason": null
     },
     {
@@ -1601,8 +1661,8 @@
       "text": "as meanings the Workbench should know inside itself. The first nineteen came on",
       "hash": "a4aff6adf1a00feea7ca401627bc2af203b36693bd20f8f8c8a870b61c2d42d6",
       "homeKind": "wiki",
-      "homePath": "templates/wiki/MEMORY.project.md",
-      "landedText": "The owner adopted these words from the AI Coding Dictionary as meanings the Workbench should know inside itself.",
+      "homePath": "templates/wiki/ai-coding-reference.md",
+      "landedText": "The LLM Workbench owner adopted these words from the AI Coding Dictionary as meanings the Workbench should know inside itself.",
       "reason": null
     },
     {
@@ -1610,7 +1670,7 @@
       "text": "2026-10-03; a second batch of ten followed the same day, and the owner adds",
       "hash": "e15dd7ca6322dff225503df1b26586c6725b05c916a8f9c0485e610ae04cc788",
       "homeKind": "wiki",
-      "homePath": "templates/wiki/MEMORY.project.md",
+      "homePath": "templates/wiki/ai-coding-reference.md",
       "landedText": "The owner adds further batches as the project needs them.",
       "reason": null
     },
@@ -1619,7 +1679,7 @@
       "text": "further batches as the project needs them. Each definition below restates the agreed meaning in",
       "hash": "20682c390134fc28b84ce8a8fc6c5ae3c94ba98f5ef843938c1de30132be13ce",
       "homeKind": "wiki",
-      "homePath": "templates/wiki/MEMORY.project.md",
+      "homePath": "templates/wiki/ai-coding-reference.md",
       "landedText": "Each entry restates the agreed meaning in Workbench words.",
       "reason": null
     },
@@ -1628,7 +1688,7 @@
       "text": "Workbench words. The dictionary link in the first cell is attribution, not a",
       "hash": "53cb811c57c0534e634a6fce664eafd3f3a9fbad368d935539f02bdd4f2d94c6",
       "homeKind": "wiki",
-      "homePath": "templates/wiki/MEMORY.project.md",
+      "homePath": "templates/wiki/ai-coding-reference.md",
       "landedText": "Each entry restates the agreed meaning in Workbench words.",
       "reason": null
     },
@@ -1637,7 +1697,7 @@
       "text": "live import: the dictionary's source carries no license, and an edit upstream",
       "hash": "bbea84cb41ee58b9e620ed3ff3bf9b3d4624050b3454ebd26a2b554bbbd4ec27",
       "homeKind": "wiki",
-      "homePath": "templates/wiki/MEMORY.project.md",
+      "homePath": "templates/wiki/ai-coding-reference.md",
       "landedText": "The dictionary link is attribution, not a live import: the dictionary's source carries no license, and an edit upstream changes no Workbench meaning until the owner adopts it.",
       "reason": null
     },
@@ -1646,7 +1706,7 @@
       "text": "changes no Workbench meaning until the owner adopts it. A row defines a word and",
       "hash": "16c96c6ce2936cd9d5076a66ed79074d2021d6b256fa086a5063f301bac976a8",
       "homeKind": "wiki",
-      "homePath": "templates/wiki/MEMORY.project.md",
+      "homePath": "templates/wiki/ai-coding-reference.md",
       "landedText": "The dictionary link is attribution, not a live import: the dictionary's source carries no license, and an edit upstream changes no Workbench meaning until the owner adopts it.",
       "reason": null
     },
@@ -1655,7 +1715,7 @@
       "text": "sets no policy for any role, model or cost.",
       "hash": "724b30ba5d06edf3c5a7d338815e1446052f1334d32650162584ff0970fa3f9c",
       "homeKind": "wiki",
-      "homePath": "templates/wiki/MEMORY.project.md",
+      "homePath": "templates/wiki/ai-coding-reference.md",
       "landedText": "An entry defines a word and sets no policy for any role, model or cost.",
       "reason": null
     },
@@ -1682,7 +1742,7 @@
       "text": "| **Model** ([dictionary](https://www.aihero.dev/ai-coding-dictionary/model)) | The trained parameters on their own: something that predicts the next token from the text it is handed. It keeps no state and can do nothing in the world until a harness wraps it. Providers sell larger, more capable, slower and costlier models beside smaller, faster, cheaper ones, so the tier is a choice made per task. | Not the agent and not the harness; a model plus a harness is an agent. When output disappoints, look at the context and the harness before the model. |",
       "hash": "dd51b01cf9f0cbd7ca0a5c027afcfd1e36d0b1192455a0015a8379854110b4f6",
       "homeKind": "wiki",
-      "homePath": "templates/wiki/dictionary-model.md",
+      "homePath": "templates/wiki/ai-coding-reference.md",
       "landedText": "The trained parameters on their own: something that predicts the next token from the text it is handed.",
       "reason": null
     },
@@ -1691,7 +1751,7 @@
       "text": "| **Parameters** ([dictionary](https://www.aihero.dev/ai-coding-dictionary/parameters)) | The numbers inside a model, also called its weights. Training sets them and inference only reads them, so nothing that happens in a session alters them. Everything a model knows without being told lives there and stops at its knowledge cutoff. | Why project knowledge has to arrive as context. Changing the parameters means retraining, which in effect produces a different model. |",
       "hash": "d668044bc141cef592fabc9e0ad81c63bbc34b43d2644768db5be3d8aad76ffd",
       "homeKind": "wiki",
-      "homePath": "templates/wiki/dictionary-parameters.md",
+      "homePath": "templates/wiki/ai-coding-reference.md",
       "landedText": "The numbers inside a model, also called its weights.",
       "reason": null
     },
@@ -1700,7 +1760,7 @@
       "text": "| **Effort** ([dictionary](https://www.aihero.dev/ai-coding-dictionary/effort)) | A per-request setting for how much the model reasons before it answers. That reasoning is generated, and charged for, as output tokens whether or not it is shown, so higher effort costs more and answers later. Too little gives a confident but shallow answer to a hard problem; too much burns time on rote work. | Spend it on the hard part of a task, not on a whole session by default. This row defines the word and sets no effort for any role or operation. |",
       "hash": "a03d0b5044d3cc3c3b1e9500db4444f0adf4a3c1bb23a65e2748672cff0d915c",
       "homeKind": "wiki",
-      "homePath": "templates/wiki/dictionary-effort.md",
+      "homePath": "templates/wiki/ai-coding-reference.md",
       "landedText": "A per-request setting for how much the model reasons before it answers.",
       "reason": null
     },
@@ -1709,7 +1769,7 @@
       "text": "| **Inference** ([dictionary](https://www.aihero.dev/ai-coding-dictionary/inference)) | Running a trained model to produce output, which happens on every request to a model provider. The parameters are only read, so a correction made today is not learned for tomorrow. It is billed by the token and is the main cost of using a model; each tool round trip is another pass over the whole context. | Not training. It is why continuity is written down and why the size of the context is a matter of cost. |",
       "hash": "7ee08800e14f718556ea4c14a104f51508d19268390b2309330cd1516117c829",
       "homeKind": "wiki",
-      "homePath": "templates/wiki/dictionary-inference.md",
+      "homePath": "templates/wiki/ai-coding-reference.md",
       "landedText": "Running a trained model to produce output, which happens on every request to a model provider.",
       "reason": null
     },
@@ -1718,7 +1778,7 @@
       "text": "| **Token** ([dictionary](https://www.aihero.dev/ai-coding-dictionary/token)) | What a model reads in and writes out, cut from text by a fixed tokenizer vocabulary. An English word averages a little under one token, but hashes, generated identifiers and encoded data break into many. Context size, cost and speed are all counted in tokens. | Avoid \"word\" for any of those measures. Long identifiers in always-loaded files cost more than they look. |",
       "hash": "8f54f3f928b3ee004ef0cb8075969066a6339734a6702d1e8e8ed082652e3587",
       "homeKind": "wiki",
-      "homePath": "templates/wiki/dictionary-token.md",
+      "homePath": "templates/wiki/ai-coding-reference.md",
       "landedText": "What a model reads in and writes out, cut from text by a fixed tokenizer vocabulary.",
       "reason": null
     },
@@ -1727,7 +1787,7 @@
       "text": "| **Next-token prediction** ([dictionary](https://www.aihero.dev/ai-coding-dictionary/next-token-prediction)) | The model's one operation: from the context so far it samples a single next token, appends it and goes again, so every output, a tool call included, is assembled a token at a time. It chooses what is likely, not what is true. | The source of hallucination and of run-to-run variation. A tool call is text the harness parses and runs. |",
       "hash": "3f5cccb90ae8832844e5dc56fb0ea7236acb733dce9b5e9b9c75e0796555d3c4",
       "homeKind": "wiki",
-      "homePath": "templates/wiki/dictionary-next-token-prediction.md",
+      "homePath": "templates/wiki/ai-coding-reference.md",
       "landedText": "The model's one operation: from the context so far it samples a single next token, appends it and goes again, so every output, a tool call included, is assembled a token at a time.",
       "reason": null
     },
@@ -1736,7 +1796,7 @@
       "text": "| **Non-determinism** ([dictionary](https://www.aihero.dev/ai-coding-dictionary/non-determinism)) | The same input can yield different output, because each token is sampled and provider-side serving adds its own variation; no setting removes it. Repeated runs of one task spread across a distribution. | Why one passing run is not proof. Retrying is a legitimate strategy, automated checks must catch the poor results, and a streak of poor results is usually the distribution, not a worse model. `AGENTS.md` requires repeated controlled trials before an agent-outcome claim for this reason. |",
       "hash": "d18610dbf47766abf71492822ecc83c9af6fbf6ae43c9e80408798f229858d1e",
       "homeKind": "wiki",
-      "homePath": "templates/wiki/dictionary-non-determinism.md",
+      "homePath": "templates/wiki/ai-coding-reference.md",
       "landedText": "The same input can yield different output, because each token is sampled and provider-side serving adds its own variation; no setting removes it.",
       "reason": null
     },
@@ -1745,7 +1805,7 @@
       "text": "| **Model provider** ([dictionary](https://www.aihero.dev/ai-coding-dictionary/model-provider)) | Whatever runs a model to answer requests, remote or local. The harness asks a provider for each response instead of running the model itself. Rate limits, capacity and outages live there, along with pricing, cache discounts and the list of models that exist. A provider need not be the maker of the model. | The Workbench's existing names that say bare \"provider\" (the cross-provider tools, the \"provider home\") mean the agent family, Claude or Codex, not this; they stay as public names. New prose says harness or model provider instead of bare \"provider\". |",
       "hash": "bd217c98685fb5cb8ffe0595fcb3926ad7f42a867d45ff63f79df5b4dbe9dd02",
       "homeKind": "wiki",
-      "homePath": "templates/wiki/dictionary-model-provider.md",
+      "homePath": "templates/wiki/ai-coding-reference.md",
       "landedText": "Whatever runs a model to answer requests, remote or local.",
       "reason": null
     },
@@ -1754,7 +1814,7 @@
       "text": "| **Harness** ([dictionary](https://www.aihero.dev/ai-coding-dictionary/harness)) | Everything around a model that makes it an agent: its tools, its system prompt, the way the context window is managed, permissions and hooks. It builds each request, executes the tool calls that the model requests, returns the results, keeps the session history, asks the user before risky actions and chooses when to compact. Claude Code, Codex CLI, Cursor and Claude.ai are harnesses. | The Workbench is not a harness: it is the agentic management system that a harness such as Claude Code or Codex loads, so its agents can align the owner's ideas and implement the owner's design concepts. `AGENTS.md`, permission settings and hooks are instructions to the harness. One model behaves differently under different harnesses (Claude.ai answers, Claude Code edits files), so when behavior changes the harness is often the variable. In this Lexicon \"host\" means the harness where it names software (a Chat's host, a host adapter such as `CLAUDE.md`) and the machine where it names a machine (Host portability). Public names that carry the word, such as the `update-harness` skill, stay until they are renamed on their own. |",
       "hash": "555e47f5d14062e65e9b12d55ea9479c8ea028b0c03958dfee28f87ac0eba186",
       "homeKind": "wiki",
-      "homePath": "templates/wiki/dictionary-harness.md",
+      "homePath": "templates/wiki/ai-coding-reference.md",
       "landedText": "Everything around a model that makes it an agent: its tools, its system prompt, the way the context window is managed, permissions and hooks.",
       "reason": null
     },
@@ -1763,7 +1823,7 @@
       "text": "| **Input tokens** ([dictionary](https://www.aihero.dev/ai-coding-dictionary/input-tokens)) | The tokens a harness sends with every request: the system prompt, the history and the tool results. Each costs less than an output token, yet input is usually most of the bill, because the stateless model is sent the whole session again each turn. Caching, clearing and compaction reduce it. | Counterpart of Output tokens. Always-loaded files such as `AGENTS.md` are input on every request, which is why they stay short. |",
       "hash": "bf7f1125e0d5c3f6b6ae2b90bdf062a20546cf4d2f3920ba2ba27c3e7029ef2f",
       "homeKind": "wiki",
-      "homePath": "templates/wiki/dictionary-input-tokens.md",
+      "homePath": "templates/wiki/ai-coding-reference.md",
       "landedText": "The tokens a harness sends with every request: the system prompt, the history and the tool results.",
       "reason": null
     },
@@ -1772,7 +1832,7 @@
       "text": "| **Output tokens** ([dictionary](https://www.aihero.dev/ai-coding-dictionary/output-tokens)) | The tokens the model generates, tool calls and hidden reasoning included. Each costs more than an input token, commonly several times as much, and are produced one at a time, so they set how long a turn takes. Emitting edits instead of whole files saves them. | Counterpart of Input tokens. Higher Effort produces more of them. |",
       "hash": "705b6b366a991eb9c0135d3e3b48664334fc4ad6f84cbd6abfef8d5334630bdf",
       "homeKind": "wiki",
-      "homePath": "templates/wiki/dictionary-output-tokens.md",
+      "homePath": "templates/wiki/ai-coding-reference.md",
       "landedText": "The tokens the model generates, tool calls and hidden reasoning included.",
       "reason": null
     },
@@ -1781,7 +1841,7 @@
       "text": "| **Cache tokens** ([dictionary](https://www.aihero.dev/ai-coding-dictionary/cache-tokens)) | Input tokens the provider reuses because they repeat the opening stretch of an earlier request exactly; they are billed far below the input rate and keep long sessions affordable. Only an exact prefix matches, so a change early in the conversation misses from that point on, and the cache lapses after a few idle minutes. A cost jump shows first as cache tokens falling against input tokens. | Why content that is loaded at the start of every session should stay stable rather than being edited mid-session. |",
       "hash": "45a92861f70883ecc8a257e087335e68878290e6a1049955a13a159fb3090fe6",
       "homeKind": "wiki",
-      "homePath": "templates/wiki/dictionary-cache-tokens.md",
+      "homePath": "templates/wiki/ai-coding-reference.md",
       "landedText": "Input tokens the provider reuses because they repeat the opening stretch of an earlier request exactly; they are billed far below the input rate and keep long sessions affordable.",
       "reason": null
     },
@@ -1790,7 +1850,7 @@
       "text": "| **Stateless** ([dictionary](https://www.aihero.dev/ai-coding-dictionary/stateless)) | Carries nothing forward. A model is stateless across requests and never learns from a session; between sessions an agent forgets too, unless something is written down. The sense of continuity inside a session is the harness re-sending the transcript. | Counterpart of Stateful. To make a correction stick, write it where every later session reads it: `AGENTS.md`, a notepad, a handoff or the Wiki. |",
       "hash": "a1605079379f3fc62c926dbfba66613df8bb1f6b53b6b1c99aceea93d154402a",
       "homeKind": "wiki",
-      "homePath": "templates/wiki/dictionary-stateless.md",
+      "homePath": "templates/wiki/ai-coding-reference.md",
       "landedText": "Carries nothing forward.",
       "reason": null
     },
@@ -1799,7 +1859,7 @@
       "text": "| **Stateful** ([dictionary](https://www.aihero.dev/ai-coding-dictionary/stateful)) | Carries information forward. A session is stateful from one turn to the next; an agent becomes stateful across sessions only through a memory system that writes to the environment and loads it back; a model never is. Each layer re-reads its state from the layer beneath it. Carried state carries early mistakes too, which is why clearing discards it. | Counterpart of Stateless. Notepads, the Wiki and `AGENTS.md` are the Workbench's cross-session state; the dictionary's memory system is not adopted as a term here. |",
       "hash": "27a9489229e9133a0e8dffd1f520c9b40f867ff8cc1374c22543bc9bea1f7be7",
       "homeKind": "wiki",
-      "homePath": "templates/wiki/dictionary-stateful.md",
+      "homePath": "templates/wiki/ai-coding-reference.md",
       "landedText": "Carries information forward.",
       "reason": null
     },
@@ -1808,7 +1868,7 @@
       "text": "| **Agent** ([dictionary](https://www.aihero.dev/ai-coding-dictionary/agent)) | A model that a harness has equipped with tools, a system prompt and a window of context, taking turns with a user: the unit one talks to and delegates to. The word names the model and harness together as one actor, not a mechanical part. | Avoid \"the AI\" and \"the bot\". A Role is a scope assigned to an agent and a Stance is the job it does there; neither creates a new agent. |",
       "hash": "f541e685da08eb39b88a1a68a7d581decbd038645fb459ab7bfa042300072e28",
       "homeKind": "wiki",
-      "homePath": "templates/wiki/dictionary-agent.md",
+      "homePath": "templates/wiki/ai-coding-reference.md",
       "landedText": "A model that a harness has equipped with tools, a system prompt and a window of context, taking turns with a user: the unit one talks to and delegates to.",
       "reason": null
     },
@@ -1817,7 +1877,7 @@
       "text": "| **System prompt** ([dictionary](https://www.aihero.dev/ai-coding-dictionary/system-prompt)) | The standing instructions a harness puts at the front of every request: identity, behavior, available tools and conventions. It is usually large and written by the harness vendor; files such as `AGENTS.md` load beside it. It stays fixed for a session, which is what starts the cache, and models are trained to give it priority over user messages. | `AGENTS.md` and `CLAUDE.md` ride beside it and do not replace it. |",
       "hash": "babc2202ef0b5251bc2b10e9b52b4c502b93067576923992d7d39b1951b010be",
       "homeKind": "wiki",
-      "homePath": "templates/wiki/dictionary-system-prompt.md",
+      "homePath": "templates/wiki/ai-coding-reference.md",
       "landedText": "The standing instructions a harness puts at the front of every request: identity, behavior, available tools and conventions.",
       "reason": null
     },
@@ -1826,7 +1886,7 @@
       "text": "| **Context window** ([dictionary](https://www.aihero.dev/ai-coding-dictionary/context-window)) | Everything the model sees on one request: a single finite, model-specific sequence of tokens made of the system prompt, the conversation and the tool results, and the only way the model perceives anything. It fills as a session runs until compaction or clearing, and every token competes for attention, so treat it as a budget. | Avoid \"memory\". Progressive disclosure and context pointers exist to keep it small. |",
       "hash": "69ddf99123bb6bc8704067a6c546e75ce47236edf3737e11973b8a15309b36b0",
       "homeKind": "wiki",
-      "homePath": "templates/wiki/dictionary-context-window.md",
+      "homePath": "templates/wiki/ai-coding-reference.md",
       "landedText": "Everything the model sees on one request: a single finite, model-specific sequence of tokens made of the system prompt, the conversation and the tool results, and the only way the model perceives anything.",
       "reason": null
     },
@@ -1835,7 +1895,7 @@
       "text": "| **Context** ([dictionary](https://www.aihero.dev/ai-coding-dictionary/context)) | The information relevant to the task that the agent has right now. It measures quality, not quantity: most failures trace to a needed fact that was never loaded or that sat buried. | Not the context window (the actual run of tokens) and not the session (the running history). Context Map, Enduring Context and Working context are different terms: the Context Map is the navigable relationships among Workbench concepts, Enduring Context is a Governance Plane for durable reference, and Working context is the unfinished reasoning a notepad preserves. |",
       "hash": "c077b8dfbed4db509d6b893bf2e1c936c65cfec9d7dbc69f2ce1362070e8a1f4",
       "homeKind": "wiki",
-      "homePath": "templates/wiki/dictionary-context.md",
+      "homePath": "templates/wiki/ai-coding-reference.md",
       "landedText": "The information relevant to the task that the agent has right now.",
       "reason": null
     },
@@ -1844,7 +1904,7 @@
       "text": "| **Session** ([dictionary](https://www.aihero.dev/ai-coding-dictionary/session)) | A single bounded run of working with an agent. It starts empty, accumulates the messages, tool outputs and files opened along the way, and ends when it is cleared, closed, or summarized into a new one. What fills the context window is the session, and its history is the agent's working memory, lost when it ends; only files survive. | A Chat is the owner-visible working context in a host; a session is one run of the context window inside it. A Chat normally holds one session and may hold more when the harness compacts or clears within it, and a Task still maps to one Chat. Inference: this joins the two agreed definitions and is not a separate owner answer. \"Session\" in `AGENTS.md`'s Session Records And Checkpoints and Long Session Control sections, and the `sessions` support lane, use the word in this sense: the lane's records outlive any one session. Keeping to one task a session keeps what is loaded on topic. |",
       "hash": "e49f913b16bede382b6e167438cb7fc5e61bb926e4e2e4bfac70ecf5ebd1d960",
       "homeKind": "wiki",
-      "homePath": "templates/wiki/dictionary-session.md",
+      "homePath": "templates/wiki/ai-coding-reference.md",
       "landedText": "A single bounded run of working with an agent.",
       "reason": null
     },
@@ -1853,7 +1913,7 @@
       "text": "| **Smart zone** ([dictionary](https://www.aihero.dev/ai-coding-dictionary/smart-zone)) | The early stretch of a session in which an agent does its best work, before quality slides as its context grows. Work is planned to fit inside it, not inside the context window's hard limit. | Not the context window's capacity: a session can still have room left and already be out of the zone. |",
       "hash": "92c3b954912f20f116b285dfb4e1f4d5999670aa8cdf7e45b17878479be67091",
       "homeKind": "wiki",
-      "homePath": "templates/wiki/dictionary-smart-zone.md",
+      "homePath": "templates/wiki/ai-coding-reference.md",
       "landedText": "The early stretch of a session in which an agent does its best work, before quality slides as its context grows.",
       "reason": null
     },
@@ -1862,7 +1922,7 @@
       "text": "| **Attention budget** ([dictionary](https://www.aihero.dev/ai-coding-dictionary/attention-budget)) | The fixed amount of influence each token spreads over everything else in the context, so every token added dilutes the others. | Not used as a term elsewhere in the Workbench; it is the reason behind the Progressive disclosure row's rule that every loaded token costs attention. |",
       "hash": "fb31d07ac35e23e2abe2d15cf795363bd4407bd8207c94c10babe06c6d27b3d5",
       "homeKind": "wiki",
-      "homePath": "templates/wiki/dictionary-attention-budget.md",
+      "homePath": "templates/wiki/ai-coding-reference.md",
       "landedText": "The fixed amount of influence each token spreads over everything else in the context, so every token added dilutes the others.",
       "reason": null
     },
@@ -1871,7 +1931,7 @@
       "text": "| **Attention degradation** ([dictionary](https://www.aihero.dev/ai-coding-dictionary/attention-degradation)) | The gradual loss of instruction-following as a session grows: the mechanism behind leaving the smart zone. Removing context recovers it; adding more does not. | Progressive disclosure and a Task's context ceiling describe its effect without naming it. |",
       "hash": "a82b655485ff8122bf812da18fd6fccbf1588f7be252bf476ce9334ced7abee5",
       "homeKind": "wiki",
-      "homePath": "templates/wiki/dictionary-attention-degradation.md",
+      "homePath": "templates/wiki/ai-coding-reference.md",
       "landedText": "The gradual loss of instruction-following as a session grows: the mechanism behind leaving the smart zone.",
       "reason": null
     },
@@ -1880,7 +1940,7 @@
       "text": "| **Automated check** ([dictionary](https://www.aihero.dev/ai-coding-dictionary/automated-check)) | A deterministic pass-or-fail verification, such as a test, a type check, a lint or a build, which an agent can correct its own work against. | `doctor`, the test suites and the Diagnostic row are instances. It involves no judgement, which separates it from an Automated review; the owner's Check workflow verb is the building agent running automated checks on its own Task before handing it back. |",
       "hash": "71d879eaf0505a9b594d8fab1d1d22bb29208851f96523eee9a22f69c97abaa1",
       "homeKind": "wiki",
-      "homePath": "templates/wiki/dictionary-automated-check.md",
+      "homePath": "templates/wiki/ai-coding-reference.md",
       "landedText": "A deterministic pass-or-fail verification, such as a test, a type check, a lint or a build, which an agent can correct its own work against.",
       "reason": null
     },
@@ -1892,14 +1952,15 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Automated review**: An agent other than the one that did the work forming a judgement on it. It is a judgement, so it can miss what a check would not.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-automated-review.md"
+      "explanationHome": "templates/wiki/vocabulary-workbench-meanings-of-ai-coding-terms.md",
+      "explanationText": "Separate-context review is an earlier name for it. In this Workbench it judges a completed destination against its Map: it runs on a Spec, sometimes a landmark, or the Workbench as a whole against its decision records and Blueprint, and never a Task: the sum of the completed Tasks shows at the destination. It is how the Review verb is carried out. It is neither an Automated check (which has no judgement) nor Human review."
     },
     {
       "line": 242,
       "text": "| **Human review** ([dictionary](https://www.aihero.dev/ai-coding-dictionary/human-review)) | A person reading the actual change, not the agent's account of it. | Human QA is the owner-led evaluation of delivered work at times the owner chooses; a human review is defined by what is read, the change itself, not by who evaluates or when. One does not stand in for the other. |",
       "hash": "af4cdf7c4f7ab42c418318c350c2214d574f7af466502b9a3fce87e8e9141d79",
       "homeKind": "wiki",
-      "homePath": "templates/wiki/dictionary-human-review.md",
+      "homePath": "templates/wiki/ai-coding-reference.md",
       "landedText": "A person reading the actual change, not the agent's account of it.",
       "reason": null
     },
@@ -1911,14 +1972,15 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Grilling**: Building a design concept through an interview that settles one decision at a time, each with a recommended answer.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-grilling.md"
+      "explanationHome": "templates/wiki/vocabulary-workbench-meanings-of-ai-coding-terms.md",
+      "explanationText": "The Workbench differs from the dictionary here: a handoff can be written in the middle of a grilling session so that another agent can dig into one question while the grilling agent's context is preserved. Align is usually done by grilling; the `grilling` skill owns the method."
     },
     {
       "line": 244,
       "text": "| **Environment** ([dictionary](https://www.aihero.dev/ai-coding-dictionary/environment)) | The world an agent works in, outside its harness: what it sees through tool results and alters through tool calls. It is the layer that persists between sessions. | Not the harness and not the session. Filesystem is its most common form. |",
       "hash": "fa6337802bc63e946a780b1e17bb97dd0aa5e12e7fd20801cb2e9d00c6868ebd",
       "homeKind": "wiki",
-      "homePath": "templates/wiki/dictionary-environment.md",
+      "homePath": "templates/wiki/ai-coding-reference.md",
       "landedText": "The world an agent works in, outside its harness: what it sees through tool results and alters through tool calls.",
       "reason": null
     },
@@ -1927,7 +1989,7 @@
       "text": "| **Filesystem** ([dictionary](https://www.aihero.dev/ai-coding-dictionary/filesystem)) | The most common environment: the files and directories an agent reads and writes, where a project and its workbench live. | Host portability treats filesystems as a machine concern (case sensitivity, paths, symlinks); this row is about what the agent works in, not how the machine stores it. |",
       "hash": "87f1f153e9bc7a97e00db07ee3ef9e39ea1b106c70e633ab11a16eba2b8cfd12",
       "homeKind": "wiki",
-      "homePath": "templates/wiki/dictionary-filesystem.md",
+      "homePath": "templates/wiki/ai-coding-reference.md",
       "landedText": "The most common environment: the files and directories an agent reads and writes, where a project and its workbench live.",
       "reason": null
     },
@@ -1936,7 +1998,7 @@
       "text": "| **Software factory** ([dictionary](https://www.aihero.dev/ai-coding-dictionary/software-factory)) | A system in which triggers, not a person, start agent sessions, so more work runs while nobody is watching. | Defined here so the word means one thing; the row sets no policy for unattended work. |",
       "hash": "64b3169bdc1678bc7120b4161811aecce3e2288e096773dea165dcae7819a845",
       "homeKind": "wiki",
-      "homePath": "templates/wiki/dictionary-software-factory.md",
+      "homePath": "templates/wiki/ai-coding-reference.md",
       "landedText": "A system in which triggers, not a person, start agent sessions, so more work runs while nobody is watching.",
       "reason": null
     },
@@ -1966,7 +2028,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Notepad**: A local, objective-scoped JSON working record with a compact editable current view and an append-oriented work record. Grilling records are notepads and therefore JSON.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-notepad.md"
+      "explanationHome": "templates/wiki/vocabulary-continuity-terms.md",
+      "explanationText": "It is not Canon or permanent history; preserve important material until reconciled. A note belongs to its objective, not to the Chat, model or host that created it, and every context that can reach it resumes it, one writer at a time. One objective may use several linked notes for distinct purposes."
     },
     {
       "line": 253,
@@ -1976,7 +2039,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Scoped handoff**: A separate local Markdown (`.md`) brief with a specified recipient purpose, job and endpoint, compressed context and instructions for reaching the relevant objective notepad and sources: the readable map to the high-fidelity context, so the recipient does not redo work.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-scoped-handoff.md"
+      "explanationHome": "templates/wiki/vocabulary-continuity-terms.md",
+      "explanationText": "The owner or an agent working within its role may initiate the transfer. It is Markdown because agents pick it up, read and edit it; JSON is for state and tooling. A recipient may read the file or receive its content in a new chat; a pointer requires accessible, retained data. [RUNBOOK](../../RUNBOOK.md#handoff-transfer) owns preparation and transfer."
     },
     {
       "line": 254,
@@ -1986,7 +2050,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**WBID**: The visible identifier comprising an artifact's type prefix and a value replacing the numeric portion.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-wbid.md"
+      "explanationHome": "templates/wiki/vocabulary-continuity-terms.md",
+      "explanationText": "Unique within the type and Workbench, not globally; no parallel secondary ID. Every spelling of one identity (short, widened or case variant, compared case-folded without leading zeros) is one WBID, reserved once and resolved to the one record. Existing numeric, short and mixed-case labels and their paths remain readable; an open Spec or Task widens only through the explicit `widen-id` touch, which keeps its former ID. Historical numeric slice identifiers remain spec-qualified, while new letter-bearing ones reserve the whole Workbench inventory. Workbench connection identities keep their separate base-62 format."
     },
     {
       "line": 258,
@@ -2014,7 +2079,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Stance**: The job, method and obligations applied within an assigned role scope.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-stance.md"
+      "explanationHome": "templates/wiki/vocabulary-stance-terms.md",
+      "explanationText": "Role answers where responsibility applies; stance answers what job is performed there. A stance neither grants authority nor creates independence or an agent by being loaded."
     },
     {
       "line": 261,
@@ -2024,7 +2090,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Spec Planner**: The stance that plans small Tasks and parallel vertical slices for one Spec at flight launch.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-spec-planner.md"
+      "explanationHome": "templates/wiki/vocabulary-stance-terms.md",
+      "explanationText": "A Dispatcher may dispatch Workers to help author Tasks, then reconciles their drafts and hands the plan to Spec Manager. Its operating capability is specified separately from the Dispatcher role."
     },
     {
       "line": 262,
@@ -2034,7 +2101,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Spec Manager**: The stance that dispatches and monitors execution of planned Task groups within one Spec.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-spec-manager.md"
+      "explanationHome": "templates/wiki/vocabulary-stance-terms.md",
+      "explanationText": "A Dispatcher manages safe parallel work, hand-backs and assembled verification, escalating cross-Spec coordination to the Director. Its operating capability is specified separately from Spec Planner."
     },
     {
       "line": 263,
@@ -2044,7 +2112,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Builder**: The stance that delivers a scoped, verified result and maintains its documentation.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-builder.md"
+      "explanationHome": "templates/wiki/vocabulary-stance-terms.md",
+      "explanationText": "Implementation includes relevant review and verification."
     },
     {
       "line": 264,
@@ -2054,7 +2123,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Auditor**: The stance that checks claims against named evidence and reports a bounded verdict.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-auditor.md"
+      "explanationHome": "templates/wiki/vocabulary-stance-terms.md",
+      "explanationText": "An audit does not authorize repairs or release."
     },
     {
       "line": 265,
@@ -2064,7 +2134,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Reviewer**: The stance that challenges a candidate's correctness, impact and evidence.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-reviewer.md"
+      "explanationHome": "templates/wiki/vocabulary-stance-terms.md",
+      "explanationText": "At a Spec's or landmark's Verify it runs in a separate context; it does not quietly repair the candidate."
     },
     {
       "line": 266,
@@ -2074,7 +2145,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Reconciler**: The stance that reconciles achieved work with the state and owners needed for continuation.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-reconciler.md"
+      "explanationHome": "templates/wiki/vocabulary-stance-terms.md",
+      "explanationText": "It neither manufactures completion nor duplicates truth in a universal handoff."
     },
     {
       "line": 267,
@@ -2183,7 +2255,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Governance Plane**: The role one claim plays in one operation: **Intent** (the request), **Canon** (the binding current-state rule), **Grounding** (evidence about intended truth or whether work was done correctly), **Enduring Context** (durable reference consulted), **Actuality** (the target being changed, including files, source, runtime, and verified state), and **Projection** (a source-derived report).",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-governance-plane.md"
+      "explanationHome": "templates/wiki/vocabulary-governance-core.md",
+      "explanationText": "Planes classify claims and their use, never whole files, directories, or artifact types. One assigned spec carries Canon, Projection, Grounding, and Enduring Context claims at once."
     },
     {
       "line": 284,
@@ -2193,7 +2266,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Workbench Contract**: The binding claim set `AGENTS.md` Instruction Authority names: `AGENTS.md` itself, the explicitly assigned Spec's bounded capability requirements and, while an operation is performed, the binding requirements of the lane skill the Contract points to for it.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-workbench-contract.md"
+      "explanationHome": "templates/wiki/vocabulary-governance-core.md",
+      "explanationText": "It is not a file; other root files are routed by intent, and no `CONTRACT.md` or other coequal root file exists."
     },
     {
       "line": 285,
@@ -2203,7 +2277,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Instruction authority**: What an agent may do: the current owner request, then `AGENTS.md` with platform safety, then the explicitly assigned spec as a bounded capability delegate, then the other Contract carriers.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-instruction-authority.md"
+      "explanationHome": "templates/wiki/vocabulary-governance-core.md",
+      "explanationText": "An assigned spec cannot enlarge the request, platform safety, or `AGENTS.md` scope; an unassigned spec is evidence."
     },
     {
       "line": 286,
@@ -2213,7 +2288,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**State resolution**: How a Canon claim and verified Actuality are reconciled: newer Canon is an implementation gap, newer verified Actuality is documentation drift, unclear ordering is an ambiguity to investigate.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-state-resolution.md"
+      "explanationHome": "templates/wiki/vocabulary-governance-core.md",
+      "explanationText": "Neither \"code always wins\" nor \"Canon proves implementation\"; the touched owner is repaired rather than a universal precedence applied."
     },
     {
       "line": 287,
@@ -2223,7 +2299,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**No-governance-tax rule**: Ordinary owner-directed project work requires only the Workbench Contract and its verification; no coordination system, order form, flight, or external mechanism is a prerequisite.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-no-governance-tax-rule.md"
+      "explanationHome": "templates/wiki/vocabulary-governance-core.md",
+      "explanationText": "Available mechanisms a change genuinely needs still apply; the line is availability, not ceremony."
     },
     {
       "line": 288,
@@ -2233,7 +2310,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Diagnostic**: A registered finding a Workbench tool emits with a stable code, a severity of `error` or `attention`, a scope, and a blocking effect of `all`, `selection`, `selected-slice`, or `none`.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-diagnostic.md"
+      "explanationHome": "templates/wiki/vocabulary-governance-core.md",
+      "explanationText": "The consuming command enforces the effect; no artifact chooses whether its own finding blocks."
     },
     {
       "line": 289,
@@ -2243,7 +2321,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Support lane**: One of the seven manifest-declared slots under lowercase `workbench/`: `docs`, `specs`, `wiki`, `sessions`, `feedback`, `tools`, `skills`.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-support-lane.md"
+      "explanationHome": "templates/wiki/vocabulary-governance-core.md",
+      "explanationText": "A lane is a structural slot, not a plane."
     },
     {
       "line": 290,
@@ -2253,7 +2332,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Skills lane**: The `workbench/skills` lane: the core skills tracked inside this room, marked by a receipt naming their source release, commit and hash, and replaced only by the Workbench update. The tracked `.agents/skills` and `.claude/skills` links resolve into it.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-skills-lane.md"
+      "explanationHome": "templates/wiki/vocabulary-governance-core.md",
+      "explanationText": "A skill this room adds under another name is room-owned and never replaced by the update; a personal skills catalog is never on this room's critical path."
     },
     {
       "line": 291,
@@ -2263,7 +2343,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Collection**: A manifest-declared, machine-used directory inside a lane, such as `docs/adr`, `wiki/design-concepts` or `sessions/notepads`.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-collection.md"
+      "explanationHome": "templates/wiki/vocabulary-governance-core.md",
+      "explanationText": "Collection names are lowercase; local notepads may use nested type folders; a collection is never promoted to a lane because its contents differ in kind."
     },
     {
       "line": 292,
@@ -2273,7 +2354,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**ADR**: An architecture decision record in `workbench/docs/adr/`: title, decision, considered alternatives, consequences, provenance, and frontmatter naming its operational owners.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-adr.md"
+      "explanationHome": "templates/wiki/vocabulary-governance-core.md",
+      "explanationText": "Active accepted ADR decision claims are architectural Canon; rationale and history remain distinct; `canonicalized_in` names operational owners."
     },
     {
       "line": 293,
@@ -2283,7 +2365,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Decision Record**: A record of one consequential decision and why it was made: an ADR for an architectural choice and a DDR for a destination choice.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-decision-record.md"
+      "explanationHome": "templates/wiki/vocabulary-governance-core.md",
+      "explanationText": "Both are atomic, superseded whole and managed alike by one tool, `adr.mjs`, which creates, validates, registers, accepts, supersedes, deprecates and reads both. The test that chooses between them: would the choice still hold if the architecture were rebuilt differently? Yes is a DDR. One decision that needs both records links them rather than merging them."
     },
     {
       "line": 294,
@@ -2293,7 +2376,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**DDR**: A Destination Decision Record in `workbench/docs/ddr/`: one consequential choice about what the finished product must be or do, and why it was chosen over the alternatives, with the frontmatter keys `date`, `supersedes` and `canonicalized_in` and a free-prose body.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-ddr.md"
+      "explanationHome": "templates/wiki/vocabulary-governance-core.md",
+      "explanationText": "An active accepted DDR owns destination Canon beside the ADR; it serves a destination goal rather than an architecture choice. Lifecycle is its folder, as for an ADR: `proposed/`, the accepted top level, and the permanent `archive/`. `adr.mjs new --kind ddr` writes the next one into `proposed/`. A DDR that changes or contradicts the Blueprint names `BLUEPRINT.md` in `canonicalized_in`, which never names the Wiki; the Wiki cites it and keeps no page per DDR. It is not a Blueprint paragraph."
     },
     {
       "line": 295,
@@ -2303,7 +2387,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Read words**: The five kinds of read every record is to answer, defined once: **list** (the records that exist), **show** (one whole record; `get` is an accepted synonym), **search** (records found by a query), **history** (how a record changed) and **inspect** (part of a record, a field or a range).",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-read-words.md"
+      "explanationHome": "templates/wiki/vocabulary-governance-core.md",
+      "explanationText": "Create, Read, Update and Delete remain the frame; what kind of each a tool needs differs. `capture` is Create, not a read. The decision-record tool answers all five for ADRs and DDRs; other tools gain them as they are revised, and existing command names keep working."
     },
     {
       "line": 296,
@@ -2313,7 +2398,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Checkpoint**: A retained historical tracked copy in `sessions/checkpoints/`; new copy creation is retired.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-checkpoint.md"
+      "explanationHome": "templates/wiki/vocabulary-governance-core.md",
+      "explanationText": "Preserve existing bytes and citations. New claims reconcile into their durable owners; operational recovery is separate."
     },
     {
       "line": 297,
@@ -2323,7 +2409,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Operational recovery**: Local rollback receipts and backups in the ignored `sessions/recovery/` collection.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-operational-recovery.md"
+      "explanationHome": "templates/wiki/vocabulary-governance-core.md",
+      "explanationText": "Excluded from notepad discovery and durable provenance; existing historical recovery references remain valid."
     },
     {
       "line": 298,
@@ -2333,7 +2420,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Design Concept article**: An encyclopedic wiki article in `wiki/design-concepts/` explaining one durable cross-cutting design model or one landmark's evolving synthesis, ending with `Evidence and Sources` and carrying `History`.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-design-concept-article.md"
+      "explanationHome": "templates/wiki/vocabulary-governance-core.md",
+      "explanationText": "It documents a design concept; it is not the Blueprint, an ADR, a procedure, or task state. Any agent creates or updates it in an authorized operation whose work touched it; the collection itself remains required."
     },
     {
       "line": 299,
@@ -2343,7 +2431,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Wiki profile**: The manifest's declared wiki shape: `project` (one room's memory router and collections) or `deployment` (adds owner, machine, and project pointer collections).",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-wiki-profile.md"
+      "explanationHome": "templates/wiki/vocabulary-governance-core.md",
+      "explanationText": "A profile declares routing shape; it grants no authority and copies no live task state."
     },
     {
       "line": 300,
@@ -2353,7 +2442,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Managed runtime tool**: A file in `workbench/tools/` installed from the Workbench release and listed in the tools receipt with its source release, commit, and hash.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-managed-runtime-tool.md"
+      "explanationHome": "templates/wiki/vocabulary-governance-core.md",
+      "explanationText": "It is updated only by explicit update with backup and rollback; an application's root `tools/` is application-owned."
     },
     {
       "line": 301,
@@ -2363,7 +2453,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Declared integration branch**: The branch, named by exact case in `workbench/manifest.json` `git.integrationBranch`, into which the independent review gate merges task branches; `git.defaultBranch` names the branch it is created from.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-declared-integration-branch.md"
+      "explanationHome": "templates/wiki/vocabulary-governance-core.md",
+      "explanationText": "A declaration, not a prose convention: tools and root files resolve it from the manifest, `doctor` reports it undeclared or missing without blocking selection, and only generation, adoption, and upgrade completion fail closed on it."
     },
     {
       "line": 305,
@@ -2400,7 +2491,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Workbench connection identity**: The stable namespace selected for optional private session transport.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-workbench-connection-identity.md"
+      "explanationHome": "templates/wiki/vocabulary-continuity-and-evidence-boundaries.md",
+      "explanationText": "Clones/worktrees share it; independent rooms differ. It is distinct from each visible, type-scoped artifact identifier."
     },
     {
       "line": 312,
@@ -2410,7 +2502,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Workbench connection identity**: The stable namespace selected for optional private session transport.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-workbench-connection-identity.md"
+      "explanationHome": "templates/wiki/vocabulary-continuity-and-evidence-boundaries.md",
+      "explanationText": "Clones/worktrees share it; independent rooms differ. It is distinct from each visible, type-scoped artifact identifier."
     },
     {
       "line": 313,
@@ -2420,7 +2513,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Workbench connection identity**: The stable namespace selected for optional private session transport.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-workbench-connection-identity.md"
+      "explanationHome": "templates/wiki/vocabulary-continuity-and-evidence-boundaries.md",
+      "explanationText": "Clones/worktrees share it; independent rooms differ. It is distinct from each visible, type-scoped artifact identifier."
     },
     {
       "line": 314,
@@ -2430,7 +2524,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Private session transport**: Explicitly configured synchronization of selected live working records.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-private-session-transport.md"
+      "explanationHome": "templates/wiki/vocabulary-continuity-and-evidence-boundaries.md",
+      "explanationText": "Private Git retention changes recoverability, not the record's authority or durable project ownership."
     },
     {
       "line": 315,
@@ -2440,7 +2535,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Private session transport**: Explicitly configured synchronization of selected live working records.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-private-session-transport.md"
+      "explanationHome": "templates/wiki/vocabulary-continuity-and-evidence-boundaries.md",
+      "explanationText": "Private Git retention changes recoverability, not the record's authority or durable project ownership."
     },
     {
       "line": 316,
@@ -2450,7 +2546,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Private session transport**: Explicitly configured synchronization of selected live working records.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-private-session-transport.md"
+      "explanationHome": "templates/wiki/vocabulary-continuity-and-evidence-boundaries.md",
+      "explanationText": "Private Git retention changes recoverability, not the record's authority or durable project ownership."
     },
     {
       "line": 317,
@@ -2460,7 +2557,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Direct promotion**: Deliberate selected-claim reconciliation into a named durable owner, with privacy/validity checks and verified destination recovery before scoped source cleanup.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-direct-promotion.md"
+      "explanationHome": "templates/wiki/vocabulary-continuity-and-evidence-boundaries.md",
+      "explanationText": "It is not merely a copy or commit."
     },
     {
       "line": 318,
@@ -2470,7 +2568,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Direct promotion**: Deliberate selected-claim reconciliation into a named durable owner, with privacy/validity checks and verified destination recovery before scoped source cleanup.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-direct-promotion.md"
+      "explanationHome": "templates/wiki/vocabulary-continuity-and-evidence-boundaries.md",
+      "explanationText": "It is not merely a copy or commit."
     },
     {
       "line": 319,
@@ -2480,7 +2579,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Direct promotion**: Deliberate selected-claim reconciliation into a named durable owner, with privacy/validity checks and verified destination recovery before scoped source cleanup.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-direct-promotion.md"
+      "explanationHome": "templates/wiki/vocabulary-continuity-and-evidence-boundaries.md",
+      "explanationText": "It is not merely a copy or commit."
     },
     {
       "line": 320,
@@ -2490,7 +2590,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Configured-host capability**: An operation exercised in the actual host and configuration.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-configured-host-capability.md"
+      "explanationHome": "templates/wiki/vocabulary-continuity-and-evidence-boundaries.md",
+      "explanationText": "It does not establish machine enforcement or model reliability."
     },
     {
       "line": 321,
@@ -2500,7 +2601,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Configured-host capability**: An operation exercised in the actual host and configuration.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-configured-host-capability.md"
+      "explanationHome": "templates/wiki/vocabulary-continuity-and-evidence-boundaries.md",
+      "explanationText": "It does not establish machine enforcement or model reliability."
     },
     {
       "line": 322,
@@ -2510,7 +2612,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Core compatibility**: The explicit supported range between one selected installed global core release and room versions.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-core-compatibility.md"
+      "explanationHome": "templates/wiki/vocabulary-continuity-and-evidence-boundaries.md",
+      "explanationText": "A version difference alone is not proof of incompatibility."
     },
     {
       "line": 323,
@@ -2520,7 +2623,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Core compatibility**: The explicit supported range between one selected installed global core release and room versions.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-core-compatibility.md"
+      "explanationHome": "templates/wiki/vocabulary-continuity-and-evidence-boundaries.md",
+      "explanationText": "A version difference alone is not proof of incompatibility."
     },
     {
       "line": 324,
@@ -2530,7 +2634,8 @@
       "homePath": "templates/GLOSSARY.md",
       "landedText": "**Core compatibility**: The explicit supported range between one selected installed global core release and room versions.",
       "reason": null,
-      "explanationHome": "templates/wiki/dictionary-core-compatibility.md"
+      "explanationHome": "templates/wiki/vocabulary-continuity-and-evidence-boundaries.md",
+      "explanationText": "A version difference alone is not proof of incompatibility."
     }
   ]
 }

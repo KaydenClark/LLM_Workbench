@@ -253,3 +253,95 @@ test('a failed restoration retains a verified original backup and reports partia
     assert.deepEqual(fs.readFileSync(path.join(dir, options.from)), before[0]);
   } finally { fs.renameSync = originalRename; fs.readFileSync = originalRead; fs.rmSync(dir, { recursive: true, force: true }); }
 });
+
+// S-004O TK-009E: the capture boundary DDR-001E keeps for vocabulary. Intent
+// stays in the objective's notepad, confirmation (a `decision` entry) settles
+// meaning, and promotion is the only write into the room's GLOSSARY.md.
+const glossaryBody = '# Fixture room\n\nThe fixture room\'s canonical vocabulary for one capture scenario.\n\n## Language\n\n**Spec**:\nOne capability record with its Tasks.\n';
+const confirmedTerm = '\n**Receipt**:\nThe append-only record of one verified Task outcome.\n';
+const proposedTerm = '\n**Waypoint**:\nA stop inside a Task where work is checked.\n';
+function vocabularyFixture() {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'direct-promotion-glossary-'));
+  const init = spawnSync(process.execPath, [path.join(root, 'workbench/tools/workbench-layout.mjs'), 'init', '--project', dir, '--provenance', 'genesis', '--version', version], { encoding: 'utf8' });
+  assert.equal(init.status, 0, init.stdout);
+  fs.writeFileSync(path.join(dir, 'GLOSSARY.md'), glossaryBody);
+  const note = createNote(dir, { note: 'vocabulary', objective: 'vocabulary', title: 'Vocabulary', unresolved: ['V2 Waypoint: readback pending owner confirmation'] });
+  assert.equal(note.status, 'created');
+  assert.equal(appendEntry(dir, { note: note.note, revision: 1, kind: 'decision', topic: 'vocabulary', 'question-id': 'V1', content: 'Receipt: the append-only record of one verified Task outcome.' }).status, 'appended');
+  assert.equal(appendEntry(dir, { note: note.note, revision: 2, kind: 'source_record', topic: 'vocabulary', 'question-id': 'V2', content: 'Maybe call the checked stops waypoints.', interpretation: 'Waypoint: a stop inside a Task where work is checked.' }).status, 'appended');
+  assert.equal(fs.readFileSync(path.join(dir, 'GLOSSARY.md'), 'utf8'), glossaryBody, 'capturing vocabulary in the notepad writes nothing to the glossary');
+  const draft = 'workbench/sessions/recovery/promote-glossary.md';
+  fs.writeFileSync(path.join(dir, draft), glossaryBody + confirmedTerm);
+  const options = { from: note.note, revision: 3, entries: 'decision-001', to: 'GLOSSARY.md', expected: hash(glossaryBody), content: draft };
+  return { dir, options };
+}
+
+test('TK-009E: a vocabulary notepad promotes only its confirmed meaning into GLOSSARY.md and keeps the proposed term pending in the note', () => {
+  const { dir, options } = vocabularyFixture();
+  try {
+    const source = fs.readFileSync(path.join(dir, options.from));
+    const run = spawnSync(process.execPath, [path.join(root, 'workbench/tools/sessions.mjs'), 'promote', '--path', dir, ...Object.entries(options).flatMap(([key, value]) => [`--${key}`, String(value)])], { encoding: 'utf8' });
+    assert.equal(run.status, 0, run.stdout || run.stderr);
+    const result = JSON.parse(run.stdout);
+    assert.equal(result.status, 'promoted', run.stdout);
+    assert.equal(result.destination.path, 'GLOSSARY.md');
+    assert.equal(result.destination.owner, 'glossary');
+    assert.deepEqual(result.source.selected, ['decision-001']);
+    assert.deepEqual(result.source.context, [], 'the pending proposed term is not carried with the confirmed one');
+    const glossary = fs.readFileSync(path.join(dir, 'GLOSSARY.md'), 'utf8');
+    assert.equal(glossary, glossaryBody + confirmedTerm);
+    assert.match(glossary, /^\*\*Receipt\*\*:\nThe append-only record of one verified Task outcome\.$/m, 'the confirmed meaning lands in Matt\'s format');
+    assert.doesNotMatch(glossary, /Waypoint/i, 'the proposed term is absent from the glossary');
+    assert.deepEqual(fs.readFileSync(path.join(dir, options.from)), source, 'promotion leaves the notepad byte for byte');
+    const retained = JSON.parse(source);
+    assert.deepEqual(retained.current.unresolved, ['V2 Waypoint: readback pending owner confirmation']);
+    assert.ok(retained.entries.some(entry => entry.id === 'source_record-001' && entry.question_id === 'V2' && /Waypoint/.test(entry.interpretation)), 'the proposed term stays in the notepad');
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+for (const failure of ['pending-source-record', 'proposal', 'mixed-selection', 'template-destination', 'missing-language', 'placeholder']) {
+  test(`TK-009E: a glossary promotion refuses ${failure} and changes no file`, () => {
+    const { dir, options } = vocabularyFixture();
+    try {
+      if (failure === 'pending-source-record') { options.entries = 'source_record-001'; fs.writeFileSync(path.join(dir, options.content), glossaryBody + proposedTerm); }
+      if (failure === 'proposal') {
+        assert.equal(appendEntry(dir, { note: options.from, revision: 3, kind: 'proposal', topic: 'vocabulary', content: 'Waypoint: a stop inside a Task where work is checked.' }).status, 'appended');
+        Object.assign(options, { revision: 4, entries: 'proposal-001' });
+        fs.writeFileSync(path.join(dir, options.content), glossaryBody + proposedTerm);
+      }
+      if (failure === 'mixed-selection') { options.entries = 'decision-001,source_record-001'; fs.writeFileSync(path.join(dir, options.content), glossaryBody + confirmedTerm + proposedTerm); }
+      if (failure === 'template-destination') {
+        fs.mkdirSync(path.join(dir, 'templates'), { recursive: true });
+        fs.writeFileSync(path.join(dir, 'templates/GLOSSARY.md'), glossaryBody);
+        options.to = 'templates/GLOSSARY.md';
+      }
+      if (failure === 'missing-language') fs.writeFileSync(path.join(dir, options.content), (glossaryBody + confirmedTerm).replace('## Language\n', ''));
+      if (failure === 'placeholder') fs.writeFileSync(path.join(dir, options.content), (glossaryBody + confirmedTerm).replace('Fixture room\n', '[PROJECT_NAME]\n'));
+      const before = [options.from, options.to, options.content].map(file => fs.readFileSync(path.join(dir, file)));
+      const result = sessions.promote(dir, options);
+      assert.equal(result.status, 'blocked', JSON.stringify(result));
+      assert.equal(result.sourceRetained, true);
+      assert.deepEqual([options.from, options.to, options.content].map(file => fs.readFileSync(path.join(dir, file))), before);
+    } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+  });
+}
+
+test('TK-009E: no runtime tool writes GLOSSARY.md outside promotion', () => {
+  // A room's glossary arrives from the Genesis scaffold and changes only
+  // through sessions.mjs promote. A new runtime reference to GLOSSARY.md must
+  // be one of these two, never a capture-time (notepad, grilling) write path.
+  // S-004O TK-009D: wiki.mjs only reads the glossary, to check that a lexicon
+  // article's declared term is an entry.
+  const allowed = { 'sessions.mjs': 'the promotion owner rule', 'template-placeholders.mjs': 'the Genesis scaffold file list', 'wiki.mjs': 'the lexicon article check, read-only',
+    // S-004O TK-009F: self-drift reads the glossary among the controls it inventories.
+    'self-drift.mjs': 'the control inventory, read-only',
+    // S-004O TK-009G: GLOSSARY.md joins the installed control set, and the
+    // update route installs the Template glossary only into a room that still
+    // holds a Lexicon and has no glossary; it never rewrites an existing one.
+    'workbench-layout.mjs': 'the installed control set and the update route install, never a rewrite' };
+  const tools = path.join(root, 'workbench/tools');
+  const naming = fs.readdirSync(tools).filter(file => file.endsWith('.mjs') && /GLOSSARY/.test(fs.readFileSync(path.join(tools, file), 'utf8')));
+  assert.deepEqual(naming.sort(), Object.keys(allowed).sort());
+  assert.doesNotMatch(fs.readFileSync(path.join(tools, 'notepads.mjs'), 'utf8'), /GLOSSARY/, 'the notepad runtime has no glossary path');
+  assert.doesNotMatch(fs.readFileSync(path.join(tools, 'wiki.mjs'), 'utf8'), /write\w*\([^)\n]*GLOSSARY/, 'the Wiki validator never writes the glossary');
+});

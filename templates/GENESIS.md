@@ -4,9 +4,10 @@
 > same version during handoff (Phase 7).
 
 This file is the one-prompt bootstrap protocol. It tells an agent how to turn a
-single founding prompt into a project that already has seven filled root controls:
-`AGENTS.md`, `BLUEPRINT.md`, `LEXICON.md`, `RUNBOOK.md`, `TASKBOARD.md`,
-`CLAUDE.md`, and `README.md`; plus a manifest-backed first stable `SPEC.md`.
+single founding prompt into a project that already has eight filled root controls:
+`AGENTS.md`, `BLUEPRINT.md`, `GLOSSARY.md`, `ARCHITECTURE.md`, `RUNBOOK.md`,
+`TASKBOARD.md`, `CLAUDE.md`, and `README.md`; plus a manifest-backed first
+stable `SPEC.md`.
 
 Read this once, run it once. Genesis is a starting gun, not a standing rule. When
 bootstrap is finished, AGENTS plus the progressive spec flow govern; this file can be deleted or
@@ -118,7 +119,7 @@ node tools/genesis-from-decisions.mjs derive \
 ```
 
 Run this from the clean release checkout. The `genesis-plan-1` input names the
-project and founding prompt, seven filled `controls` and a `memory` draft by
+project and founding prompt, eight filled `controls` and a `memory` draft by
 source-relative file and SHA-256, selected locked questions, active ADRs, and
 scoped capabilities with decision references and acceptance. Keep decisions and
 their attribution faithful; a demonstration decision is not an invented owner
@@ -187,12 +188,14 @@ Output: a `BLUEPRINT.md` a stranger could read to learn what the project is for.
 It contains no decision inventory, current status, proof archive, or generated
 catalog.
 
-Seed `LEXICON.md` with terms whose meanings the founding prompt or owner has
-already established. Do not invent definitions merely to fill the table. The
-Blueprint helps participants recover the design concept; the Lexicon owns the
-accepted meanings of the words they use to discuss it.
+Copy `templates/GLOSSARY.md` to `GLOSSARY.md` and add terms whose meanings the
+founding prompt or owner has already established, in its format: a one- or
+two-sentence definition and the aliases to avoid. Do not invent definitions
+merely to fill the list. The Blueprint helps participants recover the design
+concept; the glossary owns the accepted meanings of the words they use to
+discuss it, and the Wiki vocabulary articles `init` installed explain them.
 
-Output: a `LEXICON.md` with the Workbench terms intact and any genuinely shared
+Output: a `GLOSSARY.md` with the Workbench terms intact and any genuinely shared
 project terms defined.
 
 ### Phase 2 - Plan architecture without inventing decisions
@@ -219,6 +222,19 @@ label it.
 
 Output: a repository that installs and runs one command successfully. This is the
 demo artifact bootstrap must produce.
+
+Then draft the room's map. Copy `templates/ARCHITECTURE.md` to
+`ARCHITECTURE.md`, fill its bird's-eye view from the Blueprint, and draft its
+codemap from project evidence: the scaffold's source tree, entry points and
+tests and the locked decisions, one row per top-level module, directory or
+important type with the job it does. Never leave the placeholder row in place
+and never invent a module the tree does not hold. A draft is not yet the
+owner's map: confirm it by grilling the owner (the `grilling` skill), one row
+at a time, and keep only the rows the owner confirmed; a row still open stays
+marked as a draft.
+
+Output: an `ARCHITECTURE.md` whose codemap was drafted from project evidence
+and confirmed by grilling.
 
 ### Phase 4 - AGENTS scopes (draw the fences)
 
@@ -334,10 +350,12 @@ Copy `templates/WORKBENCH_FEEDBACK.md` to
 `templates/feedback/REPORT_FORMAT.md` into the declared feedback lane as
 `REPORT_FORMAT.md` for later assigned reports; the return
 channel lives in the feedback lane, never at the root, so the root keeps
-exactly seven controls.
+exactly eight controls.
 
 Then seed the room brain: `init` already seeded `workbench/wiki/SCHEMA.md`,
-`workbench/wiki/AGENTS.md`, and `workbench/wiki/design-concepts/README.md`;
+`workbench/wiki/AGENTS.md`, and `workbench/wiki/design-concepts/README.md`,
+and installed the Wiki vocabulary articles that explain `GLOSSARY.md` beside
+the router;
 copy `templates/wiki/MEMORY.project.md` to `workbench/wiki/MEMORY.md`, fill
 its placeholders, and link it to the live controls just created. If this room
 lives inside a larger deployment, set the up-link to the deployment wiki's
@@ -358,17 +376,19 @@ suite once more. If
 archive note, so no one mistakes the one-time protocol for a standing rule.
 
 Output: a clean repo where each class of truth has one owner: AGENTS for work
-rules, Blueprint for product direction, Lexicon for shared definitions,
-Taskboard for hot state, specs for capability detail/evidence, Runbook for
+rules, Blueprint for product direction, Glossary for shared definitions,
+Architecture for ownership routes and the codemap, Taskboard for hot state, specs for capability detail/evidence, Runbook for
 procedures, and source/tests for behavior.
 
 ## What A Finished Bootstrap Must Prove
 
 Do not call bootstrap done on vibes. All of the following must hold:
 
-- [ ] `BLUEPRINT.md`, `LEXICON.md`, `AGENTS.md`, `RUNBOOK.md`, and
-      `TASKBOARD.md`, `CLAUDE.md`, and `README.md` exist with **no remaining
-      `[BRACKETED]` placeholders** in required sections.
+- [ ] `BLUEPRINT.md`, `GLOSSARY.md`, `ARCHITECTURE.md`, `AGENTS.md`,
+      `RUNBOOK.md`, `TASKBOARD.md`, `CLAUDE.md`, and `README.md` exist with
+      **no remaining `[BRACKETED]` placeholders** in required sections.
+- [ ] The `ARCHITECTURE.md` codemap names the scaffold's real modules and was
+      confirmed by grilling.
 - [ ] The founding prompt is preserved verbatim somewhere durable.
 - [ ] `AGENTS.md` edit scope names real paths that exist in the repo.
 - [ ] `.claude/settings.json` is filled from that scope and grants `Edit` on

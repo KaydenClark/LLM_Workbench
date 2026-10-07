@@ -4,6 +4,8 @@ Census record of [Lexicon Retirement And ARCHITECTURE.md (S-004O)](../SPEC.md), 
 
 Census base: assembly base `1f4e2d676221ae2fd6b15607389ddb97c6cc99ac` (integration plus the glossary planning commits). Neither Lexicon changed between that base and the TK-009A branch point.
 
+Refreshed by TK-009H [remove the Lexicon with every line landed](../tasks/TK-009H/TASK.md) to the delivered homes: the final inventories re-scaffolded at the pre-removal commit `0059669f1e1b81c8048dfea9714d0ce7a9e1d914`, the Template Wiki homes as delivered (grouped `templates/wiki/vocabulary-*.md` articles and `templates/wiki/ai-coding-reference.md`), the landing check at removal, and the live mentions that remain. The TK-009A census text below is kept as the record of what was planned.
+
 ## Line inventories
 
 Two inventories, one per carrier, scaffolded with `node tools/check-carrier-landing.mjs scaffold --base 1f4e2d676221ae2fd6b15607389ddb97c6cc99ac --carrier <carrier> --out <inventory>` and then classified entry by entry. Every non-blank, non-heading line has exactly one classified entry.
@@ -12,6 +14,10 @@ Two inventories, one per carrier, scaffolded with `node tools/check-carrier-land
 |---|---|---|---|---|---|---|---|
 | [lexicon-landing-inventory.json](lexicon-landing-inventory.json) | `LEXICON.md` | 308 | 139 | 107 | 37 | 5 | 20 |
 | [template-lexicon-landing-inventory.json](template-lexicon-landing-inventory.json) | `templates/LEXICON.md` | 269 | 117 | 100 | 38 | 0 | 14 |
+| [lexicon-landing-inventory-final.json](lexicon-landing-inventory-final.json) (TK-009H) | `LEXICON.md` | 308 | 139 | 107 | 37 | 5 | 20 |
+| [template-lexicon-landing-inventory-final.json](template-lexicon-landing-inventory-final.json) (TK-009H) | `templates/LEXICON.md` | 269 | 117 | 100 | 38 | 0 | 14 |
+
+The two final inventories were scaffolded at the pre-removal commit `0059669f1e1b81c8048dfea9714d0ce7a9e1d914` (the TK-009H lane merged with integration `d0fb161c`) and carry every classification over from the census inventories by line hash; the census inventories stay as history. One line changed after the census: root line 218, the Core skill bundle row, now counts twenty-four workflow skills (TK-009F carried the count into GLOSSARY.md and its article), and it keeps the same row's classification, whose `landedText` already carried the new count. No line was added or removed after the census in either Lexicon.
 
 ### How lines were classified
 
@@ -21,10 +27,11 @@ Two inventories, one per carrier, scaffolded with `node tools/check-carrier-land
 - **restates-owner**: root AI Coding Terms intro lines whose claims the Wiki memory router already holds (its adoption date, the delivering Spec and "in Workbench words"). Each `landedText` is present in `workbench/wiki/MEMORY.md` now.
 - **retired-with-reason**: Lexicon file metadata and its 2026-10-03 review-scope note, Markdown table headers and rules of the term tables, the Lexicon row (it defines the retiring file itself) and the TASK pointer row in Stance Terms. Each carries its reason.
 
-Two optional fields, ignored by the landing check, carry routing for later Tasks:
+Three optional fields, ignored by the landing check, carry routing for later Tasks:
 
 - `explanationHome` on glossary entries names the Wiki lexicon article that keeps the row's fuller Distinction text, owner quotes and decision links (TK-009D). The landing check proves only `landedText`; the Distinction column is not machine-proven to land, so TK-009D carries it by this field.
 - `aliasOf` on an `_Avoid_` entry names the glossary term the alias sits under.
+- `explanationText` (TK-009D onward) on a glossary entry is the row's Distinction text as it lands in its `explanationHome` article: verbatim, except that links are re-based to the article's directory and a self-reference to a Lexicon "row" names an "entry". `tools/test-wiki.mjs` proves each one lands, normalized, in an article that declares the entry's term as its `glossary_term` and is routed from Wiki `MEMORY.md`.
 
 All `landedText` values for homes that do not exist yet are planned text: the Task that writes the home may refine the wording and must update the entry to match, without changing what any term means.
 
@@ -37,41 +44,42 @@ Template: 96 glossary terms plus the `[TERM]` placeholder entry in `templates/GL
 Root Wiki homes (`wiki` entries):
 
 - `workbench/wiki/MEMORY.md` (exists)
-- `workbench/wiki/dictionary-agent.md` (planned)
-- `workbench/wiki/dictionary-attention-budget.md` (planned)
-- `workbench/wiki/dictionary-attention-degradation.md` (planned)
-- `workbench/wiki/dictionary-automated-check.md` (planned)
+- `workbench/wiki/dictionary-agent.md` (exists)
+- `workbench/wiki/dictionary-attention-budget.md` (exists)
+- `workbench/wiki/dictionary-attention-degradation.md` (exists)
+- `workbench/wiki/dictionary-automated-check.md` (exists)
 - `workbench/wiki/dictionary-cache-tokens.md` (exists)
 - `workbench/wiki/dictionary-context-window.md` (exists)
 - `workbench/wiki/dictionary-context.md` (exists)
-- `workbench/wiki/dictionary-effort.md` (planned)
-- `workbench/wiki/dictionary-environment.md` (planned)
-- `workbench/wiki/dictionary-feedback-disposition.md` (planned)
-- `workbench/wiki/dictionary-filesystem.md` (planned)
+- `workbench/wiki/dictionary-effort.md` (exists)
+- `workbench/wiki/dictionary-environment.md` (exists)
+- `workbench/wiki/dictionary-feedback-disposition.md` (exists)
+- `workbench/wiki/dictionary-filesystem.md` (exists)
 - `workbench/wiki/dictionary-harness.md` (exists)
-- `workbench/wiki/dictionary-human-review.md` (planned)
-- `workbench/wiki/dictionary-inference.md` (planned)
-- `workbench/wiki/dictionary-input-tokens.md` (planned)
-- `workbench/wiki/dictionary-model-provider.md` (planned)
-- `workbench/wiki/dictionary-model.md` (planned)
-- `workbench/wiki/dictionary-next-token-prediction.md` (planned)
+- `workbench/wiki/dictionary-human-review.md` (exists)
+- `workbench/wiki/dictionary-inference.md` (exists)
+- `workbench/wiki/dictionary-input-tokens.md` (exists)
+- `workbench/wiki/dictionary-model-provider.md` (exists)
+- `workbench/wiki/dictionary-model.md` (exists)
+- `workbench/wiki/dictionary-next-token-prediction.md` (exists)
 - `workbench/wiki/dictionary-non-determinism.md` (exists)
-- `workbench/wiki/dictionary-output-tokens.md` (planned)
-- `workbench/wiki/dictionary-parameters.md` (planned)
-- `workbench/wiki/dictionary-progressive-disclosure.md` (planned)
-- `workbench/wiki/dictionary-seam.md` (planned)
+- `workbench/wiki/dictionary-output-tokens.md` (exists)
+- `workbench/wiki/dictionary-parameters.md` (exists)
+- `workbench/wiki/dictionary-progressive-disclosure.md` (exists)
+- `workbench/wiki/dictionary-seam.md` (exists)
 - `workbench/wiki/dictionary-session.md` (exists)
-- `workbench/wiki/dictionary-smart-zone.md` (planned)
-- `workbench/wiki/dictionary-software-factory.md` (planned)
+- `workbench/wiki/dictionary-smart-zone.md` (exists)
+- `workbench/wiki/dictionary-software-factory.md` (exists)
 - `workbench/wiki/dictionary-stateful.md` (exists)
 - `workbench/wiki/dictionary-stateless.md` (exists)
-- `workbench/wiki/dictionary-system-prompt.md` (planned)
-- `workbench/wiki/dictionary-token.md` (planned)
-- `workbench/wiki/version-labels.md` (planned)
+- `workbench/wiki/dictionary-system-prompt.md` (exists)
+- `workbench/wiki/dictionary-token.md` (exists)
+- `workbench/wiki/version-labels.md` (exists)
 
-Template Wiki homes (`wiki` entries):
+Template Wiki homes (`wiki` entries), as delivered by TK-009L:
 
-- `templates/wiki/MEMORY.project.md` (exists)
+- `templates/wiki/ai-coding-reference.md` (exists): the general AI coding reference article.
+- `templates/wiki/vocabulary-feedback-disposition.md` (exists).
 - `templates/wiki/dictionary-agent.md` (planned)
 - `templates/wiki/dictionary-attention-budget.md` (planned)
 - `templates/wiki/dictionary-attention-degradation.md` (planned)
@@ -103,6 +111,8 @@ Template Wiki homes (`wiki` entries):
 
 Explanation homes: 112 root lexicon articles under `workbench/wiki/dictionary-*.md` and 94 Template ones under `templates/wiki/dictionary-*.md` (per-entry `explanationHome`). Whether the Template ships per-term articles or folds them is TK-009D and TK-009G's decision; general reference pages may stay Wiki-only.
 
+As delivered: 113 root explanation homes, one flat `workbench/wiki/dictionary-*.md` article per glossary term, all present; the Template folds its explanations into ten grouped articles, one per glossary grouping, under the Wiki-shape decision in the Spec: `templates/wiki/vocabulary-chats-and-roles.md`, `vocabulary-continuity-and-evidence-boundaries.md`, `vocabulary-continuity-terms.md`, `vocabulary-destination-and-direction.md`, `vocabulary-governance-core.md`, `vocabulary-specs-and-tasks.md`, `vocabulary-stance-terms.md`, `vocabulary-workbench-meanings-of-ai-coding-terms.md`, `vocabulary-workbench-room-and-artifacts.md` and `vocabulary-workflow-verbs.md`, plus `vocabulary-feedback-disposition.md` and `ai-coding-reference.md` above. No planned `templates/wiki/dictionary-*.md` page was written; the per-entry `explanationHome` values name the grouped articles.
+
 ### Landing check against a candidate with both Lexicons removed
 
 A dry run on a throwaway commit (`8b3ac92e44f692282c1bd866e666937f55492287`, the TK-009A tree with `LEXICON.md` and `templates/LEXICON.md` deleted, never pushed) with `check --base 1f4e2d676221ae2fd6b15607389ddb97c6cc99ac --candidate <that commit> --inventory <inventory> --json`:
@@ -115,6 +125,17 @@ A dry run on a throwaway commit (`8b3ac92e44f692282c1bd866e666937f55492287`, the
 Lines that land now are the retired lines, the restated claims and the entries whose existing dictionary article already holds the text. `home-missing` lines wait for GLOSSARY.md, ARCHITECTURE.md and the planned Wiki articles; `home-lacks-text` lines are the planned additions to the existing Wiki memory routers. This is the expected red state for the removal Task (TK-009H).
 
 Lexicon edits that land after this base (the AI Coding Dictionary Terms Spec S-004E and the Workbench Terms And Workflow Verbs Spec S-004G are active Lexicon writers) are not in these inventories: TK-009H re-scaffolds against its own base and classifies the new lines before removal.
+
+### Landing check at removal (TK-009H)
+
+TK-009H deleted both Lexicons in one commit and ran `check --base 0059669f1e1b81c8048dfea9714d0ce7a9e1d914 --candidate <candidate> --inventory <final inventory> --json`. Both Lexicons reported every removed line landed with no inventory error, at the deletion commit and again at the final candidate; the saved outputs are [lexicon-landing-check.json](lexicon-landing-check.json) and [template-lexicon-landing-check.json](template-lexicon-landing-check.json).
+
+| Carrier | Removed | Landed | Unlanded | Inventory errors |
+|---|---|---|---|---|
+| `LEXICON.md` | 308 | 308 | 0 | 0 |
+| `templates/LEXICON.md` | 269 | 269 | 0 | 0 |
+
+The check proves each line's `landedText`. Moving the Template Lexicon checks to their new owners found definition text the Template glossary had cut and no Template article carried (the Template glossary cut each definition to one or two sentences, and TK-009L carried only the Distinction text). TK-009H landed it in the grouped Template articles: the Workbench nesting sentences, Portable Workbench's "nothing lives only on the owner's machine", the Blueprint's map-scale and one-Blueprint sentences, Task's one-context sentence, the two Notepad sentences, the WBID value format and the full Collection set, plus the Grilling and Automated review dictionary attribution links. The other cut sentences are self-references to Lexicon rows or Task Routing, now reworded in their glossary entries, and the retired-name rows, which land as `_Avoid_` aliases with their retirement notes in the articles. In this room the batch Tasks already wrote each row's fuller definition into its article.
 
 ## Consumer census
 
@@ -166,14 +187,14 @@ Every tracked file that reads or links the Lexicon at `1f4e2d676221ae2fd6b156073
 | `tools/test-carrier-landing.mjs` | Fixture `LEXICON.md` as a `restates-owner` home and the new Lexicon-carrier cases. | TK-009A (this Task) | Stays: fixture data. |
 | `tools/control-fidelity.mjs` | `templatedControls` includes `LEXICON.md`. | TK-009G | GLOSSARY.md and ARCHITECTURE.md. |
 | `tools/cross-provider-resume.mjs` | Fixture room writes a `LEXICON.md` with a Terms table. | TK-009G | Fixture writes GLOSSARY.md (and ARCHITECTURE.md if the installed set requires it). |
-| `tools/grill-board.mjs` | Artifact group `lexicon` titled LEXICON on the shared Grill Board. | TK-009F | Groups for GLOSSARY.md and ARCHITECTURE.md; the board is shared with the owner's Codex lane, so coordinate before changing groups. |
+| `tools/grill-board.mjs` | Artifact group `lexicon` titled LEXICON on the shared Grill Board. | Not re-pointed: planned for TK-009F, held for the owner's uncommitted board edits ([Grill Board gap](#grill-board-gap)) | Groups for GLOSSARY.md and ARCHITECTURE.md; the board is shared with the owner's Codex lane, so coordinate before changing groups. |
 | `tools/test-adr.mjs` | Reads `LEXICON.md` among controls and pins the Lexicon bold-term table rows for decision vocabulary. | TK-009C (term rows); TK-009F (controls map) | GLOSSARY.md entries; ARCHITECTURE.md routes. |
 | `tools/test-blueprint-contract.mjs` | Pins the Template Blueprint note "Its terms mean what the Lexicon says they mean." | TK-009F | The new Blueprint first line naming GLOSSARY.md. |
 | `tools/test-control-fidelity.mjs` | Controls list, Lexicon fixture rows, root/Template Lexicon parity, and the Instruction Authority assertion naming `LEXICON.md` as a Contract carrier. | TK-009G; TK-009F for the Instruction Authority assertion | GLOSSARY.md and ARCHITECTURE.md in the control set; Instruction Authority without the Lexicon. |
 | `tools/test-controls-vocabulary-sweep.mjs` | Allows the retired word in the Lexicon's Ticket row and its ADR link. | TK-009C | The GLOSSARY.md Task entry's `_Avoid_: ticket` line. |
 | `tools/test-genesis-from-decisions.mjs` | Genesis fixture writes and checks `LEXICON.md`; asserts the Instruction Authority item naming it. | TK-009G; TK-009F for the Instruction Authority assertion | GLOSSARY.md and ARCHITECTURE.md. |
 | `tools/test-governance-core.mjs` | Root and Template Lexicons carry a `## Governance Core` section with the core term rows and the owner definition of design concept. | TK-009C | GLOSSARY.md and templates/GLOSSARY.md Governance core grouping and entries. |
-| `tools/test-grill-board.mjs` | Fixture `LEXICON.md` and the expected `lexicon` group. | TK-009F | Follows tools/grill-board.mjs. |
+| `tools/test-grill-board.mjs` | Fixture `LEXICON.md` and the expected `lexicon` group. | Not re-pointed: planned for TK-009F, held for the owner's uncommitted board edits ([Grill Board gap](#grill-board-gap)) | Follows tools/grill-board.mjs. |
 | `tools/test-portability-matrix.mjs` | `ACTIVE_SURFACES` includes `LEXICON.md`. | TK-009G | GLOSSARY.md and ARCHITECTURE.md. |
 | `tools/test-runbook-index.mjs` | Entry-route regex through `LEXICON.md`, the `LEXICON.md#artifact-ownership-schema` link, the read-words sentence and comments about Lexicon rows. | TK-009F | ARCHITECTURE.md routes; GLOSSARY.md for read words. |
 | `tools/test-self-drift.mjs` | Fixture control list includes `LEXICON.md`. | TK-009F | Follows workbench/tools/self-drift.mjs. |
@@ -210,8 +231,8 @@ Every tracked file that reads or links the Lexicon at `1f4e2d676221ae2fd6b156073
 
 | File | What it reads | Re-pointed by | Reads instead |
 |---|---|---|---|
-| `workbench/grill-board/README.md` | Names a Lexicon row as a Confirm destination and LEXICON among the artifact groups. | TK-009F | GLOSSARY.md entry (through promotion) and the ARCHITECTURE.md group. |
-| `workbench/grill-board/index.html` | The `lexicon` artifact group in the page selector. | TK-009F | Follows `tools/grill-board.mjs`. |
+| `workbench/grill-board/README.md` | Names a Lexicon row as a Confirm destination and LEXICON among the artifact groups. | Not re-pointed: planned for TK-009F, held for the owner's uncommitted board edits ([Grill Board gap](#grill-board-gap)) | GLOSSARY.md entry (through promotion) and the ARCHITECTURE.md group. |
+| `workbench/grill-board/index.html` | The `lexicon` artifact group in the page selector. | Not re-pointed: planned for TK-009F, held for the owner's uncommitted board edits ([Grill Board gap](#grill-board-gap)) | Follows `tools/grill-board.mjs`. |
 
 ### Wiki lexicon articles (`workbench/wiki/dictionary-*.md`)
 
@@ -612,7 +633,7 @@ Checkpoints and the grilling destination audit ledger are retained history.
 
 #### Grill Board data (`workbench/grill-board/items.json`): 1 file
 
-Owner question and answer records keep their wording; its artifact catalog entry follows `tools/grill-board.mjs` (TK-009F) when the board regenerates it through its tool.
+Owner question and answer records keep their wording. Its artifact catalog entry would follow `tools/grill-board.mjs` when the board regenerates it through its tool; that tool was not re-pointed ([Grill Board gap](#grill-board-gap)).
 
 - `workbench/grill-board/items.json`
 
@@ -686,6 +707,36 @@ Their records stay history; each owner re-points its own planned Lexicon work to
 | S-002U PR skill adoption | Reads the delivered glossary. | GLOSSARY.md once delivered. |
 | S-00G Ownership Map Root Control | Moves the Artifact Ownership Schema out of the Lexicon. | ARCHITECTURE.md ownership table (TK-009B) is the source it starts from. |
 | S-004H Blueprint Short Page | Descriptions of the Blueprint in the Lexicon's Blueprint row and Template mirror. | GLOSSARY.md Blueprint entry. |
+
+## Live mentions after removal (TK-009H)
+
+A fresh `git grep -a -l LEXICON` over the files the TK-009F live-link check treats as live finds no link to the Lexicon (that check passes) and these mentions, each kept for its reason:
+
+| Files | Why the mention stays |
+|---|---|
+| `workbench/tools/workbench-layout.mjs`, `tools/workbench-adoption.mjs`, `tools/workbench-classify.mjs`, `templates/ADOPTION.md`, `workbench/skills/update-harness/SKILL.md`, `workbench/skills/workbench-room-checks/SKILL.md` (Lexicon retirement and harness-shaped paragraphs) | A room built before the retirement may still hold `LEXICON.md`; the update route and Adoption retire it only after its lines land, and classification reads it as the earlier control set. The Template Lexicon is read from release history. |
+| `workbench/tools/adr.mjs`, `workbench/tools/spec-workbench.mjs`, `workbench/tools/self-drift.mjs` | Optional legacy file: reference repair and self-drift read `LEXICON.md` only if present. `adr.mjs` also keeps a missing root `LEXICON.md` named in an accepted record's `canonicalized_in` as history (TK-009H), since those records keep that history unchanged. |
+| `tools/check-carrier-landing.mjs`, `tools/test-carrier-landing.mjs`, `RUNBOOK.md` and `workbench/skills/workbench-room-checks/SKILL.md` (Carrier line-landing check) | The landing check keeps the retired Lexicons as supported historical carriers, checked from their pre-removal base. |
+| `workbench/skills/domain-modeling/SKILL.md`, `workbench/skills/domain-modeling/GLOSSARY-FORMAT.md`, `workbench/wiki/skill-domain-modeling.md`, `tools/test-domain-modeling-skill.mjs` | The GLOSSARY-else-LEXICON fallback for a room the update has not reached, owned and pinned by S-004J. |
+| `tools/grill-board.mjs`, `tools/test-grill-board.mjs`, `workbench/grill-board/README.md`, `workbench/grill-board/index.html`, `workbench/grill-board/items.json`, `workbench/wiki/MEMORY.md` (Grill Board reading pages) | The Grill Board's `lexicon` group, left unchanged while the owner has uncommitted board edits; a recorded gap. `tools/test-grill-board.mjs` passes. |
+| `tools/test-adr.mjs`, `tools/test-blueprint-contract.mjs`, `tools/test-control-fidelity.mjs`, `tools/test-genesis-from-decisions.mjs`, `tools/test-governance-core.mjs`, `tools/test-self-drift.mjs`, `tools/test-wiki.mjs`, `tools/test-workbench-adoption.mjs`, `tools/test-workbench-layout.mjs`, `tools/test-workbench-upgrade.mjs` | Negative assertions (no Lexicon link, Instruction Authority names no Lexicon), legacy-room fixtures, the `canonicalized_in` history check, the Blueprint claim inventories' retired Lexicon owners resolved through their successors and this proof's landing record, and the Template Lexicon read from release history; none reads a Lexicon file of this checkout. |
+| `workbench/skills/README.md` | The `lexicon` skill catalog row says "Lexicon" names the retired root control. |
+| `workbench/wiki/design-concepts/landmark-context-map.md`, `workbench/wiki/skill-make-it-so.md`, `workbench/wiki/skills-draft/main-workflow/pr.md` | History: a quoted card revision, a recorded scenario, and a draft owned by S-002U that says not to substitute the Lexicon. |
+
+Spec records stay history under the live-link check; `doctor` reports four of them as attention-only `broken-link` findings once `LEXICON.md` is gone (S-002H, S-01A, S-01T and S-01U link `../../../LEXICON.md`, S-01A to a heading), which their owners re-point or keep.
+
+Corrected by TK-009M [correct the whole-Spec code-review findings](../tasks/TK-009M/TASK.md): the live-link check now scans the bodies of active, planned and blocked Specs and landmarks (without their append-only evidence logs) and of accepted ADRs and DDRs (without the frontmatter `canonicalized_in` history), and a link pinned to a commit counts as history. S-01A now routes artifact meanings to `ARCHITECTURE.md#ownership`, S-01T routes shared definitions to `GLOSSARY.md`, ADR-0042's body routes to `ARCHITECTURE.md#routes` (one link edit; the decision-record reference repair rewrites only moved records), and the historical claims in S-01U and superseded S-002H link the Lexicon at pre-removal commit `0059669f1e1b81c8048dfea9714d0ce7a9e1d914`. `doctor` reports no Lexicon `broken-link` finding.
+
+### Grill Board gap
+
+The census rows above planned TK-009F to re-point the Grill Board; neither TK-009F nor a later Task did, because the owner holds uncommitted edits on exactly these lines. At the TK-009M candidate, for the board's owner:
+
+- `artifactCatalog` in `tools/grill-board.mjs` still builds the reader groups `agents`, `runbook`, `blueprint`, `lexicon`, and the first four become root artifacts at `${title}.md`, so the reader offers `LEXICON.md`, which no longer exists, and offers neither `GLOSSARY.md` nor `ARCHITECTURE.md`.
+- `readArtifact(root, 'LEXICON.md')` therefore fails with `missing-file` ("LEXICON.md is not a file"), and `readArtifact(root, 'GLOSSARY.md')` fails with `missing-file` ("This path is not a reader artifact").
+- `workbench/grill-board/index.html` keeps the `lexicon` option in its page selector and in the root-artifact list; `workbench/grill-board/README.md` names LEXICON among the reader groups and a Lexicon row as a Confirm destination; `tools/test-grill-board.mjs` pins the `lexicon` group with a fixture `LEXICON.md`, so it still passes.
+- Ten open items in `workbench/grill-board/items.json` cite `LEXICON.md` as a source: GB-0001, GB-0002, GB-0003, GB-0005, GB-0012, GB-0014, GB-0081, GB-0090, GB-0093 and GB-0164. Their source links now resolve to no file in this checkout; the Lexicon text they cited is at commit `0059669f`.
+
+The correction is a `glossary` group for `GLOSSARY.md` and an `architecture` group for `ARCHITECTURE.md` in place of `lexicon`, with the page selector, README and test following, and the ten items' sources re-pointed through the board tool to the glossary entry or `ARCHITECTURE.md` section that now holds each cited line. It waits on the owner's board edits; the Dispatcher records it in the Spec.
 
 ## Totals
 

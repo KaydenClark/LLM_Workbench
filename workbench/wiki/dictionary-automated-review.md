@@ -3,23 +3,25 @@ type: memory
 status: active
 sensitivity: normal
 knowledge_role: curated
+glossary_term: Automated review
 provenance:
   - The owner's adopted AI Coding Dictionary term, 2026-10-03
   - The owner's answers of 2026-10-05 on review timing, the Journey verbs and provider spend (grilling note review-timing-and-codex-spend-2026-10-05)
+  - The Lexicon Retirement And ARCHITECTURE.md Spec (S-004O), its third Wiki lexicon batch Task (TK-009J), 2026-10-07: the retiring Lexicon entry's Distinction text added as its summary
 source_paths:
-  - LEXICON.md
+  - GLOSSARY.md
   - AGENTS.md
   - workbench/docs/adr/000X-the-workflow-is-eight-verbs-and-each-verb-writes-the-plane-its-claims-live-on.md
-last_verified: 2026-10-05
+last_verified: 2026-10-07
 ---
 
 # Automated review: the Review verb, after the Journey
 
 An automated review is an agent forming a judgement on work it did not do. It
 is a judgement, so it can catch what a check cannot and miss what a check would
-not. The owner adopted the term from the AI Coding Dictionary on 2026-10-03:
-"We have been using the separate context review for this, we can use this
-term." Separate-context review is the Workbench's earlier name for it.
+not. The owner adopted the term from the AI Coding Dictionary on 2026-10-03.
+
+**In short.** The owner's note on adopting it: "We have been using the separate context review for this, we can use this term." Separate-context review is the Workbench's earlier name. In this Workbench it judges a completed destination against its Map: it runs on a Spec, sometimes a landmark, or the Workbench as a whole against its decision records and Blueprint, and never a Task: the sum of the completed Tasks shows at the destination. It is how the Review verb is carried out. It is neither an Automated check (which has no judgement) nor Human review.
 
 **What it means here.** Review is the workflow verb, and an automated review is
 how it is done. The delivery workflow reads Idea, Align, Confirm, Map, Plan,
@@ -77,10 +79,15 @@ review.
 
 ## Sources
 
-- [Lexicon](../../LEXICON.md): the Review, QA, Submit, Journey and Automated
-  review rows.
+- [GLOSSARY.md, Workbench meanings of AI coding terms](../../GLOSSARY.md#workbench-meanings-of-ai-coding-terms):
+  the canonical Automated review definition; the Review, QA, Submit and Journey
+  definitions are in its [Workflow verbs](../../GLOSSARY.md#workflow-verbs)
+  grouping and explained in the [Review](dictionary-review.md),
+  [QA](dictionary-qa.md), [Submit](dictionary-submit.md) and
+  [Journey](dictionary-journey.md) entries.
 - [AI Coding Dictionary entry](https://www.aihero.dev/ai-coding-dictionary/automated-review):
-  attribution only; the Workbench restates the meaning in its own words.
+  attribution only. The Workbench restates the meaning in its own words and
+  does not import later upstream edits until the owner adopts them.
 - [AGENTS.md, Task Merge Answers And Verify Review](../../AGENTS.md#task-merge-answers-and-verify-review):
   the operative rule for Tasks, Review placement and providers.
 - [The workflow verbs decision (ADR-000X)](../docs/adr/000X-the-workflow-is-eight-verbs-and-each-verb-writes-the-plane-its-claims-live-on.md):

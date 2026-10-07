@@ -142,7 +142,8 @@ for (const [relative, expected] of [
   ['README.md', [`closed ${bundleSize}-skill core bundle`]],
   // S-004C TK-005K: the Skills lane check moved into a maintainer skill.
   ['workbench/skills/workbench-room-checks/SKILL.md', [`the ${bundleSize} core skills`]],
-  ['LEXICON.md', [`closed set of ${workflowWord} workflow skills`]],
+  // S-004O TK-009C: the Core skill bundle entry lives in the glossary.
+  ['GLOSSARY.md', [`closed set of ${workflowWord} workflow skills`]],
   ['templates/GENESIS.md', [`exact ${bundleSize}-skill policy`]]
 ]) {
   assertIncludesAll(read(relative), expected,
@@ -195,12 +196,13 @@ for (const name of coreSkills) {
   if (/\bADR'?s?\b/i.test(skill)) assert.match(skill, /workbench\/docs\/adr/, `${name} may name ADRs only through the manifest adr collection`);
 }
 
-for (const relative of ['LEXICON.md', 'templates/LEXICON.md']) {
-  const lexicon = read(relative);
-  assert.match(lexicon, /^# .*Lexicon/m, `${relative} must identify itself as a lexicon`);
+// S-004O TK-009C: the vocabulary moved from the Lexicons to the glossaries.
+for (const relative of ['GLOSSARY.md', 'templates/GLOSSARY.md']) {
+  const glossary = read(relative);
+  assert.match(glossary, /^## Language$/m, `${relative} must carry the glossary's Language section`);
   assert.match(
-    lexicon,
-    /\*\*Design concept\*\*.*shared understanding between the parties working on a project about what that project is/is,
+    glossary,
+    /^\*\*Design concept\*\*:\nThe shared understanding between the parties working on a project about what that project is\.$/m,
     `${relative} must preserve the owner's definition of design concept`
   );
 }
@@ -453,7 +455,9 @@ assert.match(checkpoint, /writes nothing/, 'legacy invocation must explain its n
 const toDocs = read('workbench/skills/to-docs/SKILL.md');
 assertIncludesAll(toDocs, [
   'settled conversation',
-  '`LEXICON.md`',
+  // S-004O TK-009F: definitions route to the glossary, ownership to ARCHITECTURE.md.
+  '`GLOSSARY.md`',
+  '`ARCHITECTURE.md`',
   '`BLUEPRINT.md`',
   'assigned `SPEC.md`',
   '`RUNBOOK.md`',
@@ -665,7 +669,7 @@ assertIncludesAll(codeReview, [
 // S-01Q: the Auditor stance reports one classified finding per named claim,
 // each traceable to its pinned evidence, check and limit, and stays inside the
 // assigned target. These pin the source contract; the fresh-context run in
-// S-01Q records the behavior. "bounded verdict" stays the LEXICON wrapper.
+// S-01Q records the behavior. "bounded verdict" stays the glossary wrapper.
 const auditorSkill = read('workbench/skills/auditor/SKILL.md');
 assertIncludesAll(auditorSkill, [
   'bounded verdict',
@@ -1066,7 +1070,8 @@ assert.ok(adoptionOpening.includes('workbench-upgrade.mjs upgrade --layout-only'
 assert.match(read('templates/ADOPTION.md'), /already-adopted[^.]*`tools\/workbench-upgrade\.mjs upgrade --layout-only`/,
   'templates/ADOPTION.md must name the layout-only route for an already-adopted room');
 assert.match(read('workbench/skills/workbench-room-checks/SKILL.md'), /--layout-only/, 'the explicit upgrade procedure (workbench-room-checks, S-004C TK-005K) must document the layout-only mode');
-assert.match(read('LEXICON.md'), /--layout-only/, 'the Lexicon distinction must gain the layout-only mode');
+// S-004O TK-009J: the Explicit skill update Distinction lives in its Wiki lexicon article.
+assert.match(read('workbench/wiki/dictionary-explicit-skill-update.md'), /--layout-only/, 'the Explicit skill update article must name the layout-only mode');
 
 for (const name of ['grilling', 'checkpoint', 'make-it-so', 'to-docs', 'to-spec', 'to-tasks', 'tracer-bullet', 'implement', 'code-review', 'carry', 'notepad']) {
   const skill = read(`workbench/skills/${name}/SKILL.md`);

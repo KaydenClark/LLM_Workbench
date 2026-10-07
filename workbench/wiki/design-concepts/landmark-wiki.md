@@ -112,8 +112,8 @@ The Specs are [Wiki Evolving-Synthesis Migration (S-003W)](../../specs/S-003W-wi
 [Destination Question Cards records (S-002B)](../../specs/S-002B-destination-question-cards/SPEC.md).
 The tools are the [Wiki validator](../../tools/wiki.mjs), the
 [landmark article validator](../../tools/landmark-wiki.mjs) and the
-[landmark tracker](../../tools/landmark-tracker.mjs). The Lexicon rows are in
-[LEXICON.md](../../../LEXICON.md).
+[landmark tracker](../../tools/landmark-tracker.mjs). The glossary entries are in
+[GLOSSARY.md](../../../GLOSSARY.md).
 
 ## Related pages
 
@@ -137,3 +137,4 @@ The tools are the [Wiki validator](../../tools/wiki.mjs), the
 - 2026-10-07: corrected after the whole-Wiki lint at review of the pr skill adoption Spec (S-002U), Task TK-007V: the skills-reference item no longer states a skill count, because the Core bundle grew past the twenty-seven skills it named; the catalog owns the count. No card answer was changed.
 
 - 2026-10-07: Writing-for-agents Skill Adoption (S-002P) and Retro Skill Adoption (S-002V) routed the skills reference to the current catalog and Wiki router; no card answer or prior PR Skill Adoption (S-002U) review verdict changed.
+- 2026-10-07: Re-pointed the retiring Lexicon's links and live routes to `GLOSSARY.md`, `ARCHITECTURE.md` and the Wiki lexicon articles (the Lexicon Retirement Spec (S-004O), its consumer re-pointing Task (TK-009F)); no claim changed.

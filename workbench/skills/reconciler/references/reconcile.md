@@ -82,7 +82,7 @@ alone, a checked box, a note or a green unrelated test cannot decide this.
   independent review, integration containment and owner Human QA prove different
   things. Record the command, tested revision, result and limits together.
 - For feedback findings use the project's governed **Feedback Dispositions**
-  from its Lexicon, with one disposition, reason, owning Spec and evidence
+  from its `GLOSSARY.md`, with one disposition, reason, owning Spec and evidence
   route per finding. Preserve accepted-open work and explicit ownership gaps;
   do not silently decline a finding, schedule a repair or invent a new category.
 - Respect pending, disputed and superseded meaning. Keep unresolved notepad

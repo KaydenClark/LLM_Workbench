@@ -6,7 +6,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
+import { spawnSync } from 'node:child_process';
 import { listAdrs } from '../workbench/tools/adr.mjs';
+import { templatePlaceholders } from '../workbench/tools/template-placeholders.mjs';
+import { normalizeText } from './check-carrier-landing.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const read = (relative) => fs.readFileSync(path.join(root, relative), 'utf8');
@@ -29,22 +32,42 @@ test('root and template AGENTS separate instruction authority from state resolut
   }
 });
 
-test('root and template Lexicons carry the Governance Core terms and keep the owner definition of design concept', () => {
-  for (const relative of ['LEXICON.md', 'templates/LEXICON.md']) {
-    const lexicon = read(relative);
-    assert.match(lexicon, /^## Governance Core$/m, `${relative} has a Governance Core section`);
-    for (const term of CORE_TERMS) assert.match(lexicon, new RegExp(`^\\| \\*\\*${term}\\*\\* \\|`, 'm'), `${relative} defines ${term}`);
-    assert.match(lexicon, /\*\*Design concept\*\*.*shared understanding between the parties working on a project about what that project is/s);
+// S-004O TK-009J: in this room each Governance Core term is explained by its
+// Wiki lexicon article, which declares the term and links the glossary's
+// Governance core grouping; the definitions themselves are checked in the
+// glossaries by test-control-fidelity. S-004O TK-009H: the Template Lexicon is
+// removed, so the Template half reads the Governance core grouping of
+// templates/GLOSSARY.md and its Template Wiki vocabulary article.
+test('root lexicon articles and the template glossary and Wiki carry the Governance Core terms and keep the owner definition of design concept', () => {
+  for (const term of CORE_TERMS) {
+    const slug = term.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    const article = read(`workbench/wiki/dictionary-${slug}.md`);
+    assert.match(article, new RegExp(`^glossary_term: ${term}$`, 'm'), `the ${term} article declares its glossary term`);
+    assert.ok(article.includes('(../../GLOSSARY.md#governance-core)'), `the ${term} article links the Governance core grouping`);
   }
-  const template = read('templates/LEXICON.md');
-  assert.doesNotMatch(template, /workbench\/docs\/adr\/00\d\d-/, 'the template Lexicon must not link product-specific ADRs');
-  assert.match(template, /workbench\/docs\/adr\//, 'the template Lexicon routes to the project ADR collection');
+  assert.match(read('GLOSSARY.md'), /\*\*Design concept\*\*:\nThe shared understanding between the parties working on a project about what that project is/);
+  const glossary = read('templates/GLOSSARY.md');
+  const grouping = glossary.split(/^### Governance core$/m)[1]?.split(/^### /m)[0];
+  assert.ok(grouping, 'templates/GLOSSARY.md has a Governance core grouping');
+  const article = read('templates/wiki/vocabulary-governance-core.md');
+  for (const term of CORE_TERMS) {
+    assert.match(grouping, new RegExp(`^\\*\\*${term}\\*\\*:$`, 'm'), `templates/GLOSSARY.md defines ${term} in the Governance core grouping`);
+    assert.match(article, new RegExp(`^## ${term}$`, 'm'), `templates/wiki/vocabulary-governance-core.md explains ${term}`);
+  }
+  assert.ok(article.includes('(../../GLOSSARY.md#governance-core)'), 'the Template Governance core article links the glossary grouping');
+  assert.match(glossary, /\*\*Design concept\*\*:\nThe shared understanding between the parties working on a project about what that project is/);
+  for (const relative of ['templates/GLOSSARY.md', 'templates/ARCHITECTURE.md', 'templates/wiki/vocabulary-governance-core.md']) {
+    assert.doesNotMatch(read(relative), /workbench\/docs\/adr\/00\d\d-/, `${relative} must not link product-specific ADRs`);
+  }
+  assert.match(read('templates/ARCHITECTURE.md'), /workbench\/docs\/adr\//, 'templates/ARCHITECTURE.md routes to the project ADR collection');
 });
 
-test('template Blueprint and Runbook route decision records, diagnostics, and the tools lane', () => {
-  const route = read('templates/LEXICON.md');
-  assert.match(route, /workbench\/docs\/adr\//, 'the Context Map names the ADR collection');
-  assert.match(route, /Workbench Contract/, 'the Lexicon names the contract');
+// S-004O TK-009H: the Template Context Map routes moved from the Template
+// Lexicon to templates/ARCHITECTURE.md.
+test('template ARCHITECTURE.md, Blueprint and Runbook route decision records, diagnostics, and the tools lane', () => {
+  const route = read('templates/ARCHITECTURE.md');
+  assert.match(route, /workbench\/docs\/adr\//, 'the Template routes name the ADR collection');
+  assert.match(route, /Workbench Contract/, 'templates/ARCHITECTURE.md names the contract');
   const runbook = read('templates/RUNBOOK.md');
   // S-004C TK-005J: the decision-record procedure lives in the to-docs skill
   // the template Runbook points to; the Runbook keeps the runtime command list.
@@ -189,4 +212,77 @@ test('the Runbook closeout prunes linked worktrees and names where disposable re
   // skill the template Runbook points to.
   assert.ok(template.includes('](workbench/skills/workbench-runtime/SKILL.md#diagnostics-and-blocking-effects)'), 'templates/RUNBOOK.md points diagnostics to the workbench-runtime skill');
   assert.match(read('workbench/skills/workbench-runtime/SKILL.md'), /integration-branch-missing/, 'the pointed skill names the declared-branch doctor finding');
+});
+
+// S-004O TK-009B: ARCHITECTURE.md is the short routing artifact that takes the
+// Lexicon's ownership table, routes and invariants, in matklad's shape. The
+// line budget keeps it short: 175 lines is under half of the root Lexicon (363
+// lines) it replaces in part, and its three tables already hold one row per
+// line, so growth past it would be restated rationale rather than routes.
+// S-004O TK-009M: a word budget beside the line budget, since one table row
+// can carry a paragraph. 2,800 words is about a fifth of the root Lexicon
+// (about 13,800 words); the ownership and boundary tables hold the landed
+// Lexicon text, so growth past it would again be restated rationale. Delivery
+// routes go through the Spec catalog and landmarks, never to one Spec record,
+// which a later Spec would make stale.
+const ARCHITECTURE_FILES = ['ARCHITECTURE.md', 'templates/ARCHITECTURE.md'];
+const ARCHITECTURE_LINE_BUDGET = 175;
+const ARCHITECTURE_WORD_BUDGET = 2800;
+const architectureWords = (text) => text.split(/\s+/).filter((word) => /[\p{L}\p{N}]/u.test(word)).length;
+const ARCHITECTURE_SECTIONS = ["Bird's-Eye View", 'Codemap', 'Ownership', 'Routes', 'Invariants And Boundaries'];
+const S004O_PROOF = 'workbench/specs/S-004O-lexicon-retirement-and-architecture-md/proof';
+const ARCHITECTURE_INVENTORIES = [
+  { inventory: `${S004O_PROOF}/lexicon-landing-inventory-final.json`, home: 'ARCHITECTURE.md' },
+  { inventory: `${S004O_PROOF}/template-lexicon-landing-inventory-final.json`, home: 'templates/ARCHITECTURE.md' }
+];
+
+test('root and template ARCHITECTURE.md carry the bird\'s-eye view, codemap, ownership table, routes and invariants', () => {
+  for (const relative of ARCHITECTURE_FILES) {
+    assert.ok(fs.existsSync(path.join(root, relative)), `${relative} exists`);
+    const body = read(relative);
+    const headings = [...body.matchAll(/^## (.+)$/gm)].map((match) => match[1]);
+    assert.deepEqual(headings, ARCHITECTURE_SECTIONS, `${relative} has the bird's-eye view, codemap, ownership, routes and invariants sections in order`);
+    assert.match(body, /^\| Job \| Definition and owned content \| Agent question \| Maintained owner \/ route \|$/m, `${relative} holds the ownership table`);
+    assert.match(body, /^\| Artifact \| Defined job and ownership limit \|$/m, `${relative} holds the artifact boundaries`);
+    assert.match(body, /^\| Need \| Route to the owner \|$/m, `${relative} holds the Context Map routes`);
+    assert.match(normalizeText(body), /a routing artifact, never a Contract file/, `${relative} says it is a routing artifact, never a Contract file`);
+    assert.match(normalizeText(body), /revisited a few times a year/, `${relative} says how often it is revisited`);
+    assert.doesNotMatch(body, /\]\([^)\s]*\.(?:mjs|cjs|js|ts|tsx|py|sh)(?:#[^)]*)?\)/, `${relative} links no code`);
+    assert.doesNotMatch(body, /\]\([^)\s]*#L\d+/, `${relative} carries no line anchors`);
+    assert.doesNotMatch(body, /LEXICON\.md|\]\([^)]*#artifact-ownership-schema\)/, `${relative} routes to no Lexicon`);
+    const lines = body.split('\n').length;
+    assert.ok(lines <= ARCHITECTURE_LINE_BUDGET, `${relative} stays within ${ARCHITECTURE_LINE_BUDGET} lines (found ${lines})`);
+    const words = architectureWords(body);
+    assert.ok(words <= ARCHITECTURE_WORD_BUDGET, `${relative} stays within ${ARCHITECTURE_WORD_BUDGET} words (found ${words})`);
+    assert.doesNotMatch(body, /\]\((?:[^)\s]*\/)?(?:specs|landmarks)\/(?:S|LMK)-[^)\s]*\)/, `${relative} routes delivery through the Spec catalog and landmarks, not to one Spec or landmark record`);
+  }
+  assert.ok(architectureWords(`${'word '.repeat(ARCHITECTURE_WORD_BUDGET + 1)}| -> |`) > ARCHITECTURE_WORD_BUDGET, 'the word count counts words and skips table rules and arrows');
+  assert.equal(architectureWords('| Need | -> | --- |'), 1, 'table punctuation is not a word');
+  const template = read('templates/ARCHITECTURE.md');
+  const codemap = template.slice(template.indexOf('## Codemap'), template.indexOf('## Ownership'));
+  assert.match(codemap, /\[path\][\s\S]*\[purpose\]/, 'the Template codemap keeps a placeholder for the room to fill');
+  assert.match(normalizeText(codemap), /Genesis and adoption draft/, 'the Template codemap says Genesis and adoption draft it');
+  assert.doesNotMatch(template, /S-0[0-9A-Z]{2,3}|ADR-0|DDR-0|KaydenClark|\/Users\/|workbench\/docs\/(?:adr|ddr)\/[0-9A-Z]{4}-/, 'the Template carries no producer records');
+  for (const token of template.match(/(?<!\[)\[(?!\[|[ xX]\])[^\]\n]+\](?!\()/g) ?? []) {
+    assert.ok(templatePlaceholders.includes(token), `templates/ARCHITECTURE.md: recognized placeholder ${token}`);
+  }
+});
+
+test('every architecture line of the Lexicon landing inventories lands in its ARCHITECTURE.md home', () => {
+  for (const { inventory, home } of ARCHITECTURE_INVENTORIES) {
+    const data = JSON.parse(read(inventory));
+    const entries = data.entries.filter((entry) => entry.homeKind === 'architecture');
+    assert.ok(entries.length > 0, `${inventory} classifies architecture lines`);
+    assert.ok(fs.existsSync(path.join(root, home)), `${home} exists`);
+    const landed = normalizeText(read(home));
+    for (const entry of entries) {
+      assert.equal(entry.homePath, home, `${inventory} line ${entry.line} homes in ${home}`);
+      assert.ok(landed.includes(normalizeText(entry.landedText)), `${home} holds the landed text of ${inventory} line ${entry.line}: ${entry.landedText}`);
+    }
+    const result = spawnSync(process.execPath, [path.join(root, 'tools/check-carrier-landing.mjs'), 'check', '--base', data.baseSha, '--inventory', path.join(root, inventory), '--repo', root, '--json'], { cwd: root, encoding: 'utf8' });
+    const report = JSON.parse(result.stdout);
+    assert.deepEqual(report.inventoryErrors, [], `${inventory} is a valid inventory`);
+    const architectureHashes = new Set(entries.map((entry) => entry.hash));
+    assert.deepEqual(report.unlanded.filter((finding) => architectureHashes.has(finding.hash) || finding.homePath === home), [], `${inventory} reports no unlanded architecture line`);
+  }
 });

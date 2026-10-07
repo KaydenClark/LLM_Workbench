@@ -7,7 +7,7 @@ provenance:
   - Owner-confirmed grilling of 2026-10-01 on Destination Decision Records, promoted 2026-10-02
   - Owner-confirmed grilling of 2026-10-02 on landmarks, roles and the Contract carriers
 source_paths:
-  - LEXICON.md
+  - GLOSSARY.md
   - workbench/docs/adr/000S-destination-decision-records-are-decision-records-beside-adrs.md
   - workbench/docs/adr/000U-landmarks-are-landmark-md-artifacts-one-size-above-specs.md
   - workbench/docs/adr/000X-the-workflow-is-eight-verbs-and-each-verb-writes-the-plane-its-claims-live-on.md
@@ -44,8 +44,8 @@ the directions we go, record the choices we made along the way.
   choice, how the system is built, with its rationale.
 - **Landmarks and Specs** are built on those choices. The Blueprint, the
   decision records (DDRs and ADRs), landmarks and Specs together form the
-  concept map, which is a different thing from the Lexicon's Context Map: that
-  one routes questions to owners. The owner said all of them are built on the
+  concept map, which is a different thing from the Context Map `ARCHITECTURE.md`
+  carries: that one routes questions to owners. The owner said all of them are built on the
   consequential choices, and also that the Blueprint cannot be built from DDRs
   and ADRs. The owner's workflow of 2026-10-02 settles how both hold: the
   Blueprint comes first, and landmarks form later from groupings of decisions.
@@ -117,11 +117,11 @@ The Wiki is the evolving synthesis every agent reads and updates. It cites DDRs
 by name and context and keeps no page per DDR; the decisions fold into the
 summaries and the big picture, and the DDR stays the owner of the decision. This
 page is that kind of synthesis: a concept page for a term that needs more than
-its Lexicon row.
+its glossary entry.
 
 ## Where this stands
 
-The destination is accepted and partly installed. The Lexicon defines the
+The destination is accepted and partly installed. The glossary defines the
 Decision Record, the DDR and the Blueprint's standing as a standalone page, and the decision record
 below records the choice. The `ddr` collection and its writer are installed: a
 fresh room and an updated room hold `workbench/docs/ddr/` with its `proposed/`
@@ -130,7 +130,7 @@ and `archive/` folders, `adr.mjs new --kind ddr` writes the next DDR into
 Wiki. The accept, supersede and deprecate moves work for both kinds of record
 by folder location, so no decision record is moved or relabelled by hand, and
 both answer the shared read words (`list`, `show`, `search`, `history` and
-`inspect`). Both Lexicons, this room's and the generic one a new room starts
+`inspect`). Both glossaries, this room's and the generic one a new room starts
 from, define the Decision Record, the DDR and the read words as installed. The
 [Decision Record Tooling Spec (S-003X)](../../specs/S-003X-decision-record-tooling/SPEC.md)
 delivered them to integration on 2026-10-03, reusing the ADR runtime as one tool
@@ -152,7 +152,7 @@ it in its Decision Records section.
   the decision this page explains.
 - [Decision record: Landmarks are LANDMARK.md artifacts one size above Specs](../../docs/adr/000U-landmarks-are-landmark-md-artifacts-one-size-above-specs.md):
   the map at two scales, the Destination Packet and the rest of the Blueprint split.
-- [Lexicon](../../../LEXICON.md): the Decision Record, DDR, Blueprint, Landmark,
+- [Glossary](../../../GLOSSARY.md): the Decision Record, DDR, Blueprint, Landmark,
   Map and Destination Packet definitions.
 - [ADR-000A, Active ADR decisions and destination Blueprints](../../docs/adr/000A-active-adr-decisions-and-destination-blueprints.md)
   and [ADR-000G, Blueprint, Spec and Task are three altitudes of one delivery chain](../../docs/adr/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md):
@@ -184,3 +184,4 @@ it in its Decision Records section.
 - 2026-10-03: aligned when a DDR is written with the workflow-verbs decision (at Map, through `to-docs`).
 - 2026-10-03: recorded that the Blueprint is now the four-part short page, from the Blueprint Short Page work.
 - 2026-10-06: recorded that landmarks as `LANDMARK.md` artifacts are installed, from the LANDMARK.md Artifact And Lane Runtime Spec (S-003Z), Task TK-008J (landmark templates and documentation).
+- 2026-10-07: Re-pointed the retiring Lexicon's links and live routes to `GLOSSARY.md`, `ARCHITECTURE.md` and the Wiki lexicon articles (the Lexicon Retirement Spec (S-004O), its consumer re-pointing Task (TK-009F)); no claim changed.

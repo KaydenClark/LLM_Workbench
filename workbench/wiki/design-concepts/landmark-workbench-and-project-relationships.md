@@ -50,7 +50,7 @@ Task the steps, and small work may be a standalone Task
 (card [DQC-000M: "How do rooms and projects contain and own one another?"](../../landmark-tracker/destination-questions/DQC-000M.json), revision 5).
 The expected delivery was a Lexicon update, a durable artifact-model article
 with a diagram, and ownership-map relation rows, so agents can see the one-to-many
-model; read the Lexicon and the owning Specs for what exists today rather than
+model; read the glossary and the owning Specs for what exists today rather than
 this page.
 
 **When a Master Workbench is justified.** Validate through real, contrasting
@@ -83,7 +83,7 @@ contrasting deliveries establish an observation need.
   (2026-10-03) makes the project the room and the Workbench the table in it,
   and says the older record uses "room" only for the larger context a Workbench
   can be nested inside. The card still records the earlier wording and this
-  page does not choose between them; the newer record and the Lexicon govern
+  page does not choose between them; the newer record and the glossary govern
   the terms.
 - A Task directly under the Blueprint, with no Spec, and a Task directly under
   a landmark remain accepted destination design. The Lexicon says they have no
@@ -95,7 +95,7 @@ contrasting deliveries establish an observation need.
 
 ## Where the work lives
 
-The cardinalities and room wording are owned by the [Lexicon](../../../LEXICON.md)
+The cardinalities and room wording are owned by the [glossary](../../../GLOSSARY.md#workbench-room-and-artifacts)
 and by the decision record
 [A Task is a standalone artifact and Task replaces Ticket as the execution-slice term](../../docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md).
 The ownership-map relation rows are planned in the
@@ -120,3 +120,4 @@ decision records; see
 ## History
 
 - 2026-10-04: created by the Wiki Evolving-Synthesis Migration Spec (S-003W), Task TK-004 (landmark synthesis pages), seeded from the cards' current answers.
+- 2026-10-07: Re-pointed the retiring Lexicon's links and live routes to `GLOSSARY.md`, `ARCHITECTURE.md` and the Wiki lexicon articles (the Lexicon Retirement Spec (S-004O), its consumer re-pointing Task (TK-009F)); no claim changed.

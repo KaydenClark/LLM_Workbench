@@ -16,9 +16,13 @@ The blank, copyable templates live in `templates/`:
   task-selection loop, documentation ownership, and proof rules.
 - `templates/BLUEPRINT.md` - compact product map, cross-cutting architecture and
   desired integrated design and non-goals. The manifest specs lane holds the generated complete catalog.
-- `templates/LEXICON.md` - on-demand shared vocabulary: accepted project terms,
-  concise definitions, and distinctions that prevent agents and humans from
-  silently using the same word differently.
+- `templates/GLOSSARY.md` - on-demand shared vocabulary: accepted project terms
+  with concise definitions and the aliases to avoid, so agents and humans do not
+  silently use the same word differently. The Wiki vocabulary articles in
+  `templates/wiki/` explain each grouping.
+- `templates/ARCHITECTURE.md` - which artifact owns which kind of truth, the
+  routes to it and the invariants, plus the project codemap Genesis and
+  Adoption draft and grilling confirms.
 - `templates/TASKBOARD.md` - hot projection of active specs only: current slice,
   owner, blocker, latest event, and next gate.
 - `templates/SPEC.md` - concise on-demand capability work packet. Copy it to a
@@ -78,7 +82,7 @@ implementation, project checks and remote recovery. An existing project follows
 
 ## This Repo Dogfoods Its Own Harness
 
-The root-level `AGENTS.md`, `BLUEPRINT.md`, `LEXICON.md`, `TASKBOARD.md`, and `RUNBOOK.md`
+The root-level `AGENTS.md`, `BLUEPRINT.md`, `GLOSSARY.md`, `ARCHITECTURE.md`, `TASKBOARD.md`, and `RUNBOOK.md`
 are not templates. They are the real, filled control docs that govern work on
 the workbench itself, and they double as a living example of what filled-out
 docs look like. Copy from `templates/`, not from the root.
@@ -114,7 +118,7 @@ docs look like. Copy from `templates/`, not from the root.
   canonical source; `tools/workbench-tools.mjs` installs receipt-backed copies
   downstream while an application's root `tools/` stays application-owned.
 - `tools/test-skill-catalog.mjs` - fails when the selected skill definitions,
-  physical folders, router name, or root/template Lexicons drift apart.
+  physical folders, router name, or root/template glossaries drift apart.
 - `tools/feedback-automation.mjs` - canonical downstream feedback discovery,
   deduplication, one-candidate locking, fail-closed gate decisions, and
   normalized automation-run outcomes.
@@ -129,9 +133,11 @@ docs look like. Copy from `templates/`, not from the root.
 ## How To Use It
 
 1. Copy `templates/AGENTS.md`, `templates/BLUEPRINT.md`,
-   `templates/LEXICON.md`, `templates/TASKBOARD.md`, `templates/RUNBOOK.md`,
-   `templates/README.md`, and `templates/SPEC.md` into the target project; copy
-   `templates/wiki/MEMORY.project.md` in as `workbench/wiki/MEMORY.md` (the room brain);
+   `templates/GLOSSARY.md`, `templates/ARCHITECTURE.md`, `templates/TASKBOARD.md`,
+   `templates/RUNBOOK.md`, `templates/README.md`, and `templates/SPEC.md` into
+   the target project; copy
+   `templates/wiki/MEMORY.project.md` in as `workbench/wiki/MEMORY.md` (the room brain),
+   beside the Wiki vocabulary articles `workbench-layout.mjs init` installs;
    initialize `workbench/manifest.json` and create its declared `workbench/specs/` lane for bounded work
    packets and copy `workbench/tools/spec-workbench.mjs` when using the local interface.
 2. Replace bracketed placeholders with project-specific paths, commands, rules,
@@ -141,7 +147,7 @@ docs look like. Copy from `templates/`, not from the root.
    `spec-workbench next` and loads one returned Spec and Task record. Follow
    [Runbook lifecycle](RUNBOOK.md#spec-lifecycle-and-retrieval) for claim,
    red/green work, Receipt, self-check and hand-back.
-4. Keep Blueprint product-level, Lexicon definition-only, Taskboard hot, and
+4. Keep Blueprint product-level, the glossary definition-only, Taskboard hot, and
    detailed capability truth in specs.
 5. Preserve Task proof and Spec evidence with a <1-minute product demo. The
    Dispatcher verifies the assembled destination; a separate Director reviews
@@ -336,7 +342,7 @@ adapter that consumes it.
 Package selected files into Markdown:
 
 ```bash
-node tools/context-pack.mjs AGENTS.md BLUEPRINT.md LEXICON.md TASKBOARD.md RUNBOOK.md \
+node tools/context-pack.mjs AGENTS.md BLUEPRINT.md GLOSSARY.md ARCHITECTURE.md TASKBOARD.md RUNBOOK.md \
   --markdown --line-numbers \
   --output context.md
 ```
@@ -368,7 +374,7 @@ MIT. See `LICENSE`.
 
 ## Ordinary Agent Entry
 
-Follow AGENTS.md -> the RUNBOOK.md operations index -> LEXICON.md, then the assigned SPEC and only
+Follow AGENTS.md -> the RUNBOOK.md operations index -> ARCHITECTURE.md, then the assigned SPEC and only
 its Task record and relevant owners. Roles assign Director/Dispatcher/Worker
 responsibility; Builder, Auditor, Reviewer and Reconciler are assigned
 stances within existing authority. Work autonomously inside the assigned task;

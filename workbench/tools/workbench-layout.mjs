@@ -118,7 +118,13 @@ const priorPrWritingRetroCoreSkills = [
 const v321TransitionCoreSkills = [prior28CoreSkills, prior29PrCoreSkills, prior29DomainModelingCoreSkills, priorWritingRetroCoreSkills, priorPrDomainCoreSkills, priorPrWritingRetroCoreSkills];
 export const lanes = LANES;
 export const collections = COLLECTIONS;
-export const controls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md'];
+// S-004O TK-009G: a room receives GLOSSARY.md and ARCHITECTURE.md from the
+// Template in place of the retired LEXICON.md (DDR-001E).
+export const controls = ['AGENTS.md', 'BLUEPRINT.md', 'GLOSSARY.md', 'ARCHITECTURE.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md'];
+// The two controls the update route installs from the Template when a room
+// still holds the Lexicon they replace, and the retired control itself.
+export const vocabularyControls = ['GLOSSARY.md', 'ARCHITECTURE.md'];
+export const RETIRED_LEXICON = 'LEXICON.md';
 // The spaced `grilling diary/` name is a legacy path a stale installed skill
 // may still write; denying it keeps a live notepad untrackable before the
 // checkpoint privacy scan runs. `validate` does not require the line.
@@ -158,6 +164,24 @@ const templateVocabulary = new Set(templatePlaceholders);
 // room is seeded with the collection's job and article shape, exactly as the
 // design-concepts README already is.
 export const wikiContractFiles = ['SCHEMA.md', 'AGENTS.md', 'design-concepts/README.md', 'features/README.md'];
+// S-004O TK-009G: the Template Wiki's grouped vocabulary articles (one per
+// glossary grouping) and its AI coding reference install flat beside the
+// router with the room's GLOSSARY.md, at init, adoption and the update route.
+// They are reported apart from the contract files (`articles`, not `written`).
+export const wikiVocabularyFiles = [
+  'ai-coding-reference.md',
+  'vocabulary-chats-and-roles.md',
+  'vocabulary-continuity-and-evidence-boundaries.md',
+  'vocabulary-continuity-terms.md',
+  'vocabulary-destination-and-direction.md',
+  'vocabulary-feedback-disposition.md',
+  'vocabulary-governance-core.md',
+  'vocabulary-specs-and-tasks.md',
+  'vocabulary-stance-terms.md',
+  'vocabulary-workbench-meanings-of-ai-coding-terms.md',
+  'vocabulary-workbench-room-and-artifacts.md',
+  'vocabulary-workflow-verbs.md'
+];
 // Seeded lane documents are the third class of installed state, beside runtime
 // tools and installed skills: the harness copies them out of the release to be
 // read and, unlike a runtime tool, sometimes locally adjusted. Their generation
@@ -722,7 +746,7 @@ export function initialize(options) {
       if (!fs.readdirSync(target).length) fs.writeFileSync(path.join(target, '.gitkeep'), '');
     }
     writeSessionsIgnore(project);
-    const seeded = options.deferWikiSeed ? { wiki: false, reason: 'legacy wiki move pending' } : seedWiki(project, options);
+    const seeded = options.deferWikiSeed ? { wiki: false, reason: 'legacy wiki move pending' } : seedWiki(project, options, wikiContractFiles, wikiVocabularyFiles);
     fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
     const documents = writeSeedDocuments(project, { ...options, notepadOnly: true });
     return report('initialized', { manifestPath, manifest, seeded, documents });
@@ -771,7 +795,7 @@ function sourceIdentity(options) {
   return resolved;
 }
 
-export function seedWiki(project, options, files = wikiContractFiles) {
+export function seedWiki(project, options, files = wikiContractFiles, articles = []) {
   for (const relative of Object.values(collections).filter(value => value.startsWith(`${lanes.wiki}/`))) {
     fs.mkdirSync(path.join(project, relative), { recursive: true });
   }
@@ -782,15 +806,244 @@ export function seedWiki(project, options, files = wikiContractFiles) {
     '[YYYY-MM-DD]': options['--date'] ?? new Date().toISOString().slice(0, 10),
     '[PROJECT_NAME]': options['--name'] ?? path.basename(project)
   };
-  const written = [];
-  for (const relative of files) {
+  const write = (relative) => {
     const destination = path.join(project, lanes.wiki, relative);
-    if (lstatOrNull(destination)) continue;
+    if (lstatOrNull(destination)) return false;
     fs.mkdirSync(path.dirname(destination), { recursive: true });
     fs.writeFileSync(destination, fillTemplate(fs.readFileSync(path.join(templates, 'wiki', relative), 'utf8'), values));
-    written.push(`${lanes.wiki}/${relative}`);
+    return true;
+  };
+  const written = files.filter(write).map(relative => `${lanes.wiki}/${relative}`);
+  if (!articles.length) return { wiki: true, written };
+  return { wiki: true, written, articles: articles.filter(write).map(relative => `${lanes.wiki}/${relative}`) };
+}
+
+// S-004O TK-009G: the update route's Lexicon retirement (DDR-001E). A room
+// that still holds `LEXICON.md` receives `GLOSSARY.md` and `ARCHITECTURE.md`
+// from the Template when it has none, and the Template Wiki vocabulary
+// articles beside its router; its Lexicon is then removed only when every
+// line has landed. A line lands when it is blank or a heading (the landing
+// check's exempt lines), when it matches a line of the Template Lexicon the
+// room was generated from (generic content the Template glossary,
+// architecture and Wiki now carry; a Template placeholder matches any filled
+// value), or when its normalized text is present in the room's own
+// `GLOSSARY.md`, `ARCHITECTURE.md` or Wiki. S-004O TK-009M: a generic
+// Template line counts only while the room's vocabulary homes carry the
+// Template content (`genericHomesMissing`), and a `| **Term** | Definition |
+// Distinction |` row also lands in Matt's glossary format (`termRowLanded`).
+// Normalization is the landing
+// check's one rule (`tools/check-carrier-landing.mjs` normalizeText): trim and
+// collapse whitespace runs to one space. Otherwise the Lexicon is kept and
+// the unlanded lines are named in an attention finding, so nothing is lost. A
+// removed Lexicon is first copied into the local recovery collection; the
+// route's recorded Git commit remains the rollback. A room without a Lexicon
+// is unchanged.
+export function normalizeLandingText(text) {
+  return String(text).replace(/\s+/g, ' ').trim();
+}
+
+function landingExempt(text) {
+  const normalized = normalizeLandingText(text);
+  return !normalized || /^#{1,6} /.test(normalized);
+}
+
+const escapeRegExp = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+// The generic lines of the Template Lexicon: the one at the room's recorded
+// source commit when this release checkout holds it, and the one beside this
+// tool while the Template still ships it, or else the last one the release
+// history shipped before deleting it. Only the identity stamps (name,
+// version, review date, status) match any filled value; a line carrying any
+// other placeholder is a slot the room fills with its own content (a term
+// row): it matches only left unfilled, and its filled form is project-specific
+// and must land in the room.
+const LEXICON_STAMP_PLACEHOLDERS = ['[PROJECT_NAME]', '[HARNESS_VERSION]', '[YYYY-MM-DD]', '[active / partial / stale]'];
+
+function templateLexiconMatchers(templates, manifest) {
+  const release = path.dirname(templates);
+  const sources = [];
+  for (const commit of [manifest?.provenance?.source?.commit, manifest?.provenance?.layout?.source?.commit]) {
+    if (!/^[0-9a-f]{40}$/.test(commit ?? '')) continue;
+    const shown = spawnSync('git', ['show', `${commit}:templates/${RETIRED_LEXICON}`], { cwd: release, encoding: 'utf8' });
+    if (shown.status === 0) sources.push(shown.stdout);
   }
-  return { wiki: true, written };
+  const current = path.join(templates, RETIRED_LEXICON);
+  if (lstatOrNull(current)?.isFile()) sources.push(fs.readFileSync(current, 'utf8'));
+  else {
+    // Once the Template no longer ships the Lexicon, its last shipped text is
+    // the parent of the commit that deleted it in this release's history.
+    const relative = `${path.relative(release, templates).split(path.sep).join('/')}/${RETIRED_LEXICON}`;
+    const deleted = spawnSync('git', ['log', '-1', '--format=%H', '--diff-filter=D', 'HEAD', '--', relative], { cwd: release, encoding: 'utf8' });
+    const commit = deleted.status === 0 ? deleted.stdout.trim() : '';
+    if (/^[0-9a-f]{40}$/.test(commit)) {
+      const shown = spawnSync('git', ['show', `${commit}^:${relative}`], { cwd: release, encoding: 'utf8' });
+      if (shown.status === 0) sources.push(shown.stdout);
+    }
+  }
+  const exact = new Set();
+  const patterns = [];
+  for (const line of sources.flatMap(source => source.split(/\r?\n/))) {
+    const normalized = normalizeLandingText(line);
+    if (landingExempt(normalized)) continue;
+    const tokens = templatePlaceholders.filter(token => normalized.includes(token));
+    if (!tokens.length) { exact.add(normalized); continue; }
+    if (tokens.some(token => !LEXICON_STAMP_PLACEHOLDERS.includes(token))) { exact.add(normalized); continue; }
+    let pattern = escapeRegExp(normalized);
+    for (const token of tokens) pattern = pattern.split(escapeRegExp(token)).join('.+?');
+    patterns.push(new RegExp(`^${pattern}$`));
+  }
+  return { exact, patterns, sources: sources.length };
+}
+
+function roomLandingText(project, wikiLane) {
+  const readFile = (file) => {
+    const entry = lstatOrNull(file);
+    return entry?.isFile() && !entry.isSymbolicLink() ? fs.readFileSync(file, 'utf8') : null;
+  };
+  const controls = vocabularyControls.map(name => readFile(path.join(project, name))).filter(text => text !== null);
+  const wiki = [];
+  const walk = (directory) => {
+    const entry = lstatOrNull(directory);
+    if (!entry?.isDirectory() || entry.isSymbolicLink()) return;
+    for (const child of fs.readdirSync(directory, { withFileTypes: true })) {
+      const full = path.join(directory, child.name);
+      if (child.isDirectory()) walk(full);
+      else if (child.isFile() && child.name.endsWith('.md')) wiki.push(fs.readFileSync(full, 'utf8'));
+    }
+  };
+  walk(path.join(project, wikiLane));
+  return {
+    all: [...controls, ...wiki].map(normalizeLandingText).join('\n'),
+    glossary: readFile(path.join(project, 'GLOSSARY.md')) ?? '',
+    wiki: wiki.join('\n')
+  };
+}
+
+// S-004O TK-009M: a generic Template Lexicon line has landed only where the
+// room's vocabulary homes carry the Template content: `GLOSSARY.md`,
+// `ARCHITECTURE.md` and the Template Wiki vocabulary articles each hold every
+// Template line that carries no placeholder, as they do when the update
+// installed them from the Template in this run. A home the room wrote itself
+// (a glossary started before the update, say) is named here, and the generic
+// lines must then land in the room like its own.
+function genericHomesMissing(project, templates, wikiLane) {
+  const homes = [...vocabularyControls.map(name => [name, name]), ...wikiVocabularyFiles.map(name => [`wiki/${name}`, `${wikiLane}/${name}`])];
+  const missing = [];
+  for (const [source, destination] of homes) {
+    const template = path.join(templates, source);
+    if (!lstatOrNull(template)?.isFile()) continue;
+    const required = fs.readFileSync(template, 'utf8').split(/\r?\n/).map(normalizeLandingText)
+      .filter(line => !landingExempt(line) && !templatePlaceholders.some(token => line.includes(token)));
+    const file = path.join(project, destination);
+    const entry = lstatOrNull(file);
+    const room = entry?.isFile() && !entry.isSymbolicLink() ? new Set(fs.readFileSync(file, 'utf8').split(/\r?\n/).map(normalizeLandingText)) : null;
+    if (!room || required.some(line => !room.has(line))) missing.push(destination);
+  }
+  return missing;
+}
+
+// Markdown emphasis, code spans and links reduced to their text, so a
+// definition reads the same in a table cell, the glossary and the Wiki.
+function stripMarkup(text) {
+  return normalizeLandingText(String(text)
+    .replace(/!?\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/\*\*|__|`/g, '')
+    .replace(/(^|[^\w*])\*([^*\s][^*]*?)\*(?=[^\w*]|$)/g, '$1$2')
+    .replace(/(^|[^\w])_([^_\s][^_]*?)_(?=[^\w]|$)/g, '$1$2'));
+}
+
+// S-004O TK-009M: a Lexicon term row `| **Term** | Definition | Distinction |`
+// lands in Matt's glossary format when `GLOSSARY.md` has a `**Term**:` entry,
+// the Definition (markup stripped) is in the glossary or the Wiki, and any
+// Distinction is in the Wiki.
+function termRowLanded(normalized, room) {
+  const row = normalized.match(/^\|(.*)\|$/);
+  if (!row) return false;
+  const cells = row[1].split(/(?<!\\)\|/).map(cell => cell.trim());
+  if (cells.length < 2 || cells.length > 3) return false;
+  const term = cells[0].match(/^\*\*([^*]+)\*\*$/)?.[1];
+  if (!term) return false;
+  const entry = `**${normalizeLandingText(term)}**:`.toLowerCase();
+  if (!room.glossary.split(/\r?\n/).some(line => normalizeLandingText(line).toLowerCase() === entry)) return false;
+  const definition = stripMarkup(cells[1]);
+  const distinction = stripMarkup(cells[2] ?? '');
+  const glossary = stripMarkup(room.glossary);
+  const wiki = stripMarkup(room.wiki);
+  if (!definition || !(glossary.includes(definition) || wiki.includes(definition))) return false;
+  return !distinction || wiki.includes(distinction);
+}
+
+export function lexiconLanding(project, options = {}) {
+  const templates = options.templates ?? templateRoot();
+  const manifest = options.manifest ?? readManifestFile(project).manifest;
+  const lexicon = fs.readFileSync(path.join(project, RETIRED_LEXICON), 'utf8');
+  const generic = templates ? templateLexiconMatchers(templates, manifest) : { exact: new Set(), patterns: [], sources: 0 };
+  const wikiLane = manifest?.lanes?.wiki ?? lanes.wiki;
+  const room = roomLandingText(project, wikiLane);
+  const missingHomes = templates ? genericHomesMissing(project, templates, wikiLane) : [];
+  const unlanded = [];
+  lexicon.split(/\r?\n/).forEach((line, index) => {
+    const normalized = normalizeLandingText(line);
+    if (landingExempt(normalized)) return;
+    // Identity stamps (name, version, review date, status) are not entries.
+    if (generic.patterns.some(pattern => pattern.test(normalized))) return;
+    const isGeneric = generic.exact.has(normalized);
+    if (isGeneric && !missingHomes.length) return;
+    if (room.all.includes(normalized) || termRowLanded(normalized, room)) return;
+    unlanded.push(isGeneric ? { line: index + 1, text: normalized, generic: true } : { line: index + 1, text: normalized });
+  });
+  return { unlanded, templateSources: generic.sources, genericHomesMissing: missingHomes };
+}
+
+function lexiconFinding(unlanded, missingHomes = []) {
+  const named = unlanded.slice(0, 5).map(item => `line ${item.line}: ${item.text}`).join('; ');
+  const more = unlanded.length > 5 ? `; and ${unlanded.length - 5} more` : '';
+  const homes = missingHomes.length
+    ? `; ${missingHomes.join(', ')} ${missingHomes.length === 1 ? 'does' : 'do'} not carry the Template content, so the Template Lexicon's generic lines count only where the room holds them: restore the Template content there or land each generic entry`
+    : '';
+  return {
+    code: 'lexicon-unlanded', severity: 'attention', blocks: 'none',
+    message: `${RETIRED_LEXICON} is kept: ${unlanded.length} line(s) have not landed in GLOSSARY.md, ARCHITECTURE.md or the Wiki (${named}${more})${homes}; move each into its home, confirmed by grilling (a term row lands as a \`**Term**:\` glossary entry with its definition, its distinction in a Wiki article), remove each landed row from ${RETIRED_LEXICON}, then rerun the update to retire the Lexicon`,
+    lines: unlanded
+  };
+}
+
+export function retireLexicon(project, options = {}) {
+  const lexiconPath = path.join(project, RETIRED_LEXICON);
+  const entry = lstatOrNull(lexiconPath);
+  if (!entry) return { status: 'absent' };
+  if (!entry.isFile() || entry.isSymbolicLink() || entry.nlink > 1) {
+    return { status: 'kept', installed: [], articles: [], unlanded: [], finding: { code: 'lexicon-unlanded', severity: 'attention', blocks: 'none', message: `${RETIRED_LEXICON} is kept: it is not an ordinary, unshared file, so its lines cannot be checked`, lines: [] } };
+  }
+  const templates = templateRoot();
+  if (!templates) {
+    return { status: 'kept', installed: [], articles: [], unlanded: [], finding: { code: 'lexicon-unlanded', severity: 'attention', blocks: 'none', message: `${RETIRED_LEXICON} is kept: run the update from the Workbench release checkout, whose Template carries GLOSSARY.md and ARCHITECTURE.md`, lines: [] } };
+  }
+  const { manifest } = readManifestFile(project);
+  const lexicon = fs.readFileSync(lexiconPath, 'utf8');
+  const values = {
+    '[HARNESS_VERSION]': String(options['--version'] ?? manifest?.workbenchVersion ?? '').replace(/^v/, ''),
+    '[YYYY-MM-DD]': options['--date'] ?? new Date().toISOString().slice(0, 10),
+    '[PROJECT_NAME]': options['--name'] ?? lexicon.match(/^# (.+?) - Lexicon\s*$/m)?.[1] ?? path.basename(project)
+  };
+  const installed = [];
+  for (const name of vocabularyControls) {
+    const destination = path.join(project, name);
+    if (lstatOrNull(destination)) continue;
+    writeSafeFile(project, destination, fillTemplate(fs.readFileSync(path.join(templates, name), 'utf8'), values));
+    installed.push(name);
+  }
+  const seeded = seedWiki(project, { '--version': values['[HARNESS_VERSION]'], '--date': values['[YYYY-MM-DD]'], '--name': values['[PROJECT_NAME]'] }, [], wikiVocabularyFiles);
+  const articles = seeded.articles ?? [];
+  const { unlanded, genericHomesMissing: missingHomes } = lexiconLanding(project, { templates, manifest });
+  if (unlanded.length) return { status: 'kept', installed, articles, unlanded, genericHomesMissing: missingHomes, finding: lexiconFinding(unlanded, missingHomes) };
+  const backupDirectory = `${collections.recovery}/lexicon-retirement`;
+  let backup = `${backupDirectory}/${RETIRED_LEXICON}`;
+  for (let index = 1; lstatOrNull(path.join(project, backup)); index += 1) backup = `${backupDirectory}/LEXICON.${index}.md`;
+  fs.mkdirSync(path.join(project, backupDirectory), { recursive: true });
+  writeSafeFile(project, path.join(project, backup), lexicon);
+  fs.unlinkSync(lexiconPath);
+  return { status: 'retired', installed, articles, backup };
 }
 
 // Bring the seeded lane documents this release carries into a room and record
@@ -1129,9 +1382,18 @@ function validateManifestShape(manifest) {
 // Lossless schema 1 -> 2 migration: the five-lane layout renames its
 // grilling lane into sessions, its tracked handoffs checkpoints into
 // sessions/checkpoints, and gains docs, tools, and the seven collections.
+// S-004O TK-009G: the managed update route also retires a room's Lexicon once
+// its lines have landed (`retireLexicon`); a room without one is unchanged.
 export function migrate(options) {
   const project = path.resolve(options['--project']);
-  return withIdentityLock(project, () => migrateUnlocked(options));
+  return withIdentityLock(project, () => {
+    const result = migrateUnlocked(options);
+    if (!['migrated', 'current'].includes(result.status) || result.manifest?.schemaVersion !== SCHEMA_VERSION) return result;
+    const lexicon = retireLexicon(project, options);
+    if (lexicon.status === 'absent') return result;
+    const changed = lexicon.status === 'retired' || lexicon.installed.length > 0 || lexicon.articles.length > 0;
+    return { ...result, status: changed ? 'migrated' : result.status, lexicon };
+  });
 }
 
 function migrateUnlocked(options) {

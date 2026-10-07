@@ -160,13 +160,19 @@ git push -u origin integration
 `design-concepts/README.md`) into `workbench/wiki/` from `templates/wiki/`
 when it runs from a release checkout, filling the version, date, and project
 name (`--name`, `--date`, `--wiki-profile project|deployment`); a downstream
-copy of the tool reports `seeded.wiki: false` truthfully. The Genesis
+copy of the tool reports `seeded.wiki: false` truthfully. Beside the router it
+also installs the twelve Template Wiki vocabulary articles that explain
+`GLOSSARY.md` (`wikiVocabularyFiles`: `vocabulary-*.md` and
+`ai-coding-reference.md`), reported apart as `seeded.articles`. The Genesis
 readiness gate requires the filled `workbench/wiki/MEMORY.md` router and those
 three files with no template placeholder.
 
-`validate --genesis` additionally requires seven ordinary, filled root controls,
-exact Workbench version stamps on the six stamped controls (the thin
-`CLAUDE.md` remains exactly `@AGENTS.md`), the generated-region markers in
+`validate --genesis` additionally requires eight ordinary, filled root controls
+(`AGENTS.md`, `BLUEPRINT.md`, `GLOSSARY.md`, `ARCHITECTURE.md`, `RUNBOOK.md`,
+`TASKBOARD.md`, `CLAUDE.md`, `README.md`; the Lexicon is no longer one),
+exact Workbench version stamps on the six stamped controls (the destination
+`BLUEPRINT.md` carries none and the thin `CLAUDE.md` remains exactly
+`@AGENTS.md`), the generated-region markers in
 `BLUEPRINT.md` and `TASKBOARD.md` that `render` fills, one actionable
 version-matched first spec at a stable `workbench/specs/S-###-slug/SPEC.md`
 path, an installed `workbench/tools/` lane whose receipt names the manifest's
@@ -326,9 +332,11 @@ ordinary directory - exits 1.
 | `upgrade` | A `workbench/manifest.json` that reads as a manifest object carrying an integer `schemaVersion`, or a Workbench version stamp in a root control with no manifest (the `upgrade --layout-only` v2-root room) |
 | `unclassifiable` | `workbench/` is present but is not an ordinary directory or carries no readable manifest; a root control or the room's own top-level listing cannot be read and nothing else is stamped; or the room is harness-shaped with no manifest and no stamp |
 
-Harness-shaped means all seven root controls, or root `tools/` files from the
-managed runtime set in a room that also carries more of the seven controls than
-it is missing. Those filenames (`privacy.mjs`, `sessions.mjs`) are ordinary, so
+Harness-shaped means all the root controls, or root `tools/` files from the
+managed runtime set in a room that also carries more of the controls than it
+is missing. A room that holds `LEXICON.md` and neither `GLOSSARY.md` nor
+`ARCHITECTURE.md` was built before the Lexicon retired and is read against
+that earlier closed set of seven controls. Those filenames (`privacy.mjs`, `sessions.mjs`) are ordinary, so
 one of them alone never makes a room harness-shaped. A `workbench/manifest.json`
 that parses as an unrelated JSON object, an array, or a `schemaVersion` that is
 absent, `null`, or not an integer is not this room's authority and reads as
@@ -361,8 +369,10 @@ The rule is recorded in
 
 ## V3 Adoption migration check
 
-Adoption requires seven filled root controls before it retires legacy
-project-local support paths; it lays the core skills into the room's own
+Adoption requires the eight filled root controls before it retires legacy
+project-local support paths (a project that still holds `LEXICON.md` follows
+the Lexicon retirement below instead of being refused for a missing
+`GLOSSARY.md` or `ARCHITECTURE.md`); it lays the core skills into the room's own
 `workbench/skills` lane from the release, so no provider home is read.
 Exercise the deterministic mixed-v2 fixture without touching a real project:
 
@@ -505,6 +515,36 @@ node tools/test-workbench-upgrade.mjs
 Passing neither mode blocks with `explicit-update-required`; passing both is an
 `invalid-invocation`. Uncommitted state has no concrete rollback point.
 
+Lexicon retirement (S-004O TK-009G). A room that still holds `LEXICON.md`
+receives `GLOSSARY.md` and `ARCHITECTURE.md` from the Template when it has
+none, with the Wiki vocabulary articles beside its router, through the
+one-time upgrade, Adoption's migration and the managed update route
+(`workbench-layout.mjs migrate`). Its Lexicon is removed only after every line
+has landed: a blank line or heading, a line of the Template Lexicon the room
+was generated from (read at the manifest's recorded source commit, and from the
+current Template while it still ships one or else from the release history's
+last copy before its deletion; only the name, version, review date
+and status stamps match a filled value, and a filled term-row slot is the
+room's own line), or text whose normalized form (the landing check's
+`normalizeText`: trim, collapse whitespace) the room's `GLOSSARY.md`,
+`ARCHITECTURE.md` or Wiki holds. A Template line counts only while the room's
+`GLOSSARY.md`, `ARCHITECTURE.md` and Template Wiki vocabulary articles carry
+every placeholder-free Template line (installed in this run or kept); the
+report names any that does not (`genericHomesMissing`) and each generic line
+then has to land like the room's own. A `| **Term** | Definition |
+Distinction |` row also lands as a `**Term**:` glossary entry whose
+markup-stripped definition is in the glossary or Wiki and whose distinction
+is in the Wiki. A removed Lexicon is copied first to
+`workbench/sessions/recovery/lexicon-retirement/`, and the report and recovery
+record name the backup; the pre-migration commit stays the rollback point.
+Otherwise the Lexicon is kept byte for byte and the report carries a
+`lexicon-unlanded` attention finding naming each unlanded line; once those
+lines reach their homes and landed rows are removed from the Lexicon, the next
+update retires it. A room without a Lexicon
+is unchanged by this step. `node tools/test-workbench-upgrade.mjs` and
+`node tools/test-workbench-adoption.mjs` cover the kept, retired and absent
+cases.
+
 ## Workbench self-drift check
 
 Project drift and Workbench self-drift are separate checks. A project update
@@ -548,10 +588,11 @@ review; `no-machine-finding` means only the implemented checks found no issue.
 
 A maintainer verification tool for a rewrite of the Contract carriers, run at
 rewrite review; it is not installed into rooms. It lists every line a candidate
-removed from `AGENTS.md`, `RUNBOOK.md`, `LEXICON.md` or `templates/LEXICON.md`
-since a base commit and refuses unless each one has an inventory entry whose
-home file holds its landed text at the candidate. It reads Git objects only and
-never decides which home is right:
+removed from `AGENTS.md` or `RUNBOOK.md`, or from the retired `LEXICON.md` and
+`templates/LEXICON.md` that the Lexicon retirement deleted (checked from their
+pre-removal base), since a base commit and refuses unless each one has an
+inventory entry whose home file holds its landed text at the candidate. It
+reads Git objects only and never decides which home is right:
 
 ```bash
 node tools/check-carrier-landing.mjs scaffold --base BASE_SHA --carrier AGENTS.md --out INVENTORY.json
@@ -569,7 +610,7 @@ mirror), `restates-owner` (the named owner already holds the claim) or
 `retired-with-reason` (no home; `reason` required). Normalization trims and
 collapses whitespace runs, so a reordered, re-indented or rewrapped line is not
 removed; blank lines and headings never need to land. A carrier deleted at the
-candidate, as the Lexicon retirement deletes `LEXICON.md`, has removed every
+candidate, as the Lexicon retirement deleted `LEXICON.md`, has removed every
 line and reports `carrierRemoved`. `scaffold` writes every other line
 unclassified and refuses to overwrite an existing inventory. `check` exits 0
 when every removed line landed, 1 on an unlanded line (`no-entry`,
@@ -580,7 +621,9 @@ a usage or Git error. The Contract Carrier Pointer-Brief Rewrite
 ([S-004C](../../specs/S-004C-contract-carrier-pointer-brief-rewrite/SPEC.md))
 keeps its inventories in its Spec folder, and the Lexicon retirement
 ([S-004O](../../specs/S-004O-lexicon-retirement-and-architecture-md/SPEC.md))
-keeps the Lexicon inventories in its `proof/` folder.
+keeps the Lexicon inventories in its `proof/` folder: the census inventories,
+the final inventories re-scaffolded at the pre-removal commit, and the
+landing-check output that shows every removed line landed.
 
 ## Socket Contract Registry
 

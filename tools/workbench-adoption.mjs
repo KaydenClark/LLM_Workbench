@@ -4,7 +4,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { collections, controls, coreSkills, initialize, resolveBranchRefs, seedWiki, lanes, validateManifest } from '../workbench/tools/workbench-layout.mjs';
+import { RETIRED_LEXICON, collections, controls, coreSkills, initialize, resolveBranchRefs, retireLexicon, seedWiki, lanes, validateManifest, vocabularyControls, wikiContractFiles, wikiVocabularyFiles } from '../workbench/tools/workbench-layout.mjs';
 import { doctor, render } from '../workbench/tools/spec-workbench.mjs';
 import { blocksSelection } from '../workbench/tools/diagnostics.mjs';
 import { writeSafeFile } from '../workbench/tools/workbench-paths.mjs';
@@ -74,11 +74,18 @@ const CONTROL_REASONS = {
 
 // Every unreconciled control, not the first: an operator with three missing
 // controls otherwise learns of one per migration attempt.
+// S-004O TK-009G: a project that still holds LEXICON.md follows the update
+// route's rule: a missing GLOSSARY.md or ARCHITECTURE.md is installed from the
+// Template during migration, and the Lexicon is retired only after its lines
+// land (`retireLexicon`), so those two are not refused as missing.
 function unreconciledControls(project) {
   const findings = [];
+  const lexiconEntry = lstatOrNull(path.join(project, RETIRED_LEXICON));
+  const holdsLexicon = Boolean(lexiconEntry?.isFile() && !lexiconEntry.isSymbolicLink());
   for (const control of controls) {
     const controlPath = path.join(project, control);
     const controlEntry = lstatOrNull(controlPath);
+    if (!controlEntry && holdsLexicon && vocabularyControls.includes(control)) continue;
     if (!controlEntry?.isFile() || controlEntry.isSymbolicLink()) {
       findings.push({ control, reason: 'missing-control', path: controlPath });
       continue;
@@ -301,7 +308,7 @@ function migrate(options) {
       fs.renameSync(sourcePath, target);
       moved.push({ source, destination });
     }
-    seedWiki(project, { '--version': options['--version'] });
+    seedWiki(project, { '--version': options['--version'] }, wikiContractFiles, wikiVocabularyFiles);
     const legacyMemory = path.join(project, 'MEMORY.md');
     if (lstatOrNull(legacyMemory)) {
       const destination = path.join(project, lanes.wiki, 'MEMORY.md');
@@ -309,6 +316,9 @@ function migrate(options) {
       moved.push({ source: 'MEMORY.md', destination: `${lanes.wiki}/MEMORY.md` });
     }
     addWikiFrontmatter(project, options);
+    // S-004O TK-009G: after the legacy Wiki has moved, so its text counts as
+    // a landing home. The pre-migration commit stays the rollback point.
+    const lexicon = retireLexicon(project, { '--version': options['--version'], ...(options['--date'] ? { '--date': options['--date'] } : {}) });
     for (const name of rootFeedbackNames) {
       const source = path.join(project, name);
       if (!lstatOrNull(source)) continue;
@@ -324,7 +334,7 @@ function migrate(options) {
       moved.push({ source: 'skills', destination: `${recoveryLane}/adoption-legacy-skills` });
     }
     const recoveryPath = path.join(project, recoveryLane, 'adoption-recovery.json');
-    fs.writeFileSync(recoveryPath, `${JSON.stringify({ schemaVersion: 1, lifecycle: 'adoption', moved, residue }, null, 2)}\n`);
+    fs.writeFileSync(recoveryPath, `${JSON.stringify({ schemaVersion: 1, lifecycle: 'adoption', moved, residue, lexicon }, null, 2)}\n`);
     const validation = validateManifest(project);
     if (validation.status !== 'valid') throw new Error(validation.error?.message ?? 'Migrated manifest did not validate.');
     const installed = spawnSync(process.execPath, [toolsInstaller, 'install', '--project', project], { cwd: productRoot, encoding: 'utf8' });
@@ -349,7 +359,9 @@ function migrate(options) {
     // reported so the adopting agent repairs them next.
     const issues = doctor(project);
     if (blocksSelection(issues)) throw new Error(`Adoption rendered an invalid project: ${issues.filter((issue) => issue.blocks === 'all' || issue.blocks === 'selection').map((issue) => issue.code).join(', ')}.`);
-    return { status: 'complete', manifestPath: path.join('workbench', 'manifest.json'), moved, residue, recoveryPath: `${recoveryLane}/adoption-recovery.json`, tools: { status: 'installed', receipt: `${lanes.tools}/.workbench-tools.json` }, skills: { status: 'installed', receipt: `${lanes.skills}/.workbench-skills.json` }, doctor: issues.length ? 'passed-with-findings' : 'passed', findings: issues.map((issue) => ({ code: issue.code, severity: issue.severity, blocks: issue.blocks, message: issue.message })) };
+    const findings = issues.map((issue) => ({ code: issue.code, severity: issue.severity, blocks: issue.blocks, message: issue.message }));
+    if (lexicon.finding) findings.push(lexicon.finding);
+    return { status: 'complete', manifestPath: path.join('workbench', 'manifest.json'), moved, residue, lexicon, recoveryPath: `${recoveryLane}/adoption-recovery.json`, tools: { status: 'installed', receipt: `${lanes.tools}/.workbench-tools.json` }, skills: { status: 'installed', receipt: `${lanes.skills}/.workbench-skills.json` }, doctor: findings.length ? 'passed-with-findings' : 'passed', findings };
   } catch (error) {
     return { status: 'partial', moved, residue, error: { code: 'migration-failed', message: error.message } };
   }

@@ -213,8 +213,9 @@ finishing a grilling session makes writing its pages part of promotion.
 
 - [Landmark record "Grilling and Shared Understanding" (LMK-000O)](../../landmark-tracker/landmarks/LMK-000O.json): title, summary, importance and history.
 - The thirteen question cards named above, each at the revision cited: they hold the answers, the confirmation basis, the open uncertainties and the expected results this page summarizes.
-- [Lexicon](../../../LEXICON.md) and [agent contract](../../../AGENTS.md): the Align and promotion definitions and the authority limits.
+- [Glossary](../../../GLOSSARY.md) and [agent contract](../../../AGENTS.md): the Align and promotion definitions and the authority limits.
 
 ## History
 
 - 2026-10-04: created by the Wiki Evolving-Synthesis Migration Spec (S-003W), Task TK-004 (landmark synthesis pages), seeded from the cards' current answers.
+- 2026-10-07: Re-pointed the retiring Lexicon's links and live routes to `GLOSSARY.md`, `ARCHITECTURE.md` and the Wiki lexicon articles (the Lexicon Retirement Spec (S-004O), its consumer re-pointing Task (TK-009F)); no claim changed.

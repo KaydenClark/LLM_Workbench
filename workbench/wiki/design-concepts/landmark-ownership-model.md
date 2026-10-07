@@ -172,8 +172,8 @@ record rebuild was delivered by the
 [Blueprint, Active ADR, And Context Map Rebuild Spec (S-00A)](../../specs/S-00A-blueprint-active-adr-and-context-map/SPEC.md);
 the card expects the whole-Spec review gate to refuse a Spec whose closed Tasks leave a durable choice unescalated, which is the concern of the
 [Spec QA Gate And Corrective-Task Return Path Spec (S-00J)](../../specs/S-00J-spec-qa-gate-at-integration/SPEC.md).
-The current ownership schema is in [LEXICON](../../../LEXICON.md) (Artifact
-Ownership Schema) and the rules in [AGENTS](../../../AGENTS.md).
+The current ownership schema is in [ARCHITECTURE](../../../ARCHITECTURE.md#ownership) (Ownership)
+and the rules in [AGENTS](../../../AGENTS.md).
 
 ## Related pages
 
@@ -189,3 +189,4 @@ Ownership Schema) and the rules in [AGENTS](../../../AGENTS.md).
 ## History
 
 - 2026-10-04: created by the Wiki Evolving-Synthesis Migration Spec (S-003W), Task TK-004 (landmark synthesis pages), seeded from the cards' current answers.
+- 2026-10-07: Re-pointed the retiring Lexicon's links and live routes to `GLOSSARY.md`, `ARCHITECTURE.md` and the Wiki lexicon articles (the Lexicon Retirement Spec (S-004O), its consumer re-pointing Task (TK-009F)); no claim changed.

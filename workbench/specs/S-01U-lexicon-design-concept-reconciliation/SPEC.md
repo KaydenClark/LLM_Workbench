@@ -63,7 +63,7 @@ Planning baseline: `89d4042fb8931b9d720af75bffea1c28803d72aa`, inspected on
 2026-09-26. Read baseline claims with `git show` at that commit; the links below
 are navigation to maintained owners, not timeless proof of their future text.
 
-- [LEXICON](../../../LEXICON.md) says Last reviewed September 22, yet already
+- [LEXICON](https://github.com/KaydenClark/LLM_Workbench/blob/0059669f1e1b81c8048dfea9714d0ce7a9e1d914/LEXICON.md) says Last reviewed September 22, yet already
   includes September 26 DQC, landmark, Tracker and continuity definitions.
   The stamp alone cannot establish whole-file freshness.
 - Its Artifact Boundaries describes Task records as still awaiting S-00H

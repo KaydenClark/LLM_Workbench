@@ -17,7 +17,7 @@ in [the Wiki schema](../../wiki/SCHEMA.md#read). That narrower rule did not
 establish a project-wide Context Map in the root operating contract. The
 accepted correction places behavior in [AGENTS.md](../../../AGENTS.md#traverse-dont-search),
 product direction in [BLUEPRINT.md](../../../BLUEPRINT.md#core-navigation-contract),
-and definitions and entry routes in [LEXICON.md](../../../LEXICON.md#task-routing),
+and definitions and entry routes in [ARCHITECTURE.md](../../../ARCHITECTURE.md#routes),
 with matching copy-ready templates.
 
 Considered and rejected: keeping traversal only inside the Wiki leaves ordinary

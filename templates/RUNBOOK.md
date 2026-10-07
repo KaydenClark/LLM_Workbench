@@ -84,7 +84,7 @@ Contract change.
 
 ## Ordinary Entry
 
-Follow `AGENTS.md` -> this section -> `LEXICON.md` -> Task Routing. Inspect the
+Follow `AGENTS.md` -> this section -> [`ARCHITECTURE.md` -> Routes](ARCHITECTURE.md#routes). Inspect the
 root, branch, upstream and dirty state; run the project-local spec doctor and
 load the explicitly assigned spec. For owner-directed pickup, use `next --json`
 and `show` to resolve that assignment. The spec and task set the normal
@@ -101,7 +101,7 @@ feedback testing.
 
 ### Finding The Owner Of A Question
 
-1. Use [LEXICON -> Artifact Ownership Schema](LEXICON.md#artifact-ownership-schema)
+1. Use [ARCHITECTURE -> Ownership](ARCHITECTURE.md#ownership)
    to identify the job: permission, meaning, destination, work state, proof,
    procedure, recovery or another listed responsibility.
 2. Follow the named owner and resolve installed paths through the manifest.
@@ -124,7 +124,8 @@ recover. Execution and recovery therefore remain separate jobs.
 
 ### Role And Stance Coordination
 
-Roles scope assignments; stances supply their job. Follow the Lexicon before
+Roles scope assignments; stances supply their job. Follow the role and stance
+terms in [`GLOSSARY.md`](GLOSSARY.md#chats-and-roles) before
 assigning Director (project/integration), Dispatcher (one Spec/branch) or Worker
 (one Task). At flight launch, assign Spec Planner to plan small Tasks and safe
 parallel groups from current Actuality; planning Workers may assist. Assign
@@ -466,8 +467,8 @@ is the checklist, not a second statement of them.
 5. Every identifier on the page carries the artifact's name and a little
    context. Add what is missing; never strip an identifier.
 6. Each truth lives once: the page links to its owner (Spec, decision record,
-   Lexicon, Runbook) instead of restating it, and copies no live task state.
-7. No concept the page mentions lacks a page or a Lexicon row it should have.
+   glossary, Runbook) instead of restating it, and copies no live task state.
+7. No concept the page mentions lacks a page or a glossary entry it should have.
 8. An article in `design-concepts/` or `features/` has its `History` line for
    this operation, and a design concept's `authorized_by` names it.
 
@@ -480,7 +481,7 @@ agent doing the review reads every page against the current controls and the
 question cards, asking the small-lint questions across the whole Wiki and
 these:
 
-- Does any page contradict `AGENTS.md`, the Lexicon, an active decision record
+- Does any page contradict `AGENTS.md`, `GLOSSARY.md`, `ARCHITECTURE.md`, an active decision record
   or the schema?
 - Is any page stale (marked `status: stale` and not repaired) or orphaned
   (not routed from the router, or with a link or source that no longer
@@ -783,7 +784,7 @@ assigned target; it never authorizes a repair or invokes automated repair.
 3. Write `REPORT-topic-date.md` in the declared feedback lane using its
    `REPORT_FORMAT.md`. Include Target And Scope, Evidence And Limitations,
    Findings, Challenged Or Rejected Findings, Next Action And Open Questions,
-   and Review Boundary. Every finding requires exactly one Lexicon disposition,
+   and Review Boundary. Every finding requires exactly one `GLOSSARY.md` Feedback disposition,
    recorded in its owning Spec with an evidence route; missing ownership stays
    an explicit gap. No findings is valid. Reports never live loose or in
    the Wiki. If the format is absent in an older installation, these sections

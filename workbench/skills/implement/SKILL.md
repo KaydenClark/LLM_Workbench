@@ -247,7 +247,7 @@ and `unknown-blocker-qualifier` rather than bypassing selection or claim.
 
 Examples name S-001/TK-001; substitute the actual IDs and quoted values.
 
-Ordinary entry is AGENTS -> the Runbook -> Lexicon Task Routing -> the assigned
+Ordinary entry is AGENTS -> the Runbook -> `ARCHITECTURE.md` Routes -> the assigned
 Spec and Task. Verify root, branch, remote, upstream and dirty state first.
 Preserve unrelated work and obey the assigned stance/file lane. For ordinary
 pickup run these read-only commands before claiming:

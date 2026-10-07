@@ -110,7 +110,7 @@ The real-room release gate that upgrades the reference Template: a maintainer pr
 
 ## Ordinary Entry
 
-Follow `AGENTS.md` -> this section -> `LEXICON.md` -> Task Routing. Inspect the
+Follow `AGENTS.md` -> this section -> [`ARCHITECTURE.md` -> Routes](ARCHITECTURE.md#routes). Inspect the
 root, branch, upstream and dirty state; run the project-local spec doctor and
 load the explicitly assigned spec. For owner-directed pickup, use `next --json`
 and `show` to resolve that assignment. The spec and task set the normal
@@ -127,7 +127,7 @@ feedback testing.
 
 ### Finding The Owner Of A Question
 
-1. Use [LEXICON -> Artifact Ownership Schema](LEXICON.md#artifact-ownership-schema)
+1. Use [ARCHITECTURE -> Ownership](ARCHITECTURE.md#ownership)
    to identify the job: permission, meaning, destination, work state, proof,
    procedure, recovery or another listed responsibility.
 2. Follow the named owner and resolve installed paths through the manifest.
@@ -159,7 +159,8 @@ Read-only inspection of a committed GitHub coordination binding: a maintainer pr
 The current Task-PR bootstrap exception remains in
 [Workbench v4.0.0 Release](workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md#bootstrap-exemptions).
 
-Roles scope assignments; stances supply their job. Follow the Lexicon before
+Roles scope assignments; stances supply their job. Follow the role and stance
+terms in [`GLOSSARY.md`](GLOSSARY.md#chats-and-roles) before
 assigning Director (project/integration), Dispatcher (one Spec/branch) or Worker
 (one Task). At flight launch, assign Spec Planner to plan small Tasks and safe
 parallel groups from current Actuality; planning Workers may assist. Assign
@@ -402,7 +403,7 @@ The Workbench self-drift pre and post receipts and the bounded semantic check: a
 
 ### Carrier line-landing check
 
-The carrier line-landing check for a rewrite of `AGENTS.md` or `RUNBOOK.md`, or the Lexicon retirement (`LEXICON.md` and `templates/LEXICON.md`, with `glossary` and `architecture` homes): a maintainer procedure of this repository, in the
+The carrier line-landing check for a rewrite of `AGENTS.md` or `RUNBOOK.md`, and for the completed Lexicon retirement, whose deleted `LEXICON.md` and `templates/LEXICON.md` it still checks from their pre-removal base (`glossary` and `architecture` homes): a maintainer procedure of this repository, in the
 [`workbench-room-checks` skill](workbench/skills/workbench-room-checks/SKILL.md#carrier-line-landing-check).
 
 ### Spec Lifecycle And Retrieval
@@ -652,8 +653,8 @@ is the checklist, not a second statement of them.
 5. Every identifier on the page carries the artifact's name and a little
    context. Add what is missing; never strip an identifier.
 6. Each truth lives once: the page links to its owner (Spec, decision record,
-   Lexicon, Runbook) instead of restating it, and copies no live task state.
-7. No concept the page mentions lacks a page or a Lexicon row it should have.
+   glossary, Runbook) instead of restating it, and copies no live task state.
+7. No concept the page mentions lacks a page or a glossary entry it should have.
 8. An article in `design-concepts/` or `features/` has its `History` line for
    this operation, and a design concept's `authorized_by` names it.
 
@@ -666,7 +667,7 @@ agent doing the review reads every page against the current controls and the
 question cards, asking the small-lint questions across the whole Wiki and
 these:
 
-- Does any page contradict `AGENTS.md`, the Lexicon, an active decision record
+- Does any page contradict `AGENTS.md`, `GLOSSARY.md`, `ARCHITECTURE.md`, an active decision record
   or the schema?
 - Is any page stale (marked `status: stale` and not repaired) or orphaned
   (not routed from the router, or with a link or source that no longer

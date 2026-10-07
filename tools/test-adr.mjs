@@ -6,7 +6,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
-import { ADR_LIFECYCLE_FOLDERS, ID_PATTERN, REGISTER_NAME, acceptRecord, deprecateRecord, inspectRecord, listAdrs, listRecords, localLinks, migrateLifecycleFolders, newAdr, normalizeAdrs, parseFrontmatter, recordHistory, renderRegister, searchRecords, showRecord, stripFrontmatterKey, supersedeRecord, validateAdrs, validateDecisionRecords, writeDecisionRegisters, writeRegister } from '../workbench/tools/adr.mjs';
+import { ADR_LIFECYCLE_FOLDERS, ID_PATTERN, REGISTER_NAME, acceptRecord, collectRecordReferenceFiles, deprecateRecord, inspectRecord, listAdrs, listRecords, localLinks, migrateLifecycleFolders, newAdr, normalizeAdrs, parseFrontmatter, recordHistory, renderRegister, searchRecords, showRecord, stripFrontmatterKey, supersedeRecord, validateAdrs, validateDecisionRecords, writeDecisionRegisters, writeRegister } from '../workbench/tools/adr.mjs';
 import { doctor, render } from '../workbench/tools/spec-workbench.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -119,6 +119,27 @@ test('validation rejects unknown canonicalization targets, untracked provenance,
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }
+});
+
+// S-004O TK-009H: DDR-001E retires LEXICON.md, and accepted records that name
+// it in canonicalized_in keep that history unchanged. Once a room has retired
+// its Lexicon, the missing retired carrier is history, not an unknown target;
+// any other missing owner is still refused, and a record being accepted now
+// still needs a live owner.
+test('validation keeps a retired Lexicon canonicalized_in owner as history and still refuses other missing owners', () => {
+  const dir = gitFixture();
+  try {
+    const collection = path.join(dir, 'workbench', 'docs', 'adr');
+    assert.ok(!fs.existsSync(path.join(dir, 'LEXICON.md')), 'the fixture room has no Lexicon');
+    fs.writeFileSync(path.join(collection, '0001-first.md'), adr('accepted', 'canonicalized_in:\n  - AGENTS.md\n  - LEXICON.md\n'));
+    fs.writeFileSync(path.join(collection, '0002-second.md'), adr('accepted', 'canonicalized_in:\n  - templates/LEXICON.md\n'));
+    writeRegister(dir);
+    assert.deepEqual(validateAdrs(dir).map((item) => `${item.code}:${item.adr}:${item.owner}`), ['invalid-adr:0002-second.md:templates/LEXICON.md'], 'only the root retired Lexicon is history');
+    fs.mkdirSync(path.join(collection, 'proposed'), { recursive: true });
+    fs.writeFileSync(path.join(collection, 'proposed', '0003-proposed.md'), '---\ndate: 2026-09-04\ncanonicalized_in:\n  - LEXICON.md\n---\n\n# A proposal\n\nThe proposal.\n');
+    gitCommitAll(dir, 'Propose a record naming the retired Lexicon');
+    assert.throws(() => acceptRecord(dir, 'ADR-0003'), /cannot be accepted: .*LEXICON\.md does not exist/, 'a record accepted now needs a live owner');
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
 
 // S-00I TK-002 corrective: folder is lifecycle, so a newly created record
@@ -860,7 +881,7 @@ function workflowCorpus() {
       assert.ok(record, `missing ADR-${id}`);
       return [id, { ...record, body: record.body.split('\n## Historical proposal')[0] }];
     })),
-    controls: new Map(['LEXICON.md', 'AGENTS.md', 'RUNBOOK.md', 'BLUEPRINT.md'].map(file => [file, fs.readFileSync(path.join(root, file), 'utf8')]))
+    controls: new Map(['GLOSSARY.md', 'ARCHITECTURE.md', 'AGENTS.md', 'RUNBOOK.md', 'BLUEPRINT.md', 'workbench/wiki/dictionary-design-concept.md', 'workbench/wiki/dictionary-destination-packet.md'].map(file => [file, fs.readFileSync(path.join(root, file), 'utf8')]))
   };
 }
 
@@ -870,10 +891,12 @@ function assertWorkflowMeaning(corpus) {
   for (const [id, record] of records) {
     assert.equal(record.status, 'accepted', `ADR-${id} must be an active accepted decision`);
     assert.equal(record.folder, null, `ADR-${id} belongs in the active roster`);
-    for (const owner of ['AGENTS.md', 'LEXICON.md']) {
-      assert.ok(record.data.canonicalized_in.includes(owner), `ADR-${id} names ${owner}`);
-      assert.ok(controls.has(owner), `ADR-${id} owner ${owner} exists`);
-    }
+    assert.ok(record.data.canonicalized_in.includes('AGENTS.md'), `ADR-${id} names AGENTS.md`);
+    assert.ok(controls.has('AGENTS.md'), `ADR-${id} owner AGENTS.md exists`);
+    // S-004O TK-009H: the record keeps naming the retired LEXICON.md as
+    // canonicalized_in history (DDR-001E); its meanings are read from the
+    // glossary and the Wiki lexicon articles below.
+    assert.ok(record.data.canonicalized_in.includes('LEXICON.md'), `ADR-${id} keeps its canonicalized_in history`);
   }
   const g = records.get('000G').body;
   requires(g, /Blueprint owns the grand product destination/, 'Blueprint owns product altitude');
@@ -906,15 +929,21 @@ function assertWorkflowMeaning(corpus) {
   // S-004F TK-005Q: the Wiki is evidence, not the destination of corrective work.
   requires(h, /A Wiki claim is never the destination of corrective work: a later gap against delivered work becomes a new Spec/, 'a later gap is a new Spec and the Wiki is never a corrective destination');
   requires(h, /Task's destination is a Spec's acceptance lines, or a Wiki page when the Task's own destination is producing that page/, 'the Wiki-page destination serves a Task that produces the page');
-  const lexicon = controls.get('LEXICON.md');
+  // S-004O TK-009I: the Destination Packet's fuller definition and Distinction
+  // text live in its Wiki lexicon article.
+  // S-004F TK-005V: the Wiki is evidence, never the destination a packet carries, so no corrective Wiki-claim member.
+  const packet = controls.get('workbench/wiki/dictionary-destination-packet.md');
+  requires(packet, /Spec acceptance lines it satisfies, the Task[\s\S]*never the destination a packet carries/, 'Wiki meaning of Destination Packet');
+  assert.doesNotMatch(packet, /reconciled Wiki claim/, 'the Destination Packet article names no corrective Wiki-claim member');
+  // S-004O TK-009D: the Design concept Distinction lives in its Wiki lexicon article.
+  requires(controls.get('workbench/wiki/dictionary-design-concept.md'), /exists between participants/, 'Wiki meaning of Design concept');
+  // S-004O TK-009C: the decision vocabulary's definitions live in the glossary.
+  const glossary = controls.get('GLOSSARY.md').split('\n');
   for (const [term, pattern] of [
-    // S-004G TK-006E: the Blueprint row describes the four-part short page and what the Blueprint is for.
+    // S-004G TK-006E: the Blueprint entry describes the four-part short page.
     ['Blueprint', /direction we want to head[\s\S]*four-part short page/],
-    // S-004F TK-005V: the Wiki is evidence, never the destination a packet carries, so no corrective Wiki-claim member.
-    ['Destination Packet', /Spec acceptance lines it satisfies, the Task[\s\S]*never the destination a packet carries/],
     // S-004G TK-006D: the owner's confirmed Align meaning (the inquiry, usually grilling, in which an idea becomes a design concept the owner and the agents share).
     ['Align', /inquiry, usually grilling, in which an idea becomes a design concept the owner and the agents share/],
-    ['Design concept', /exists between participants/],
     ['Spec', /scoped objective with its own destination/],
     ['Task', /reaches or repairs a destination/],
     ['Retired', /transient staging/],
@@ -924,15 +953,16 @@ function assertWorkflowMeaning(corpus) {
     ['Feature article', /manifest-declared `features` collection/],
     ['Uncaptured complete', /complete[\s\S]*missing[\s\S]*capture/]
   ]) {
-    const row = lexicon.split('\n').find(line => line.startsWith(`| **${term}** |`));
-    assert.ok(row, `Lexicon defines ${term}`);
-    requires(row, pattern, `Lexicon meaning of ${term}`);
-    if (term === 'Destination Packet') assert.doesNotMatch(row, /reconciled Wiki claim/, 'the Destination Packet row names no corrective Wiki-claim member');
+    const at = glossary.indexOf(`**${term}**:`);
+    assert.ok(at >= 0, `the glossary defines ${term}`);
+    requires(glossary[at + 1] ?? '', pattern, `glossary meaning of ${term}`);
   }
   requires(controls.get('AGENTS.md'), /Dispatcher owns whole-Spec QA[\s\S]*separate Director context reviews/, 'AGENTS carries review roles');
   requires(controls.get('AGENTS.md'), /verification on main -> `complete`/, 'AGENTS carries closure order');
   // A reader follows literal paths and fragments; basename fallback is unsafe.
-  for (const [file, text] of [['LEXICON.md', lexicon], ...[...records.values()].map(record => [record.relativePath, record.body])]) {
+  // S-004O TK-009F: ARCHITECTURE.md now carries the Context Map routes; the
+  // Lexicon is removed (TK-009H).
+  for (const [file, text] of [['ARCHITECTURE.md', controls.get('ARCHITECTURE.md')], ...[...records.values()].map(record => [record.relativePath, record.body])]) {
     for (const match of text.matchAll(/\[[^\]]*\]\(([^)]+)\)/g)) {
       const target = decodeURIComponent(match[1]);
       if (/^(?:https?:|mailto:)/.test(target)) continue;
@@ -947,7 +977,7 @@ function assertWorkflowMeaning(corpus) {
   }
 }
 
-test('active workflow decisions and Lexicon meanings reconstruct the confirmed owner chain', () => {
+test('active workflow decisions and glossary meanings reconstruct the confirmed owner chain', () => {
   assertWorkflowMeaning(workflowCorpus());
 });
 
@@ -981,10 +1011,11 @@ test('workflow checks reject substantive and literal-route mutations with accept
   missingOwner.records.get('000G').data = { ...missingOwner.records.get('000G').data, canonicalized_in: ['BLUEPRINT.md'] };
   assert.throws(() => assertWorkflowMeaning(missingOwner), undefined, 'missing operational owner with accepted lifecycle');
   for (const [label, file, before, after] of [
-    // S-004C TK-005N routes the Lexicon's Runbook links through the operations index.
-    ['Context Map route', 'LEXICON.md', '(RUNBOOK.md#operations-index)', '(MISSING-RUNBOOK.md#operations-index)'],
-    ['Context Map heading', 'LEXICON.md', '(#artifact-ownership-schema)', '(#missing-owner-heading)'],
-    ['Packet regains a corrective Wiki claim', 'LEXICON.md', 'Spec acceptance lines it satisfies, the Task', 'Spec acceptance lines it satisfies or the reconciled Wiki claim for corrective work, the Task'],
+    ['Architecture route', 'ARCHITECTURE.md', '(RUNBOOK.md#operations-index)', '(MISSING-RUNBOOK.md#operations-index)'],
+    ['Architecture heading', 'ARCHITECTURE.md', '(#ownership)', '(#missing-owner-heading)'],
+    ['Packet regains a corrective Wiki claim', 'workbench/wiki/dictionary-destination-packet.md', 'Spec acceptance lines it satisfies, the Task', 'Spec acceptance lines it satisfies or the reconciled Wiki claim for corrective work, the Task'],
+    ['Design concept article loses its distinction', 'workbench/wiki/dictionary-design-concept.md', 'It exists between participants.', 'It exists in the Blueprint.'],
+    ['glossary Task loses its repair destination', 'GLOSSARY.md', 'slice that reaches or repairs a destination', 'slice that reaches a destination'],
     ['operational owner claim', 'AGENTS.md', 'Dispatcher owns whole-Spec QA', 'Worker owns whole-Spec QA']
   ]) {
     const corpus = workflowCorpus();
@@ -1511,4 +1542,19 @@ test('every existing decision-record command keeps its name and refuses a stray 
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }
+});
+
+// S-004O TK-009F: a decision-record move repairs references in ARCHITECTURE.md,
+// which carries the routes the retiring Lexicon held, and still in a Lexicon a
+// room has not retired yet; an absent control is skipped. The glossary links no
+// record and only promotion writes it (TK-009E), so the repair never touches it.
+test('a record move repairs ARCHITECTURE.md, a Lexicon only while one exists, and never the glossary', () => {
+  const project = fs.mkdtempSync(path.join(os.tmpdir(), 'adr-references-'));
+  try {
+    for (const name of ['AGENTS.md', 'GLOSSARY.md', 'ARCHITECTURE.md']) fs.writeFileSync(path.join(project, name), '# Current\n');
+    const names = () => collectRecordReferenceFiles(project).map((file) => path.relative(project, file));
+    assert.deepEqual(names().filter((name) => !name.includes('/')).sort(), ['AGENTS.md', 'ARCHITECTURE.md']);
+    fs.writeFileSync(path.join(project, 'LEXICON.md'), '# Current\n');
+    assert.ok(names().includes('LEXICON.md'), 'a Lexicon the update has not retired is still repaired');
+  } finally { fs.rmSync(project, { recursive: true, force: true }); }
 });

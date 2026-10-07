@@ -401,7 +401,7 @@ test('install refuses an unreceipted collision and a symlinked lane before mutat
 
 test('no active root control or template names a root tools path for a runtime tool', () => {
   const runtimePattern = new RegExp(`(?<![\\w/])tools/(${RUNTIME_TOOLS.map((tool) => tool.replace('.', '\\.')).join('|')})`);
-  const files = ['AGENTS.md', 'BLUEPRINT.md', 'RUNBOOK.md', 'TASKBOARD.md', 'README.md', 'LEXICON.md']
+  const files = ['AGENTS.md', 'BLUEPRINT.md', 'RUNBOOK.md', 'TASKBOARD.md', 'README.md', 'GLOSSARY.md', 'ARCHITECTURE.md']
     .map((name) => path.join(root, name))
     .concat(walk(path.join(root, 'templates')), walk(path.join(root, 'workbench', 'skills')));
   for (const file of files) {

@@ -22,7 +22,8 @@ source_paths:
   - skills-pending/domain-modeling/SKILL.md
   - workbench/skills/grilling/SKILL.md
   - RUNBOOK.md
-  - LEXICON.md
+  - GLOSSARY.md
+  - ARCHITECTURE.md
   - AGENTS.md
 last_verified: 2026-10-07
 ---
@@ -75,7 +76,7 @@ The skill keeps its source pin and credit in its [Source and credit](../skills/d
 
 ## A Workbench example
 
-Suppose the owner says, "The Tracker marks a Task complete when its document is aligned." The current [Lexicon](../../LEXICON.md) separates documentation alignment from implementation state. A useful question is whether "complete" means an aligned explanation or an execution slice that passed acceptance. A concrete edge case is a Wiki article that is aligned while the corresponding runtime slice still fails. The trace would name the Lexicon rows, the Task lifecycle owners and the tests that read "complete", before the owner picks.
+Suppose the owner says, "The Tracker marks a Task complete when its document is aligned." The current [glossary](../../GLOSSARY.md) separates documentation alignment from implementation state. A useful question is whether "complete" means an aligned explanation or an execution slice that passed acceptance. A concrete edge case is a Wiki article that is aligned while the corresponding runtime slice still fails. The trace would name the Lexicon rows, the Task lifecycle owners and the tests that read "complete", before the owner picks.
 
 The modeling result is a clarified concept and visible consequence, saved as pending until the owner confirms it. [The Task Artifact And Its Lifecycle](design-concepts/task-artifact-and-lifecycle.md) explains the execution artifact; the relevant Spec owns whether a particular implementation satisfies it. The conversation cannot manufacture a Task receipt or owner Human QA approval.
 
@@ -106,7 +107,7 @@ The modeling result is a clarified concept and visible consequence, saved as pen
 
 - [Required Domain Modeling Skill (S-004J)](../specs/S-004J-required-domain-modeling-skill/SPEC.md), its [scenario evidence](../specs/S-004J-required-domain-modeling-skill/proof/scenario-evidence.md) and [Lexicon Retirement And ARCHITECTURE.md (S-004O)](../specs/S-004O-lexicon-retirement-and-architecture-md/SPEC.md)
 - [The lane skill](../skills/domain-modeling/SKILL.md) and its [glossary format](../skills/domain-modeling/GLOSSARY-FORMAT.md); [Matt Pocock's source at the pin](https://github.com/mattpocock/skills/tree/d81f3a183412e71a5b1e84ca21bc1a35eea03a60/skills/engineering/domain-modeling)
-- [Refined Lexicon retirement (DDR-001E)](../docs/ddr/001E-the-lexicon-retires-terms-live-in-the-wiki-and-ownership-routes-and-invariants-live-in-architecture-md.md), [Contract](../../AGENTS.md), [current Lexicon ownership](../../LEXICON.md#artifact-ownership-schema) and [Wiki router](MEMORY.md)
+- [Refined Lexicon retirement (DDR-001E)](../docs/ddr/001E-the-lexicon-retires-terms-live-in-the-wiki-and-ownership-routes-and-invariants-live-in-architecture-md.md), [Contract](../../AGENTS.md), [current ownership](../../ARCHITECTURE.md#ownership) and [Wiki router](MEMORY.md)
 - [Superseded Domain Modeling Skill for the Workbench (S-002H)](../specs/S-002H-domain-modeling-skill/SPEC.md) retains the earlier plan and rationale; [Core Skill Lifecycle And Optional Source Disposition (S-00R)](../specs/S-00R-core-skill-lifecycle-and-optional-source-disposition/SPEC.md) owns retained source disposition
 
 - 2026-09-29: Created on the owner's request for the method comparison and Wiki treatment; no implementation claimed.
