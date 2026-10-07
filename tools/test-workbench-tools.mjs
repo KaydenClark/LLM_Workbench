@@ -513,6 +513,7 @@ function assertRestoredGeneration(room) {
   for(const name of room.originals) assert.equal(hash(fs.readFileSync(path.join(room.lane,name))),room.beforeReceipt.files[name]);
   const receipt=JSON.parse(fs.readFileSync(room.receiptFile,'utf8'));
   assert.deepEqual(receipt.files,room.beforeReceipt.files);
+  assert.deepEqual(receipt.source,room.beforeReceipt.source,'the historical source commit is preserved, never rewritten to the equivalent integration anchor');
   assert.deepEqual(receipt.backups,room.beforeReceipt.backups);
   assert.equal(run(room.oldInstaller,'verify','--project',room.dir).report.status,'valid','restored bytes pass their historical native controller');
   const current=run(installer,'verify','--project',room.dir);
@@ -543,7 +544,7 @@ test('growth rollback recovers the recorded legacy nine-backed-up eleven-to-twen
     assertRestoredGeneration(room);
   } finally {room.cleanup();}
 });
-for(const scenario of ['unrecorded','modified-introduced','modified-restored','corrupt-backup','unsafe-backup','inconsistent-absence','missing-unchanged','unknown-legacy-source']) {
+for(const scenario of ['unrecorded','modified-introduced','mode-introduced','modified-restored','corrupt-backup','unsafe-backup','inconsistent-absence','missing-unchanged','unknown-legacy-source']) {
   test(`growth rollback refuses ${scenario} before any lane writes`,()=>{
     const room=growthRoom();
     try {
@@ -553,6 +554,7 @@ for(const scenario of ['unrecorded','modified-introduced','modified-restored','c
         for(const name of fs.readdirSync(backup)) fs.copyFileSync(path.join(backup,name),path.join(copy,name));
         backup=copy;
       } else if(scenario==='modified-introduced') fs.appendFileSync(path.join(room.lane,room.introduced[0]),'\n// keep this local change\n');
+      else if(scenario==='mode-introduced') fs.chmodSync(path.join(room.lane,room.introduced[0]),0o755);
       else if(scenario==='modified-restored') fs.appendFileSync(path.join(room.lane,entry.files[0]),'\n// keep this local change\n');
       else if(scenario==='corrupt-backup') fs.appendFileSync(path.join(backup,entry.files[0]),'\n// changed saved bytes\n');
       else if(scenario==='unsafe-backup') {

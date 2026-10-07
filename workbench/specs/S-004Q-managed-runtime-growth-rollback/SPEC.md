@@ -27,7 +27,7 @@ At817661a4745fe3a307622eea5e47595d43cb3537, tools/workbench-tools.mjs update bac
 
 1. Update records original absence and backed-up hashes before replacement.
 2. Rollback preflights a currently recorded backup, restores saved files, removes only identified introduced tools and preserves the previous receipt/backups.
-3. Legacy previous11/current29 receipts with nine backed-up files recover the original11 using the delivered update rule above; inconsistent or ambiguous metadata refuses.
+3. Legacy previous11/current29 receipts with nine backed-up files recover the original11 using the delivered update rule above. Inference requires known integration-generation8e9c06f6 history; its controller equals historical main9378eada, without requiring the main merge as an ancestor. Legacy saved bytes must match previous receipt hashes; new saved hashes support pre-update drift. Inconsistent or ambiguous metadata refuses.
 4. Unrecorded/corrupt/unsafe backups or modified introduced tools refuse before any lane mutation.
 5. Historical11 native verification passes restored11. Current29 coverage remains strict and reports the older generation needs update.
 
@@ -72,6 +72,7 @@ This owner and existing managed-runtime feature explanation. Generic controls/te
 |---|---|---|---|---|---|
 | 2026-10-07 | planning | Narrow prerequisite assigned | Source/controller and ownership inspected read-only | New owner linked to delivered managed runtime and retained limitations | Regression, implementation, checks, review and delivery pending |
 | 2026-10-07 | setup | Initial Task claim refused | Native activation succeeded. Claim refused before mutation because the new Spec/Task own paths were uncommitted; its stated recovery is commit first. | Draft records and failed attempt preserved; no lifecycle-tool change | Checkpoint the assigned records, then native claim |
+| 2026-10-07 | TK-007J | Public growth rollback regression and correction | Original controller817661a4 returns rolled-back while retaining18 introduced files, accepts an unrecorded backup and overwrites post-update changes. Committed REDb69fd5ec; corrected controller9e85b668 focused11/11 and installer30/30 GREEN. Corrected fixture compares all original files including the existing lane placeholder; replay against unchanged original controller remains RED. | Controller now records absence and saved hashes, preflights recorded backup/integrity/local edits and restores exact previous receipt. Legacy ancestry guard corrected from historical main9378 to its controller-identical integration parent8e9; unknown sources still refuse. Feature explanation updated; no payload/Core/version/private target delta. | Added historical-source preservation and mode-edit checks, final full current suite, immutable assembled review and integration remain pending. Initial fixture expectation and legacy-guard failures retained locally; no first-pass-clean claim. |
 
 ## Completion Result
 
