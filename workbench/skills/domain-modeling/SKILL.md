@@ -22,8 +22,9 @@ the scope.
 
 Read `GLOSSARY.md` when it exists, otherwise the room's current `LEXICON.md`:
 until the glossary migration reaches a room, the Lexicon is its vocabulary
-owner, and nothing here pretends otherwise. Entries follow the format in
-[GLOSSARY-FORMAT.md](GLOSSARY-FORMAT.md). Capability-local meaning and
+owner, and nothing here pretends otherwise. Glossary entries follow the
+format in [GLOSSARY-FORMAT.md](GLOSSARY-FORMAT.md); a Lexicon keeps its own
+row form until it migrates. Capability-local meaning and
 acceptance live in the assigned Spec, richer explanation and examples in a Wiki
 article routed from the Wiki's `MEMORY.md`, and decision rationale in the
 decision-record collections `workbench/manifest.json` declares.
