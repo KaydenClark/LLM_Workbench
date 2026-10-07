@@ -18,9 +18,10 @@ classifications adopted from the Command Information Center (CIC).
 Priority guides attention to the question. Value classifies the capability or
 change it governs by return versus investment, using the unchanged
 [P1–P4 / V1–V4 meanings](../../../LEXICON.md#priority-and-value).
-They never become a summed score. P1 remains an interrupt regardless of Value;
+They never become a summed score. P1 remains visible regardless of Value;
 quick wins must not continually crowd out strategic work. Explicit filters
-select the Owner's desired slice, including slices without P1.
+select the Owner's desired slice, such as P1 with V2, P3 with V1 or P2 alone
+(PV-03), including slices without P1.
 
 The Owner sees compact numbered red P and amber V badges on each question,
 opens their grading rationale on click, and can open the question's complete

@@ -236,10 +236,8 @@ investment. They are separate classifications, never a summed score.
 | **P3 — Secondary:** when committed work allows | **V3 — Fill-In:** low return, low investment |
 | **P4 — Backlog:** retained without current expectation | **V4 — Defer / Eliminate:** low return, high investment |
 
-P1 remains an interrupt regardless of Value. Value informs choices within an
+P1 remains visible regardless of Value. Value informs choices within an
 attention lane; quick wins must not continually crowd out strategic work.
-An Owner-selected filter chooses a slice without changing either classification.
-Labels alone establish neither approval nor delivery state.
 
 The [Grill Board P/V decision](workbench/docs/ddr/001L-priority-and-value-help-the-owner-choose-grill-board-questions.md)
 applies these meanings to answering questions; its planned capability is owned
