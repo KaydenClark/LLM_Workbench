@@ -127,7 +127,7 @@ test('validation rejects unknown canonicalization targets, untracked provenance,
 // any other missing owner is still refused, and a record being accepted now
 // still needs a live owner.
 test('validation keeps a retired Lexicon canonicalized_in owner as history and still refuses other missing owners', () => {
-  const dir = fixture();
+  const dir = gitFixture();
   try {
     const collection = path.join(dir, 'workbench', 'docs', 'adr');
     assert.ok(!fs.existsSync(path.join(dir, 'LEXICON.md')), 'the fixture room has no Lexicon');
@@ -135,8 +135,10 @@ test('validation keeps a retired Lexicon canonicalized_in owner as history and s
     fs.writeFileSync(path.join(collection, '0002-second.md'), adr('accepted', 'canonicalized_in:\n  - templates/LEXICON.md\n'));
     writeRegister(dir);
     assert.deepEqual(validateAdrs(dir).map((item) => `${item.code}:${item.adr}:${item.owner}`), ['invalid-adr:0002-second.md:templates/LEXICON.md'], 'only the root retired Lexicon is history');
-    fs.writeFileSync(path.join(collection, '0003-proposed.md'), adr('proposed', 'canonicalized_in:\n  - LEXICON.md\n'));
-    assert.throws(() => acceptRecord(dir, 'ADR-0003'), /LEXICON\.md does not exist/, 'a record accepted now needs a live owner');
+    fs.mkdirSync(path.join(collection, 'proposed'), { recursive: true });
+    fs.writeFileSync(path.join(collection, 'proposed', '0003-proposed.md'), '---\ndate: 2026-09-04\ncanonicalized_in:\n  - LEXICON.md\n---\n\n# A proposal\n\nThe proposal.\n');
+    gitCommitAll(dir, 'Propose a record naming the retired Lexicon');
+    assert.throws(() => acceptRecord(dir, 'ADR-0003'), /cannot be accepted: .*LEXICON\.md does not exist/, 'a record accepted now needs a live owner');
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
 
@@ -879,7 +881,7 @@ function workflowCorpus() {
       assert.ok(record, `missing ADR-${id}`);
       return [id, { ...record, body: record.body.split('\n## Historical proposal')[0] }];
     })),
-    controls: new Map(['LEXICON.md', 'GLOSSARY.md', 'ARCHITECTURE.md', 'AGENTS.md', 'RUNBOOK.md', 'BLUEPRINT.md', 'workbench/wiki/dictionary-design-concept.md', 'workbench/wiki/dictionary-destination-packet.md'].map(file => [file, fs.readFileSync(path.join(root, file), 'utf8')]))
+    controls: new Map(['GLOSSARY.md', 'ARCHITECTURE.md', 'AGENTS.md', 'RUNBOOK.md', 'BLUEPRINT.md', 'workbench/wiki/dictionary-design-concept.md', 'workbench/wiki/dictionary-destination-packet.md'].map(file => [file, fs.readFileSync(path.join(root, file), 'utf8')]))
   };
 }
 
@@ -889,10 +891,12 @@ function assertWorkflowMeaning(corpus) {
   for (const [id, record] of records) {
     assert.equal(record.status, 'accepted', `ADR-${id} must be an active accepted decision`);
     assert.equal(record.folder, null, `ADR-${id} belongs in the active roster`);
-    for (const owner of ['AGENTS.md', 'LEXICON.md']) {
-      assert.ok(record.data.canonicalized_in.includes(owner), `ADR-${id} names ${owner}`);
-      assert.ok(controls.has(owner), `ADR-${id} owner ${owner} exists`);
-    }
+    assert.ok(record.data.canonicalized_in.includes('AGENTS.md'), `ADR-${id} names AGENTS.md`);
+    assert.ok(controls.has('AGENTS.md'), `ADR-${id} owner AGENTS.md exists`);
+    // S-004O TK-009H: the record keeps naming the retired LEXICON.md as
+    // canonicalized_in history (DDR-001E); its meanings are read from the
+    // glossary and the Wiki lexicon articles below.
+    assert.ok(record.data.canonicalized_in.includes('LEXICON.md'), `ADR-${id} keeps its canonicalized_in history`);
   }
   const g = records.get('000G').body;
   requires(g, /Blueprint owns the grand product destination/, 'Blueprint owns product altitude');
@@ -925,7 +929,6 @@ function assertWorkflowMeaning(corpus) {
   // S-004F TK-005Q: the Wiki is evidence, not the destination of corrective work.
   requires(h, /A Wiki claim is never the destination of corrective work: a later gap against delivered work becomes a new Spec/, 'a later gap is a new Spec and the Wiki is never a corrective destination');
   requires(h, /Task's destination is a Spec's acceptance lines, or a Wiki page when the Task's own destination is producing that page/, 'the Wiki-page destination serves a Task that produces the page');
-  const lexicon = controls.get('LEXICON.md');
   // S-004O TK-009I: the Destination Packet's fuller definition and Distinction
   // text live in its Wiki lexicon article.
   // S-004F TK-005V: the Wiki is evidence, never the destination a packet carries, so no corrective Wiki-claim member.
@@ -957,8 +960,9 @@ function assertWorkflowMeaning(corpus) {
   requires(controls.get('AGENTS.md'), /Dispatcher owns whole-Spec QA[\s\S]*separate Director context reviews/, 'AGENTS carries review roles');
   requires(controls.get('AGENTS.md'), /verification on main -> `complete`/, 'AGENTS carries closure order');
   // A reader follows literal paths and fragments; basename fallback is unsafe.
-  // S-004O TK-009F: ARCHITECTURE.md now carries the Context Map routes.
-  for (const [file, text] of [['LEXICON.md', lexicon], ['ARCHITECTURE.md', controls.get('ARCHITECTURE.md')], ...[...records.values()].map(record => [record.relativePath, record.body])]) {
+  // S-004O TK-009F: ARCHITECTURE.md now carries the Context Map routes; the
+  // Lexicon is removed (TK-009H).
+  for (const [file, text] of [['ARCHITECTURE.md', controls.get('ARCHITECTURE.md')], ...[...records.values()].map(record => [record.relativePath, record.body])]) {
     for (const match of text.matchAll(/\[[^\]]*\]\(([^)]+)\)/g)) {
       const target = decodeURIComponent(match[1]);
       if (/^(?:https?:|mailto:)/.test(target)) continue;
@@ -973,7 +977,7 @@ function assertWorkflowMeaning(corpus) {
   }
 }
 
-test('active workflow decisions and Lexicon meanings reconstruct the confirmed owner chain', () => {
+test('active workflow decisions and glossary meanings reconstruct the confirmed owner chain', () => {
   assertWorkflowMeaning(workflowCorpus());
 });
 
@@ -1007,9 +1011,6 @@ test('workflow checks reject substantive and literal-route mutations with accept
   missingOwner.records.get('000G').data = { ...missingOwner.records.get('000G').data, canonicalized_in: ['BLUEPRINT.md'] };
   assert.throws(() => assertWorkflowMeaning(missingOwner), undefined, 'missing operational owner with accepted lifecycle');
   for (const [label, file, before, after] of [
-    // S-004C TK-005N routes the Lexicon's Runbook links through the operations index.
-    ['Context Map route', 'LEXICON.md', '(RUNBOOK.md#operations-index)', '(MISSING-RUNBOOK.md#operations-index)'],
-    ['Context Map heading', 'LEXICON.md', '(#artifact-ownership-schema)', '(#missing-owner-heading)'],
     ['Architecture route', 'ARCHITECTURE.md', '(RUNBOOK.md#operations-index)', '(MISSING-RUNBOOK.md#operations-index)'],
     ['Architecture heading', 'ARCHITECTURE.md', '(#ownership)', '(#missing-owner-heading)'],
     ['Packet regains a corrective Wiki claim', 'workbench/wiki/dictionary-destination-packet.md', 'Spec acceptance lines it satisfies, the Task', 'Spec acceptance lines it satisfies or the reconciled Wiki claim for corrective work, the Task'],
