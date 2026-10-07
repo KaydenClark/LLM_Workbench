@@ -219,8 +219,16 @@ test('the Runbook closeout prunes linked worktrees and names where disposable re
 // line budget keeps it short: 175 lines is under half of the root Lexicon (363
 // lines) it replaces in part, and its three tables already hold one row per
 // line, so growth past it would be restated rationale rather than routes.
+// S-004O TK-009M: a word budget beside the line budget, since one table row
+// can carry a paragraph. 2,800 words is about a fifth of the root Lexicon
+// (about 13,800 words); the ownership and boundary tables hold the landed
+// Lexicon text, so growth past it would again be restated rationale. Delivery
+// routes go through the Spec catalog and landmarks, never to one Spec record,
+// which a later Spec would make stale.
 const ARCHITECTURE_FILES = ['ARCHITECTURE.md', 'templates/ARCHITECTURE.md'];
 const ARCHITECTURE_LINE_BUDGET = 175;
+const ARCHITECTURE_WORD_BUDGET = 2800;
+const architectureWords = (text) => text.split(/\s+/).filter((word) => /[\p{L}\p{N}]/u.test(word)).length;
 const ARCHITECTURE_SECTIONS = ["Bird's-Eye View", 'Codemap', 'Ownership', 'Routes', 'Invariants And Boundaries'];
 const S004O_PROOF = 'workbench/specs/S-004O-lexicon-retirement-and-architecture-md/proof';
 const ARCHITECTURE_INVENTORIES = [
@@ -244,7 +252,12 @@ test('root and template ARCHITECTURE.md carry the bird\'s-eye view, codemap, own
     assert.doesNotMatch(body, /LEXICON\.md|\]\([^)]*#artifact-ownership-schema\)/, `${relative} routes to no Lexicon`);
     const lines = body.split('\n').length;
     assert.ok(lines <= ARCHITECTURE_LINE_BUDGET, `${relative} stays within ${ARCHITECTURE_LINE_BUDGET} lines (found ${lines})`);
+    const words = architectureWords(body);
+    assert.ok(words <= ARCHITECTURE_WORD_BUDGET, `${relative} stays within ${ARCHITECTURE_WORD_BUDGET} words (found ${words})`);
+    assert.doesNotMatch(body, /\]\((?:[^)\s]*\/)?(?:specs|landmarks)\/(?:S|LMK)-[^)\s]*\)/, `${relative} routes delivery through the Spec catalog and landmarks, not to one Spec or landmark record`);
   }
+  assert.ok(architectureWords(`${'word '.repeat(ARCHITECTURE_WORD_BUDGET + 1)}| -> |`) > ARCHITECTURE_WORD_BUDGET, 'the word count counts words and skips table rules and arrows');
+  assert.equal(architectureWords('| Need | -> | --- |'), 1, 'table punctuation is not a word');
   const template = read('templates/ARCHITECTURE.md');
   const codemap = template.slice(template.indexOf('## Codemap'), template.indexOf('## Ownership'));
   assert.match(codemap, /\[path\][\s\S]*\[purpose\]/, 'the Template codemap keeps a placeholder for the room to fill');
