@@ -16,7 +16,11 @@ import { RUNTIME_TOOLS, coreSkills } from '../workbench/tools/workbench-layout.m
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const VERSION = JSON.parse(fs.readFileSync(path.join(root, 'workbench', 'manifest.json'), 'utf8')).workbenchVersion;
 const tool = path.join(root, 'tools', 'workbench-upgrade.mjs');
-const controls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md'];
+// S-004O TK-009G: a room's installed controls are GLOSSARY.md and
+// ARCHITECTURE.md in place of the retired Lexicon; a v2 room built before the
+// retirement holds LEXICON.md instead (`lexiconControls`).
+const controls = ['AGENTS.md', 'BLUEPRINT.md', 'GLOSSARY.md', 'ARCHITECTURE.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md'];
+const lexiconControls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md'];
 
 function fixture(prefix) {
   return fs.mkdtempSync(path.join(os.tmpdir(), prefix));
@@ -33,8 +37,8 @@ function write(project, relative, content) {
   fs.writeFileSync(target, content);
 }
 
-function seedProject(project) {
-  for (const control of controls) write(project, control, `# ${control}\n\nProject-specific v2 truth.\n`);
+function seedProject(project, controlSet = controls, contents = {}) {
+  for (const control of controlSet) write(project, control, contents[control] ?? `# ${control}\n\nProject-specific v2 truth.\n`);
   write(project, 'BLUEPRINT.md', '# Blueprint\n\n<!-- spec-catalog:start -->\n<!-- spec-catalog:end -->\n');
   write(project, 'TASKBOARD.md', '# Taskboard\n\n<!-- hot-specs:start -->\n<!-- hot-specs:end -->\n');
   write(project, 'specs/S-101-upgrade/SPEC.md', [
@@ -372,6 +376,120 @@ test('updating a room with no landmarks through the managed route leaves its wor
     assert.deepEqual(findings.filter((finding) => ['all', 'selection'].includes(finding.blocks)), [], doctor.stdout);
     assert.deepEqual(findings.filter((finding) => /landmark/.test(finding.code)), [], 'the empty landmarks collection raises no landmark finding');
     assert.equal(JSON.parse(roomTool('next', '--json').stdout)?.specId, 'S-101', 'the room still selects its own work');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+    fs.rmSync(home, { recursive: true, force: true });
+  }
+});
+
+// S-004O TK-009G: the explicit upgrade of a room that holds LEXICON.md
+// installs GLOSSARY.md and ARCHITECTURE.md from the Template, with the Template
+// Wiki vocabulary articles beside the router, and retires the Lexicon only
+// after every one of its lines has landed in that room: a line of the
+// Template Lexicon the room was generated from (generic content the Template
+// glossary, architecture and Wiki now carry) or text present in the room's
+// GLOSSARY.md, ARCHITECTURE.md or Wiki. Otherwise the Lexicon is kept and the
+// upgrade names the unlanded lines. A room without a Lexicon is unchanged.
+const ARTICLES = fs.readdirSync(path.join(root, 'templates', 'wiki')).filter((name) => /^vocabulary-.+\.md$|^ai-coding-reference\.md$/.test(name)).sort();
+const PROJECT_ROW = '| **Greeting** | The single line the CLI prints for a name. | Not a banner or a log line. |';
+
+function templateLexicon() {
+  // A room's Lexicon as Genesis left it: the Template Lexicon, filled.
+  return fs.readFileSync(path.join(root, 'templates', 'LEXICON.md'), 'utf8')
+    .replaceAll('[PROJECT_NAME]', 'Greeter').replaceAll('[HARNESS_VERSION]', VERSION.slice(1))
+    .replaceAll('[YYYY-MM-DD]', '2026-09-01').replaceAll('[active / partial / stale]', 'active');
+}
+
+function upgradeLexiconRoom(lexicon) {
+  const project = fixture('workbench-upgrade-lexicon-');
+  const home = fixture('workbench-upgrade-home-');
+  seedProject(project, lexiconControls, { 'LEXICON.md': lexicon });
+  const result = run(tool, 'upgrade', '--project', project, '--home', home, '--version', VERSION, '--layout-only');
+  return { project, home, result };
+}
+
+test('TK-009G: an upgrade keeps a Lexicon whose project-specific row has not landed and names the row', () => {
+  const lexicon = `${templateLexicon()}\n## Project Terms\n\n| Term | Definition | Distinction |\n|---|---|---|\n${PROJECT_ROW}\n`;
+  const { project, home, result } = upgradeLexiconRoom(lexicon);
+  try {
+    assert.equal(result.status, 0, result.stdout + result.stderr);
+    assert.equal(result.report.status, 'complete');
+    assert.equal(fs.readFileSync(path.join(project, 'LEXICON.md'), 'utf8'), lexicon, 'the Lexicon is kept byte for byte');
+    assert.equal(result.report.lexicon.status, 'kept');
+    assert.equal(result.report.lexicon.finding.code, 'lexicon-unlanded');
+    assert.equal(result.report.lexicon.finding.severity, 'attention');
+    assert.deepEqual(result.report.lexicon.unlanded.map((item) => item.text), [PROJECT_ROW], 'only the project-specific row is unlanded; every generic Template line has landed');
+    assert.match(result.report.lexicon.finding.message, /Greeting/, 'the finding names the unlanded line');
+    assert.deepEqual(result.report.lexicon.installed, ['GLOSSARY.md', 'ARCHITECTURE.md'], 'the room receives both new controls from the Template');
+    for (const name of ['GLOSSARY.md', 'ARCHITECTURE.md']) {
+      const content = fs.readFileSync(path.join(project, name), 'utf8');
+      assert.match(content, /^# Greeter\b/, `${name} carries the room's name`);
+      assert.match(content, new RegExp(`Generated from LLM Workbench ${VERSION.replaceAll('.', '\\.')}\\.`), `${name} carries the room's version`);
+    }
+    for (const article of ARTICLES) assert.ok(fs.existsSync(path.join(project, 'workbench', 'wiki', article)), `${article} installs beside the router`);
+    assert.ok(!fs.existsSync(path.join(project, 'workbench', 'sessions', 'recovery', 'lexicon-retirement')), 'a kept Lexicon has no retirement backup');
+    const recovery = JSON.parse(fs.readFileSync(path.join(project, result.report.recoveryPath), 'utf8'));
+    assert.equal(recovery.lexicon.status, 'kept', 'the recovery record names the Lexicon outcome');
+
+    // Landing the row in the room's own glossary lets the managed update
+    // route retire the Lexicon on its next run.
+    fs.appendFileSync(path.join(project, 'GLOSSARY.md'), `\n${PROJECT_ROW}\n`);
+    const migrated = spawnSync(process.execPath, [path.join(root, 'workbench', 'tools', 'workbench-layout.mjs'), 'migrate', '--project', project], { cwd: root, encoding: 'utf8' });
+    assert.equal(migrated.status, 0, migrated.stdout + migrated.stderr);
+    const report = JSON.parse(migrated.stdout);
+    assert.equal(report.status, 'migrated');
+    assert.equal(report.lexicon.status, 'retired');
+    assert.ok(!fs.existsSync(path.join(project, 'LEXICON.md')), 'the landed Lexicon is retired');
+    assert.equal(fs.readFileSync(path.join(project, report.lexicon.backup), 'utf8'), lexicon, 'the retired Lexicon is backed up byte for byte');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+    fs.rmSync(home, { recursive: true, force: true });
+  }
+});
+
+test('TK-009G: an upgrade retires a fully landed Lexicon with a backup and records it for rollback', () => {
+  const lexicon = templateLexicon();
+  const { project, home, result } = upgradeLexiconRoom(lexicon);
+  try {
+    assert.equal(result.status, 0, result.stdout + result.stderr);
+    assert.equal(result.report.status, 'complete');
+    assert.equal(result.report.lexicon.status, 'retired');
+    assert.ok(!fs.existsSync(path.join(project, 'LEXICON.md')), 'the Lexicon is removed');
+    assert.equal(result.report.lexicon.backup, 'workbench/sessions/recovery/lexicon-retirement/LEXICON.md');
+    assert.equal(fs.readFileSync(path.join(project, result.report.lexicon.backup), 'utf8'), lexicon, 'the backup holds the removed Lexicon byte for byte');
+    for (const name of ['GLOSSARY.md', 'ARCHITECTURE.md']) assert.ok(fs.statSync(path.join(project, name)).isFile(), `${name} is installed`);
+    for (const article of ARTICLES) assert.ok(fs.existsSync(path.join(project, 'workbench', 'wiki', article)), `${article} installs beside the router`);
+    const recovery = JSON.parse(fs.readFileSync(path.join(project, result.report.recoveryPath), 'utf8'));
+    assert.equal(recovery.lexicon.status, 'retired');
+    assert.equal(recovery.lexicon.backup, result.report.lexicon.backup, 'the recovery record names the backup');
+    assert.ok(recovery.preMigration.inventory.includes('LEXICON.md'), 'the pre-migration commit, the rollback point, still holds the Lexicon');
+  } finally {
+    fs.rmSync(project, { recursive: true, force: true });
+    fs.rmSync(home, { recursive: true, force: true });
+  }
+});
+
+test('TK-009G: an upgrade and the managed update route leave a room without a Lexicon unchanged', () => {
+  const project = fixture('workbench-upgrade-nolexicon-');
+  const home = fixture('workbench-upgrade-home-');
+  try {
+    const glossary = '# Greeter\n\n> Generated from LLM Workbench v0.0.0.\n\nA greeter.\n\n## Language\n\n**Greeting**:\nThe line the CLI prints.\n';
+    const architecture = '# Greeter - Architecture\n\n## Codemap\n\n| Path | What lives there |\n|---|---|\n| `src/` | The CLI. |\n';
+    seedProject(project, controls, { 'GLOSSARY.md': glossary, 'ARCHITECTURE.md': architecture });
+    const upgraded = run(tool, 'upgrade', '--project', project, '--home', home, '--version', VERSION, '--layout-only');
+    assert.equal(upgraded.status, 0, upgraded.stdout + upgraded.stderr);
+    assert.equal(upgraded.report.lexicon?.status ?? 'absent', 'absent');
+    assert.equal(fs.readFileSync(path.join(project, 'GLOSSARY.md'), 'utf8'), glossary, 'the room glossary is untouched');
+    assert.equal(fs.readFileSync(path.join(project, 'ARCHITECTURE.md'), 'utf8'), architecture, 'the room architecture is untouched');
+    assert.ok(!fs.existsSync(path.join(project, 'LEXICON.md')), 'no Lexicon is created');
+    assert.ok(!fs.existsSync(path.join(project, 'workbench', 'sessions', 'recovery', 'lexicon-retirement')), 'nothing is backed up');
+    const before = snapshot(project);
+    const migrated = spawnSync(process.execPath, [path.join(root, 'workbench', 'tools', 'workbench-layout.mjs'), 'migrate', '--project', project], { cwd: root, encoding: 'utf8' });
+    assert.equal(migrated.status, 0, migrated.stdout + migrated.stderr);
+    const report = JSON.parse(migrated.stdout);
+    assert.equal(report.status, 'current');
+    assert.equal(report.lexicon, undefined, 'the managed route reports no Lexicon step for a room without one');
+    assert.deepEqual(snapshot(project), before, 'the managed route changes nothing');
   } finally {
     fs.rmSync(project, { recursive: true, force: true });
     fs.rmSync(home, { recursive: true, force: true });

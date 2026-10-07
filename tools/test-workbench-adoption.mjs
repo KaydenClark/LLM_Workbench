@@ -31,8 +31,13 @@ function read(project, relative) {
   return fs.readFileSync(path.join(project, relative), 'utf8');
 }
 
-function seedControls(project) {
-  for (const control of ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md']) {
+// S-004O TK-009G: the installed control set carries GLOSSARY.md and
+// ARCHITECTURE.md in place of the retired Lexicon.
+const CONTROLS = ['AGENTS.md', 'BLUEPRINT.md', 'GLOSSARY.md', 'ARCHITECTURE.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md'];
+const LEXICON_CONTROLS = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md'];
+
+function seedControls(project, controlSet = CONTROLS) {
+  for (const control of controlSet) {
     write(project, control, `# ${control}\n\nProject-specific adoption truth.\n`);
   }
   write(project, 'BLUEPRINT.md', '# Blueprint\n\n<!-- spec-catalog:start -->\n<!-- spec-catalog:end -->\n');
@@ -94,7 +99,7 @@ function fixtureSpec() {
   try {
     seedUserSkills(home);
     const controls = {};
-    for (const name of ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md']) {
+    for (const name of CONTROLS) {
       let content = name === 'CLAUDE.md' ? '@AGENTS.md\n' : fs.readFileSync(path.join(root, 'templates', name), 'utf8');
       for (const placeholder of templatePlaceholders) content = content.split(placeholder).join('Room-owned value');
       write(project, name, content);
@@ -605,7 +610,7 @@ console.log('ok - adoption writes room-brain frontmatter in the terminator the f
     seedControls(project);
     seedUserSkills(home);
     write(project, 'specs/S-101-adopted/SPEC.md', fixtureSpec());
-    for (const control of ['LEXICON.md', 'RUNBOOK.md', 'README.md']) fs.rmSync(path.join(project, control));
+    for (const control of ['GLOSSARY.md', 'RUNBOOK.md', 'README.md']) fs.rmSync(path.join(project, control));
     write(project, 'AGENTS.md', '# AGENTS.md\n\nEdit scope: [BRACKETED_LANE].\n');
 
     const result = run('migrate', '--project', project, '--home', home, '--version', VERSION);
@@ -614,11 +619,11 @@ console.log('ok - adoption writes room-brain frontmatter in the terminator the f
     assert.equal(report.status, 'blocked');
     assert.deepEqual(report.error.controls, [
       { control: 'AGENTS.md', reason: 'bracketed-control', path: path.join(project, 'AGENTS.md') },
-      { control: 'LEXICON.md', reason: 'missing-control', path: path.join(project, 'LEXICON.md') },
+      { control: 'GLOSSARY.md', reason: 'missing-control', path: path.join(project, 'GLOSSARY.md') },
       { control: 'RUNBOOK.md', reason: 'missing-control', path: path.join(project, 'RUNBOOK.md') },
       { control: 'README.md', reason: 'missing-control', path: path.join(project, 'README.md') }
     ], 'one refusal must name every unreconciled control with its own distinct reason');
-    for (const control of ['AGENTS.md', 'LEXICON.md', 'RUNBOOK.md', 'README.md']) {
+    for (const control of ['AGENTS.md', 'GLOSSARY.md', 'RUNBOOK.md', 'README.md']) {
       assert.ok(report.error.message.includes(control), `the refusal message must name ${control}`);
     }
     assert.ok(report.error.message.includes('BLUEPRINT.md') === false, 'a reconciled control must not be named as a failure');
@@ -636,3 +641,48 @@ console.log('ok - adoption writes room-brain frontmatter in the terminator the f
 }
 
 console.log('ok - one adoption refusal names every unreconciled control, the reconcile order, and the overwrite warning');
+
+// S-004O TK-009G: adopting an existing project that holds LEXICON.md follows
+// the update route's rule. The project receives GLOSSARY.md and ARCHITECTURE.md
+// from the Template, and its Lexicon is retired with a backup only when every
+// line has landed (a Template Lexicon line, or text the room's glossary,
+// architecture or Wiki holds); otherwise it is kept and the unlanded lines are
+// reported as an attention finding.
+{
+  const lexicon = fs.readFileSync(path.join(root, 'templates', 'LEXICON.md'), 'utf8')
+    .replaceAll('[PROJECT_NAME]', 'Pond').replaceAll('[HARNESS_VERSION]', VERSION.slice(1))
+    .replaceAll('[YYYY-MM-DD]', '2026-09-01').replaceAll('[active / partial / stale]', 'active');
+  const row = '| **Puffer** | The fish the pond shows. | Not a balloon. |';
+  for (const [label, content, expected] of [['landed', lexicon, 'retired'], ['project-specific', `${lexicon}\n${row}\n`, 'kept']]) {
+    const project = fixture();
+    const home = fixture();
+    try {
+      seedControls(project, LEXICON_CONTROLS);
+      write(project, 'LEXICON.md', content);
+      write(project, 'specs/S-101-adopted/SPEC.md', fixtureSpec());
+      const result = run('migrate', '--project', project, '--home', home, '--version', VERSION);
+      assert.equal(result.status, 0, result.stdout + result.stderr);
+      const report = JSON.parse(result.stdout);
+      assert.equal(report.status, 'complete');
+      assert.equal(report.lexicon.status, expected, `a ${label} Lexicon is ${expected}`);
+      for (const name of ['GLOSSARY.md', 'ARCHITECTURE.md']) assert.match(read(project, name), /^# Pond\b/, `${name} installs from the Template for the ${label} case`);
+      if (expected === 'retired') {
+        assert.ok(!fs.existsSync(path.join(project, 'LEXICON.md')), 'the landed Lexicon is removed');
+        assert.equal(read(project, report.lexicon.backup), content, 'the backup holds the removed Lexicon');
+        assert.equal(JSON.parse(read(project, report.recoveryPath)).lexicon.backup, report.lexicon.backup, 'the adoption recovery record names the backup');
+      } else {
+        assert.equal(read(project, 'LEXICON.md'), content, 'the Lexicon is kept byte for byte');
+        assert.deepEqual(report.lexicon.unlanded.map((item) => item.text), [row]);
+        const finding = report.findings.find((item) => item.code === 'lexicon-unlanded');
+        assert.ok(finding, 'the unlanded lines surface among the adoption findings');
+        assert.equal(finding.severity, 'attention');
+        assert.match(finding.message, /Puffer/);
+      }
+    } finally {
+      fs.rmSync(project, { recursive: true, force: true });
+      fs.rmSync(home, { recursive: true, force: true });
+    }
+  }
+}
+
+console.log('ok - adoption retires a landed Lexicon with a backup and keeps one whose project-specific lines have not landed');
