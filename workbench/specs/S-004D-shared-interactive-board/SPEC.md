@@ -1,14 +1,16 @@
 # S-004D - Shared Interactive Workbench Board
 
 **Spec ID:** S-004D
-**Status:** planned
+**Status:** active
+**Priority:** 2
+**Owner:** unassigned
 **Stance:** Builder
 **Updated:** 2026-10-06
 **Catalog description:** The browser workspace the Grill Board grows into: connected Taskboard and Tracker cards, discussion and update requests, preserving their distinct source and progress semantics.
 **Release scope:** In scope since the owner's 2026-10-04 answer; no release is assigned.
 **Blockers:** none
-**Latest event:** 2026-10-06: the owner settled the hosting boundary (local, small), comments as one file each in a folder under the Grill Board, no dragging, and the board's storage model (it reads existing owners and stores only comments).
-**Next gate:** Activate and cut Tasks from live Actuality with `/to-tasks`, starting from the Grill Board; settle the remaining open design choices as each slice needs them.
+**Latest event:** 2026-10-06: activated and seven Tasks cut from the Grill Board (TK-007C to TK-007I); update requests and mixed-view grouping stay uncut on their open design choices.
+**Next gate:** Complete TK-007C (the centered card window) and TK-007E (answers to a notepad), which have no blockers.
 
 > **Citation anchors.** pre=`f6af4c339b543988a3212b1940581157f573818d` post=`f6af4c339b543988a3212b1940581157f573818d`.
 
@@ -211,13 +213,30 @@ At activation, consume the verified seams of Generated JSON Taskboard
 [Landmark Records](../S-002A-landmark-records/SPEC.md), and the then-current
 identity and lifecycle tools. These are architectural relationships, not an
 assertion that every owning Spec must reach owner closure before a bounded
-browser slice can be planned. Do not add this Spec to their dependencies. No
+browser slice can be planned. Do not add this Spec to their dependencies. Update requests and mixed-view grouping are not cut as Tasks until their open design choices above are settled; each is cut once its choice is answered. No
 release is assigned; this record does not add it to
 [Workbench v4.0.0 Release](../S-00O-workbench-v4-0-0-release/SPEC.md).
 
 ## Vertical Implementation Slices
 
-No Tasks are cut. The Grill Board is the delivered first slice, built outside
+Cut on 2026-10-06 at activation, growing the Grill Board rather than starting
+a new page (the paragraph below is the Map-time proposal, kept as written):
+
+- TK-007C: a clicked card opens as a window centered over the board.
+- TK-007D: a comment on a card is saved as its own file under the Grill Board
+  and shown in the card window (after TK-007C).
+- TK-007E: the owner's answers save to a notepad instead of `answers.json`.
+- TK-007F, TK-007G, TK-007H: Spec approval, question and decision-record cards
+  read live from the Taskboard, the DQCs and the decision records (each after
+  TK-007C).
+- TK-007I: open choices and owner decisions move to their owners, and
+  `items.json` retires (after TK-007E to TK-007H).
+
+Left uncut until their open design choices are settled: update requests and
+how a request reaches an agent or maintainer, and mixed-view grouping. They
+are recorded under Open Design Choices and Dependencies And Blockers.
+
+The Grill Board is the delivered first slice, built outside
 a claimed Task. At activation, cut the next slices from live Actuality along
 the "Not yet" and "Partly" rows above, growing the Grill Board rather than
 starting a new page; for example, live Taskboard and Tracker cards with their
@@ -272,3 +291,4 @@ with verified capability and limits. No general documentation migration is in sc
 | 2026-10-04 | Owner answer; remapped from the Grill Board | Owner, 2026-10-04: "No the shared board is the grilling board. that is good to know that there was a spec for that." and "Hold on, so that shared board spec is what the grilling board is supposed to turn into". `owner:shared-board-activation` cleared; v4 exclusion and future-intent-only wording removed; release unassigned. Grill Board read at 46ad9789 (tool, README, items.json: 180 items) and `node tools/test-grill-board.mjs` 16/16; Desired Behavior mapped to partly delivered or not yet. Status stays planned: no Task is cut and the Grill Board was built outside a claimed Task. Grill Board item GB-0017 withdrawn as answered here. Map only; no code. |
 | 2026-10-06 | Owner answers on hosting, comments, drag and storage | Asked in chat while choosing a Spec to unblock with grilling; each answer read back as pending and confirmed by the owner the same day. Recorded under Decisions And Contracts in his words: local and small hosting, one comment or update-request file each in a folder under the Grill Board, no dragging, and the board reads DQCs, the Taskboard and decision records, shows the Tracker, saves answers to a notepad and stores only its comments. Map only; no Task is cut and no code changed. |
 | 2026-10-06 | Owner answer on the card inspector | Read back as pending and confirmed by the owner the same day ("readback 3 confirmed"): clicking a card opens it as a window centered over the board, not expanded in place. Recorded under Decisions And Contracts in his words. Map only; no Task is cut and no code changed. |
+| 2026-10-06 | Activated; seven Tasks cut | `convert-tasks S-004D --activate` after writing TK-007C to TK-007I from live Actuality at the Grill Board (`tools/grill-board.mjs`, `index.html`, `items.json`: 181 items) and the owner's 2026-10-06 answers; each ID from `next-id` and checked against every remote branch. Priority and Owner header fields added because activation requires them. Update requests and mixed-view grouping stay uncut on open design choices. Plan only; no code changed. |
