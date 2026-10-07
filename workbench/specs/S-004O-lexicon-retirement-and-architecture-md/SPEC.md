@@ -64,12 +64,12 @@ Context layout, verified at Plan on 2026-10-06 at assembly base `1f4e2d67`: one 
 
 ## Acceptance Criteria
 
-- [ ] A census maps every Lexicon line to a home and the landing check passes at the candidate with `LEXICON.md` removed.
-- [ ] `ARCHITECTURE.md` exists in the room and the Template, stays short, and holds the ownership table, routes and invariants; Genesis and adoption draft the codemap for a new room.
-- [ ] Root and Template glossary use the pinned Matt format with concise project-specific definitions and avoided aliases; general terms are classified rather than copied.
-- [ ] Rich Wiki lexicon articles explain concepts and show usage, link to canonical glossary definitions, and remain routed from Wiki memory; general reference pages can remain Wiki-only.
+- [x] A census maps every Lexicon line to a home and the landing check passes at the candidate with `LEXICON.md` removed.
+- [x] `ARCHITECTURE.md` exists in the room and the Template, stays short, and holds the ownership table, routes and invariants; Genesis and adoption draft the codemap for a new room.
+- [x] Root and Template glossary use the pinned Matt format with concise project-specific definitions and avoided aliases; general terms are classified rather than copied.
+- [x] Rich Wiki lexicon articles explain concepts and show usage, link to canonical glossary definitions, and remain routed from Wiki memory; general reference pages can remain Wiki-only.
 - [ ] Vocabulary, explanation and ownership consumers resolve to their proper owners; neighboring skill acceptance is proven in those Specs.
-- [ ] A promotion scenario preserves an unconfirmed proposed term in the notepad and promotes only confirmed meaning; it adds no inline-write exception.
+- [x] A promotion scenario preserves an unconfirmed proposed term in the notepad and promotes only confirmed meaning; it adds no inline-write exception.
 - [ ] No link in the repository points at a Lexicon heading, the Instruction Authority list does not name the Lexicon, and the full suite passes on the committed candidate.
 - [ ] Updating a room retires its Lexicon only after its lines land, and a room without one is unchanged; named verification and remaining limitations are recorded without claiming owner approval.
 
@@ -111,12 +111,27 @@ Run the targeted control, wiki, template, genesis, adoption and upgrade tests, t
 
 ## Completion Result
 
-Pending.
+Assembled on `claude/s004o-lexicon-retirement` (draft PR #411 into integration), eleven Tasks TK-009A to TK-009M, each merged into the assembly by its own PR (#409, #413, #414, #416, #417, #419, #420, #423, #424, #426, #428, #429, #430).
+
+- **Census and removal.** Every line of `LEXICON.md` (308) and `templates/LEXICON.md` (269) has a classified home in the final inventories scaffolded at pre-removal commit `0059669f`; the landing check (extended to Lexicon carriers, `glossary` and `architecture` homes and a deleted carrier) passes for both with the files removed ([root](proof/lexicon-landing-check.json), [Template](proof/template-lexicon-landing-check.json)). The [consumer census](proof/lexicon-consumer-census.md) records every reader and its new owner.
+- **`ARCHITECTURE.md`** in the room and the Template: bird's-eye view, codemap with no code links, ownership table and boundaries, routes and invariants; a routing artifact, never a Contract file. A shape check holds it to 175 lines and 2,800 words and refuses per-Spec routes. Genesis and adoption draft the codemap from project evidence for grilling to confirm; the update route says the same.
+- **`GLOSSARY.md`** in the room and the Template in Matt's pinned format: 13 groupings, one or two sentence definitions, retired names as `_Avoid_` aliases; general AI and programming concepts stay Wiki-only.
+- **Wiki.** About 130 per-term lexicon articles in this room (`glossary_term` declared, full Distinction text, usage, Sources), 22 Wiki-only reference pages, and 12 grouped Template articles a generated room receives. The Wiki validator refuses a lexicon article whose declared term is not a glossary entry.
+- **Promotion.** `sessions.mjs promote` accepts the root glossary and refuses anything but confirmed `decision` entries; a scenario keeps a proposed term in the notepad. No inline glossary write exists.
+- **Consumers.** 72 live files re-pointed; the Instruction Authority list names `RUNBOOK.md` as the other Contract carrier; the Blueprint first line in both rooms says where terms are defined; a live-link check scans live controls, Wiki, skills, Templates and live Spec and decision-record bodies.
+- **Rooms.** The installed control set is AGENTS, BLUEPRINT, GLOSSARY, ARCHITECTURE, RUNBOOK, TASKBOARD, CLAUDE and README; the update route and adoption retire a room's Lexicon only after every line lands (generic lines only when the room's homes still carry the Template content), keep it byte for byte with a `lexicon-unlanded` finding otherwise, back it up before removal, and leave a room without one unchanged.
+- **Review.** A building-side whole-Spec code review in a fresh context found one High, three Medium and three Low findings at `fce242cb`; TK-009M corrected six and documented the seventh (the Grill Board, below).
+- **Dispositions.** `ARCHITECTURE.md` is a promotion destination as an installed control, consistent with DDR-001E; the TK-009E evidence row saying otherwise predates that change. Decision records keep `LEXICON.md` in `canonicalized_in` as history, and `adr.mjs` validation treats a retired root Lexicon owner there as history.
 
 ## Remaining Limitations Or Follow-Up Specs
 
-- Context inventory, individual row classification and migration sequencing are Plan work. The glossary/explanatory-article distinction is settled; do not reopen it.
-- This planning-only change exempts Template runtime/control migration: the generic glossary, architecture and route updates must ship together during this Spec's delivery.
+- **Grill Board reader (keeps Acceptance line 5 open).** `tools/grill-board.mjs` `artifactCatalog` still offers `LEXICON.md` and `readArtifact` fails on it, and ten open board items (GB-0001, GB-0002, GB-0003, GB-0005, GB-0012, GB-0014, GB-0081, GB-0090, GB-0093, GB-0164) cite it. Not edited here because the owner holds uncommitted edits on exactly those lines; the board's owner re-points the catalog to `GLOSSARY.md` and `ARCHITECTURE.md` (or skips missing root files) with a test. Recorded in the [consumer census](proof/lexicon-consumer-census.md#grill-board-gap).
+- The `domain-modeling` skill keeps its "GLOSSARY.md when it exists, otherwise LEXICON.md" fallback, pinned by its owning Spec's test (S-004J); rooms not yet updated still hold a Lexicon.
+- No real, non-fixture room has been taken through `migrate` or an explicit upgrade; the route is proven in fixture rooms.
+- The update route does not report leftover Template placeholders in the newly installed `GLOSSARY.md` and `ARCHITECTURE.md`; `update-harness` tells the agent to fill them.
+- `ARCHITECTURE.md` is about 2,780 words, most of it landed Lexicon text; whether that is short enough is the owner's judgement at Human QA.
+- `test-workbench-round-trip.mjs` occasionally fails under concurrent suite load with a git object-copy error in its temp clone and passes alone; it passed 5/5 alone on integration and on the assembly.
+- No separate-context Verify review, owner Human QA or integration delivery is claimed.
 
 ## Supersession
 
