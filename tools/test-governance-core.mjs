@@ -6,7 +6,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
+import { spawnSync } from 'node:child_process';
 import { listAdrs } from '../workbench/tools/adr.mjs';
+import { templatePlaceholders } from '../workbench/tools/template-placeholders.mjs';
+import { normalizeText } from './check-carrier-landing.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const read = (relative) => fs.readFileSync(path.join(root, relative), 'utf8');
@@ -189,4 +192,64 @@ test('the Runbook closeout prunes linked worktrees and names where disposable re
   // skill the template Runbook points to.
   assert.ok(template.includes('](workbench/skills/workbench-runtime/SKILL.md#diagnostics-and-blocking-effects)'), 'templates/RUNBOOK.md points diagnostics to the workbench-runtime skill');
   assert.match(read('workbench/skills/workbench-runtime/SKILL.md'), /integration-branch-missing/, 'the pointed skill names the declared-branch doctor finding');
+});
+
+// S-004O TK-009B: ARCHITECTURE.md is the short routing artifact that takes the
+// Lexicon's ownership table, routes and invariants, in matklad's shape. The
+// line budget keeps it short: 175 lines is under half of the root Lexicon (363
+// lines) it replaces in part, and its three tables already hold one row per
+// line, so growth past it would be restated rationale rather than routes.
+const ARCHITECTURE_FILES = ['ARCHITECTURE.md', 'templates/ARCHITECTURE.md'];
+const ARCHITECTURE_LINE_BUDGET = 175;
+const ARCHITECTURE_SECTIONS = ["Bird's-Eye View", 'Codemap', 'Ownership', 'Routes', 'Invariants And Boundaries'];
+const S004O_PROOF = 'workbench/specs/S-004O-lexicon-retirement-and-architecture-md/proof';
+const ARCHITECTURE_INVENTORIES = [
+  { inventory: `${S004O_PROOF}/lexicon-landing-inventory.json`, home: 'ARCHITECTURE.md' },
+  { inventory: `${S004O_PROOF}/template-lexicon-landing-inventory.json`, home: 'templates/ARCHITECTURE.md' }
+];
+
+test('root and template ARCHITECTURE.md carry the bird\'s-eye view, codemap, ownership table, routes and invariants', () => {
+  for (const relative of ARCHITECTURE_FILES) {
+    assert.ok(fs.existsSync(path.join(root, relative)), `${relative} exists`);
+    const body = read(relative);
+    const headings = [...body.matchAll(/^## (.+)$/gm)].map((match) => match[1]);
+    assert.deepEqual(headings, ARCHITECTURE_SECTIONS, `${relative} has the bird's-eye view, codemap, ownership, routes and invariants sections in order`);
+    assert.match(body, /^\| Job \| Definition and owned content \| Agent question \| Maintained owner \/ route \|$/m, `${relative} holds the ownership table`);
+    assert.match(body, /^\| Artifact \| Defined job and ownership limit \|$/m, `${relative} holds the artifact boundaries`);
+    assert.match(body, /^\| Need \| Route to the owner \|$/m, `${relative} holds the Context Map routes`);
+    assert.match(normalizeText(body), /a routing artifact, never a Contract file/, `${relative} says it is a routing artifact, never a Contract file`);
+    assert.match(normalizeText(body), /revisited a few times a year/, `${relative} says how often it is revisited`);
+    assert.doesNotMatch(body, /\]\([^)\s]*\.(?:mjs|cjs|js|ts|tsx|py|sh)(?:#[^)]*)?\)/, `${relative} links no code`);
+    assert.doesNotMatch(body, /\]\([^)\s]*#L\d+/, `${relative} carries no line anchors`);
+    assert.doesNotMatch(body, /LEXICON\.md|\]\([^)]*#artifact-ownership-schema\)/, `${relative} routes to no Lexicon`);
+    const lines = body.split('\n').length;
+    assert.ok(lines <= ARCHITECTURE_LINE_BUDGET, `${relative} stays within ${ARCHITECTURE_LINE_BUDGET} lines (found ${lines})`);
+  }
+  const template = read('templates/ARCHITECTURE.md');
+  const codemap = template.slice(template.indexOf('## Codemap'), template.indexOf('## Ownership'));
+  assert.match(codemap, /\[path\][\s\S]*\[purpose\]/, 'the Template codemap keeps a placeholder for the room to fill');
+  assert.match(normalizeText(codemap), /Genesis and adoption draft/, 'the Template codemap says Genesis and adoption draft it');
+  assert.doesNotMatch(template, /S-0[0-9A-Z]{2,3}|ADR-0|DDR-0|KaydenClark|\/Users\/|workbench\/docs\/(?:adr|ddr)\/[0-9A-Z]{4}-/, 'the Template carries no producer records');
+  for (const token of template.match(/(?<!\[)\[(?!\[|[ xX]\])[^\]\n]+\](?!\()/g) ?? []) {
+    assert.ok(templatePlaceholders.includes(token), `templates/ARCHITECTURE.md: recognized placeholder ${token}`);
+  }
+});
+
+test('every architecture line of the Lexicon landing inventories lands in its ARCHITECTURE.md home', () => {
+  for (const { inventory, home } of ARCHITECTURE_INVENTORIES) {
+    const data = JSON.parse(read(inventory));
+    const entries = data.entries.filter((entry) => entry.homeKind === 'architecture');
+    assert.ok(entries.length > 0, `${inventory} classifies architecture lines`);
+    assert.ok(fs.existsSync(path.join(root, home)), `${home} exists`);
+    const landed = normalizeText(read(home));
+    for (const entry of entries) {
+      assert.equal(entry.homePath, home, `${inventory} line ${entry.line} homes in ${home}`);
+      assert.ok(landed.includes(normalizeText(entry.landedText)), `${home} holds the landed text of ${inventory} line ${entry.line}: ${entry.landedText}`);
+    }
+    const result = spawnSync(process.execPath, [path.join(root, 'tools/check-carrier-landing.mjs'), 'check', '--base', data.baseSha, '--inventory', path.join(root, inventory), '--repo', root, '--json'], { cwd: root, encoding: 'utf8' });
+    const report = JSON.parse(result.stdout);
+    assert.deepEqual(report.inventoryErrors, [], `${inventory} is a valid inventory`);
+    const architectureHashes = new Set(entries.map((entry) => entry.hash));
+    assert.deepEqual(report.unlanded.filter((finding) => architectureHashes.has(finding.hash) || finding.homePath === home), [], `${inventory} reports no unlanded architecture line`);
+  }
 });
