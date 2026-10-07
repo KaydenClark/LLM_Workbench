@@ -494,6 +494,7 @@ function growthRoom() {
   const introduced = RUNTIME_TOOLS.filter(name => !originals.includes(name)).sort();
   assert.equal(introduced.length, 18);
   return {dir,home,legacy,oldInstaller,lane,receiptFile,beforeReceipt,originals,introduced,
+    beforeState:laneBytes(lane).filter(([name])=>name!==RECEIPT_NAME),
     cleanup(){for(const p of [dir,home,legacy]) fs.rmSync(p,{recursive:true,force:true});}};
 }
 function laneBytes(lane) {
@@ -508,7 +509,7 @@ function grow(room) {
   return {backup:result.report.backup,receipt};
 }
 function assertRestoredGeneration(room) {
-  assert.deepEqual(fs.readdirSync(room.lane).filter(name=>name!==RECEIPT_NAME).sort(),room.originals);
+  assert.deepEqual(laneBytes(room.lane).filter(([name])=>name!==RECEIPT_NAME),room.beforeState,'every original file, including the lane placeholder, is preserved');
   for(const name of room.originals) assert.equal(hash(fs.readFileSync(path.join(room.lane,name))),room.beforeReceipt.files[name]);
   const receipt=JSON.parse(fs.readFileSync(room.receiptFile,'utf8'));
   assert.deepEqual(receipt.files,room.beforeReceipt.files);
@@ -573,11 +574,12 @@ test('growth rollback restores an originally present unreceipted managed name in
   try {
     const name=room.introduced[0];const bytes='// original unreceipted bytes\n';
     fs.writeFileSync(path.join(room.lane,name),bytes);
+    const before=laneBytes(room.lane).filter(([n])=>n!==RECEIPT_NAME);
     const grown=run(installer,'update','--project',room.dir,'--home',room.home,'--explicit-update');
     assert.equal(grown.status,0,grown.stdout);
     const result=run(installer,'rollback','--project',room.dir,'--backup',grown.report.backup);
     assert.equal(result.report.status,'rolled-back',result.stdout);
     assert.equal(fs.readFileSync(path.join(room.lane,name),'utf8'),bytes);
-    assert.deepEqual(fs.readdirSync(room.lane).filter(n=>n!==RECEIPT_NAME).sort(),[...room.originals,name].sort());
+    assert.deepEqual(laneBytes(room.lane).filter(([n])=>n!==RECEIPT_NAME),before);
   } finally {room.cleanup();}
 });
