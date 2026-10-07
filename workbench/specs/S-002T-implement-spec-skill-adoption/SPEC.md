@@ -96,6 +96,8 @@ Maintain catalog, draft article/index, relevant Runbook/AGENTS procedures, role 
 
 | 2026-10-06 | TK-006X | Wiki review findings reconciled | Independent lint found a stale maintainer count, the router saying no draft exists and older correction-Worker summaries. Reconciled the existing Wiki owners and linked the newer bounded correction exception without rewriting question cards. Source review of a1697896 passed; its full run was superseded by these documentation corrections after the first ten commands passed | Maintainer article, router, Dispatcher composition and two landmark syntheses | Full final-candidate suite and fresh review remain; unrelated pre-existing Wiki drift is preserved |
 
+| 2026-10-06 | TK-006X | Whole-Wiki reading and index regression correction | Three contexts read all 145 pages and relevant current card answers. Corrected the remaining Dispatcher exit and lifecycle selector guidance; inherited drift stays visible in the reading evidence. The full run on 7836ecba reached 49 commands: 48 passed and one draft-index test failed because it required permanent plain-text rows. Replaced that obsolete assumption with existing-draft link and missing-draft plain-text checks; Wiki tests 25/25 green. The failed run was stopped before completing the remaining history checks, not counted as a full pass | [Wiki reading evidence](wiki-lint-evidence.md), owning articles and catalog regression | Final clean full run and immutable review remain; global clean-update/Wiki claims are not made |
+
 ## Completion Result
 
 Not complete.
