@@ -460,7 +460,7 @@ export function writeRegister(root, options = {}) {
 // projection stale. A room with neither collection is left alone; nothing
 // here conjures a collection into existence.
 export function writeDecisionRegisters(root) {
-  return Object.keys(RECORD_KINDS)
+  return presentKinds(root)
     .filter((kind) => fs.existsSync(collectionPath(root, RECORD_KINDS[kind].collection)))
     .map((kind) => ({ kind, ...writeRegister(root, { kind }) }));
 }
