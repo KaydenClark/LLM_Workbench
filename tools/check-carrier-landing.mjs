@@ -23,7 +23,9 @@
 // heading that moves keeps its anchor, which the anchor check owns.
 //
 // A line is removed when the candidate carrier holds fewer copies of its
-// normalized text than the base does. A line that stays (even reordered or
+// normalized text than the base does. A carrier deleted at the candidate (as
+// the Lexicon retirement deletes `LEXICON.md`) has removed every line; the
+// carrier must still exist at the base. A line that stays (even reordered or
 // rewrapped) is not removed, so its entry may stay unclassified.
 //
 // Inventory JSON (one file per carrier):
@@ -109,9 +111,12 @@ function readAt(repo, commit, file) {
   return result.stdout;
 }
 
-function carrierLines(repo, commit, carrier, label) {
+function carrierLines(repo, commit, carrier, label, { allowMissing = false } = {}) {
   const text = readAt(repo, commit, carrier);
-  if (text === null) throw new UsageError(`carrier ${carrier} does not exist at ${label} ${commit}`);
+  if (text === null) {
+    if (allowMissing) return null;
+    throw new UsageError(`carrier ${carrier} does not exist at ${label} ${commit}`);
+  }
   return text.split('\n');
 }
 
@@ -203,7 +208,9 @@ export function checkCarrierLanding({ repo = process.cwd(), base, candidate = 'H
   if (inventoryBase !== baseSha) throw new UsageError(`base ${baseSha} differs from the inventory baseSha ${inventoryBase}`);
 
   const baseLines = carrierLines(repo, baseSha, data.carrier, 'base');
-  const candidateLines = carrierLines(repo, candidateSha, data.carrier, 'candidate');
+  // A carrier deleted at the candidate (the Lexicon retirement) removed every line.
+  const candidateCarrier = carrierLines(repo, candidateSha, data.carrier, 'candidate', { allowMissing: true });
+  const candidateLines = candidateCarrier ?? [];
   const inventoryErrors = validateInventory(data, baseLines);
   const entries = Array.isArray(data.entries) ? data.entries.filter((entry) => entry && typeof entry === 'object') : [];
 
@@ -248,6 +255,7 @@ export function checkCarrierLanding({ repo = process.cwd(), base, candidate = 'H
     schemaVersion: 1,
     operation: 'carrier-landing-check',
     carrier: data.carrier,
+    carrierRemoved: candidateCarrier === null,
     base: baseSha,
     candidate: candidateSha,
     normalization: NORMALIZATION,
@@ -290,7 +298,7 @@ function parseArgs(argv) {
 }
 
 function printReport(report) {
-  console.log(`${report.carrier}: base ${report.base} -> candidate ${report.candidate}`);
+  console.log(`${report.carrier}: base ${report.base} -> candidate ${report.candidate}${report.carrierRemoved ? ' (carrier removed)' : ''}`);
   console.log(`removed lines: ${report.removedLines}; landed: ${report.landed}; inventory entries: ${report.entries} (${report.classifiedEntries} classified)`);
   for (const error of report.inventoryErrors) console.log(`inventory-error ${error.code}: ${error.message}`);
   for (const finding of report.unlanded) console.log(`unlanded ${finding.code}: ${finding.message}`);

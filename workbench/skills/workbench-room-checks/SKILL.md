@@ -549,9 +549,9 @@ review; `no-machine-finding` means only the implemented checks found no issue.
 A maintainer verification tool for a rewrite of the Contract carriers, run at
 rewrite review; it is not installed into rooms. It lists every line a candidate
 removed from `AGENTS.md`, `RUNBOOK.md`, `LEXICON.md` or `templates/LEXICON.md`
-since a base commit and refuses unless
-each one has an inventory entry whose home file holds its landed text at the
-candidate. It reads Git objects only and never decides which home is right:
+since a base commit and refuses unless each one has an inventory entry whose
+home file holds its landed text at the candidate. It reads Git objects only and
+never decides which home is right:
 
 ```bash
 node tools/check-carrier-landing.mjs scaffold --base BASE_SHA --carrier AGENTS.md --out INVENTORY.json
@@ -565,17 +565,18 @@ An inventory is one JSON file per carrier (`schemaVersion`, `carrier`,
 `landedText` and `reason`. `homeKind` is `null` until classified, then one of
 `stays`, `skill`, `pointer`, `lexicon`, `wiki`, `glossary` (`GLOSSARY.md` or
 its Template mirror), `architecture` (`ARCHITECTURE.md` or its Template
-mirror), `restates-owner` (the named
-owner already holds the claim) or `retired-with-reason` (no home; `reason`
-required). Normalization trims and collapses whitespace runs, so a reordered,
-re-indented or rewrapped line is not removed; blank lines and headings never
-need to land. `scaffold` writes every other line unclassified and refuses to
-overwrite an existing inventory. `check` exits 0 when every removed line
-landed, 1 on an unlanded line (`no-entry`, `unclassified`, `stays-but-removed`,
-`home-missing`, `home-empty`, `home-lacks-text`, `owner-lacks-claim`,
-`retired-without-reason`, `unknown-home-kind`) or an inventory that no longer
-matches its base, and 2 on a usage or Git error. The Contract Carrier
-Pointer-Brief Rewrite
+mirror), `restates-owner` (the named owner already holds the claim) or
+`retired-with-reason` (no home; `reason` required). Normalization trims and
+collapses whitespace runs, so a reordered, re-indented or rewrapped line is not
+removed; blank lines and headings never need to land. A carrier deleted at the
+candidate, as the Lexicon retirement deletes `LEXICON.md`, has removed every
+line and reports `carrierRemoved`. `scaffold` writes every other line
+unclassified and refuses to overwrite an existing inventory. `check` exits 0
+when every removed line landed, 1 on an unlanded line (`no-entry`,
+`unclassified`, `stays-but-removed`, `home-missing`, `home-empty`,
+`home-lacks-text`, `owner-lacks-claim`, `retired-without-reason`,
+`unknown-home-kind`) or an inventory that no longer matches its base, and 2 on
+a usage or Git error. The Contract Carrier Pointer-Brief Rewrite
 ([S-004C](../../specs/S-004C-contract-carrier-pointer-brief-rewrite/SPEC.md))
 keeps its inventories in its Spec folder, and the Lexicon retirement
 ([S-004O](../../specs/S-004O-lexicon-retirement-and-architecture-md/SPEC.md))
