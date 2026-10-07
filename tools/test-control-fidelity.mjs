@@ -965,8 +965,11 @@ const AI_CODING_TERMS = [
 ];
 const dictionarySlug = (term) => term.toLowerCase().replace(/ /g, '-');
 
-test('both Lexicons carry each adopted AI Coding Terms row exactly once with one dictionary link', () => {
-  for (const relative of ['LEXICON.md', 'templates/LEXICON.md']) {
+// S-004O TK-009K: the root half is re-pointed to the Wiki below (each term's
+// own page carries its dictionary link); the Template half stays on the
+// Template Lexicon until TK-009L and TK-009H move it.
+test('the Template Lexicon carries each adopted AI Coding Terms row exactly once with one dictionary link', () => {
+  for (const relative of ['templates/LEXICON.md']) {
     const content = read(root, relative);
     assert.match(content, /^## AI Coding Terms$/m, `${relative} has the AI Coding Terms section`);
     const section = content.split(/^## AI Coding Terms$/m)[1].split(/^## /m)[0];
@@ -1044,7 +1047,9 @@ test('neither Lexicon calls the Workbench a harness, and Chat is distinguished f
     assert.match(termRow(content, 'Workbench'), /Not a harness/, `${relative} Workbench row says what it is not`);
     assert.match(termRow(content, 'Chat'), /not a session either/, `${relative} Chat row distinguishes a session`);
     assert.match(termRow(content, 'Host portability'), /host" means the machine/, `${relative} Host portability row says which host`);
-    assert.match(termRow(content, 'Harness'), /The Workbench is not a harness/, `${relative} Harness row`);
+    // S-004O TK-009K: the root Harness Distinction is read from its Wiki page.
+    if (relative === 'LEXICON.md') assert.match(read(root, 'workbench/wiki/dictionary-harness.md'), /The Workbench is not a harness/, 'the Harness Wiki page');
+    else assert.match(termRow(content, 'Harness'), /The Workbench is not a harness/, `${relative} Harness row`);
     assert.match(termRow(content, 'Evaluation'), /Does this Workbench help agents/, `${relative} Evaluation row`);
   }
 });
@@ -1064,15 +1069,21 @@ test('TK-009C: neither glossary calls the Workbench a harness or a room', () => 
 // entry, routed from MEMORY.md with a summary line, that links its Lexicon
 // row, its dictionary entry and an owning control (S-004O TK-009D: its glossary
 // definition, or that it is Wiki-only, in place of the Lexicon row).
-const AI_CODING_WIKI_ENTRIES = {
-  'dictionary-harness.md': 'harness', 'dictionary-session.md': 'session', 'dictionary-context.md': 'context',
-  'dictionary-context-window.md': 'context-window', 'dictionary-stateless.md': 'stateless', 'dictionary-stateful.md': 'stateful',
-  'dictionary-cache-tokens.md': 'cache-tokens', 'dictionary-non-determinism.md': 'non-determinism',
-  'dictionary-automated-review.md': 'automated-review',
-};
+// S-004O TK-009K: with the Lexicon retiring, every adopted term has its own
+// page, which carries the term's one dictionary link and the no-live-import
+// rule the Lexicon section's preamble stated; MEMORY.md's AI Coding
+// Dictionary Entries section states the rule for the set. Grilling's page is
+// the glossary-term article of TK-009J, which adds it here.
+const AI_CODING_WIKI_ENTRIES = Object.fromEntries(AI_CODING_TERMS
+  .filter((term) => term !== 'Grilling')
+  .map((term) => [`dictionary-${dictionarySlug(term)}.md`, dictionarySlug(term)]));
 
 test('each AI Coding Dictionary Wiki entry is routed from MEMORY.md and links its row, its dictionary entry and its owners', () => {
   const memory = read(root, 'workbench/wiki/MEMORY.md');
+  const section = memory.split(/^## AI Coding Dictionary Entries$/m)[1]?.split(/^## /m)[0] ?? '';
+  assert.match(section.replace(/\s+/g, ' '), /The dictionary link is attribution, not a live import: the dictionary's source carries no license, and an edit upstream changes no Workbench meaning until the owner adopts it\./, 'MEMORY.md states the no-live-import rule for the dictionary entries');
+  assert.doesNotMatch(section, /LEXICON\.md/, 'MEMORY.md routes the dictionary entries to the Wiki, not the Lexicon');
+  assert.equal(Object.keys(AI_CODING_WIKI_ENTRIES).length, AI_CODING_TERMS.length - 1, 'every adopted term but Grilling has its own page here');
   for (const [file, slug] of Object.entries(AI_CODING_WIKI_ENTRIES)) {
     const page = read(root, `workbench/wiki/${file}`);
     const routed = memory.split('\n').filter((line) => line.includes(`](${file})`));
@@ -1083,7 +1094,8 @@ test('each AI Coding Dictionary Wiki entry is routed from MEMORY.md and links it
     assert.doesNotMatch(page, /\]\([^)]*LEXICON\.md/, `${file} links no Lexicon`);
     if (file === 'dictionary-automated-review.md') assert.ok(page.includes('(../../GLOSSARY.md#workbench-meanings-of-ai-coding-terms)'), `${file} links its glossary definition`);
     else assert.match(page, /stays Wiki-only and needs no \[GLOSSARY\.md\]\(\.\.\/\.\.\/GLOSSARY\.md\) entry/, `${file} says it is the Wiki-only home of its term`);
-    assert.ok(page.includes(`https://www.aihero.dev/ai-coding-dictionary/${slug}`), `${file} links its dictionary entry`);
+    assert.deepEqual(page.match(/https:\/\/www\.aihero\.dev\/ai-coding-dictionary\/[a-z-]+/g) || [], [`https://www.aihero.dev/ai-coding-dictionary/${slug}`], `${file} links its dictionary entry once`);
+    assert.match(page.replace(/\s+/g, ' '), /does not import later upstream edits until the owner adopts them/, `${file} states the no-live-import rule`);
     assert.match(page, /\.\.\/\.\.\/AGENTS\.md|\.\.\/docs\/(adr|ddr)\//, `${file} links an owning control or decision record`);
   }
 });
