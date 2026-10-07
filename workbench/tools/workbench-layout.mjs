@@ -98,7 +98,24 @@ const priorWritingRetroCoreSkills = [
   'workbench-runtime', 'improve-harness', 'writing-for-agents', 'retro', 'director', 'dispatcher',
   'spec-planner', 'spec-manager', 'builder', 'auditor', 'reviewer', 'reconciler'
 ];
-const v321TransitionCoreSkills = [prior28CoreSkills, prior29PrCoreSkills, prior29DomainModelingCoreSkills, priorWritingRetroCoreSkills];
+// Frozen manifest policy at c80cb282.
+const priorPrDomainCoreSkills = [
+  'adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement',
+  'make-it-so', 'to-docs', 'to-spec', 'to-tasks', 'tracer-bullet', 'update-harness',
+  'carry', 'notepad', 'save', 'promote', 'handoff', 'grill-me',
+  'workbench-runtime', 'improve-harness', 'domain-modeling', 'pr', 'director', 'dispatcher',
+  'spec-planner', 'spec-manager', 'builder', 'auditor', 'reviewer', 'reconciler'
+];
+// Frozen manifest policy at b1adee9d.
+const priorPrWritingRetroCoreSkills = [
+  'adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement',
+  'make-it-so', 'to-docs', 'to-spec', 'to-tasks', 'tracer-bullet', 'update-harness',
+  'carry', 'notepad', 'save', 'promote', 'handoff', 'grill-me',
+  'workbench-runtime', 'improve-harness', 'pr', 'writing-for-agents', 'retro', 'director',
+  'dispatcher', 'spec-planner', 'spec-manager', 'builder', 'auditor', 'reviewer',
+  'reconciler'
+];
+const v321TransitionCoreSkills = [prior28CoreSkills, prior29PrCoreSkills, prior29DomainModelingCoreSkills, priorWritingRetroCoreSkills, priorPrDomainCoreSkills, priorPrWritingRetroCoreSkills];
 export const lanes = LANES;
 export const collections = COLLECTIONS;
 export const controls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md'];
