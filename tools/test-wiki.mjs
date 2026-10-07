@@ -1017,6 +1017,37 @@ test('TK-009D: each explained glossary entry lands its Distinction text in a rou
   assert.deepEqual(findings, [], 'the room Wiki, with its lexicon articles, validates');
 });
 
+// S-004O TK-009I: batch two is the glossary's Workbench, room and artifacts;
+// Specs and Tasks; and Chats and roles groups (40 terms). The case above proves
+// each explained entry lands in its routed article; this one proves every term
+// in the three groups is explained, that its article links its glossary group,
+// and that a retired name the glossary lists as `_Avoid_` under one of these
+// terms is named in that term's article.
+const BATCH_TWO_GROUPS = ['Workbench, room and artifacts', 'Specs and Tasks', 'Chats and roles'];
+const glossaryAnchor = (group) => group.toLowerCase().replace(/[^\p{L}\p{N}\s-]/gu, '').replace(/\s/g, '-');
+
+test('TK-009I: every Workbench, room and artifact, Spec and Task, and Chat and role term has a lexicon article carrying its Distinction text', () => {
+  const inventory = JSON.parse(fs.readFileSync(path.join(root, ROOT_INVENTORY), 'utf8'));
+  const termOf = (entry) => entry.text.match(/^\| \*\*(.+?)\*\* \|/)?.[1];
+  const explained = new Map(inventory.entries.filter((item) => item.explanationText !== undefined).map((item) => [termOf(item), item.explanationHome]));
+  const terms = BATCH_TWO_GROUPS.flatMap((group) => glossaryGroupTerms(group).map((term) => [group, term]));
+  assert.equal(terms.length, 40, 'batch two covers 40 glossary terms');
+  const missing = terms.filter(([, term]) => !explained.has(term)).map(([group, term]) => `${term} (${group})`);
+  assert.deepEqual(missing, [], 'every batch-two term records its Distinction text in a lexicon article');
+  for (const [group, term] of terms) {
+    const home = explained.get(term);
+    assert.match(home, /^workbench\/wiki\/[^/]+\.md$/, `${term} is explained by a flat root Wiki article`);
+    const content = fs.readFileSync(path.join(root, home), 'utf8');
+    assert.ok(content.includes(`(../../GLOSSARY.md#${glossaryAnchor(group)})`), `${home} links the ${group} glossary group`);
+    assert.match(content, /^## Sources$/m, `${home} names its sources`);
+  }
+  for (const alias of inventory.entries.filter((item) => item.aliasOf && terms.some(([, term]) => term === item.aliasOf))) {
+    const name = alias.landedText.replace(/^_Avoid_:\s*/, '');
+    assert.ok(alias.explanationHome, `the ${name} alias names its article`);
+    assert.ok(flat(fs.readFileSync(path.join(root, alias.explanationHome), 'utf8')).toLowerCase().includes(name.toLowerCase()), `${alias.explanationHome} names the retired ${name}`);
+  }
+});
+
 // S-004O TK-009K: every root landing-inventory `wiki` entry lands its text in
 // its home page, and that page is routed from MEMORY.md (MEMORY.md itself is
 // the router). A home that declares no glossary term is a general reference
@@ -1069,8 +1100,6 @@ const BATCH_THREE_GROUPS = [
   'Support root and skills lane', 'Feedback disposition', 'Workbench meanings of AI coding terms', 'Continuity terms',
   'Stance terms', 'Governance core', 'Project-specific terms', 'Continuity and evidence boundaries'
 ];
-const glossaryAnchor = (group) => group.toLowerCase().replace(/[^\p{L}\p{N}\s_-]/gu, '').replace(/\s/g, '-');
-
 test('TK-009J: each batch-three glossary term has a routed lexicon article that links its glossary group and declares the term', () => {
   const inventory = JSON.parse(fs.readFileSync(path.join(root, ROOT_INVENTORY), 'utf8'));
   const router = fs.readFileSync(path.join(root, 'workbench', 'wiki', 'MEMORY.md'), 'utf8');

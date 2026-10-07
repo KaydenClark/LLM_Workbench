@@ -1339,7 +1339,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Context Map**: The navigable relationships among Workbench concepts, root files, specs, Wiki context, and referenced source/evidence, entered through the routes in `ARCHITECTURE.md`.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-context-map.md"
+      "explanationHome": "workbench/wiki/dictionary-context-map.md",
+      "explanationText": "Existing owners hold the information; any rendered map is a source-derived Projection, not another truth store or authority. No graph service or Obsidian dependency is required."
     },
     {
       "line": 171,
@@ -1349,7 +1350,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Workbench**: An agentic management system for a project: the safe rules, progressively disclosed project truth, executable work and proof requirements that agents running in a harness such as Claude Code or Codex load, so they can align the owner's ideas and implement the owner's design concepts.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-workbench.md"
+      "explanationHome": "workbench/wiki/dictionary-workbench.md",
+      "explanationText": "Not a harness: Claude Code and Codex are the harnesses that load it. ([the decision that the workbench is an agentic management system, not a harness](../docs/ddr/000T-the-workbench-is-an-agentic-management-system-not-a-harness.md)) It governs the workflow; it is not the product being built. It is the table set in a project's room. ([the room and table decision](../docs/ddr/000U-a-project-is-a-room-and-the-workbench-is-the-table-in-it.md)) Nesting is the destination; tooling for a Workbench that holds other Workbenches is not built yet. A Workbench relates to Workbenches one-to-many and to Projects one-to-many; a Project relates to its own Workbench one-to-one."
     },
     {
       "line": 172,
@@ -1359,7 +1361,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Project**: The product or body of work a Workbench exists to deliver.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-project.md"
+      "explanationHome": "workbench/wiki/dictionary-project.md",
+      "explanationText": "Every Project has exactly one Workbench of its own. The Project is the work; the Workbench is the management system around it. Room names the same project seen as the place its work happens."
     },
     {
       "line": 173,
@@ -1369,7 +1372,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Owner**: The person whose ideas the project realizes: the one who aligns, confirms, approves and unblocks, approves delivered work, and alone promotes it to main.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-owner.md"
+      "explanationHome": "workbench/wiki/dictionary-owner.md",
+      "explanationText": "Not an agent and not a Role: the owner is above the roles, and the current owner request is the first instruction authority. Human QA and promotion to main are owner acts."
     },
     {
       "line": 174,
@@ -1379,7 +1383,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Room**: A project, seen as the place its work happens. The workbench is the table set in it; agents take what they need from the table and work on the project in the center.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-room.md"
+      "explanationHome": "workbench/wiki/dictionary-room.md",
+      "explanationText": "Room has always meant project, so it is not the Workbench: the Workbench entry says it is the table set in one ([the room and table decision](../docs/ddr/000U-a-project-is-a-room-and-the-workbench-is-the-table-in-it.md)). Environment and Filesystem are sibling definitions of Room, in the owner's words: \"File system, and Environment are going to be some sibling definitions to this one.\" Rooms nest ([the nesting decision](../docs/ddr/000W-rooms-nest-and-a-parent-workbench-owns-what-its-children-share.md)). Not a Chat, a Conversation or a host."
     },
     {
       "line": 175,
@@ -1389,7 +1394,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Workbench Template**: LLM Workbench's product: the starting installation every new project is made from, and the room every release is proven on.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-workbench-template.md"
+      "explanationHome": "workbench/wiki/dictionary-workbench-template.md",
+      "explanationText": "Not the Template artifact boundary in [ARCHITECTURE.md](../../ARCHITECTURE.md#ownership), which is any reusable starting shape, and not the `templates/` folder, which holds the blank files this repository ships. LLM Workbench is the producer and the Workbench Template is its product ([the producer and product decision](../docs/ddr/000P-llm-workbench-is-the-producer-and-the-workbench-template-is-its-product.md)); a release is proven by the Template building a real product ([the release proof decision](../docs/ddr/000Q-a-release-is-proven-by-the-template-building-a-real-product-in-one-pass.md))."
     },
     {
       "line": 176,
@@ -1399,7 +1405,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Scaffolding**: The architecture artifacts used to reach a destination (Specs, Tasks, landmarks, handoffs and notepads), cleared away once their knowledge is kept.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-scaffolding.md"
+      "explanationHome": "workbench/wiki/dictionary-scaffolding.md",
+      "explanationText": "The architecture artifacts taken together; an Architecture artifact is one of them, so the two words are one concept seen as a whole and as a single artifact, not two meanings. The owner: \"transient has been the other word I have been using\", so transient is an accepted alternative word. It is cleared away at Clean Up once its knowledge, unfinished obligations and needed evidence have reached their durable owners ([the scaffolding decision](../docs/ddr/000M-working-artifacts-are-scaffolding-cleared-away-once-their-knowledge-is-kept.md)); the Retired entry is the staging place for reconciled Spec and Task scaffolding."
     },
     {
       "line": 177,
@@ -1409,7 +1416,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Contract artifact**: An artifact the agent loads, and pays tokens for, on every turn of every session: today AGENTS.md, with the host adapter that loads it. It holds only lines that apply everywhere.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-contract-artifact.md"
+      "explanationHome": "workbench/wiki/dictionary-contract-artifact.md",
+      "explanationText": "Defined by being loaded every turn, the owner's definition, which does not change because artifacts drifted. The Workbench Contract entry names the binding claim set and its carriers, which is a different thing. The owner first wrote \"RUNBOOK is 100% a contract artifact. we can debate lexicon later.\" and then decided, on 2026-10-05, that `AGENTS.md` is the only Contract file ([one Contract file](../docs/ddr/001C-agents-md-is-the-map-and-the-only-contract-file.md)), that the Runbook stays a file that binds nothing ([the Runbook decision](../docs/ddr/001D-the-runbook-lines-the-workflow-verbs-up-next-to-their-scenarios-and-binds-nothing.md)) and that the Lexicon retires ([the Lexicon retirement](../docs/ddr/001E-the-lexicon-retires-terms-live-in-the-wiki-and-ownership-routes-and-invariants-live-in-architecture-md.md)). The Runbook is read at session entry, not loaded every turn, so it is not a Contract artifact."
     },
     {
       "line": 178,
@@ -1419,7 +1427,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Routing artifact**: A durable artifact an agent reaches by pointer when its work needs it, and that routes to the detail: the Blueprint, `ARCHITECTURE.md`, the Runbook and the README.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-routing-artifact.md"
+      "explanationHome": "workbench/wiki/dictionary-routing-artifact.md",
+      "explanationText": "What the contract routes to; a context pointer is how it is reached. It is not loaded every turn, which separates it from a Contract artifact. The examples are the owner-confirmed card's; the Runbook is one and binds nothing ([the Runbook decision](../docs/ddr/001D-the-runbook-lines-the-workflow-verbs-up-next-to-their-scenarios-and-binds-nothing.md)), and the Lexicon is one until it retires ([the Lexicon retirement](../docs/ddr/001E-the-lexicon-retires-terms-live-in-the-wiki-and-ownership-routes-and-invariants-live-in-architecture-md.md))."
     },
     {
       "line": 179,
@@ -1429,7 +1438,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Architecture artifact**: An artifact built to reach a destination and cleared away once its knowledge is kept: landmarks, Specs, Tasks, handoffs and notepads. Also called scaffolding, or transient.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-architecture-artifact.md"
+      "explanationHome": "workbench/wiki/dictionary-architecture-artifact.md",
+      "explanationText": "One of the artifacts that Scaffolding names together. It is neither a Contract artifact nor a Routing artifact: nothing in it is durable once reconciled, and the Retired entry holds Spec and Task scaffolding that has been reconciled."
     },
     {
       "line": 180,
@@ -1439,7 +1449,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Control**: A one-action tool. Agents work the workbench through controls, each one action, and open the underlying record only to verify a claim, audit, debug a control, or when a control is missing or disagrees with its record.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-control.md"
+      "explanationHome": "workbench/wiki/dictionary-control.md",
+      "explanationText": "\"Root controls\", and \"controls\" for files, are retired as stale: the files are Contract and routing artifacts. A Control sits beside the Source, tool and test boundary in [ARCHITECTURE.md](../../ARCHITECTURE.md#ownership) (a tool performs an operation) and the Managed runtime tool entry; the dictionary's Tool is not adopted as a Workbench term."
     },
     {
       "line": 181,
@@ -1460,7 +1471,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Portable Workbench**: A fully packaged, deployable agentic management system. Everything an agent needs to do the work is in the project's Git repository, so any agent on any machine, or several at once in the cloud, can clone it, do the authorized work, push it, and clean up after itself.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-portable-workbench.md"
+      "explanationHome": "workbench/wiki/dictionary-portable-workbench.md",
+      "explanationText": "It describes the repository, not a host or a session. Host portability and the support root are things it depends on, not the thing itself. Its success criterion, in the owner's words (2026-09-22): a fresh agent finding the right answer, completing authorized work, maintaining its proper owners, cleaning up after itself, and continuing without the owner reconstructing the project."
     },
     {
       "line": 183,
@@ -1470,7 +1482,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Host portability**: The property that the Workbench's plain files and tools behave the same on every configured host: case-sensitive and case-insensitive filesystems, Windows and POSIX paths, symlinked invocation.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-host-portability.md"
+      "explanationHome": "workbench/wiki/dictionary-host-portability.md",
+      "explanationText": "One thing a Portable Workbench depends on, checked by the Runbook's portability and privacy matrix; it is not the Portable Workbench itself. Here \"host\" means the machine, not the harness."
     },
     {
       "line": 184,
@@ -1480,7 +1493,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Ownership origin model**: The model of where an ownership assignment comes from, upstream Workbench or project-local, and of how a room's deliberate differences from upstream are classified and preserved across updates.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-ownership-origin-model.md"
+      "explanationHome": "workbench/wiki/dictionary-ownership-origin-model.md",
+      "explanationText": "About upgrade compatibility between upstream and a room, not about a Portable Workbench. Owned by [S-00G](../specs/S-00G-ownership-map-root-control/SPEC.md); the open FND-Q24B question belongs to it. Formerly the \"portability model\"; that name is retired."
     },
     {
       "line": 185,
@@ -1512,7 +1526,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Workbench self-drift check**: A read-only check of the canonical Workbench's own current-facing artifacts before and after a Workbench update.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-workbench-self-drift-check.md"
+      "explanationHome": "workbench/wiki/dictionary-workbench-self-drift-check.md",
+      "explanationText": "It is separate from a target project's drift check; structural render, doctor, or tests alone do not establish semantic freshness."
     },
     {
       "line": 188,
@@ -1522,7 +1537,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Skill**: A teachable capability bundled as a unit: a folder with a `SKILL.md` (name, description and instructions) and optional scripts and reference material, loaded in full only when a task matches its description.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-skill.md"
+      "explanationHome": "workbench/wiki/dictionary-skill.md",
+      "explanationText": "The unit of progressive disclosure: only its name and description sit in context until needed, unlike AGENTS, which loads every session. A skill is read, not called; a tool is called. It is not a new truth store; a pointed lane skill binds for its operation ([ADR-000W](../docs/adr/000W-contract-carriers-are-briefs-that-point-to-skills-and-authority-flows-through-the-pointer.md)). Avoid \"tool\" for a skill."
     },
     {
       "line": 189,
@@ -1541,7 +1557,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Context pointer**: A line in one document pointing to another, so the agent pulls it in only when the task calls for it: a stable path plus enough description to know when following it is worth it.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-context-pointer.md"
+      "explanationHome": "workbench/wiki/dictionary-context-pointer.md",
+      "explanationText": "Write it to match how tasks present, such as \"closing a Task: load the Task close skill\". A pointer from the Contract to a lane skill is what gives that skill authority for its operation ([ADR-000W](../docs/adr/000W-contract-carriers-are-briefs-that-point-to-skills-and-authority-flows-through-the-pointer.md)); the owner decided that pointer runs from `AGENTS.md` straight to the skill ([one Contract file](../docs/ddr/001C-agents-md-is-the-map-and-the-only-contract-file.md)). Avoid \"reference\" and \"portal\"."
     },
     {
       "line": 191,
@@ -1551,7 +1568,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Flow**: A short sequence of skills that moves work from one recognizable state to another.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-flow.md"
+      "explanationHome": "workbench/wiki/dictionary-flow.md",
+      "explanationText": "A flow composes skills; it does not duplicate their instructions."
     },
     {
       "line": 192,
@@ -1561,7 +1579,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Router**: A skill that recommends the smallest appropriate skill or flow for the current situation.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-router.md"
+      "explanationHome": "workbench/wiki/dictionary-router.md",
+      "explanationText": "It selects work behavior but does not perform the selected behavior automatically."
     },
     {
       "line": 193,
@@ -1571,7 +1590,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Blueprint**: A high-level summary of the direction we want to head and the choices that got us this far, written as the four-part short page (what it is, who it serves, promised outcomes, non-goals) for every room.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-blueprint.md"
+      "explanationHome": "workbench/wiki/dictionary-blueprint.md",
+      "explanationText": "The Blueprint makes us ask questions; it does not give definite answers. Definite answers and their details live on other artifacts, and a decision record answers why for one specific decision. A decision is placed by asking whether it maps to a destination at the Blueprint's scale or to a more bounded one ([the Blueprint purpose decision](../docs/ddr/000O-the-blueprint-is-a-high-level-summary-of-the-direction-and-makes-us-ask-questions.md)). It supports the design concept; it is not current status, an ADR or DDR inventory, a work queue, a glossary, or a proof archive. The accepted destination keeps it standalone and written before the decisions that follow it, so it is never built from DDRs or ADRs: it is not a router to them and links no record that carries an identifier (a DDR, ADR, Spec, Task or Landmark); it may link other artifacts. This room's Blueprint is that page; the [Blueprint Short Page](../specs/S-004H-blueprint-short-page/SPEC.md) Spec swapped it in ([ADR-000U](../docs/adr/000U-landmarks-are-landmark-md-artifacts-one-size-above-specs.md), [ADR-000S](../docs/adr/000S-destination-decision-records-are-decision-records-beside-adrs.md))."
     },
     {
       "line": 194,
@@ -1590,7 +1610,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Spec**: A PRD-shaped scoped objective with its own destination, derived from Blueprint needs, active ADRs, verified Actuality and required evidence. It owns requirements, decisions, acceptance, verification, evidence and completion while needed for delivery.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-spec.md"
+      "explanationHome": "workbench/wiki/dictionary-spec.md",
+      "explanationText": "A Spec has at most one parent landmark and otherwise sits under the Blueprint; it is a smaller destination inside its landmark's and never works toward two ([ADR-000U](../docs/adr/000U-landmarks-are-landmark-md-artifacts-one-size-above-specs.md)). A Spec has many Tasks and Chats. Tasks reach its destination; useful knowledge moves to maintained durable owners after verified delivery. TASK.md owns each active Task state and proof; the Spec holds capability state and gates. Record-backed Tasks live under `tasks/`; table-backed compatibility and completed tables remain readable history. See [ADR-000G](../docs/adr/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md)."
     },
     {
       "line": 196,
@@ -1600,7 +1621,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Task**: One bounded executable thin vertical slice that reaches or repairs a destination, with its own state, proof, blockers and assigned stance in TASK.md. Its Worker self-checks and hands back.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-task.md"
+      "explanationHome": "workbench/wiki/dictionary-task.md",
+      "explanationText": "It is temporary execution structure. When a check finds a miss and the fix is more of the same work, the same Task continues with an adjusted handoff; a new Task opens only when the fix changes the Task enough that it has to be rewritten ([DDR-000Y](../docs/ddr/000Y-a-miss-found-by-a-check-continues-the-same-task-unless-the-fix-rewrites-it.md)). A later gap against delivered work becomes a new Spec under its landmark or the Blueprint, never a revived Spec and never a correction anchored to a Wiki claim ([DDR-000M](../docs/ddr/000M-working-artifacts-are-scaffolding-cleared-away-once-their-knowledge-is-kept.md)). Small direct Blueprint Tasks remain accepted destination design with no delivered home; a Task's parent is its Spec or, directly, an assigned and active landmark ([ADR-000U](../docs/adr/000U-landmarks-are-landmark-md-artifacts-one-size-above-specs.md)), and a `wiki-claim` destination serves only a Task whose own destination is producing that Wiki page. [ADR-000H](../docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md) owns Receipt; the Destination Packet has its own entry; [AGENTS](../../AGENTS.md#git-rules) carries the current Task-PR integration exception."
     },
     {
       "line": 197,
@@ -1610,7 +1632,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Destination Packet**: Everything an agent needs to determine the destination and direction for its current objective, execute in that direction and verify it reached the destination.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-destination-packet.md"
+      "explanationHome": "workbench/wiki/dictionary-destination-packet.md",
+      "explanationText": "A term for what we give the agent, so we can tell whether it got the full packet; nothing is copied into it and no second record tells the agent the destination. Optional local untracked context neither authorizes work nor proves claims. The Wiki is evidence for a Spec's direction and plan, never the destination a packet carries ([ADR-000H](../docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md), [ADR-000U](../docs/adr/000U-landmarks-are-landmark-md-artifacts-one-size-above-specs.md)). Avoid \"landmark packet\"; bare \"Packet\" is the retired name."
     },
     {
       "line": 198,
@@ -1620,7 +1643,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Assembled-Spec review**: Destination-level verification of the complete Task results: the Dispatcher owns whole-Spec QA and a separate Director reviews the immutable assembled candidate before integration.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-assembled-spec-review.md"
+      "explanationHome": "workbench/wiki/dictionary-assembled-spec-review.md",
+      "explanationText": "Worker self-check is not independent approval. A failed review is corrected under the still-open Spec: each finding continues its Task with an adjusted handoff, or opens a new Task only when the fix rewrites it, keeping earlier Task proof as written; the fresh assembled candidate needs review. [AGENTS](../../AGENTS.md#assembled-review-and-corrective-return) owns the obligation."
     },
     {
       "line": 199,
@@ -1630,7 +1654,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Human QA**: The owner-led evaluation of delivered work, whose timing the owner chooses at useful milestones, accumulated work, valued Specs or escalations; failed findings remain visible until resolved.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-human-qa.md"
+      "explanationHome": "workbench/wiki/dictionary-human-qa.md",
+      "explanationText": "Version cadence is a default, not the sole trigger. Actual per-Spec content-bound approval is distinct from monitoring or a green suite; only the owner promotes integration to main. Failure returns to Align and delivery at the implicated scope, without assuming every defect changes design ([ADR-000F](../docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md))."
     },
     {
       "line": 200,
@@ -1640,7 +1665,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Retired**: A transient staging location for reconciled Spec and Task scaffolding, removed from ordinary pickup while needed history remains reachable.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-retired.md"
+      "explanationHome": "workbench/wiki/dictionary-retired.md",
+      "explanationText": "Its useful content reaches durable owners; discard requires closure/capture, verified main containment, clean current-reference checks and recovery identity. Task progress remains distinct from folder lifecycle ([ADR-000I](../docs/adr/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md))."
     },
     {
       "line": 201,
@@ -1650,7 +1676,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Archive**: Permanent storage for superseded and deprecated decision records (ADRs and DDRs), preserving their original bodies and reachable decision history.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-archive.md"
+      "explanationHome": "workbench/wiki/dictionary-archive.md",
+      "explanationText": "It is never cleared by transient Spec/Task cleanup; each decision-record register routes active decisions and its history routes retained alternatives ([ADR-000I](../docs/adr/000I-record-lifecycle-is-expressed-by-folder-location-with-permanent-archive-and-transient-retired.md))."
     },
     {
       "line": 202,
@@ -1660,7 +1687,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Feature article**: The entity page for one delivered capability, in the manifest-declared `features` collection, written at Spec completion and before retirement/discard.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-feature-article.md"
+      "explanationHome": "workbench/wiki/dictionary-feature-article.md",
+      "explanationText": "It explains the delivered product and names its historical Spec route without copying active Task state; the Wiki schema and Runbook own its shape and capture procedure ([Wiki features](features/README.md))."
     },
     {
       "line": 203,
@@ -1670,7 +1698,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Uncaptured complete**: A complete Spec with missing features capture, reported as `uncaptured-complete` while completion remains unchanged.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-uncaptured-complete.md"
+      "explanationHome": "workbench/wiki/dictionary-uncaptured-complete.md",
+      "explanationText": "It cannot yet retire or discard; the next step is authored validated feature knowledge, not a capture command or a new owner approval ([Runbook](../../RUNBOOK.md#spec-lifecycle-and-retrieval))."
     },
     {
       "line": 204,
@@ -1680,7 +1709,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Task receipt**: The Task's append-only record of its own runs, one row per run, carrying that run's branch, HEAD SHA, upstream distance, dirty file count, tests run with result, docs touched and remaining gap.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-task-receipt.md"
+      "explanationHome": "workbench/wiki/dictionary-task-receipt.md",
+      "explanationText": "This is the existing `receipt` sense in [ARCHITECTURE.md](../../ARCHITECTURE.md#ownership) — an operation's source and result — applied to a Task run, not a second meaning. The row is appended as the run proceeds, not deferred to a successful close, so an interrupted run leaves a trace; an unanticipated kill can still preempt an unwritten row. `TASKBOARD.md` projects a derived signal from these rows, never the rows themselves."
     },
     {
       "line": 205,
@@ -1690,7 +1720,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Chat**: One owner-visible working context in a host, in which participants have a Conversation. A Chat works at most one Task: a Chat that works a Task completes it, cleans up and ends.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-chat.md"
+      "explanationHome": "workbench/wiki/dictionary-chat.md",
+      "explanationText": "A Chat is not a Task, assignment, durable record, or authority boundary, and it never works several Tasks. It is not a session either: a session is one run of the context window inside it ([Session](dictionary-session.md)). Directing, review and grilling Chats work no Task. Several related Chats may belong to one Thread."
     },
     {
       "line": 206,
@@ -1700,7 +1731,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Conversation**: The human-agent exchange taking place in a Chat.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-conversation.md"
+      "explanationHome": "workbench/wiki/dictionary-conversation.md",
+      "explanationText": "It is ordinary descriptive language, not another artifact or workflow level; durable state must still reach its owning project record."
     },
     {
       "line": 207,
@@ -1710,7 +1742,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Thread**: A connected series or tree of related Chats.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-thread.md"
+      "explanationHome": "workbench/wiki/dictionary-thread.md",
+      "explanationText": "It groups conversational continuity only. It does not replace a Spec, Task dependency, notepad, handoff, or project work owner."
     },
     {
       "line": 208,
@@ -1720,7 +1753,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Role**: The assigned scope of responsibility for an agent, one per scale: as the accepted destination, Captain, Director, Dispatcher and Worker.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-role.md"
+      "explanationHome": "workbench/wiki/dictionary-role.md",
+      "explanationText": "Each role's job lives in its role skill, which the Destination Packet links. Branches and lanes express scope; the request and `AGENTS.md` still establish permission ([ADR-000V](../docs/adr/000V-captain-director-dispatcher-and-worker-scope-work-and-role-skills-own-each-job.md)). Delegation through handoffs within a role follows [AGENTS](../../AGENTS.md#handoff-assignments-and-shared-context)."
     },
     {
       "line": 209,
@@ -1730,7 +1764,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Captain**: As the accepted destination, the role scoped to the project and its integration branch: it assigns Directors to landmarks, coordinates across landmarks and oversees Specs under the Blueprint.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-captain.md"
+      "explanationHome": "workbench/wiki/dictionary-captain.md",
+      "explanationText": "Until the Contract rewrite and its role skill land, `AGENTS.md` calls this role the Director. The owner remains above it; Human QA and main promotion remain owner acts ([ADR-000V](../docs/adr/000V-captain-director-dispatcher-and-worker-scope-work-and-role-skills-own-each-job.md))."
     },
     {
       "line": 210,
@@ -1740,7 +1775,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Director**: As the accepted destination, the role scoped to one landmark lane: it assigns the lane's Dispatchers and owns the landmark's review.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-director.md"
+      "explanationHome": "workbench/wiki/dictionary-director.md",
+      "explanationText": "Today's `AGENTS.md` and the director skill still use Director for the integration role, which becomes the Captain ([ADR-000V](../docs/adr/000V-captain-director-dispatcher-and-worker-scope-work-and-role-skills-own-each-job.md)). It never executes a Task or gains authority by occupying a lane or branch."
     },
     {
       "line": 211,
@@ -1750,7 +1786,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Dispatcher**: The role scoped to one assigned Spec and its branch, coordinating its Tasks and owning assembled-Spec verification.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-dispatcher.md"
+      "explanationHome": "workbench/wiki/dictionary-dispatcher.md",
+      "explanationText": "Its job lives in the dispatcher skill and the stances it uses ([ADR-000V](../docs/adr/000V-captain-director-dispatcher-and-worker-scope-work-and-role-skills-own-each-job.md))."
     },
     {
       "line": 212,
@@ -1760,7 +1797,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Worker**: The role scoped to one assigned Task and one attempt, producing a self-checked result and hand-back.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-worker.md"
+      "explanationHome": "workbench/wiki/dictionary-worker.md",
+      "explanationText": "No worker role skill exists yet; AGENTS carries its job until the Contract rewrite ([ADR-000V](../docs/adr/000V-captain-director-dispatcher-and-worker-scope-work-and-role-skills-own-each-job.md))."
     },
     {
       "line": 213,
@@ -1781,7 +1819,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Coordination hand-back**: A point during an assigned run where the owner had to supply something that was not a preference, tradeoff, authorization, or unavailable resource under `AGENTS.md`'s governing gate: a settled decision repeated, evidence already in the project located for the agent, a routine technical finding reconciled, or an already-authorized step prompted.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-coordination-hand-back.md"
+      "explanationHome": "workbench/wiki/dictionary-coordination-hand-back.md",
+      "explanationText": "It is a defect in a record, route, skill, or tool, recorded per occurrence with its cause and smallest correction in the assigned spec's evidence log by [`carry`](../skills/carry/SKILL.md). Answering a genuine owner decision is not one, and neither is a new framework built in response to one. `AGENTS.md` Safety And Change Control owns when an owner is asked; these four reasons restate that gate and never widen it ([S-049](../specs/S-049-assignment-ownership-and-coordination-record/SPEC.md))."
     },
     {
       "line": 215,
@@ -1791,7 +1830,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Hot projection**: The minimal current view of active, blocked, ready, or in-progress work generated from canonical specs.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-hot-projection.md"
+      "explanationHome": "workbench/wiki/dictionary-hot-projection.md",
+      "explanationText": "`TASKBOARD.md` is a projection, not a second tracker or proof archive."
     },
     {
       "line": 216,
