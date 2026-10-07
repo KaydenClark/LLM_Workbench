@@ -337,7 +337,7 @@ test('the CLI exposes no command that writes answers.json and reports with exit 
 
 function sliceModel() {
   const html = fs.readFileSync(path.join(repo, 'workbench/grill-board/index.html'), 'utf8');
-  const script = html.match(/<script>([\s\S]*?)<\/script>/)[1].replace('Promise.all([load()', 'window.sliceTest = { topicFor, intentFor, laneFor, sliceCounts, batchProgress, matchesSlice, state, TOPICS }; Promise.all([load()');
+  const script = html.match(/<script>([\s\S]*?)<\/script>/)[1].replace('Promise.all([load()', 'window.sliceTest = { topicFor, intentFor, laneFor, sliceCounts, batchProgress, matchesSlice, decisionMatches, decisionPromptItems, state, TOPICS }; Promise.all([load()');
   const context = vm.createContext({ document: { getElementById: () => ({}), documentElement: { dataset: {} } }, window: { addEventListener() {} }, setInterval() {}, URL, URLSearchParams, fetch: () => new Promise(() => {}) });
   vm.runInContext(script, context);
   return context.window.sliceTest;
@@ -355,6 +355,19 @@ test('board slices separate owner work, review, and exploration without losing a
   assert.equal(model.intentFor({ kind: 'choice' }), 'explore');
   assert.equal(model.matchesSlice({ id: 'GB-0018', kind: 'owner-decision', derivedStatus: 'pending', title: 'Maintainer procedures' }, { topic: 'context', intent: 'unblock', lane: 'pending', query: 'maintainer' }), true);
   assert.equal(model.matchesSlice({ id: 'GB-0018', kind: 'owner-decision', derivedStatus: 'pending' }, { topic: 'workflow' }), false);
+});
+
+test('decision progress counts rationale prompts while original approvals remain separately pending', () => {
+  const model = sliceModel();
+  model.state.board = { items: [
+    { id: 'GB-0020', title: 'Retirement QA', kind: 'approve-spec', derivedStatus: 'pending' },
+    { id: 'GB-0182', title: 'Underlying why', kind: 'owner-decision', derivedStatus: 'answered' }
+  ], decisions: [{ record: 'CDR-000A', members: [{ id: 'GB-0020' }, { id: 'GB-0182' }], prompt: 'GB-0182' }] };
+  assert.deepEqual(Array.from(model.decisionPromptItems(), item => item.id), ['GB-0182']);
+  assert.equal(model.sliceCounts(model.decisionPromptItems()).answered, 1);
+  assert.equal(model.decisionMatches(model.state.board.decisions[0], { topic: 'workflow', lane: 'answered' }), true, 'group topics come from related original questions');
+  assert.equal(model.decisionMatches(model.state.board.decisions[0], { lane: 'pending' }), false, 'an unanswered approval cannot make an answered principle pending');
+  assert.equal(model.state.board.items[0].derivedStatus, 'pending');
 });
 
 test('workflow counts partition items and a parked or unsaved answer never finishes a batch', () => {

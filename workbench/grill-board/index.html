@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Consequential Decision Record · Grill Board</title>
+<title>Consequential Decisions · Grill Board</title>
 <style>
   :root {
     --bg: #f6f5f1; --panel: #ffffff; --ink: #1d1c19; --muted: #6b675e; --line: #e2dfd6;
@@ -248,6 +248,15 @@
     const hay = `${JSON.stringify(item.brief || {})} ${item.id} ${item.title} ${item.question} ${item.current} ${item.proposal} ${item.draft ?? ''} ${(item.tags || []).join(' ')}`.toLowerCase();
     return !slice.query || hay.includes(slice.query);
   }
+  function decisionMatches(group, slice = state) {
+    const prompt = state.board.items.find(item => item.id === group.prompt);
+    if (slice.lane && slice.lane !== 'all' && (!prompt || laneFor(prompt) !== slice.lane)) return false;
+    const memberSlice = { ...slice, lane: 'all' };
+    return group.members.some(member => matchesSlice(state.board.items.find(item => item.id === member.id), memberSlice));
+  }
+  function decisionPromptItems(slice = { ...state, lane: 'all' }) {
+    return (state.board.decisions || []).filter(group => group.prompt && decisionMatches(group, slice)).map(group => state.board.items.find(item => item.id === group.prompt));
+  }
   function batchProgress() {
     const ids = state.batch?.ids || [];
     const items = ids.map(id => state.board.items.find(item => item.id === id));
@@ -366,11 +375,12 @@
   }
 
   function renderNavigation() {
-    const board = state.board, c = sliceCounts(board.items);
-    const completed = c.answered + c.applied, active = board.items.length - c.withdrawn;
-    document.getElementById('meta').textContent = `${completed} / ${active} answered · ${c.applied} applied · ${c.withdrawn} withdrawn`;
+    const board = state.board, decisionView = state.view === 'decisions' && !state.inBatch && board.decisions?.length;
+    const counted = decisionView ? decisionPromptItems({ lane: 'all' }) : board.items, c = sliceCounts(counted);
+    const completed = c.answered + c.applied, active = counted.length - c.withdrawn;
+    document.getElementById('meta').textContent = `${completed} / ${active} ${decisionView ? 'rationale prompts answered' : 'answered'} · ${c.applied} applied · ${c.withdrawn} withdrawn`;
     document.getElementById('progress').innerHTML = `<span style="width:${100 * c.applied / Math.max(1, active)}%;background:var(--applied)" title="Applied ${c.applied}"></span><span style="width:${100 * c.answered / Math.max(1, active)}%;background:var(--ok)" title="With agents ${c.answered}"></span>`;
-    const scoped = board.items.filter(item => matchesSlice(item, { ...state, lane: 'all' }));
+    const scoped = decisionView ? decisionPromptItems() : board.items.filter(item => matchesSlice(item, { ...state, lane: 'all' }));
     const counts = sliceCounts(scoped);
     document.getElementById('filters').innerHTML = Object.entries(LANES).map(([value, label]) => `<button class="chip" data-lane="${value}" aria-pressed="${state.lane === value}">${label} (${value === 'all' ? scoped.length : counts[value]})</button>`).join('');
     for (const chip of document.querySelectorAll('[data-lane]')) chip.onclick = () => { state.lane = chip.dataset.lane; state.inBatch = false; state.focus = null; state.picked.clear(); render(); };
@@ -420,8 +430,8 @@
     const selected = groups.find(group => group.record === state.decision);
     const overview = document.getElementById('overview'), content = document.getElementById('content');
     if (!selected) {
-      const shown = groups.filter(group => group.members.some(member => matchesSlice(state.board.items.find(item => item.id === member.id))) || (state.query && `${group.record} ${group.title} ${group.question} ${group.why}`.toLowerCase().includes(state.query.toLowerCase())));
-      const cards = list => list.map(group => `<section class="topic-card"><small>${esc(group.record)} · ${esc(group.status)}</small><h3>${esc(group.title)}</h3><p>${esc(group.question)}</p><p>${esc(group.why)}</p><button class="bulk" data-decision="${esc(group.record)}">${group.prompt ? 'Discuss the rationale' : group.status === 'proposed' ? 'Read proposed record' : 'Read established rationale'} · ${group.members.length} questions</button></section>`).join('');
+      const shown = groups.filter(group => decisionMatches(group) || (state.query && `${group.record} ${group.title} ${group.question} ${group.why}`.toLowerCase().includes(state.query.toLowerCase())));
+      const cards = list => list.map(group => `<section class="topic-card"><small>${esc(group.record)} · ${esc(group.status)}</small>${group.prompt ? `<span class="badge ${state.board.items.find(item => item.id === group.prompt).derivedStatus}">${LANES[laneFor(state.board.items.find(item => item.id === group.prompt))]}</span>` : ''}<h3>${esc(group.title)}</h3><p>${esc(group.question)}</p><p>${esc(group.why)}</p><button class="bulk" data-decision="${esc(group.record)}">${group.prompt ? 'Discuss the rationale' : group.status === 'proposed' ? 'Read proposed record' : 'Read established rationale'} · ${group.members.length} questions</button></section>`).join('');
       const prompts = shown.filter(group => group.prompt), retained = shown.filter(group => !group.prompt);
       const originals = state.board.items.filter(item => !item.tags?.includes('decision-rationale')).length;
       overview.innerHTML = `<h1>Consequential decisions</h1><p>${originals} preserved questions · ${groups.length} record homes · ${groups.filter(group => group.prompt).length} grouped rationale prompts</p><p>Start with a remaining premise below. Accepted decisions and their prior approvals stay available without another confirmation.</p><div class="topic-grid">${cards(prompts)}</div><details><summary>Browse the other decision-record homes (${retained.length})</summary><div class="topic-grid">${cards(retained)}</div></details>${unassigned.length ? `<p>${unassigned.length} new questions need a decision-record home. They remain available in Original questions.</p>` : ''}`;
