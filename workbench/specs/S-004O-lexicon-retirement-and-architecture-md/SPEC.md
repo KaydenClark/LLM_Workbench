@@ -9,7 +9,7 @@
 **Catalog description:** Retire LEXICON.md into concise canonical project vocabulary in GLOSSARY.md, richer Wiki explanations and ownership routes in ARCHITECTURE.md, in this room and the Template.
 **Blockers:** none. The Lexicon writer's turn follows S-004E's assembled Lexicon edits; Lexicon edits that land after the census are re-scaffolded by the removal Task (TK-009H).
 **Latest event:** TK-009E closed with proof.
-**Next gate:** Complete TK-009F.
+**Next gate:** Wiki batches TK-009I and TK-009J, then TK-009K and TK-009L; TK-009F follows all four.
 
 ## Outcome
 
