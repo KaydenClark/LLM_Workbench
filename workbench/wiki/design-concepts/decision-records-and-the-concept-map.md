@@ -184,4 +184,4 @@ it in its Decision Records section.
 - 2026-10-03: aligned when a DDR is written with the workflow-verbs decision (at Map, through `to-docs`).
 - 2026-10-03: recorded that the Blueprint is now the four-part short page, from the Blueprint Short Page work.
 - 2026-10-06: recorded that landmarks as `LANDMARK.md` artifacts are installed, from the LANDMARK.md Artifact And Lane Runtime Spec (S-003Z), Task TK-008J (landmark templates and documentation).
-- 2026-10-07: Re-pointed the retiring Lexicon's links and live routes to `GLOSSARY.md`, `ARCHITECTURE.md` and the Wiki lexicon articles (Lexicon Retirement And ARCHITECTURE.md Spec (S-004O), consumer re-pointing Task (TK-009F)); no claim changed.
+- 2026-10-07: Re-pointed the retiring Lexicon's links and live routes to `GLOSSARY.md`, `ARCHITECTURE.md` and the Wiki lexicon articles (the Lexicon Retirement Spec (S-004O), its consumer re-pointing Task (TK-009F)); no claim changed.

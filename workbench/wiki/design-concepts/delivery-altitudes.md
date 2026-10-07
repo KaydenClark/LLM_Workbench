@@ -88,4 +88,4 @@ confirmed landmark set by the landmark migration Spec.
 - 2026-10-03: created in the Blueprint short-page work (the Blueprint Short Page
   Spec) from the altitude passages the owner's teardown disposition moved off the
   Blueprint.
-- 2026-10-07: Re-pointed the retiring Lexicon's links and live routes to `GLOSSARY.md`, `ARCHITECTURE.md` and the Wiki lexicon articles (Lexicon Retirement And ARCHITECTURE.md Spec (S-004O), consumer re-pointing Task (TK-009F)); no claim changed.
+- 2026-10-07: Re-pointed the retiring Lexicon's links and live routes to `GLOSSARY.md`, `ARCHITECTURE.md` and the Wiki lexicon articles (the Lexicon Retirement Spec (S-004O), its consumer re-pointing Task (TK-009F)); no claim changed.

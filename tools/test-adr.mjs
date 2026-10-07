@@ -1524,15 +1524,16 @@ test('every existing decision-record command keeps its name and refuses a stray 
   }
 });
 
-// S-004O TK-009F: a decision-record move repairs references in the Lexicon's
-// successors, GLOSSARY.md and ARCHITECTURE.md, and still in a Lexicon a room
-// has not retired yet; an absent control is skipped.
-test('a record move reads the glossary and architecture file and a Lexicon only while one exists', () => {
+// S-004O TK-009F: a decision-record move repairs references in ARCHITECTURE.md,
+// which carries the routes the retiring Lexicon held, and still in a Lexicon a
+// room has not retired yet; an absent control is skipped. The glossary links no
+// record and only promotion writes it (TK-009E), so the repair never touches it.
+test('a record move repairs ARCHITECTURE.md, a Lexicon only while one exists, and never the glossary', () => {
   const project = fs.mkdtempSync(path.join(os.tmpdir(), 'adr-references-'));
   try {
     for (const name of ['AGENTS.md', 'GLOSSARY.md', 'ARCHITECTURE.md']) fs.writeFileSync(path.join(project, name), '# Current\n');
     const names = () => collectRecordReferenceFiles(project).map((file) => path.relative(project, file));
-    assert.deepEqual(names().filter((name) => !name.includes('/')).sort(), ['AGENTS.md', 'ARCHITECTURE.md', 'GLOSSARY.md']);
+    assert.deepEqual(names().filter((name) => !name.includes('/')).sort(), ['AGENTS.md', 'ARCHITECTURE.md']);
     fs.writeFileSync(path.join(project, 'LEXICON.md'), '# Current\n');
     assert.ok(names().includes('LEXICON.md'), 'a Lexicon the update has not retired is still repaired');
   } finally { fs.rmSync(project, { recursive: true, force: true }); }

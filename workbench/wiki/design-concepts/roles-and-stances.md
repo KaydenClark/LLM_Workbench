@@ -108,4 +108,4 @@ establish these Spec-bound roles.
 
 - 2026-09-27: Created on owner direction after confirmation of the combined concept. Reviewer changed from the initial role proposal to a stance; Dispatcher remains bounded by one Spec with parallel slices inside it.
 - 2026-10-02: Added the accepted Captain and landmark Director ladder and the move of role jobs into role skills, from the owner-confirmed grilling of 2026-10-02.
-- 2026-10-07: Re-pointed the retiring Lexicon's links and live routes to `GLOSSARY.md`, `ARCHITECTURE.md` and the Wiki lexicon articles (Lexicon Retirement And ARCHITECTURE.md Spec (S-004O), consumer re-pointing Task (TK-009F)); no claim changed.
+- 2026-10-07: Re-pointed the retiring Lexicon's links and live routes to `GLOSSARY.md`, `ARCHITECTURE.md` and the Wiki lexicon articles (the Lexicon Retirement Spec (S-004O), its consumer re-pointing Task (TK-009F)); no claim changed.

@@ -122,4 +122,4 @@ folded into a single oversized one.
 - 2026-09-18: created on owner direction, via the Retirement Lifecycle By Folder For Records Spec (S-00I) Reconcile And Retire Task's (TK-005) dispatcher
   handoff, to serve as the durable Wiki owner of Task Artifact And Terminology Migration's (S-00H) surviving current
   claims ahead of its retirement into `workbench/specs/retired/`.
-- 2026-10-07: Re-pointed the retiring Lexicon's links and live routes to `GLOSSARY.md`, `ARCHITECTURE.md` and the Wiki lexicon articles (Lexicon Retirement And ARCHITECTURE.md Spec (S-004O), consumer re-pointing Task (TK-009F)); no claim changed.
+- 2026-10-07: Re-pointed the retiring Lexicon's links and live routes to `GLOSSARY.md`, `ARCHITECTURE.md` and the Wiki lexicon articles (the Lexicon Retirement Spec (S-004O), its consumer re-pointing Task (TK-009F)); no claim changed.

@@ -25,7 +25,7 @@
 // instead of reading it as a Task directory.
 //
 // TT-Q10 (the new-identifier form) is settled: Task identifiers keep the
-// existing `TK-###` form (the GLOSSARY.md Task entry and the grilling destination ledger), and
+// existing `TK-###` form (the glossary's Task entry and the grilling destination ledger), and
 // this reader introduces no other prefix.
 
 import fs from 'node:fs';

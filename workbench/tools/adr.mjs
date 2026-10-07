@@ -687,9 +687,11 @@ export function rewriteAdrLinks(content, oldDir, newDir, locations, { directoryT
 // product mirror) is deliberately excluded.
 function collectExternalMarkdownFiles(root) {
   const files = [];
-  // GLOSSARY.md and ARCHITECTURE.md succeed the Lexicon; a room the update has
-  // not reached still carries `LEXICON.md`, and every name is read only if present.
-  for (const name of ['AGENTS.md', 'RUNBOOK.md', 'GLOSSARY.md', 'ARCHITECTURE.md', 'LEXICON.md', 'BLUEPRINT.md', 'TASKBOARD.md', 'README.md', 'CLAUDE.md']) {
+  // ARCHITECTURE.md carries the routes the retiring Lexicon held and links
+  // records; a room the update has not reached still carries `LEXICON.md`, and
+  // every name is read only if present. The glossary links no record and only
+  // promotion writes it, so a reference repair never touches it.
+  for (const name of ['AGENTS.md', 'RUNBOOK.md', 'ARCHITECTURE.md', 'LEXICON.md', 'BLUEPRINT.md', 'TASKBOARD.md', 'README.md', 'CLAUDE.md']) {
     const file = path.join(root, name);
     if (fs.existsSync(file) && fs.statSync(file).isFile()) files.push(file);
   }
@@ -841,9 +843,11 @@ export function resolveRecord(root, id) {
 // `templates/` is the blank product and never names this room's records.
 export function collectRecordReferenceFiles(root) {
   const files = [];
-  // GLOSSARY.md and ARCHITECTURE.md succeed the Lexicon; a room the update has
-  // not reached still carries `LEXICON.md`, and every name is read only if present.
-  for (const name of ['AGENTS.md', 'RUNBOOK.md', 'GLOSSARY.md', 'ARCHITECTURE.md', 'LEXICON.md', 'BLUEPRINT.md', 'TASKBOARD.md', 'README.md', 'CLAUDE.md']) {
+  // ARCHITECTURE.md carries the routes the retiring Lexicon held and links
+  // records; a room the update has not reached still carries `LEXICON.md`, and
+  // every name is read only if present. The glossary links no record and only
+  // promotion writes it, so a reference repair never touches it.
+  for (const name of ['AGENTS.md', 'RUNBOOK.md', 'ARCHITECTURE.md', 'LEXICON.md', 'BLUEPRINT.md', 'TASKBOARD.md', 'README.md', 'CLAUDE.md']) {
     const file = path.join(root, name);
     if (fs.existsSync(file) && fs.lstatSync(file).isFile()) files.push(file);
   }
