@@ -337,8 +337,8 @@ test('the CLI exposes no command that writes answers.json and reports with exit 
 
 function sliceModel() {
   const html = fs.readFileSync(path.join(repo, 'workbench/grill-board/index.html'), 'utf8');
-  const script = html.match(/<script>([\s\S]*?)<\/script>/)[1].replace('Promise.all([load()', 'window.sliceTest = { topicFor, intentFor, laneFor, sliceCounts, batchProgress, matchesSlice, decisionMatches, decisionPromptItems, state, TOPICS }; Promise.all([load()');
-  const context = vm.createContext({ document: { getElementById: () => ({}), documentElement: { dataset: {} } }, window: { addEventListener() {} }, setInterval() {}, URL, URLSearchParams, fetch: () => new Promise(() => {}) });
+  const script = html.match(/<script>([\s\S]*?)<\/script>/)[1].replace('Promise.all([load()', 'window.sliceTest = { topicFor, intentFor, laneFor, sliceCounts, batchProgress, matchesSlice, decisionMatches, decisionPromptItems, routePage, state, TOPICS, prepareRoute(hash) { location.hash = hash; render = () => {}; } }; Promise.all([load()');
+  const context = vm.createContext({ document: { getElementById: () => ({ scrollIntoView() {} }), querySelector: () => ({ classList: { toggle() {} } }), documentElement: { dataset: {} } }, window: { addEventListener() {}, scrollTo() {} }, location: { hash: '#questions' }, setInterval() {}, URL, URLSearchParams, fetch: () => new Promise(() => {}) });
   vm.runInContext(script, context);
   return context.window.sliceTest;
 }
@@ -368,6 +368,20 @@ test('decision progress counts rationale prompts while original approvals remain
   assert.equal(model.decisionMatches(model.state.board.decisions[0], { topic: 'workflow', lane: 'answered' }), true, 'group topics come from related original questions');
   assert.equal(model.decisionMatches(model.state.board.decisions[0], { lane: 'pending' }), false, 'an unanswered approval cannot make an answered principle pending');
   assert.equal(model.state.board.items[0].derivedStatus, 'pending');
+});
+
+test('a reader question link opens its original question from the decision view without losing a draft', async () => {
+  const model = sliceModel();
+  const draft = { note: 'unfinished rationale', verdict: '' };
+  model.state.catalog = { groups: [], artifacts: [] };
+  model.state.board = { items: [{ id: 'GB-0012', title: 'Search corrections', kind: 'choice' }] };
+  model.state.view = 'decisions';
+  model.state.drafts.set('GB-0183', draft);
+  model.prepareRoute('#GB-0012');
+  await model.routePage();
+  assert.equal(model.state.view, 'questions', 'the existing question renderer must open the requested identity');
+  assert.equal(model.state.focus, 'GB-0012');
+  assert.equal(model.state.drafts.get('GB-0183'), draft);
 });
 
 test('workflow counts partition items and a parked or unsaved answer never finishes a batch', () => {

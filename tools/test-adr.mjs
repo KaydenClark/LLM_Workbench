@@ -25,6 +25,10 @@ test('CDRs use the shared decision lifecycle and keep older rooms valid', () => 
     assert.match(created.id, /^CDR-/);
     assert.equal(showRecord(dir, created.id).status, 'proposed');
     assert.match(showRecord(dir, created.id).content, /rationale|why/);
+    const beforeMigration = fs.readFileSync(file, 'utf8');
+    const migration = spawnSync(process.execPath, [layout, 'migrate', '--project', dir, '--version', VERSION], { encoding: 'utf8' });
+    assert.equal(migration.status, 0, migration.stdout + migration.stderr);
+    assert.equal(fs.readFileSync(file, 'utf8'), beforeMigration, 'a current room keeps its optional CDR collection during migration');
     writeDecisionRegisters(dir);
     assert.deepEqual(validateDecisionRecords(dir), []);
     assert.equal(listRecords(dir).filter(record => record.kind === 'cdr').length, 1);

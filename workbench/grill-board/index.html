@@ -681,7 +681,7 @@
       const id = location.hash.slice(1);
       if (/^GB-\d{4}$/.test(id)) {
         const target = state.board.items.find(item => item.id === id);
-        if (target) { state.inBatch = false; state.topic = topicFor(target); state.intent = state.scope = state.lane = 'all'; state.query = ''; state.focus = target.id; document.getElementById('search').value = ''; render(); }
+        if (target) { state.view = 'questions'; state.decision = null; state.inBatch = false; state.topic = topicFor(target); state.intent = state.scope = state.lane = 'all'; state.query = ''; state.focus = target.id; document.getElementById('search').value = ''; render(); }
         document.getElementById(id)?.scrollIntoView({ block: 'start' });
       } else if (returning) window.scrollTo(0, state.questionScroll || 0);
       return;
