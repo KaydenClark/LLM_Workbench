@@ -1,0 +1,226 @@
+{
+  "room": "s2-A",
+  "base": "c4051b19fc7d8839269e06a7c80c94e36d9ea1c1",
+  "model": "claude-opus-5-5",
+  "cliVersion": "2.1.287 (Claude Code)",
+  "sessionId": "1e110914-301f-45de-9df3-aa76d5347e9a",
+  "skillsLoaded": [
+    "<room>/.claude/skills/domain-modeling"
+  ],
+  "turns": [
+    {
+      "n": 1,
+      "owner": "/domain-modeling I'm reworking our month-end flow. At month end the Settlement goes through every active Account and issues its Invoice.",
+      "exit": 0,
+      "skillInvocations": [],
+      "tools": [
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"cd \\\"$PWD\\\"; ls; ls GLOSSARY*.md 2>/dev/null; grep -n -i -E \\\"settlement|account|invoice|month.end|billing|statement\\\" LEXICON.md | head -50; echo ---; grep -rn -i -E \\\"settlement|invoice|month.?end\\\" src tests workbench/specs workbench/wiki workbench/docs 2>/dev/null | head -60\",\"description\":\"Find vocabulary owner and domain terms in code\"}"
+        }
+      ],
+      "agent": "Before going further, one term needs settling. Your sentence uses **Settlement** for something the room already calls something else.\n\n**What the Lexicon says** (`LEXICON.md:311-312`):\n\n- **Settlement**: \"The application of one Payment to open Invoices on the same Account, oldest first, closing each in full or reducing it partially.\" The note says: *Not the Billing Run; avoid \"reconciliation\" and \"payout\".*\n- **Billing Run**: \"The scheduled job that issues Invoices for every active Account at the end of a billing period.\" The note says: *Avoid \"settlement\" and \"cycle\".*\n\nWhat you described, going through every active Account at month end and issuing an Invoice, is the Billing Run almost word for word.\n\n**The code and tests agree with the Lexicon.** I checked:\n\n- `src/billing/billing-run.js:3`: \"The Billing Run issues one Invoice per active Account for the period.\" `tests/invoice.test.js:17` covers it.\n- `src/billing/settlement.js:1-4` applies one Payment to its Account's open Invoices. `tests/settlement.test.js` covers it.\n- The S-001 \"Invoice Settlement\" Spec, the \"Billing model\" Wiki page (`workbench/wiki/billing-model.md:17-21`) and the decision record \"Invoices belong to Accounts, not Customers\" (ADR 000A) all use Settlement in the payment sense.\n\nSo the code and the docs don't disagree with each other. The only mismatch is between your wording and both of them.\n\n**If Settlement were renamed to mean the month-end job,** these would all have to change or would quietly mean something else: two Lexicon rows, `settle()` and its tests, S-001's title and four acceptance lines, including the open TK-001 Task \"Partial Settlement\", the Wiki page, and ADR 000A's consequences line. Payment application would also need a new name. That's a large change for one word, so it's worth deciding now.\n\n**My question:** when you say \"the Settlement goes through every active Account,\" do you mean the **Billing Run** as defined? Or is the month-end flow you're reworking meant to also apply outstanding Payments to the new Invoices, so it combines a Billing Run with Settlements?",
+      "head": null,
+      "headMoved": null,
+      "branches": null,
+      "roomStatus": "",
+      "roomDiff": "",
+      "notepadPaths": [],
+      "notepads": [],
+      "shadowStores": []
+    },
+    {
+      "n": 2,
+      "owner": "Next: when an account logs in, it should see all of its open Invoices.",
+      "exit": 0,
+      "skillInvocations": [],
+      "tools": [
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"cd \\\"$PWD\\\"; grep -n -i -E \\\"^\\\\| \\\\*\\\\*(customer|user|login|portal)\\\" LEXICON.md; grep -rn -i -E \\\"login|log in|user|session|portal|customer\\\" src tests workbench/wiki/billing-model.md | head; cat src/accounts/account.js; sed -n 1,60p workbench/skills/notepad/SKILL.md | grep -n -i -E \\\"path|location|\\\\.json|create\\\" | head -15\",\"description\":\"Check vocabulary and code for login concep"
+        },
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"cd \\\"$PWD\\\"; sed -n 300,315p LEXICON.md\",\"description\":\"Read the billing vocabulary rows\"}"
+        },
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"cd \\\"$PWD\\\"; sed -n 20,110p workbench/skills/notepad/SKILL.md; node workbench/tools/notepads.mjs --help 2>&1 | head -30\",\"description\":\"Read notepad procedure and tool usage\"}"
+        },
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"cd \\\"$PWD\\\"; node workbench/tools/notepads.mjs list --objective month-end-rework 2>&1 | head; node workbench/tools/notepads.mjs create --note month-end-rework --objective month-end-rework --title \\\"Month-end flow domain modeling\\\" --focus \\\"Pending vocabulary and boundary questions while reworking the month-end flow and the logged-in Invoice view\\\" 2>&1 | tail -5\",\"description\":\"Create"
+        },
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"cd \\\"$PWD\\\"; N=month-end-rework\\nnode workbench/tools/notepads.mjs append --note $N --revision 1 --kind finding --topic settlement-vs-billing-run --content \\\"Owner said 'at month end the Settlement goes through every active Account and issues its Invoice'. Lexicon defines that job as Billing Run; Settlement is Payment application. Code, tests, S-001, billing-model Wiki and ADR 000A agr"
+        }
+      ],
+      "agent": "Noted: the Settlement question from last turn is still open. I've saved it to the session notepad as unresolved so it doesn't get lost. Your new sentence has the same kind of problem.\n\n**\"An account logs in\" doesn't fit the Lexicon** (`LEXICON.md:307-308`):\n\n- **Account**: \"A billing account owned by exactly one Customer; it holds a balance and receives Invoices.\" The note says: *Not a login or user account.*\n- **Customer**: \"A person or organization that buys from Ledgerline and is legally responsible for paying.\" The note says: *Not a login; avoid \"client\" and \"user\".*\n\nNeither term can log in, and nothing in `src/` or `tests/` has a concept of a login, user or session. So the thing that logs in is a new concept the room doesn't have a name for yet. It isn't a change to an existing term.\n\n**Who logs in decides what they see.** Take a Customer, Acme, with two Accounts, ACC-1 and ACC-2, each with one open Invoice. Under the decision record \"Invoices belong to Accounts, not Customers\" (ADR 000A), those are two separate Invoices with separate balances. When someone from Acme logs in:\n\n- **(a)** They see both Invoices, because the login belongs to the Customer and covers all of its Accounts.\n- **(b)** They see only ACC-1's Invoice, because the login gives access to specific Accounts. For example, Acme's finance team gets ACC-1 and a branch office gets ACC-2.\n\nOption (a) is simpler. Option (b) means a login and an Account have a many-to-many relationship, which is more to model but common in billing products.\n\n**My question:** when Acme's person logs in, should they see both Invoices (a) or only the ones for Accounts they've been given access to (b)? Once that's settled, I'll propose a name for the login identity, such as \"User\" or \"Member\", that doesn't clash with Customer's \"avoid 'user'\" note.\n\nNothing in the tracked repo has changed. Both open questions are in the local notepad `workbench/sessions/notepads/work/month-end-rework.json`, which is untracked, and they'll only reach the Lexicon after you confirm them.",
+      "head": null,
+      "headMoved": null,
+      "branches": null,
+      "roomStatus": "",
+      "roomDiff": "",
+      "notepadPaths": [
+        "workbench/sessions/notepads/work/month-end-rework.json"
+      ],
+      "notepads": [
+        {
+          "file": "month-end-rework.json",
+          "current": {
+            "state": "Month-end flow domain modeling",
+            "unresolved": [],
+            "next_action": ""
+          },
+          "entries": [
+            {
+              "id": "finding-001",
+              "kind": "finding",
+              "topic": "settlement-vs-billing-run",
+              "content": "Owner said 'at month end the Settlement goes through every active Account and issues its Invoice'. Lexicon defines that job as Billing Run; Settlement is Payment application. Code, tests, S-001, billing-model Wiki and ADR 000A agree with the Lexicon. UNRESOLVED: owner has not answered whether they mean Billing Run, or a month-end flow that also applies Payments.",
+              "interpretation": "Renaming would reach Lexicon rows, src/billing/settlement.js, tests/settlement.test.js, S-001 and TK-001, billing-model Wiki, ADR 000A consequences. Treat as open until owner confirms."
+            },
+            {
+              "id": "finding-002",
+              "kind": "finding",
+              "topic": "login-subject",
+              "content": "Owner said 'when an account logs in, it should see all of its open Invoices'. Lexicon: Account is 'Not a login or user account'; Customer is 'Not a login'. No login, user or session concept exists in src/ or tests/. UNRESOLVED: who logs in, and is visibility scoped to one Account or all Accounts of a Customer.",
+              "interpretation": "Likely needs a new term for the login identity; scope choice interacts with ADR 000A (Invoices belong to Accounts)."
+            }
+          ]
+        }
+      ],
+      "shadowStores": []
+    },
+    {
+      "n": 3,
+      "owner": "And one rule I want: a Payment always pays exactly one Invoice.",
+      "exit": 0,
+      "skillInvocations": [],
+      "tools": [
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"cd \\\"$PWD\\\"; cat src/billing/settlement.js tests/settlement.test.js; sed -n 1,40p workbench/specs/S-001-invoice-settlement/SPEC.md; ls workbench/specs/S-001-invoice-settlement/\",\"description\":\"Read Settlement source, tests and spec\"}"
+        },
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"cd \\\"$PWD\\\"; node workbench/tools/notepads.mjs append --note month-end-rework --revision 3 --kind finding --topic payment-one-invoice --content \\\"Owner proposed rule: 'a Payment always pays exactly one Invoice'. Contradicts Lexicon Settlement (one Payment to open Invoices, oldest first), src/billing/settlement.js loop, tests/settlement.test.js 'pays open Invoices oldest first' (one 300"
+        }
+      ],
+      "agent": "I've saved this to the notepad as a third open item. It contradicts both the accepted definition and the working code, so I'm treating it as an unresolved contradiction rather than a small refinement.\n\n**What the room says now:**\n\n- **Lexicon** (`LEXICON.md:311`): a Settlement is \"the application of one Payment to open Invoices on the same Account, oldest first\". One Payment, several Invoices.\n- **Code** (`src/billing/settlement.js:10-17`): `settle()` keeps going through the open Invoices until the Payment runs out.\n- **Tests** (`tests/settlement.test.js:8-13`): a 300 Payment closes INV-1 (100) and INV-2 (200), a test titled \"a Settlement pays open Invoices oldest first\". Your rule would make that test wrong.\n- **S-001 \"Invoice Settlement\"**: acceptance line 2 is already checked as delivered, and it says one Payment applies to open Invoices.\n\n**Part of it already fits.** A Payment smaller than its Invoice still pays exactly one Invoice, partly. That's the unfinished S-001 slice TK-001 \"Partial Settlement of the oldest open Invoice\", and it works under either rule. Separately, the code doesn't do partial Settlement yet (`settlement.js:14` just stops). That gap is already tracked in S-001.\n\n**Where the rule needs a decision is overpayment.** Say ACC-1 has INV-1 open for 100 and INV-2 open for 200, and the Customer pays 150. \"Exactly one Invoice\" means INV-1 closes, but the remaining 50 has nowhere to go:\n\n- **(a)** The 50 stays on the Account as unapplied credit. Today that only happens when a Payment can't cover an Invoice.\n- **(b)** The 50 automatically becomes a separate credit that can pay INV-2. In practice, though, that's the current behavior with an extra step.\n- **(c)** A Payment can't be more than its Invoice. Overpayments are refused or sent back.\n\nWhether the rule is worth adopting depends on this answer. With (b), the room is basically back to today's model. With (a) or (c), it's a real change to what Settlement means, and probably worth a decision record. It would be hard to reverse once Payments are stored, a later reader would wonder why, and the alternatives are real.\n\n**My question:** in the 150-against-100-and-200 case, which of (a), (b) or (c) should happen to the extra 50?\n\nThree questions are now open: Settlement vs. Billing Run, who logs in, and this one. They're all in `workbench/sessions/notepads/work/month-end-rework.json`. Nothing tracked has changed.",
+      "head": null,
+      "headMoved": null,
+      "branches": null,
+      "roomStatus": "",
+      "roomDiff": "",
+      "notepadPaths": [
+        "workbench/sessions/notepads/work/month-end-rework.json"
+      ],
+      "notepads": [
+        {
+          "file": "month-end-rework.json",
+          "current": {
+            "state": "Month-end flow domain modeling",
+            "unresolved": [],
+            "next_action": ""
+          },
+          "entries": [
+            {
+              "id": "finding-001",
+              "kind": "finding",
+              "topic": "settlement-vs-billing-run",
+              "content": "Owner said 'at month end the Settlement goes through every active Account and issues its Invoice'. Lexicon defines that job as Billing Run; Settlement is Payment application. Code, tests, S-001, billing-model Wiki and ADR 000A agree with the Lexicon. UNRESOLVED: owner has not answered whether they mean Billing Run, or a month-end flow that also applies Payments.",
+              "interpretation": "Renaming would reach Lexicon rows, src/billing/settlement.js, tests/settlement.test.js, S-001 and TK-001, billing-model Wiki, ADR 000A consequences. Treat as open until owner confirms."
+            },
+            {
+              "id": "finding-002",
+              "kind": "finding",
+              "topic": "login-subject",
+              "content": "Owner said 'when an account logs in, it should see all of its open Invoices'. Lexicon: Account is 'Not a login or user account'; Customer is 'Not a login'. No login, user or session concept exists in src/ or tests/. UNRESOLVED: who logs in, and is visibility scoped to one Account or all Accounts of a Customer.",
+              "interpretation": "Likely needs a new term for the login identity; scope choice interacts with ADR 000A (Invoices belong to Accounts)."
+            },
+            {
+              "id": "finding-003",
+              "kind": "finding",
+              "topic": "payment-one-invoice",
+              "content": "Owner proposed rule: 'a Payment always pays exactly one Invoice'. Contradicts Lexicon Settlement (one Payment to open Invoices, oldest first), src/billing/settlement.js loop, tests/settlement.test.js 'pays open Invoices oldest first' (one 300 Payment closes INV-1 and INV-2), and S-001 checked acceptance line 2. Classified as unresolved contradiction: proposal differs from both Canon and source. UNRESOLVED: what happens to a Payment larger than its Invoice; whether the Payment targets a chosen Invoice or the oldest.",
+              "interpretation": "If adopted, changes Settlement's definition and possibly ADR-worthy (hard to reverse, surprising, real trade-off). Separate existing implementation gap: partial Settlement in Lexicon/S-001 TK-001 not yet in code."
+            }
+          ]
+        }
+      ],
+      "shadowStores": []
+    },
+    {
+      "n": 4,
+      "owner": "Last thing: today the code already settles an Invoice partially when a Payment is too small to cover it in full.",
+      "exit": 0,
+      "skillInvocations": [],
+      "tools": [
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"cd \\\"$PWD\\\"; git branch -a; git status --short; node -e \\\"import('./src/billing/settlement.js').then(m=>console.log(JSON.stringify(m.settle({accountId:'ACC-1',amountCents:50},[{id:'INV-1',accountId:'ACC-1',periodEnd:'2026-07-31',totalCents:100,openCents:100,status:'open'}]))))\\\"; node --test tests/settlement.test.js 2>&1 | grep -E \\\"^# (pass|fail)|^not ok|^ok\\\"\",\"description\":\"Run Sett"
+        },
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"cd \\\"$PWD\\\"; node --test tests/settlement.test.js 2>&1 | tail -12; git log --oneline integration -3; git diff main integration --stat | tail -3\",\"description\":\"Show test results and check integration branch\"}"
+        },
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"cd \\\"$PWD\\\"; node workbench/tools/notepads.mjs append --note month-end-rework --revision 4 --kind correction --topic partial-settlement --content \\\"Owner stated code already settles an Invoice partially when a Payment is too small. Live check contradicts: settle({ACC-1,50},[INV-1 open 100]) returns settled [] and unappliedCents 50; tests/settlement.test.js test 2 asserts exactly that a"
+        }
+      ],
+      "agent": "The code doesn't settle partially today. I ran it to check.\n\n**What happens when a Payment is too small:**\n\n```\nsettle({ accountId: 'ACC-1', amountCents: 50 }, [INV-1 open for 100])\n→ { \"settled\": [], \"unappliedCents\": 50 }\n```\n\nINV-1 stays open for the full 100, nothing is applied to it, and the 50 is left on the Account as unapplied credit. The cause is `src/billing/settlement.js:14`: `if (remainingCents < invoice.openCents) break;`. The comment above it says the same thing: \"An Invoice the remaining Payment cannot cover in full is left untouched\" (`settlement.js:2-3`). There's also a test that requires this behavior: \"a Payment that cannot cover an Invoice leaves it open as unapplied credit\" (`tests/settlement.test.js:15-19`). All 3 Settlement tests pass. `main` and `integration` are both at the same commit (c4051b1), so there's no newer code elsewhere in this repo.\n\n**This is an implementation gap, not documentation drift.** The Lexicon's Settlement definition, \"closing each in full or reducing it partially\", is the accepted meaning, and the code hasn't caught up yet. The gap is already tracked: S-001 \"Invoice Settlement\" lists \"A Payment smaller than the oldest open Invoice settles it partially and leaves the remainder open\" as not yet done, and its Task TK-001 \"Partial Settlement of the oldest open Invoice\" is ready to pick up. So the code should be changed to match the Lexicon, not the other way around. Delivering TK-001 would also mean changing that second test.\n\nThis also affects your one-Payment-one-Invoice rule. The case I said already fits it, a small Payment partly paying one Invoice, is only accepted meaning for now. It isn't how the system behaves yet.\n\n**My question:** were you describing how you want it to work, or have you seen partial Settlement working somewhere, such as another branch, a deployed build or a different repo? If it's the second, I'd like to look at it before treating TK-001 as still open.\n\nThere are now three open questions (Settlement vs. Billing Run, who logs in, the one-Invoice rule) and this correction. All four are saved in `workbench/sessions/notepads/work/month-end-rework.json`. Nothing tracked has changed.",
+      "head": null,
+      "headMoved": null,
+      "branches": null,
+      "roomStatus": "",
+      "roomDiff": "",
+      "notepadPaths": [
+        "workbench/sessions/notepads/work/month-end-rework.json"
+      ],
+      "notepads": [
+        {
+          "file": "month-end-rework.json",
+          "current": {
+            "state": "Month-end flow domain modeling",
+            "unresolved": [],
+            "next_action": ""
+          },
+          "entries": [
+            {
+              "id": "finding-001",
+              "kind": "finding",
+              "topic": "settlement-vs-billing-run",
+              "content": "Owner said 'at month end the Settlement goes through every active Account and issues its Invoice'. Lexicon defines that job as Billing Run; Settlement is Payment application. Code, tests, S-001, billing-model Wiki and ADR 000A agree with the Lexicon. UNRESOLVED: owner has not answered whether they mean Billing Run, or a month-end flow that also applies Payments.",
+              "interpretation": "Renaming would reach Lexicon rows, src/billing/settlement.js, tests/settlement.test.js, S-001 and TK-001, billing-model Wiki, ADR 000A consequences. Treat as open until owner confirms."
+            },
+            {
+              "id": "finding-002",
+              "kind": "finding",
+              "topic": "login-subject",
+              "content": "Owner said 'when an account logs in, it should see all of its open Invoices'. Lexicon: Account is 'Not a login or user account'; Customer is 'Not a login'. No login, user or session concept exists in src/ or tests/. UNRESOLVED: who logs in, and is visibility scoped to one Account or all Accounts of a Customer.",
+              "interpretation": "Likely needs a new term for the login identity; scope choice interacts with ADR 000A (Invoices belong to Accounts)."
+            },
+            {
+              "id": "finding-003",
+              "kind": "finding",
+              "topic": "payment-one-invoice",
+              "content": "Owner proposed rule: 'a Payment always pays exactly one Invoice'. Contradicts Lexicon Settlement (one Payment to open Invoices, oldest first), src/billing/settlement.js loop, tests/settlement.test.js 'pays open Invoices oldest first' (one 300 Payment closes INV-1 and INV-2), and S-001 checked acceptance line 2. Classified as unresolved contradiction: proposal differs from both Canon and source. UNRESOLVED: what happens to a Payment larger than its Invoice; whether the Payment targets a chosen Invoice or the oldest.",
+              "interpretation": "If adopted, changes Settlement's definition and possibly ADR-worthy (hard to reverse, surprising, real trade-off). Separate existing implementation gap: partial Settlement in Lexicon/S-001 TK-001 not yet in code."
+            },
+            {
+              "id": "correction-001",
+              "kind": "correction",
+              "topic": "partial-settlement",
+              "content": "Owner stated code already settles an Invoice partially when a Payment is too small. Live check contradicts: settle({ACC-1,50},[INV-1 open 100]) returns settled [] and unappliedCents 50; tests/settlement.test.js test 2 asserts exactly that and passes (3/3). main and integration are both at c4051b1. Classification: implementation gap, Lexicon Settlement row (Canon) says 'reducing it partially', code does not; already tracked as S-001 unchecked acceptance line 3 and TK-001 (ready).",
+              "interpretation": "Not documentation drift; do not edit the Lexicon to match code. Delivering TK-001 closes it. Owner may have been thinking of intended behavior or a branch not in this repo."
+            }
+          ]
+        }
+      ],
+      "shadowStores": []
+    }
+  ]
+}
