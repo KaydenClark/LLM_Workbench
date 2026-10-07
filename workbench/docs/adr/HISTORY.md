@@ -40,6 +40,7 @@
 | [0015](0015-workbench-base-and-foundry-capabilities.md) | Workbench supplies the base and Foundry adds coordination | accepted | 2026-09-04 | BLUEPRINT.md |
 | [0017](archive/0017-workbench-support-directory-has-six-lanes.md) | The Workbench support directory has six lowercase lanes | superseded | 2026-09-04 | BLUEPRINT.md, RUNBOOK.md |
 | [0018](0018-the-wiki-is-the-knowledge-base.md) | The wiki is the knowledge base and holds collections | accepted | 2026-09-04 | AGENTS.md, LEXICON.md |
+| [001A](proposed/001A-promote-publishes-confirmed-documentation-specs-and-task-plans-before-implementation.md) | Promote Decision delegates one confirmed decision and publishes each stage | proposed | 2026-10-07 | workbench/skills/promote-decision/SKILL.md, LEXICON.md, RUNBOOK.md |
 | [0020](0020-a-check-blocks-only-the-change-it-evaluates.md) | A check may block only the change it evaluates | accepted | 2026-09-04 | AGENTS.md, RUNBOOK.md |
 | [0023](0023-mechanical-guarantees-and-agent-obligations.md) | Tools check structure; agents carry judgment | accepted | 2026-09-04 | AGENTS.md |
 | [0025](archive/0025-planes-classify-claims-not-whole-artifacts.md) | Governance Planes classify claims and their use, not whole artifacts | superseded | 2026-09-04 | LEXICON.md, AGENTS.md |

@@ -6,7 +6,8 @@ knowledge_role: curated
 provenance:
   - Owner-confirmed grilling of 2026-10-02 on the workflow verbs and which verb writes each artifact
 source_paths:
-  - workbench/docs/adr/001A-promote-publishes-confirmed-documentation-specs-and-task-plans-before-implementation.md
+  - workbench/skills/promote-decision/SKILL.md
+  - workbench/docs/adr/proposed/001A-promote-publishes-confirmed-documentation-specs-and-task-plans-before-implementation.md
   - LEXICON.md
   - BLUEPRINT.md
   - workbench/docs/adr/000X-the-workflow-is-eight-verbs-and-each-verb-writes-the-plane-its-claims-live-on.md
@@ -31,14 +32,20 @@ nothing; the Lexicon holds the definitions.
 
 ## The delivery workflow
 
-The delivery workflow reads Explore, Promote, Journey, Review, Verify,
-Approve, Delivered, Clean Up. Explore groups Idea and Align. Promote starts
-with Confirm and coordinates durable documentation, Map and Plan, with each
-record stage published to integration before the next depends on it. Delivered replaced Complete as the verb for approved work
+The delivery workflow reads Idea, Align, Confirm, Map, Plan, Journey, Review,
+Verify, Approve, Delivered, Clean Up. Delivered replaced Complete as the verb for approved work
 that is on main. A send-back at Approve returns to Align at the scope the
 failure implicates.
 
-The [Promote decision](../../docs/adr/001A-promote-publishes-confirmed-documentation-specs-and-task-plans-before-implementation.md) extends the open verb set with Explore, Promote and Publish. Full promotion makes accepted records available independently of unfinished implementation; the [promote skill](../../skills/promote/SKILL.md) owns its stages and nearer endpoints.
+## Promoting a confirmed decision
+
+The [Promote Decision skill](../../skills/promote-decision/SKILL.md) carries one
+confirmed decision through Record, Map and Plan, with each stage published
+before the next depends on it. Record is the `to-docs` operation. A nearer
+endpoint limits the run; pending questions remain in their working source.
+The [proposed Promote Decision record](../../docs/adr/proposed/001A-promote-publishes-confirmed-documentation-specs-and-task-plans-before-implementation.md)
+records this design and its rationale. This Workbench maintainer operation
+prepares shared decisions and plans; implementation follows its own workflow.
 
 ## The loop
 
@@ -126,4 +133,4 @@ and renaming them is the owner's call.
 - 2026-10-05: the owner added QA and Submit to the Journey and moved Review
   after it, with a failed Review going back to Map, Plan and Journey.
 
-- 2026-10-07: added Explore and Promote as parent workflows and Publish as their verified integration boundary, preserving the earlier verb decisions as history.
+- 2026-10-07: linked the one-decision Record, Map, Plan and publication operation, retaining the earlier workflow history.

@@ -15,10 +15,11 @@ Confirm the assigned spec resolves through `workbench/manifest.json` before
 changing it. Never recreate a root `specs/` queue or a project-local
 skill-discovery tree.
 
-A full `promote` invocation for a confirmed capability supplies planning and
-activation authority for this stage after the Spec is published. A selected-claim,
-docs-only or Specs-only endpoint does not. Return checked Task records and
-activation state for publication; planning leaves Tasks unclaimed and unimplemented.
+When assigned as the Plan Worker for `promote-decision`, use its confirmed
+endpoint as planning and activation authority after the Spec is published.
+A selected-claim, docs-only or Specs-only endpoint supplies no Task-planning
+authority. Return checked Task records and activation state for publication;
+planning leaves Tasks unclaimed and unimplemented.
 
 Cut Tasks when the Spec is activated (`planned` -> `active`), from live
 Actuality at the real start of the work; a planned Spec gets no Tasks unless

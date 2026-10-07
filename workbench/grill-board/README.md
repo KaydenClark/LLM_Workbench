@@ -219,6 +219,16 @@ carries the applied verdicts into Git.
 1. `node tools/grill-board.mjs status` then `pending` (add `--json`
    for the full records). Each pending row names the item, the owner's verdict
    label, his note and the item revision he answered.
+   The dispatcher checks each item and revision against the live source. For
+   each individually confirmed decision, start one
+   [`promote-decision`](../skills/promote-decision/SKILL.md) run with the project
+   root, source pointer, ID, confirmed revision, rationale, corrections and
+   endpoint. Pending, deferred and stale answers stay outside that frontier;
+   reuse a decision already published at the same revision. An unfinished batch
+   may contain confirmed items ready to advance.
+   Order dependent decisions and shared owners, keep one writer per owner and
+   serialize publication. Compatible decisions can run concurrently; batch
+   membership never combines their authoring or publication boundaries.
 2. Route each verdict by item kind:
 
    | Kind | Verdict | Where it lands |
@@ -227,8 +237,8 @@ carries the applied verdicts into Git.
    | `approve-spec` | Send back | `approve ... --finding "<his note>"` creates the corrective Task |
    | `approve-spec` | Return to Align | `approve ... --destination-change "<his note>"` |
    | `approve-spec` | Drop this Spec | propose supersession or retirement in the Spec's evidence; `add` a confirm item naming the exact move before doing it |
-   | `owner-decision` / `choice` | Confirm | record the proposal's text in the owner it names (Spec Decisions, ADR/DDR, Lexicon row, Runbook) and clear the `owner:*` blocker if the item names one |
-   | `owner-decision` / `choice` | Correct | record **his note's words** there instead |
+   | `owner-decision` / `choice` | Confirm | the Record Worker records the confirmed proposal in its named owners; clear a named `owner:*` blocker only when that decision resolves it |
+   | `owner-decision` / `choice` | Correct | the Record Worker carries **his note's words** and the corrected confirmed revision |
    | `confirm-dqc` | Confirm | the `landmark-tracker.mjs revise` command the proposal spells out (check `--expect-revision` against a fresh `show`) |
    | `confirm-dqc` | Correct | the same `revise` with `--answer`/`--correction` carrying his words |
    | `confirm-ddr` | Confirm | nothing changes; `apply` with where "accepted record unchanged" |
@@ -238,8 +248,11 @@ carries the applied verdicts into Git.
    | any | Not now | leave it; do not `apply` |
    | any | Decline | record the decline where the item would have landed (evidence row, DQC correction, Spec note), then `apply` |
 
-3. One PR per batch is fine. Commit the `items.json` changes with the work they
-   record. Run `node tools/test-grill-board.mjs` before pushing.
+3. The dispatcher retains the board's `apply` bookkeeping for each current
+   answer and commits `items.json` with the work it records. Local application
+   does not prove publication: each promotion returns its own integration
+   containment and owner read-back. Run `node tools/test-grill-board.mjs` before
+   pushing. This routing adds no background scheduler or agent-refresh service.
 4. Anything your work raises that needs the owner becomes a new item through
    `add --file new-items.json --by <you>` (the file holds `{"items":[...]}` in
    the shape of the existing items, without `id`, `revision`, `status`,

@@ -189,9 +189,12 @@ execute ends or changes the interview; no magic slash command is required.
 A passing mention does not. Never continue questioning after Stop.
 
 - Preserve or pause: compose `notepad`; keep open questions and next action.
-- Promote a confirmed concept: compose `promote` through its docs, Spec,
-  authorized Task-plan and publication stages. A settled-decisions-only or
-  nearer endpoint stays at that scope; pending exploration remains pending.
+- Promote settled claims only: compose `promote` within that endpoint.
+- Promote a confirmed decision in the LLM Workbench: after the session's final
+  confirmed readback, hand its source, ID and confirmed revision to
+  `promote-decision`, reached through the room's Runbook. Run each decision
+  separately; its nearer endpoint stays narrow and pending answers stay pending.
+  This maintainer operation is available only where the manifest declares it.
 - Create specifications only: compose `to-spec` within that endpoint, after the
   confirmed final concept readback.
 - Prepare another agent's continuation: compose `handoff` as Markdown, with

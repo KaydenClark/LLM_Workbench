@@ -24,7 +24,7 @@ The checked-out LLM Workbench release owns the exact source versions.
 | `carry` | Own an assigned spec or task to its already-authorized endpoint and record what the owner still had to supply. |
 | `notepad` | Keep one objective's local JSON working context: save it as it appears, retrieve a topic with its corrections, trim only what is reconciled. |
 | `save` | Persist authorized work and verify its actual local or remote recovery boundary. |
-| `promote` | Carry confirmed decisions through durable docs, Specs, authorized Task plans and integration publication; retain selected-claim endpoints. |
+| `promote` | Reconcile selected supported claims directly into their existing durable owners. |
 | `handoff` | Author readable, scope-preserving Markdown continuation for the requested destination. |
 | `grill-me` | Start a saved design inquiry: compose grilling with objective-scoped notepad continuity, keeping pending answers pending. |
 | `workbench-runtime` | Operate the room's installed runtime tools: read a finding and what it blocks, validate the Wiki, repair installed state, allocate visible identifiers, keep the connection identity, check a configured host and add a room-local skill. |
@@ -60,6 +60,11 @@ core bundle or named in `skillPolicy.required`; a generated room has none. An
 operations index row in `RUNBOOK.md` that points to one makes it bind for that
 operation in this repository, like any pointed lane skill.
 
+`promote-decision`, like `implement-spec`, has a Workbench-only first delivery.
+Generic templates share its verb meanings, while keeping the portable core
+selected-claim route. They have no pointer to this absent maintainer skill;
+its orchestration entry belongs to this repository's Runbook and lane adapters.
+
 <!-- maintainer-skills:start -->
 | Skill | Purpose |
 |---|---|
@@ -67,6 +72,7 @@ operation in this repository, like any pointed lane skill.
 | `workbench-room-checks` | Check the routes that lay out, install, adopt, upgrade and update a room, plus the self-drift, carrier line-landing, GitHub binding and socket contract checks. |
 | `workbench-evaluation` | Evaluate a harness change and run the feedback loop: claims, design, commands, feedback intake, the automated gate, run outcomes and manual reports. |
 | `implement-spec` | Orchestrate a sliced Spec through Workers and assembly to a PR ready for integration review; Workbench-only first delivery. |
+| `promote-decision` | Orchestrate one confirmed decision through delegated Record, Map, Plan and stage publication; Workbench-only first delivery. |
 <!-- maintainer-skills:end -->
 
 ## Normal setup

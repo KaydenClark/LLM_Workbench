@@ -1,13 +1,17 @@
-# TK-007K - Publish the Promote parent workflow
+# TK-007K - Deliver the Promote Decision coordinator
 
 **Task ID:** TK-007K
 **Spec ID:** S-005C
-**Slice:** Publish the Promote parent workflow
+**Slice:** Deliver the Promote Decision coordinator
 **Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
-**Destination:** spec-acceptance: The installed skill gives ordered, checkable confirmation, docs, Spec, Task and publication stages, including a narrower endpoint and interruption recovery.
-**Planned verification:** Red/green skill contract; installed bare-remote publication scenario; direct promotion regression; full Runbook suite; Wiki validation; room checks; immutable assembled review and integration read-back.
+**Destination:** spec-acceptance: The tracked and discovered maintainer skill coordinates one confirmed decision through delegated Record, Map, Plan and stage publication, within its endpoint.
+**Planned verification:** Red/green source contract; lane discovery and Core exclusion; public-runtime bare-remote scenario; direct promotion regression; full Runbook suite; Wiki validation and touched-page lint; before/after room checks; assembled review and integration read-back.
 **Claimed by:** codex-promote
 
-Implement the scoped parent composition and its necessary child/caller and documentation routes. Preserve old selected-claim safeguards in a conditional reference. Exercise stage publication, a nearer endpoint and recovery without unfinished code entering integration. Hand back exact proof and material limits.
+Deliver the confirmed thin `promote-decision` skill as a Workbench-only
+maintainer operation. Restore the core selected-claim primitive and `save`
+composition. Reconcile its callers and documentation, preserve pending choices
+and prior evidence, and hand back exact source, checks and material limits.
+Source and fixture checks do not prove autonomous agent execution.

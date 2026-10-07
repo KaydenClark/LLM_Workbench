@@ -69,7 +69,8 @@ Contract change.
 | Transfer work through a handoff | Work goes to another agent or chat as a job, investigation, report or update. | [handoff](workbench/skills/handoff/SKILL.md#transfer-procedure) |
 | Transport sessions privately | Private session transport is configured and selected collections must sync. | [save](workbench/skills/save/SKILL.md#optional-private-session-transport) |
 | Save, promote or add a room-local skill | Authorized work must be saved to its owners, or a room adds its own skill. | [save](workbench/skills/save/SKILL.md#how-save-and-promote-compose); room-local skills: [workbench-runtime](workbench/skills/workbench-runtime/SKILL.md#room-local-skills) |
-| Promote confirmed decisions | A confirmed scope must reach durable docs, Specs, authorized Task plans and integration, or its named nearer endpoint. | [promote](workbench/skills/promote/SKILL.md#steps) |
+| Promote claims to an owner | Selected supported claims must reach their durable owner. | [promote](workbench/skills/promote/SKILL.md#command-reference) |
+| Promote one confirmed decision | An assigned decision or confirmed handoff must reach records, Specs, authorized Task plans and integration, or its nearer endpoint. | [promote-decision](workbench/skills/promote-decision/SKILL.md#steps); Workbench-only maintainer operation |
 | Trace a name, boundary or relationship before it settles | While aligning or reworking a concept, a proposed term, boundary or relationship needs its conflicts challenged and its consequences in owners, Specs, source and tests shown before the owner chooses. | [domain-modeling](workbench/skills/domain-modeling/SKILL.md#domain-modeling) |
 | Read frozen checkpoints or recovery receipts | A legacy checkpoint is cited, or a recovery receipt or backup is needed. | [checkpoint](workbench/skills/checkpoint/SKILL.md#frozen-history-and-operational-recovery) |
 | Validate the Wiki | A Wiki page changed or must move to another collection, or doctor reports a Wiki finding. | [workbench-runtime](workbench/skills/workbench-runtime/SKILL.md#wiki-validation) |
@@ -193,6 +194,7 @@ authorized by ordinary language; do not wait for a second skill invocation.
 | Decide or stress-test an idea | `grill-me`, the entry composing `grilling` with `notepad`; save answers/corrections before continuing |
 | Preserve or resume meaningful work | `notepad`; verify live state and returned revision |
 | Reconcile agreed claims | `promote` with `to-docs` and `save`; no implied implementation |
+| Publish one confirmed decision | `promote-decision`, with delegated Record, Map, Plan and a publisher; stop at the authorized endpoint |
 | Write specifications only | `to-spec` and needed `to-tasks`; stop at the specified endpoint |
 | Deliver assigned work | `carry` with `implement`, verification, Task merge answers, independent Verify review of the assembled Spec and `save`; explicitly launched sliced-Spec runs use `implement-spec` through its ready-PR endpoint |
 | Transfer a job or report to another context | core `handoff`; recipient purpose, instructions and context within assigned role scope |

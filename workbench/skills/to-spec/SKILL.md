@@ -10,9 +10,9 @@ at the `specs` lane declared by `workbench/manifest.json` (normally
 `workbench/specs/S-###-slug/SPEC.md`): one Spec per capability. When the
 conversation settles several capabilities, such as a rebuild of each skill,
 author or reuse one Spec for each; never bundle them into one delivery owner.
-Do not restart grilling or implement the capability. When composed by full
-`promote`, read its published documentation first and return these planned
-Spec records for publication before its Task-planning stage. Standalone
+Do not restart grilling or implement the capability. When assigned as the Map
+Worker for `promote-decision`, read its published decision owners first and
+return planned Spec records for publication before Task planning. Standalone
 `to-spec` retains its specification-only endpoint.
 
 1. Verify the project root, nearest controls, existing specs, and relevant source

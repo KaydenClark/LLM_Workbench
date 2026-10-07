@@ -63,6 +63,37 @@ assert.deepEqual(catalogNames, coreSkills,
 // maintainer skills its manifest declares sit beside the closed core, are
 // catalogued in their own region and never join the core or its policy.
 const maintainerSkills = readMaintainerSkills(root);
+
+// S-005C: the one-decision coordinator is a Workbench maintainer operation.
+// These checks hold instruction structure and routes, not agent execution.
+assert.ok(maintainerSkills.includes('promote-decision'), 'promote-decision must be declared as a maintainer skill');
+assert.ok(!coreSkills.includes('promote-decision'), 'promote-decision must remain outside Core');
+for (const adapter of ['.agents/skills', '.claude/skills']) {
+  assert.equal(fs.realpathSync(path.join(root, adapter, 'promote-decision')),
+    fs.realpathSync(path.join(skillsRoot, 'promote-decision')), 'lane adapters must discover the decision coordinator');
+}
+const promoteDecision = read('workbench/skills/promote-decision/SKILL.md');
+assert.match(promoteDecision, /name: promote-decision/);
+assert.match(promoteDecision, /one confirmed decision/);
+assert.match(promoteDecision, /Confirm -> Record -> Publish -> Map -> Publish -> Plan -> Publish/);
+for (const term of ['source', 'ID', 'revision', 'confirmed readback', 'rationale', 'corrections', 'endpoint', 'Subagent Workers', 'publisher', 'one writer', 'to-docs', 'to-spec', 'to-tasks', 'containment', 'interrupted']) {
+  assert.ok(promoteDecision.includes(term), `promote-decision must retain ${term}`);
+}
+let promotionStageEnd = -1;
+for (const stage of ['Confirm the intent', 'Recover progress', 'Dispatch a Record Worker', 'Dispatch a publisher', 'Dispatch a Map Worker', 'Dispatch a Plan Worker', 'Return the result']) {
+  const position = promoteDecision.indexOf(`**${stage}.**`);
+  assert.ok(position > promotionStageEnd, `promote-decision must order ${stage}`);
+  promotionStageEnd = position;
+}
+assert.match(read('RUNBOOK.md'), /promote-decision\/SKILL\.md#steps/);
+assert.match(read('workbench/skills/grill-me/SKILL.md'), /one .*promote-decision.*run per decision/);
+assert.match(read('workbench/grill-board/README.md'), /item and revision/);
+for (const [skill, stage] of [['to-docs', 'Record Worker'], ['to-spec', 'Map\nWorker'], ['to-tasks', 'Plan Worker']]) {
+  const caller = read(`workbench/skills/${skill}/SKILL.md`);
+  assert.ok(caller.includes(stage) && caller.includes('promote-decision'), `${skill} must retain its delegated stage and coordinator route`);
+}
+assert.doesNotMatch(read('templates/RUNBOOK.md'), /promote-decision\/SKILL\.md/, 'portable templates must not point to a Workbench-only maintainer skill');
+
 const maintainerRegion = catalog.match(
   /<!-- maintainer-skills:start -->([\s\S]*?)<!-- maintainer-skills:end -->/
 );
@@ -342,17 +373,7 @@ assert.ok(notepadSkill.indexOf('recheck live state before relying on either') < 
 // pending item in the note. These pin the source contract; the fresh-context
 // run in S-01B records the behavior.
 const promoteSkill = read('workbench/skills/promote/SKILL.md');
-// Parent stage order is instruction structure, not proof of agent execution.
-const promotionStages = ['Confirm the scope', 'Author durable documentation', 'Publish the documentation', 'Map the capabilities', 'Publish the Specs', 'Plan the Tasks', 'Publish the Tasks', 'Hand back shared state'];
-let promotionStageEnd = -1;
-for (const stage of promotionStages) {
-  const position = promoteSkill.indexOf(`**${stage}.**`);
-  assert.ok(position > promotionStageEnd, `promote must give the ordered stage: ${stage}`);
-  promotionStageEnd = position;
-}
-assertIncludesAll(promoteSkill, ['nearer endpoint', 'selected-claims.md', 'publication.md', 'one writer', 'unfinished', 'already-promoted', 'interruption'], 'promote parent scope and continuation');
-const selectedPromotion = read('workbench/skills/promote/references/selected-claims.md');
-assertIncludesAll(selectedPromotion, [
+assertIncludesAll(promoteSkill, [
   '`source_record`',
   '`current.unresolved`',
   'is pending, not supported',
@@ -362,9 +383,9 @@ assertIncludesAll(selectedPromotion, [
   '`workbench/sessions/recovery/`',
   'Leave each pending entry and its `current.unresolved` item in place'
 ], 'promote pending, single-owner and draft contract');
-assert.ok(selectedPromotion.indexOf('is pending, not supported') < selectedPromotion.indexOf('\n2. '),
+assert.ok(promoteSkill.indexOf('is pending, not supported') < promoteSkill.indexOf('\n2. '),
   'recognizing pending meaning belongs to selection, before routing');
-assert.ok(selectedPromotion.indexOf('Leave each pending entry') > selectedPromotion.indexOf('\n5. '),
+assert.ok(promoteSkill.indexOf('Leave each pending entry') > promoteSkill.indexOf('\n5. '),
   'retaining the pending item belongs to the note update after promotion');
 // S-00Z: grill-me is the repository-owned entry that composes grilling with
 // objective-scoped notepad continuity. It is declared in the live core bundle

@@ -16,9 +16,8 @@ operation, never its file type or storage location.
    current view with the revision just read. Live records remain in the
    manifest-declared ignored collections. Never add them to project Git.
 2. Route supported durable truth through `to-docs` to the existing owner.
-   When selected notepad material needs promotion, use `promote` at its
-   selected-claim endpoint within the same authorization; load its conditional
-   reconciliation reference, not the full planning/publication sequence. Do not create an owner, decision or assignment
+   When selected notepad material needs promotion, compose `promote` within
+   the same authorization. Do not create an owner, decision or assignment
    merely to have something to save. An ADR in `workbench/docs/adr/` retains
    rationale and active accepted architectural decisions;
    `canonicalized_in` names their operational owners.
@@ -57,11 +56,10 @@ checkpoints and unresolved/correction/handoff dependencies; cleanup composes
 
 `save` preserves already-authorized work in its existing owners, updates local
 continuation through `notepad`, and reports the recovery boundary actually
-verified. Full `promote` coordinates docs, Specs, authorized Task planning and stage
-publication. Its [selected-claim endpoint](../promote/references/selected-claims.md)
-distills supported material, including corrections, through the checked owner
-write and composes `save` for the already-promoted result. A `save` caller
-retains its narrower scope; it does not start the full parent sequence. Neither starts implementation or grants broader scope.
+verified. `promote` distills selected supported material, including corrections,
+through the direct owner promotion command in the
+[`promote` skill](../promote/SKILL.md#command-reference), then composes `save` for the
+already-promoted result. Neither starts implementation or grants broader scope.
 Explicit invocation and composition are distinct from mention. A promotion that
 was already performed must not be recursively promoted by save.
 

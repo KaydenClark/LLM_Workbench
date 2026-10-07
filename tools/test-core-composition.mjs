@@ -31,9 +31,7 @@ test('fresh core composes local save and selected promotion using only installed
       assert.equal(fs.readFileSync(path.join(canonical, 'SKILL.md'), 'utf8'), fs.readFileSync(path.join(root, 'workbench', 'skills', skill, 'SKILL.md'), 'utf8'));
     }
     assert.equal(fs.readFileSync(path.join(home, '.agents/skills/handoff/assets/HANDOFF.md'), 'utf8'), fs.readFileSync(path.join(root, 'templates/HANDOFF.md'), 'utf8'), 'installed handoff carries its portable shape without a producer checkout');
-    for (const reference of ['selected-claims.md', 'publication.md']) {
-      assert.equal(fs.readFileSync(path.join(home, '.agents/skills/promote/references', reference), 'utf8'), fs.readFileSync(path.join(root, 'workbench/skills/promote/references', reference), 'utf8'), 'installed Promote retains its conditional procedures');
-    }
+    assert.equal(fs.existsSync(path.join(home, '.agents/skills/promote-decision')), false, 'the decision coordinator stays outside the personal Core catalog');
     assert.equal(fs.existsSync(path.join(home, '.codex')), false);
     run(root, 'workbench/tools/workbench-layout.mjs', ['init', '--project', project, '--provenance', 'genesis', '--version', version]);
     run(root, 'tools/workbench-tools.mjs', ['install', '--project', project]);
@@ -65,6 +63,7 @@ test('fresh core composes local save and selected promotion using only installed
     // skills lane; both discovery adapters resolve into it with no per-skill
     // link and nothing published to the personal catalog.
     run(root, 'tools/workbench-skills.mjs', ['install', '--project', project]);
+    assert.equal(fs.existsSync(path.join(project, 'workbench/skills/promote-decision')), false, 'the decision coordinator is Workbench-only, not installed as Core');
     for (const skill of ['save', 'promote', 'notepad', 'to-docs', 'handoff']) {
       assert.equal(fs.readFileSync(path.join(project, '.agents/skills', skill, 'SKILL.md'), 'utf8'), fs.readFileSync(path.join(root, 'workbench', 'skills', skill, 'SKILL.md'), 'utf8'));
       assert.equal(fs.realpathSync(path.join(project, '.claude/skills', skill)), fs.realpathSync(path.join(project, 'workbench/skills', skill)));
@@ -87,7 +86,7 @@ test('fresh core composes local save and selected promotion using only installed
 
 // This exercises installed public seams and Git publication, with simulated
 // fixture merge authorization. It does not run an agent or a live GitHub PR.
-test('promotion publishes docs, a Spec and unclaimed Tasks independently of unfinished code', () => {
+test('public runtime supports separate decision-record, Map and Plan publication with retry', () => {
   const base = fs.mkdtempSync(path.join(os.tmpdir(), 'workbench-promote-stages-'));
   const project = path.join(base, 'room'), remote = path.join(base, 'remote.git'), reader = path.join(base, 'reader');
   const git = (cwd, args, expected = 0) => {

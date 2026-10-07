@@ -6,7 +6,8 @@ knowledge_role: curated
 provenance:
   - Owner's workflow map of 2026-09-24, moved here from the Blueprint by the owner's Blueprint teardown answer of 2026-10-03, rewritten in the workflow verbs
 source_paths:
-  - workbench/docs/adr/001A-promote-publishes-confirmed-documentation-specs-and-task-plans-before-implementation.md
+  - workbench/skills/promote-decision/SKILL.md
+  - workbench/docs/adr/proposed/001A-promote-publishes-confirmed-documentation-specs-and-task-plans-before-implementation.md
   - workbench/docs/adr/000X-the-workflow-is-eight-verbs-and-each-verb-writes-the-plane-its-claims-live-on.md
   - workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md
   - workbench/docs/adr/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md
@@ -32,8 +33,8 @@ structured account.
 
 ## The loop in the verbs
 
-The delivery workflow reads Explore, Promote, Journey, Review, Verify,
-Approve, Delivered, Clean Up; the set of workflow verbs is open, and
+The delivery workflow reads Idea, Align, Confirm, Map, Plan, Journey, Review,
+Verify, Approve, Delivered, Clean Up; the set of workflow verbs is open, and
 the [Workflow Verbs](workflow-verbs.md) page explains them. Journey is the
 build run for each Task: Implement, Check, QA and Submit, with Map and Plan
 before it. Review comes after the Journey and decides whether another Journey
@@ -42,16 +43,11 @@ The workflow loops back to Align when the owner sends the result back at
 Approve:
 
 ```text
-Explore = { Idea -> Align }
-Promote = { Confirm -> to-docs -> Publish -> Map -> Publish -> Plan -> Publish }
-
-Explore -> Promote -> Journey -> Review -> Verify -> Approve -> Delivered -> Clean Up
-  ^          ^                     |                 |
-  |          +-- failed Review -----+                 |
-  +--------------- sent back at Approve --------------+
+Idea -> Align -> Confirm -> Map -> Plan -> Journey -> Review -> Verify -> Approve -> Delivered -> Clean Up
+          ^                   ^                         |                    |
+          |                   +---- failed Review ------+                    |
+          +------------------------- sent back at Approve -------------------+
 ```
-
-The [Promote decision](../../docs/adr/001A-promote-publishes-confirmed-documentation-specs-and-task-plans-before-implementation.md) adds the parent composition: documentation precedes its Spec, and the Spec precedes authorized Tasks. Exploration may remain unfinished while a separately confirmed scope advances. A nearer endpoint stops promotion at that boundary.
 
 The owner brings an idea. Before it is clear enough to Align, the owner may
 explore it in conversation. Align is the inquiry in which the owner and the
@@ -64,6 +60,16 @@ and confirming it authorizes the agents to carry it to its endpoint
 ([DDR on what confirmation authorizes](../../docs/ddr/000C-confirming-a-concept-authorizes-the-agents-to-carry-it-to-its-endpoint.md)).
 A prototype, where one is used, is optional and lands nothing in enduring
 context ([DDR on prototypes](../../docs/ddr/000D-prototype-needs-no-map-and-lands-nothing-in-enduring-context.md)).
+
+## Promoting a confirmed decision
+
+The [Promote Decision skill](../../skills/promote-decision/SKILL.md) carries one
+confirmed decision through Record, Map and Plan, with each stage published
+before the next depends on it. Record is the `to-docs` operation. A nearer
+endpoint limits the run; pending questions remain in their working source.
+The [proposed Promote Decision record](../../docs/adr/proposed/001A-promote-publishes-confirmed-documentation-specs-and-task-plans-before-implementation.md)
+records this design and its rationale. This Workbench maintainer operation
+prepares shared decisions and plans; implementation follows its own workflow.
 
 ## What each line of the old map became
 
@@ -162,4 +168,4 @@ and those words move with the controls.
 - 2026-10-05: the owner added QA and Submit to the Journey and moved Review
   after it, with a failed Review going back to Map, Plan and Journey.
 
-- 2026-10-07: added Explore and Promote as parent workflows and Publish as their verified integration boundary, preserving the earlier verb decisions as history.
+- 2026-10-07: linked the one-decision Record, Map, Plan and publication operation, retaining the earlier workflow history.
