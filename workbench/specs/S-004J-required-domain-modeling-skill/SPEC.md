@@ -1,15 +1,15 @@
 # S-004J - Required Domain Modeling Skill
 
 **Spec ID:** S-004J
-**Status:** planned
+**Status:** active
 **Priority:** 2
-**Owner:** unassigned
+**Owner:** claude-s004j-dispatcher
 **Stance:** Builder
 **Updated:** 2026-10-06
 **Catalog description:** Ship domain modeling in every room's skills lane as the Align companion that shows the downstream consequences of an upstream name, boundary or relationship before it settles, and hands settled meaning to promotion instead of writing Canon inline.
 **Blockers:** none
-**Latest event:** Reconciled the confirmed glossary destination and retained capture boundary on 2026-10-06; remains planned and unassigned, with no Tasks cut.
-**Next gate:** Activate and cut Tasks from live Actuality with `/to-tasks`.
+**Latest event:** Activated on 2026-10-06 under the owner's `/implement-spec` launch; three Tasks cut on assembly branch `claude/s004j-assembly`.
+**Next gate:** Deliver TK-00JA, then TK-00JB and TK-00JC, on the assembly branch; assembled review before integration.
 
 > **Citation anchors.** pre=`46ad978956a74a3ee1bda22c36eb16207dcd98fd` post=`46ad978956a74a3ee1bda22c36eb16207dcd98fd`.
 
@@ -187,8 +187,8 @@ remove the Lexicon fallback before migration is verified.
 
 ## Vertical Implementation Slices
 
-No Tasks cut. Tasks are cut from live Actuality at activation with `/to-tasks`.
-Intended direction: (1) lane source from Matt's pinned glossary-based source,
+Tasks cut at activation on 2026-10-06: [TK-00JA](tasks/TK-00JA/TASK.md) ships the adapted source with its bundle, catalog, count and operations-index distribution; [TK-00JB](tasks/TK-00JB/TASK.md) proves behavior in fresh-context disposable rooms; [TK-00JC](tasks/TK-00JC/TASK.md) reconciles the Wiki article. Draft PR #374 (TK-006U, on `codex/s004j-domain-modeling-source-20261006`) staged the superseded PR #251 baseline and stays historical input, unmerged here.
+Planning direction at authoring: (1) lane source from Matt's pinned glossary-based source,
 with justified minimal Workbench adapters and scoped tests red then green; use
 PR #251 only as historical consequence-tracing input; (2) bundle, catalog,
 counts and the operations index row; (3) fresh-context scenarios in disposable
@@ -252,6 +252,7 @@ Record `Docs checked; no update needed` for any other owner checked.
 | 2026-10-04 | planning | Authored from the owner's remap direction, replacing S-002H; no Task cut | Live sources read at 46ad9789: manifest, layout, skills catalog, grilling, pending source, ledger answers PW-4, GX-2, FND-Q09 and FND-Q13, DDR-000J, ADR-000M, ADR-000S, ADR-000W, ADR-000X, ADR-000Y; PR #251 candidate at e3e0b5f0; personal copy read-only | Spec authored; Wiki article and router now point here | Activation, Tasks, delivery and every verification gate |
 | 2026-10-06 | planning | Reconciled the confirmed glossary destination and capture correction; replaced the blanket glossary ban and old-candidate adoption baseline. | Current bundle and root vocabulary owners inspected at integration 42431879fab3057db9e26ae661b4e92512c281f0; Matt source and GLOSSARY-FORMAT inspected at d81f3a183412e71a5b1e84ca21bc1a35eea03a60. No delivered behavior claimed. | Existing Spec and Domain Modeling article reconciled; DDR-001E and S-004O own vocabulary destination. | Activation, Tasks, migration coordination, skill distribution and behavioral proof. |
 | 2026-10-06 | planning-check | Verified documentation reconciliation; all delivery acceptance remains open. | Source `3d40a86505a339096c4629b814eb4fed1c789d5d`: full suite 53/53; ADR/Wiki, citation and diff checks passed. [Shared planning receipt](../S-004O-lexicon-retirement-and-architecture-md/proof/planning-verification.json) preserves the initial Blueprint-link failure, repair, bounded self-drift summaries and existing doctor findings. | Source owners read back; render regenerated projections. | No implementation, independent assembled review, PR or integration delivery claimed; self-drift remains 15 findings and cleanUpdate false. |
+| 2026-10-06 | activation | Activated under the owner's `/implement-spec` launch and cut TK-00JA, TK-00JB and TK-00JC with `convert-tasks --activate`; assembly branch `claude/s004j-assembly` from integration `9b524db3` plus the glossary planning commits at `a7d1ef18`. IDs chosen outside the sequential range to avoid collision with two concurrent Dispatchers. | Task IDs checked free across every `origin/*` tip and local Codex worktrees; draft PR #374 (TK-006U) read and left as historical input. | Spec header, slice section and three Task records. | Every delivery, verification and review gate. |
 
 ## Completion Result
 
