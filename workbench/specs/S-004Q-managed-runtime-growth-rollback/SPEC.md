@@ -3,13 +3,13 @@
 **Spec ID:** S-004Q
 **Status:** active
 **Priority:** 1
-**Owner:** unassigned
+**Owner:** codex-runtime-rollback
 **Stance:** Builder
 **Updated:** 2026-10-07
 **Catalog description:** Recover the prior managed runtime file set safely when update introduces new tools, including legacy growth backups.
 **Blockers:** none
-**Latest event:** Bounded producer prerequisite assigned after ownership check.
-**Next gate:** Activate and claim one corrective Task.
+**Latest event:** TK-007J claimed by codex-runtime-rollback.
+**Next gate:** Close TK-007J with verification and documentation proof.
 
 ## Outcome
 
