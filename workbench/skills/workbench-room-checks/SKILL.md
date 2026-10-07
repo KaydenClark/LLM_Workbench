@@ -521,8 +521,9 @@ none, with the Wiki vocabulary articles beside its router, through the
 one-time upgrade, Adoption's migration and the managed update route
 (`workbench-layout.mjs migrate`). Its Lexicon is removed only after every line
 has landed: a blank line or heading, a line of the Template Lexicon the room
-was generated from (read at the manifest's recorded source commit and from the
-current Template while it still ships one; only the name, version, review date
+was generated from (read at the manifest's recorded source commit, and from the
+current Template while it still ships one or else from the release history's
+last copy before its deletion; only the name, version, review date
 and status stamps match a filled value, and a filled term-row slot is the
 room's own line), or text whose normalized form (the landing check's
 `normalizeText`: trim, collapse whitespace) the room's `GLOSSARY.md`,
