@@ -17,8 +17,9 @@ source_paths:
   - workbench/skills/pr/NOTICE.md
   - workbench/skills/pr/CREDITS.md
   - workbench/specs/S-002U-pr-skill-adoption/SPEC.md
+  - workbench/specs/S-002U-pr-skill-adoption/proof/scenario-result.json
   - workbench/docs/ddr/001E-the-lexicon-retires-terms-live-in-the-wiki-and-ownership-routes-and-invariants-live-in-architecture-md.md
-last_verified: 2026-10-06
+last_verified: 2026-10-07
 ---
 # PR: write a pull request body that is fast to review
 
@@ -65,7 +66,7 @@ Evidence is a before and after. A screenshot is the strongest for a visual chang
 
 ## It's working if
 
-Intended behavior, from the source: the body opens with a small visual beside brief prose, shows a real before and after, and states the door and blast radius plainly, in the project's glossary terms, while nothing in Git or GitHub changes. Observed so far: the shipped source hashes byte-identical to the pin and makes no tool call. Not yet observed: a fresh-context body written from a known change; the Spec carries that scenario and its limits when it runs.
+Intended behavior, from the source: the body opens with a small visual beside brief prose, shows a real before and after, and states the door and blast radius plainly, in the project's glossary terms, while nothing in Git or GitHub changes. Observed: the shipped source hashes byte-identical to the pin and makes no tool call. On October 7, 2026 one fresh context, given only the skill, a known change, its real test output and a glossary fixture, wrote a body with a file-layout diff and a short pseudocode of the new check, a before and after quoted from the real runs, a two-way door and a branch-local blast radius in the fixture's terms, and changed nothing in Git or GitHub. It miscounted the change once (five added files where four were added and one edited) and carried no merge answers. The [scenario result](../../../specs/S-002U-pr-skill-adoption/proof/scenario-result.json) holds the input, the body and the environment diff. Limitation: one run, a fixture glossary, the same host and model as its caller, and the skill invoked by path rather than discovered.
 
 ## Where it fits
 
@@ -79,15 +80,16 @@ It is a primitive of the PR step, not a role or a Git operation. Group: main-wor
 
 Counterpart: [Matt Pocock engineering/pr at the pinned source](https://github.com/mattpocock/skills/blob/d81f3a183412e71a5b1e84ca21bc1a35eea03a60/skills/engineering/pr/SKILL.md). Verdict: same. `SKILL.md`, `CREDITS.md` and `agents/openai.yaml` are byte-identical to the pin, so the adapter diff is empty; the [NOTICE](../../../skills/pr/NOTICE.md) records the pin, the absence of an adapter and the MIT text, and the skill catalog test pins the source hash. This article adds only the Workbench boundaries around the body: Git operations stay with implement and the Runbook, the glossary reference stays unchanged, and the merge answers stay with implement.
 
-Source, article and observed behavior: the source and this article agree that the skill authors a body and nothing else. Observed behavior is structural only (byte identity and no tool call); invocation from an ordinary prompt and the quality of a generated body are not yet observed.
+Source, article and observed behavior: the source and this article agree that the skill authors a body and nothing else. Observed behavior: byte identity, no tool call, and one fresh-context body that followed the template's three sections, used real evidence and left Git untouched. Invocation from an ordinary prompt, a delivered glossary and repeat-run quality are not yet observed.
 
 ## Findings
 
 F:pr:01 | gap | The template has no place for the Worker merge-safety and completion answers that implement requires in a PR description | pr skill adoption Spec (S-002U)
 F:pr:02 | dangling | The source's GLOSSARY.md reference resolves to nothing until the glossary is delivered | Lexicon Retirement And ARCHITECTURE.md (S-004O)
-F:pr:03 | gap | A fresh-context body-authoring scenario with a known change has not yet been observed | pr skill adoption Spec (S-002U)
+F:pr:03 | gap | One fresh-context body was observed by direct path with a fixture glossary; ordinary-prompt discovery, the delivered glossary and repeat runs are unobserved | pr skill adoption Spec (S-002U)
 
 ## Sources and history
 
 - October 6, 2026: Owner approved pr as required Core in every Workbench. The pinned source was imported byte-identical with its lineage, and this draft was written from [Template 2](../TEMPLATE.md).
+- October 7, 2026: One fresh-context body-authoring scenario observed on a known change with real before and after output (S-002U TK-007W); finding 03 narrowed to what remains unobserved.
 - The draft remains curated context and supplies no independent authority.
