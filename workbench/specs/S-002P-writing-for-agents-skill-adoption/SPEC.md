@@ -23,6 +23,8 @@ The owner wants the skills prototyped as a draft wiki before more is built on th
 
 ## Current Verified State
 
+The following bullets are historical investigation observations at the pre anchor. Current paired implementation and verification are recorded in the execution amendment, acceptance and proof below.
+
 - `workbench/skills/writing-for-agents/` does not exist; there is no counterpart in `workbench/skills/`, `skills-pending/` or the draft wiki. The skill is new.
 - `writing-great-skills` has two copies, byte-identical when diffed on 2026-09-30: the in-repo archive at `skills-archive/optional-active-2026-09-01/writing-great-skills/` (`SKILL.md`, 83 lines; `GLOSSARY.md`, 201 lines) and the owner's personal install at `~/.agents/skills/writing-great-skills/`.
 - Its frontmatter sets `disable-model-invocation: true`. Its body is reference only: invocation choices, writing a description, an information hierarchy, when to split, pruning, leading words and a list of failure modes, with full definitions disclosed to `GLOSSARY.md`.
@@ -41,6 +43,10 @@ The owner wants the skills prototyped as a draft wiki before more is built on th
 4. `writing-great-skills` is no longer a competing reference: anything of it that survives is folded into `writing-for-agents`, and the rest is recorded as dropped with a reason.
 
 ## Decisions And Contracts
+
+### Paired delivery continuation, 2026-10-07
+
+The owner now requests retro and writing-for-agents in their proper home. Deliver this existing pair into the tracked Core lane through integration under current gates. The pr package independently landed at 6101c237 during verification; preserve it and combine the required bundle at 31. Its unresolved review findings remain with S-002U. Current31, exact prior28, pr-only29, pair-only30 and frozen legacy21 policies are checked at the shared compatibility seam. This continuation grants no owner Human QA or main-promotion approval and changes no personal installation.
 
 ### Current execution amendment, 2026-10-06
 
@@ -78,7 +84,7 @@ S-002L has delivered the draft collection and Template 2 on integration, althoug
 
 ## Vertical Implementation Slices
 
-No Task is cut yet. Tasks are cut from live Actuality when this Spec is activated. The following is the intended slice direction, in six steps:
+TK-006Y is the record-backed Task covering these six steps. The following is the retained investigation and implementation sequence:
 
 1. **Investigate ours.** Read `writing-great-skills` (`SKILL.md`, `GLOSSARY.md`) and any tests or callers at a named commit; record its inputs, outputs, writes and composition. `writing-for-agents` has no source of ours, so its "ours" is this skill. Record the true origin of `writing-great-skills`, its invocation mode and every in-repo consumer.
 2. **Draft the article.** Fill the Template 2 draft article from step 1, at the tentative location `workbench/wiki/skills-draft/primitives/writing-for-agents.md` (tentative until S-002L decides), with `skill_source: new`, `supersedes` naming the retired reference and the pin `d81f3a1` in provenance.
@@ -132,7 +138,7 @@ For step 6, run the targeted catalog and skills-lane tests, then `node workbench
 
 ## Completion Result
 
-Not complete.
+The paired Core implementation is complete and reverified against integration 621524d980f7990bad978c5b69910dd69b88b31d at source candidate 1c44487ad4b17845c63fdfe0333626f32d24994b: 53/53 Runbook commands passed. Catalog/fidelity, exact previous-28 compatibility, scrubbed-clone discovery adapters and Wiki validation passed. Existing direct-path scenario evidence remains applicable because the skill files are unchanged. The combined source preserves pr at the latest integration target and carries 31 Core skills; combined-cohort RED/GREEN and the final suite are recorded in the delivery evidence. Lifecycle headers and native evidence track review and integration delivery; owner Human QA and main closure remain open. Native configured-host invocation and reliability are unverified. The existing room self-drift remains visible; no clean-update claim is made.
 
 ## Supersession
 

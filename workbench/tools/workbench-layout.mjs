@@ -72,7 +72,23 @@ const prior28CoreSkills = [
   'improve-harness', 'director', 'dispatcher', 'spec-planner', 'spec-manager',
   'builder', 'auditor', 'reviewer', 'reconciler'
 ];
-const v321TransitionCoreSkills = [prior28CoreSkills];
+// Preserve the exact independently produced v3.2.1 cohorts; these frozen
+// lists never grow with coreSkills and migration leaves their policy intact.
+const priorPrCoreSkills = [
+  'adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement',
+  'make-it-so', 'to-docs', 'to-spec', 'to-tasks', 'tracer-bullet', 'update-harness',
+  'carry', 'notepad', 'save', 'promote', 'handoff', 'grill-me',
+  'workbench-runtime', 'improve-harness', 'pr', 'director', 'dispatcher', 'spec-planner',
+  'spec-manager', 'builder', 'auditor', 'reviewer', 'reconciler'
+];
+const priorWritingRetroCoreSkills = [
+  'adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement',
+  'make-it-so', 'to-docs', 'to-spec', 'to-tasks', 'tracer-bullet', 'update-harness',
+  'carry', 'notepad', 'save', 'promote', 'handoff', 'grill-me',
+  'workbench-runtime', 'improve-harness', 'writing-for-agents', 'retro', 'director', 'dispatcher',
+  'spec-planner', 'spec-manager', 'builder', 'auditor', 'reviewer', 'reconciler'
+];
+const v321TransitionCoreSkills = [prior28CoreSkills, priorPrCoreSkills, priorWritingRetroCoreSkills];
 export const lanes = LANES;
 export const collections = COLLECTIONS;
 export const controls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md'];

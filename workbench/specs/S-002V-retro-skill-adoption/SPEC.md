@@ -23,6 +23,8 @@ The owner wants the skills prototyped as a draft wiki to find skills that should
 
 ## Current Verified State
 
+The following bullets are historical investigation observations at the pre anchor. Current paired implementation and verification are recorded in the execution amendment, acceptance and proof below.
+
 At the pre anchor:
 
 - No skill named `retro`, or any retrospective, reflection or postmortem skill, exists in `workbench/skills`, `skills-pending` or the owner's `~/.agents/skills` (read-only). The Lexicon and RUNBOOK define no retro term. This is the first Spec for it; it adopts a skill from upstream (`engineering/retro`), group main-workflow, default Pending (owner decision 1 of 2026-09-30).
@@ -41,6 +43,10 @@ At the pre anchor:
 4. The skill source, once step 6 is authorized, matches the article and says where each lesson is recorded without creating a new store or a universal handoff.
 
 ## Decisions And Contracts
+
+### Paired delivery continuation, 2026-10-07
+
+The owner now requests retro and writing-for-agents in their proper home. Deliver this existing pair into the tracked Core lane through integration under current gates. The pr package independently landed at 6101c237 during verification; preserve it and combine the required bundle at 31. Its unresolved review findings remain with S-002U. Current31, exact prior28, pr-only29, pair-only30 and frozen legacy21 policies are checked at the shared compatibility seam. This continuation grants no owner Human QA or main-promotion approval and changes no personal installation.
 
 ### Current execution amendment, 2026-10-06
 
@@ -119,7 +125,7 @@ The draft article `workbench/wiki/skills-draft/main-workflow/retro.md` (the deli
 
 ## Completion Result
 
-Not complete.
+The paired Core implementation is complete and reverified against integration 621524d980f7990bad978c5b69910dd69b88b31d at source candidate 1c44487ad4b17845c63fdfe0333626f32d24994b: 53/53 Runbook commands passed. Catalog/fidelity, exact previous-28 compatibility, scrubbed-clone discovery adapters and Wiki validation passed. Existing direct-path scenario evidence remains applicable because the skill files are unchanged. The combined source preserves pr at the latest integration target and carries 31 Core skills; combined-cohort RED/GREEN and the final suite are recorded in the delivery evidence. Lifecycle headers and native evidence track review and integration delivery; owner Human QA and main closure remain open. Native configured-host invocation and reliability are unverified. The existing room self-drift remains visible; no clean-update claim is made.
 
 ## Supersession
 

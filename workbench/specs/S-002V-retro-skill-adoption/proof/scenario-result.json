@@ -6,7 +6,19 @@
   "limits": [
     "No native discovery or enforcement proof",
     "No comparative effectiveness claim",
-    "Underlying cart checkout, raw transcripts, CSV and currency reference unavailable"
+    "Underlying cart checkout, raw transcripts, CSV and currency reference unavailable",
+    "Broad skill-load retrieval is truncated; the successful command and exact retained source are recovered separately."
   ],
-  "observed": "Severity-ranked proposals reuse existing check and navigation; proposals remain unapplied; fixture limitations visible"
+  "observed": "Severity-ranked proposals reuse existing check and navigation; proposals remain unapplied; fixture limitations visible",
+  "executionIdentity": {
+    "provider": "openai",
+    "model": "gpt-6.1-sol",
+    "reasoningEffort": "high",
+    "client": "Codex Desktop",
+    "clientVersion": "0.160.1",
+    "scenarioContext": "01a1147f-4bde-7d01-874f-5f0c01e17a5c",
+    "parentContext": "01a11463-5a07-7810-808c-3105d32f24e1",
+    "startedAt": "2026-10-07T03:54:09.269Z"
+  },
+  "primaryEvidence": "scenario-execution-recovery.json"
 }
