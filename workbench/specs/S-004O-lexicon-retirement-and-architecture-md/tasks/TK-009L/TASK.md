@@ -3,11 +3,12 @@
 **Task ID:** TK-009L
 **Spec ID:** S-004O
 **Slice:** The Template's Wiki explains its vocabulary in grouped articles a generated room receives
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** TK-009D
 **Destination:** spec-acceptance: Rich Wiki lexicon articles explain concepts and show usage, link to canonical glossary definitions, and remain routed from Wiki memory; general reference pages can remain Wiki-only.
 **Planned verification:** Red: a Template check that every Template inventory `wiki` entry and glossary Distinction lands under `templates/wiki/` fails first. Green: that check, the template-placeholder check and the templates evaluator, then the full suite.
+**Claimed by:** claude-s004o-worker-j
 
 ## Scope
 
