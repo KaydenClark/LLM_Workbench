@@ -160,9 +160,11 @@ evidence log here.
 
 ## AI Coding Dictionary Entries
 
-The owner adopted terms from the AI Coding Dictionary on 2026-10-03. These entries explain only the terms that need more than their row, in Workbench words, and authorize nothing.
+The owner adopted terms from the AI Coding Dictionary on 2026-10-03. Each entry below is its term's Workbench home. These entries explain each meaning in Workbench words, and authorize nothing.
+The dictionary link is attribution, not a live import: the dictionary's source carries no license, and an edit upstream changes no Workbench meaning until the owner adopts it.
+An entry defines a word and sets no policy for any role, model or cost.
+A general AI coding concept stays Wiki-only and needs no glossary entry ([the Lexicon retirement decision (DDR-001E)](../docs/ddr/001E-the-lexicon-retires-terms-live-in-the-wiki-and-ownership-routes-and-invariants-live-in-architecture-md.md)); Automated review and Grilling carry a distinct Workbench meaning, defined in [GLOSSARY.md](../../GLOSSARY.md#workbench-meanings-of-ai-coding-terms).
 
-- [Lexicon: AI Coding Terms section](../../LEXICON.md) - one row per adopted term
 - [S-004E - AI Coding Dictionary Terms](../specs/S-004E-ai-coding-dictionary-terms/SPEC.md) - the Spec that owns delivery of the terms and these entries
 - [S-004K - Workbench Term Dictionary Pages](../specs/S-004K-workbench-term-dictionary-pages/SPEC.md) - the Spec that owns brief Lexicon rows plus long dictionary pages for the Workbench's own terms, starting with the workflow verbs
 - [Harness: what the Workbench is loaded into](dictionary-harness.md): the Workbench is an agentic management system a harness such as Claude Code or Codex loads, never a harness itself
@@ -174,6 +176,25 @@ The owner adopted terms from the AI Coding Dictionary on 2026-10-03. These entri
 - [Cache tokens: why the start of a session stays stable](dictionary-cache-tokens.md): why always-loaded content is cheaper when it does not change mid-session
 - [Non-determinism: why one passing run is not proof](dictionary-non-determinism.md): why verification and repeated trials are required
 - [Automated review: the Review verb, after the Journey](dictionary-automated-review.md): what a separate-context review is, that it reviews Specs, landmarks or the whole Workbench and never a Task, and why it runs on the owner's chosen host
+- [Model: the predictor inside every agent](dictionary-model.md): why a model is neither the agent nor the harness, and why context and harness are suspected first
+- [Parameters: what a model knows without being told](dictionary-parameters.md): why nothing a session corrects is learned, so project knowledge arrives as context
+- [Effort: how hard the model thinks before answering](dictionary-effort.md): a per-request reasoning setting paid in output tokens, with no level set for any role
+- [Inference: what every request to a model costs](dictionary-inference.md): running a model, not training it, and why each tool round trip is paid again
+- [Token: the unit context, cost and speed are counted in](dictionary-token.md): why long identifiers in always-loaded files cost more than they look
+- [Next-token prediction: the one thing a model does](dictionary-next-token-prediction.md): why output is likely rather than true, and a tool call is text the harness runs
+- [Model provider: who runs the model](dictionary-model-provider.md): limits, pricing and caches live there, and why the Workbench's bare "provider" names mean the agent family
+- [Input tokens: what every request sends again](dictionary-input-tokens.md): why always-loaded files such as `AGENTS.md` stay short
+- [Output tokens: what the model writes, and what sets the pace](dictionary-output-tokens.md): the costlier direction, which effort and whole-file rewrites inflate
+- [Agent: the model and harness as one actor](dictionary-agent.md): the unit one delegates to, and how a Role and a Stance scope it without making a new one
+- [System prompt: the harness's standing instructions](dictionary-system-prompt.md): why `AGENTS.md` loads beside it rather than replacing it
+- [Smart zone: the stretch of a session worth planning for](dictionary-smart-zone.md): the useful part of the window that the smart zone decision and the Task ceiling size work to
+- [Attention budget: why every loaded token costs the others](dictionary-attention-budget.md): the reason progressive disclosure keeps loaded files small
+- [Attention degradation: how a session leaves its smart zone](dictionary-attention-degradation.md): why removing context recovers instruction-following and repeating rules does not
+- [Automated check: a verification with no judgement in it](dictionary-automated-check.md): tests, `doctor` and diagnostics, and how they differ from an automated review
+- [Human review: a person reading the change itself](dictionary-human-review.md): defined by what is read, and why it is not Human QA
+- [Environment: the world outside the harness](dictionary-environment.md): the layer that outlives a session, where a room keeps everything an agent needs
+- [Filesystem: where a project and its workbench live](dictionary-filesystem.md): the most common environment, distinct from host portability's machine concerns
+- [Software factory: sessions started by triggers, not people](dictionary-software-factory.md): the general idea behind the owner's Foundry
 
 ## Workbench Term Dictionary
 
@@ -213,6 +234,18 @@ Lexicon articles: one flat `dictionary-*.md` entry for each [GLOSSARY.md](../../
 - [Delivered](dictionary-delivered.md): approved work on main, and why the verb is not Complete
 - [Clean Up](dictionary-clean-up.md): clearing the scaffolding once its knowledge is kept
 - [Writer verb](dictionary-writer-verb.md): the verb at which a claim is written, read through its Governance Plane
+
+### Feedback disposition
+
+- [Feedback disposition: the one outcome each finding gets](dictionary-feedback-disposition.md): why a disposition routes work to an owner without scheduling or permitting it, and how a report and finding ID identify an occurrence
+
+## General Reference Pages
+
+General programming concepts and Workbench history with no distinct project meaning. Each page is the concept's Workbench home, stays Wiki-only and needs no glossary entry, and authorizes nothing.
+
+- [Progressive disclosure: load the pointer, not the detail](dictionary-progressive-disclosure.md): why `AGENTS.md` is a short brief and map and the Runbook an index of pointers
+- [Seam: where behavior is tested without the internals](dictionary-seam.md): the public boundary a Spec's Testing Seams section agrees and red-green proof is written at
+- [Version labels: what each Workbench stamp means](version-labels.md): the v3 candidates and stamps, which were never released, and where the current version is declared
 
 ## Roles And Stances
 
