@@ -2837,7 +2837,7 @@ for (const addedSkill of ['pr', 'domain-modeling']) {
 
 // Exact policies from the independently delivered PR package (6101c237) and
 // paired writing/retro source (1c44487a), before their combined Core delivery.
-test('the exact 29 and 30 skill v3.2.1 transition cohorts validate and migrate unchanged', () => {
+test('the exact historical v3.2.1 transition cohorts validate and migrate unchanged', () => {
   const project = fixture();
   try {
     assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
@@ -2850,7 +2850,7 @@ test('the exact 29 and 30 skill v3.2.1 transition cohorts validate and migrate u
       'improve-harness', 'director', 'dispatcher', 'spec-planner', 'spec-manager',
       'builder', 'auditor', 'reviewer', 'reconciler'
     ];
-    for (const additions of [['pr'], ['writing-for-agents', 'retro']]) {
+    for (const additions of [['pr'], ['domain-modeling'], ['writing-for-agents', 'retro'], ['domain-modeling', 'pr'], ['pr', 'writing-for-agents', 'retro']]) {
       const required = [...prior28.slice(0, 20), ...additions, ...prior28.slice(20)];
       const cohort = { ...manifest, skillPolicy: { ...manifest.skillPolicy, required } };
       fs.writeFileSync(manifestPath, JSON.stringify(cohort));
