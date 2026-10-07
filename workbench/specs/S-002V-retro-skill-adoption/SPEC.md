@@ -35,7 +35,7 @@ At the pre anchor:
 
 ## Desired Behavior
 
-1. The draft article for `retro` at the tentative location `workbench/wiki/skills-draft/main-workflow/retro.md` (tentative until S-002L decides) fills every Template 2 section, with `origin` and `skill_source: new` recorded from step 1.
+1. The draft article for `retro` at the tentative location `workbench/wiki/skills-draft/main-workflow/retro.md` (the delivered S-002L location) fills every Template 2 section, with `origin` and `skill_source: new` recorded from step 1.
 2. Each "needs" and "reads and writes" item resolves to something real or becomes a finding. Overlap with the feedback review family, the feedback tooling and the Reconciler stance is stated as a finding, not hidden.
 3. The article records a verdict against Matt's skill (same, close, divergent or missing) with behavior and clarity differences.
 4. The skill source, once step 6 is authorized, matches the article and says where each lesson is recorded without creating a new store or a universal handoff.
@@ -83,10 +83,10 @@ The current owner request activates this Spec; its record-backed Task covers the
 
 ## Acceptance Criteria
 
-- [ ] Every Template 2 section of the `retro` draft article is filled, and its `origin`, `skill_source` and `matt_counterpart` fields come from step 1.
-- [ ] Every "needs" and "reads and writes" item resolves to something real or is recorded as a finding; overlap with the feedback review family, feedback tooling and the Reconciler stance is a finding with a named owner.
-- [ ] "Compared with Matt's" holds a verdict (same, close, divergent or missing) from a read of `engineering/retro` at the pinned revision.
-- [ ] The step 6 lane authorization is recorded before any skill source is added, and the skill source matches the article.
+- [x] Every Template 2 section of the `retro` draft article is filled, and its `origin`, `skill_source` and `matt_counterpart` fields come from step 1.
+- [x] Every "needs" and "reads and writes" item resolves to something real or is recorded as a finding; overlap with the feedback review family, feedback tooling and the Reconciler stance is a finding with a named owner.
+- [x] "Compared with Matt's" holds a verdict (same, close, divergent or missing) from a read of `engineering/retro` at the pinned revision.
+- [x] The step 6 lane authorization is recorded before any skill source is added, and the skill source matches the article.
 - [ ] Targeted catalog tests, Wiki validation and the full suite in `AGENTS.md` are green for step 6, and a fresh-context scenario is observed; no unrun check is reported as passing.
 
 ## Testing Seams
@@ -99,7 +99,7 @@ For steps 1-5, run `node workbench/tools/wiki.mjs validate` against the draft co
 
 ## Documentation Impact
 
-The draft article `workbench/wiki/skills-draft/main-workflow/retro.md` (tentative until S-002L decides). Step 6 may touch the skill lane's catalog entry and `workbench/skills/README.md` only as the authorized lane requires, and no manifest or Core bundle row unless the owner makes `retro` Core. Record `Docs checked; no update needed` where a control does not change.
+The draft article `workbench/wiki/skills-draft/main-workflow/retro.md` (the delivered S-002L location). Step 6 may touch the skill lane's catalog entry and `workbench/skills/README.md` only as the authorized lane requires, and no manifest or Core bundle row unless the owner makes `retro` Core. Record `Docs checked; no update needed` where a control does not change.
 
 ## Append-Only Evidence And Execution Log
 
@@ -108,6 +108,8 @@ The draft article `workbench/wiki/skills-draft/main-workflow/retro.md` (tentativ
 | 2026-09-30 | planning | Spec authored from the owner's draft-skills-wiki direction; planning only | Nearest behavior located at the pre anchor by reading the harness-feedback-review root skill, the feedback tooling files and the Reconciler skill; Matt's skill not read; no implementation evidence | This Spec authored; no article, skill or control written | S-002L, activation, Tasks, pending-lane authorization and all six steps remain open |
 
 | 2026-10-06 | planning | Owner explicitly selected required Core for retro and reiterated prior writing-for-agents request; paired delivery activated, earlier arbitrary ordering and Pending lane gate superseded | Fresh origin/integration 42431879; S-002L collection and Template 2 present; catalog red observed: writing-for-agents absent from required Core | Current execution amendment and one native Task per skill | Implementation, green checks, fresh-context scenarios, review and delivery pending |
+
+| 2026-10-06 | TK-006Z | Core source and draft comparison delivered in candidate 8925425c; independent direct-path scenario observed | Catalog red then green; Wiki validation and Ruby YAML name/description parsing pass; scenario inputs/outputs and limits under proof/ | Draft, source, shared bundle owners, generic Runbook mirror and retained archive disposition agree; existing MIT notice retained | Full 53-command suite running; independent assembled review, integration, native-host discovery, owner Human QA and main closure remain; optional Python validator unavailable |
 
 ## Completion Result
 

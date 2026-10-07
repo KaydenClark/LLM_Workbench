@@ -49,6 +49,28 @@ It sharpens pointers so each necessary branch reaches the right material, keeps 
 
 **Is this writing-great-skills renamed?** It is the maintained successor and broader reference. The older skill's useful concepts are retained here in the universal reference or skill-specific mechanics: predictability, both loads, pointers, hierarchy, co-location, completion, granularity, leading words, premature completion, duplication, sediment, sprawl, no-ops and positive wording. Definitions are local to their topics rather than copied into a second glossary.
 
+
+| Earlier idea or term | Fold-in disposition |
+|---|---|
+| Predictability | survives: process consistency is the reference's outcome |
+| Context load | covered: cost of always-loaded lines under Information hierarchy |
+| Cognitive load | covered: cost of additional human routes under Information hierarchy |
+| Context pointer and description | survives: precise triggers under Context pointers and mechanics |
+| Information hierarchy, steps and reference | survives: common material inline, conditional material disclosed |
+| Progressive disclosure and co-location | survives: branch-specific links and grouped definitions |
+| Completion criterion and legwork | covered: observable conditions with required coverage |
+| Granularity and invocation cuts | covered: separate only useful branches and real invocation needs |
+| Premature completion and post-completion steps | survives: sharpen criteria first; real context boundary only if needed |
+| Leading words | survives: familiar concise concepts without repeated definitions |
+| Duplication and single source of truth | survives: one rule owner, linked consumers |
+| Sediment, relevance and sprawl | covered: prune stale layers and disclose meaningful branches |
+| No-op | survives: test behavior against model defaults when uncertain |
+| Negation | covered: positive actions paired with necessary hard boundaries |
+| Separate GLOSSARY.md | dropped as a duplicated definition store; definitions stay with their topics; the archive remains intact |
+| Universal user-only composition restriction | dropped as a portable rule; Workbench authority and host policy own composition |
+
+The archived source remains recoverable provenance. The personal-install copy retires only by the owner's hand; this delivery changes no provider-home files.
+
 **Must every skill be user-invoked?** Use automatic selection for reusable discipline and explicit invocation for owner-started workflows. Retro ships to every room but remains explicit-only. Composition follows Workbench authority and host mechanics, so an upstream invocation restriction does not replace the room's controls.
 
 **Does shorter prove better?** Structural validation proves links and metadata. A representative fresh-context run supplies bounded behavioral evidence; stronger claims need comparative evaluation.

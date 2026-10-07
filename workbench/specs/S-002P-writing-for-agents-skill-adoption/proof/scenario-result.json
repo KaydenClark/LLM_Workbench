@@ -1,0 +1,17 @@
+{
+  "sourceCandidate": "8925425cdb13ec161698a5adfa99ad4126b67578",
+  "method": "Independent fresh-context agent, direct skill paths, synthetic primary fixture; output captured with checkout/temp paths redacted",
+  "inputSha256": "7dfacf6d4d35707dc107580d0fe3e491218ad746ae2f9779bc2521f3f7362e46",
+  "rawOutputSha256": "dbb305faec3ceef07149ab1485abf9ec9b90b31cd2e04d9804c811d4b49a84dd",
+  "observed": "Precise trigger, conditional currency reference, required columns and date range, observable exit conditions preserved",
+  "limits": [
+    "One synthetic request, no comparative improvement claim",
+    "Direct-path use is not native discovery or policy enforcement",
+    "Underlying cart repository and raw tool transcripts unavailable",
+    "Optional Python quick_validate unavailable: PyYAML missing; Ruby YAML name/description validation passed"
+  ],
+  "primaryFiles": [
+    "scenario-input.md",
+    "scenario-output.md"
+  ]
+}

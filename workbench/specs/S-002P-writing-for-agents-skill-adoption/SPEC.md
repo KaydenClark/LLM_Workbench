@@ -58,12 +58,12 @@ S-002L has delivered the draft collection and Template 2 on integration, althoug
   - The personal install copy at `~/.agents/skills/writing-great-skills/` retires only by the owner's hand. No step of this Spec writes, moves or deletes anything under `~/.agents/skills`, and the core-skill installer refuses to write there.
 - Origin is recorded at step 1 and step 3, not guessed: this skill is new as `writing-for-agents` and its Matt counterpart is `productivity/writing-for-agents`, but the true origin of `writing-great-skills` (Workbench, Matt, or other) is open.
 - Step 6 uses Matt's MIT source with the upstream notice kept in `THIRD_PARTY_NOTICES.md`, adapted as the article settles. The adaptation is the Workbench's, so the skill source states its upstream relationship and pin; it does not claim Matt's wording is Workbench Canon.
-- Invocation mode is an open question for step 3 and the owner: `writing-great-skills` is user-invoked and the Core skills are mostly model-invoked or deliberately user-invoked case by case; Matt's setting is unread.
+- Invocation is model-selectable in this adoption, matching the read upstream reference and its use by retro; historically, `writing-great-skills` is user-invoked and the Core skills are mostly model-invoked or deliberately user-invoked case by case; Matt's setting is unread.
 - A Wiki article is curated context, not instruction authority or proof of behavior. Current source and tests establish Actuality; the Spec and accepted controls establish the target.
 
 ## Non-Goals
 
-- Writing the article, reading or quoting Matt's files, or editing any skill source in this planning pass.
+- Adopting unrelated skills or rewriting unrelated controls through this Spec.
 - Writing, moving, installing or deleting anything under `~/.agents/skills`, or retiring the personal-install skill.
 - Editing S-00R or its optional-source table except as coordinated with its live lane, or changing the dispositions of any other archived or pending item.
 - Adopting Matt's other skills, or the Foundry skills, through this Spec.
@@ -91,12 +91,12 @@ Steps 1-5 touch only the draft wiki. Step 6 is the only step that touches a skil
 
 ## Acceptance Criteria
 
-- [ ] The `writing-for-agents` draft article has every Template 2 section filled, and every "needs" and "reads/writes" item resolves to something real or is logged as a finding.
-- [ ] The comparison with Matt's skill at `d81f3a183412e71a5b1e84ca21bc1a35eea03a60` records a verdict (same, close, divergent or missing) and the behavior and clarity differences.
-- [ ] The fold-in of `writing-great-skills` is recorded per idea or term (survives, covered, dropped with reason), and the retirement note states that the personal-install copy retires only by the owner's hand.
-- [ ] `workbench/skills/writing-for-agents/SKILL.md` exists, matches the article, and `THIRD_PARTY_NOTICES.md` keeps the upstream MIT notice.
-- [ ] Every closed-bundle touchpoint reads 30 consistently (README, Lexicon row, `skillPolicy.required`, catalog tests, the five-archive-directory requirement), and the owner's 2026-09-30 decision is recorded as the S-00R disposition for `writing-great-skills`.
-- [ ] A fresh-context scenario shows an agent using the skill to write or edit a skill with the process the skill describes.
+- [x] The `writing-for-agents` draft article has every Template 2 section filled, and every "needs" and "reads/writes" item resolves to something real or is logged as a finding.
+- [x] The comparison with Matt's skill at `d81f3a183412e71a5b1e84ca21bc1a35eea03a60` records a verdict (same, close, divergent or missing) and the behavior and clarity differences.
+- [x] The fold-in of `writing-great-skills` is recorded per idea or term (survives, covered, dropped with reason), and the retirement note states that the personal-install copy retires only by the owner's hand.
+- [x] `workbench/skills/writing-for-agents/SKILL.md` exists, matches the article, and `THIRD_PARTY_NOTICES.md` keeps the upstream MIT notice.
+- [x] Every closed-bundle touchpoint reads 30 consistently (README, Lexicon row, `skillPolicy.required`, catalog tests, the five-archive-directory requirement), and the owner's 2026-09-30 decision is recorded as the S-00R disposition for `writing-great-skills`.
+- [x] A fresh-context scenario shows an agent using the skill to write or edit a skill with the process the skill describes.
 - [ ] The full suite from `AGENTS.md`, `node workbench/tools/wiki.mjs validate`, `render`, `doctor`, the Workbench self-drift pre/post receipts and a separate-context review of the immutable candidate are recorded at their proper gates; no unrun check is reported as passing.
 
 ## Testing Seams
@@ -109,9 +109,9 @@ For step 6, run the targeted catalog and skills-lane tests, then `node workbench
 
 ## Documentation Impact
 
-- Draft article, tentative until S-002L decides: `workbench/wiki/skills-draft/primitives/writing-for-agents.md`.
+- Draft article at the delivered S-002L location: `workbench/wiki/skills-draft/primitives/writing-for-agents.md`.
 - Step 6 touches: `workbench/skills/writing-for-agents/SKILL.md` (new), `workbench/skills/README.md` (intro, catalog, and the `writing-great-skills` optional-source row), `LEXICON.md` ("Core skill bundle" row), `workbench/manifest.json`, `tools/test-skill-catalog.mjs` and any other test that asserts the bundle, and `THIRD_PARTY_NOTICES.md` if a per-file entry is needed.
-- `workbench/skills/README.md` and the Lexicon row are shared with the other three Core-bound Specs; edit them only after S-002O's step 6 has landed.
+- `workbench/skills/README.md` and the Lexicon row are shared with the other three Core-bound Specs; the current owner-directed paired adoption supersedes that earlier arbitrary ordering, with one writer for both Specs.
 - Record `Docs checked; no update needed` with a reason for any owner step 6 does not change.
 
 ## Append-Only Evidence And Execution Log
@@ -121,6 +121,8 @@ For step 6, run the targeted catalog and skills-lane tests, then `node workbench
 | 2026-09-30 | planning | Authored from the owner's draft-skills-wiki direction; the owner's decision that writing-for-agents replaces writing-great-skills and becomes Core is carried here | Planning only; writing-great-skills and the catalog test inspected read-only at the pre anchor; Matt's skill not read | This Spec authored; no article or skill authored | Delivery of S-002L, S-002O step 6, all six steps and independent review remain open |
 
 | 2026-10-06 | planning | Owner explicitly selected required Core for retro and reiterated prior writing-for-agents request; paired delivery activated, earlier arbitrary ordering and Pending lane gate superseded | Fresh origin/integration 42431879; S-002L collection and Template 2 present; catalog red observed: writing-for-agents absent from required Core | Current execution amendment and one native Task per skill | Implementation, green checks, fresh-context scenarios, review and delivery pending |
+
+| 2026-10-06 | TK-006Y | Core source and draft comparison delivered in candidate 8925425c; independent direct-path scenario observed | Catalog red then green; Wiki validation and Ruby YAML name/description parsing pass; scenario inputs/outputs and limits under proof/ | Draft, source, shared bundle owners, generic Runbook mirror and retained archive disposition agree; existing MIT notice retained | Full 53-command suite running; independent assembled review, integration, native-host discovery, owner Human QA and main closure remain; optional Python validator unavailable |
 
 ## Completion Result
 
