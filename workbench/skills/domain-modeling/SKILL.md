@@ -84,8 +84,10 @@ or `LEXICON.md`, Specs and their acceptance lines, decision records, Wiki
 pages, source identifiers and tests. For each, note what it would have to
 change, or what it would silently mean instead. Put the few consequences that
 could change the choice in front of the owner, with the file or line behind
-each, while changing course is still cheap. This is a bounded trace of the
-owners the choice reaches, not an audit of the whole room.
+each, while changing course is still cheap. Name each owner you list by its
+path, and a test by its file and test name: "both test files" or "the tests"
+names nothing. This is a bounded trace of the owners the choice reaches, not an
+audit of the whole room.
 
 ### Capture, then promote
 

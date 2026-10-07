@@ -158,6 +158,9 @@ test('upstream consequences are traced to named owners before a choice settles, 
   assert.match(trace, /before .*settles/i, 'the trace runs before the name, boundary or relationship settles');
   assert.match(trace, /name, boundary or relationship/);
   assert.match(trace, /file or line/, 'each consequence names the file or line behind it');
+  assert.match(trace, /Name each owner you list by its path, and a test by its file and test name/,
+    'every listed owner is named by its path, and a test by its file and test name');
+  assert.match(trace, /"the tests" names nothing/, 'a vague "the tests" does not count as tracing them');
   assert.match(trace, /could change the choice/, 'only consequences that could change the choice are raised');
   assert.match(trace, /bounded/i);
   assert.match(trace, /not an audit/, 'the trace is not a whole-room audit');
