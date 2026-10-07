@@ -3,11 +3,12 @@
 **Task ID:** TK-009C
 **Spec ID:** S-004O
 **Slice:** GLOSSARY.md carries concise project vocabulary in Matt's pinned format
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** TK-009A
 **Destination:** spec-acceptance: Root and Template glossary use the pinned Matt format with concise project-specific definitions and avoided aliases; general terms are classified rather than copied.
 **Planned verification:** Red: a glossary format and scope check (context heading, one or two sentence context description, `Language` section, one or two sentence definitions, `_Avoid_` aliases; Spec, Task, Landmark and Review present; context window and cache tokens absent) fails first against the missing `GLOSSARY.md`. Green: that check for root and Template, the term-row checks re-pointed from the Lexicon to the glossary, then the full suite.
+**Claimed by:** claude-s004o-worker-c
 
 ## Scope
 
