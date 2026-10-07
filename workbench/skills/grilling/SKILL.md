@@ -74,7 +74,7 @@ the consequential tradeoffs, and one concrete scenario. Name any unresolved
 choice or missing evidence that could still change the concept. Do not act on it until I confirm we have reached a shared understanding, and do
 not touch canonical files during the interview.
 
-Lexicon supplies accepted meanings, and the `domain-modeling` and `wayfinder`
+`GLOSSARY.md` supplies accepted meanings, and the `domain-modeling` and `wayfinder`
 skills may challenge a concept or narrow an oversized inquiry, all within the
 caller's authorization. A settled term does not authorize a Canon write.
 

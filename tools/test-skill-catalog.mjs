@@ -455,7 +455,9 @@ assert.match(checkpoint, /writes nothing/, 'legacy invocation must explain its n
 const toDocs = read('workbench/skills/to-docs/SKILL.md');
 assertIncludesAll(toDocs, [
   'settled conversation',
-  '`LEXICON.md`',
+  // S-004O TK-009F: definitions route to the glossary, ownership to ARCHITECTURE.md.
+  '`GLOSSARY.md`',
+  '`ARCHITECTURE.md`',
   '`BLUEPRINT.md`',
   'assigned `SPEC.md`',
   '`RUNBOOK.md`',

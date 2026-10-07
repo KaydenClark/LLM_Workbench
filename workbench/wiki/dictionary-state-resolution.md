@@ -21,7 +21,7 @@ State resolution is how a Canon claim and verified Actuality are reconciled when
 
 **Neighbouring words.** It works on claims classified by [Governance Plane](dictionary-governance-plane.md), and it is separate from [Instruction authority](dictionary-instruction-authority.md). The [Reconciler](dictionary-reconciler.md) stance applies it; [Control fidelity](dictionary-control-fidelity.md) reports the divergences it then resolves.
 
-**In use.** The owner's one-Contract-file decision is newer Canon than `AGENTS.md` Instruction Authority, which still names `LEXICON.md` as a carrier. That is an implementation gap, owned by the Contract Carrier Pointer-Brief Rewrite, so its owner is repaired; the old list does not overrule the decision, and the decision does not prove the list already changed.
+**In use.** The owner's one-Contract-file decision is newer Canon than `AGENTS.md` Instruction Authority, which still names `RUNBOOK.md` as a carrier. That is an implementation gap, owned by the Contract Carrier Pointer-Brief Rewrite, so its owner is repaired; the old list does not overrule the decision, and the decision does not prove the list already changed.
 
 ## Sources
 

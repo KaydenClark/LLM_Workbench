@@ -11,14 +11,16 @@ and the current state (prototype, in production, internal tool, etc.).]
 ## How This Project Is Run
 
 This repository is governed by a small set of control documents. Start with
-AGENTS -> Runbook Ordinary Entry -> Lexicon Task Routing -> the assigned Spec
+AGENTS -> Runbook Ordinary Entry -> Architecture Routes -> the assigned Spec
 and Task; load the other owners below when the operation needs them:
 
 - [`AGENTS.md`](AGENTS.md) - how agents behave here: authority order, read/edit
   scope, the task-selection loop, documentation ownership, and proof rules.
 - [`BLUEPRINT.md`](BLUEPRINT.md) - what the product is, who it serves, the outcomes it promises and what it is not.
-- [`LEXICON.md`](LEXICON.md) - accepted project-wide terms and definitions;
+- [`GLOSSARY.md`](GLOSSARY.md) - accepted project-wide terms and definitions;
   consult it when shared language could be ambiguous.
+- [`ARCHITECTURE.md`](ARCHITECTURE.md) - which artifact owns each kind of
+  truth, the routes to it and the invariants that must stay true.
 - [`TASKBOARD.md`](TASKBOARD.md) - active spec projection: current slice, owner,
   blocker, latest event, and next gate.
 - [`workbench/specs/S-###-slug/SPEC.md`](workbench/specs/S-###-slug/SPEC.md) - on-demand capability truth,
@@ -65,7 +67,7 @@ For **Claude Code**, keep the one-line `CLAUDE.md` containing exactly
 generated `/init` file. Other agents should be pointed at `AGENTS.md` as their
 entry point.
 
-The ordinary route is AGENTS -> Runbook -> Lexicon -> assigned Spec and
+The ordinary route is AGENTS -> Runbook -> Architecture -> assigned Spec and
 Task record, without reading every control. TASK.md owns Task state and proof;
 its Spec owns acceptance and append-only evidence. A Worker self-checks and
 hands back, the Dispatcher owns whole-Spec QA, and a separate Director reviews
@@ -85,7 +87,7 @@ accepted on product truth, not passing tests alone.
 ## Project Status
 
 See [`TASKBOARD.md`](TASKBOARD.md) for active execution state and
-[`workbench/specs/CATALOG.md`](workbench/specs/CATALOG.md) for the complete durable spec catalog, routed through the Lexicon.
+[`workbench/specs/CATALOG.md`](workbench/specs/CATALOG.md) for the complete durable spec catalog, routed through `ARCHITECTURE.md`.
 
 ## License
 

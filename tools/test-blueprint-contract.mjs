@@ -88,11 +88,13 @@ for (const [claim, re] of [
 // The generic template: the same four parts, bracketed placeholders only, no product workflow. A room
 // replaces each placeholder with its own words; the Contract owns how the work runs.
 const templateLines = templateBody.split('\n').filter(line => line.trim() !== '' && !line.startsWith('#'));
-const allowedNote = 'Its terms mean what the Lexicon says they mean.';
+// S-004O TK-009F: the reading note says where terms are defined, as the room's Blueprint does.
+const allowedNote = 'Its canonical project vocabulary belongs in a concise root `GLOSSARY.md`, with richer explanations and examples in the Wiki.';
 for (const line of templateLines.filter(line => line !== allowedNote)) {
   assert.match(line, /^(?:- )?\[[^\]].*\]$/, `the template carries only bracketed placeholders, not: ${line}`);
 }
-assert.ok(templateLines.includes(allowedNote), 'the template keeps the reading note that terms mean what the Lexicon says');
+assert.ok(templateLines.includes(allowedNote), 'the template keeps the reading note that says where terms are defined');
+assert.ok(rootBody.split('\n').includes(allowedNote), 'the room Blueprint carries the same reading note');
 assert.match(templateBody, /^# \[PROJECT_NAME\] - Blueprint$/m, 'the template title names the project placeholder');
 assert.match(templateBody, /link no record that carries an identifier/i, 'the template tells a room its Blueprint links no record that carries an identifier');
 assert.doesNotMatch(templateBody, /\b(?:Align|Journey|Director|Dispatcher|Worker|prototype|Human QA|branch)\b/i, 'the generic template carries no product workflow');

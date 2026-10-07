@@ -72,7 +72,7 @@ Notepads capture context as it happens; handoffs select and organize it for a
 specified recipient and purpose. Agents may read each other's handoffs and
 objective notepads. A coordinating role may manage shared updates to both as
 temporary scaffolding, with one writer per note or handoff at a time.
-The [Lexicon](../../../LEXICON.md#artifact-boundaries) defines their jobs and the
+The [`ARCHITECTURE.md` ownership map](../../../ARCHITECTURE.md#ownership) defines their jobs and the
 [transfer procedure](#transfer-procedure) below owns the transfer procedure.
 
 ## Transfer procedure

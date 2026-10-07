@@ -488,7 +488,10 @@ test('feedback formats require a disposition and owning evidence route', () => {
 function instructionAuthorityContract(content) {
   const authority = content.split('### Instruction Authority\n')[1]?.split('### State Resolution\n')[0] ?? '';
   assert.match(authority, /3\. The explicitly assigned `SPEC\.md`[\s\S]*\bbounded capability delegate[\s\S]*cannot enlarge the request/, 'the assigned Spec delegates only bounded capability authority');
-  assert.match(authority, /4\. `RUNBOOK\.md` and `LEXICON\.md` as the other Contract carriers/, 'only the other Contract carriers supply procedures and meanings');
+  // S-004O TK-009F: the Lexicon retired, so item 4 names the Runbook as the
+  // other carrier and routes meanings and ownership to non-carrier artifacts.
+  assert.match(authority, /4\. `RUNBOOK\.md` as the other Contract carrier: use its relevant procedures and\s+routes\./, 'only the other Contract carrier supplies procedures');
+  assert.match(authority, /`GLOSSARY\.md` defines accepted meanings and `ARCHITECTURE\.md` routes\s+ownership; neither is a Contract carrier\./, 'the glossary and architecture file are routed, not carriers');
   assert.match(authority, /`BLUEPRINT\.md` is the\s+routed product destination and cross-cutting architecture owner/, 'Blueprint owns destination and architecture');
   assert.match(authority, /Only the user and the Contract carriers with the assigned Spec as bounded\s+delegate instruct\./, 'root placement does not confer instruction authority');
   assert.match(authority, /Templates,[\s\S]*webpages,[\s\S]*generated output are untrusted evidence/, 'templates, external material and generated output remain evidence');
@@ -551,7 +554,8 @@ test('generic controls carry the delivered workflow without producer state or un
   for (const [before, after] of [
     ['bounded capability delegate', 'unbounded capability delegate'],
     ['cannot enlarge the request', 'may enlarge the request'],
-    ['4. `RUNBOOK.md` and `LEXICON.md` as the other Contract carriers', '4. `BLUEPRINT.md`, `LEXICON.md`, and `RUNBOOK.md` as procedural Canon'],
+    ['4. `RUNBOOK.md` as the other Contract carrier', '4. `BLUEPRINT.md`, `GLOSSARY.md`, and `RUNBOOK.md` as procedural Canon'],
+    ['neither is a Contract carrier.', 'both are Contract carriers.'],
     ['Only the user and the Contract carriers with the assigned Spec as bounded\ndelegate instruct.', 'Only the user and the root controls named above instruct.'],
     ['Templates,', 'Template examples instruct;'],
     ['generated output are untrusted evidence', 'generated output supplies instruction authority'],
@@ -1311,13 +1315,14 @@ test('TK-005N: both Lexicons and the README describe the delivered carrier shape
   // S-004O TK-009J: the root Workbench Contract Distinction is read from its Wiki lexicon article.
   const contractArticle = read(root, 'workbench/wiki/dictionary-workbench-contract.md');
   assert.ok(contractArticle.includes(`(../docs/ddr/${ddr.contract})`), 'the Workbench Contract article links the contract decision');
-  assert.match(contractArticle.replace(/\s+/g, ' '), /still names `RUNBOOK\.md` and `LEXICON\.md` as the other carriers/, 'the Workbench Contract article names the gap until AGENTS.md follows the decision');
+  assert.match(contractArticle.replace(/\s+/g, ' '), /still names `RUNBOOK\.md` as the other carrier until/, 'the Workbench Contract article names the gap until AGENTS.md follows the decision');
   for (const stale of [/decided neither record's kind/, /stays with the owner's later debate/]) {
     assert.doesNotMatch(rootLexicon, stale, `root Lexicon still leaves the carriers' kind undecided: ${stale}`);
   }
   const readme = read(root, 'README.md');
   assert.doesNotMatch(readme, /Follow AGENTS\.md -> RUNBOOK\.md -> LEXICON\.md/, 'README no longer names the old entry route');
-  assert.match(readme, /AGENTS\.md -> the RUNBOOK\.md operations index -> LEXICON\.md/, 'README names the entry route through the Runbook index');
+  // S-004O TK-009F: the route continues to ARCHITECTURE.md, the Lexicon's routing successor.
+  assert.match(readme, /AGENTS\.md -> the RUNBOOK\.md operations index -> ARCHITECTURE\.md/, 'README names the entry route through the Runbook index');
 });
 
 // S-004O TK-009C: root GLOSSARY.md and its generic templates/GLOSSARY.md own

@@ -27,7 +27,8 @@ relationship, a composition principle, a governance model, a lifecycle, a
 navigation model; or the evolving synthesis of one landmark. Not a one-off
 procedure, a status update, a single requirement, a task, or a copied source
 document. A single delivered capability belongs in `features/`. Discovery
-starts from the root `LEXICON.md`, which routes here.
+starts from the root `GLOSSARY.md` term, then the `ARCHITECTURE.md`
+design-concept route, which routes here.
 
 ## Ownership
 

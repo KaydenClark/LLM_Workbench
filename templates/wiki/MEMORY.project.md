@@ -38,7 +38,8 @@ nothing.
 |---|---|
 | [AGENTS.md](../../AGENTS.md) | Authority, scope, safety, and the work loop |
 | [BLUEPRINT.md](../../BLUEPRINT.md) | What the product is, who it serves, the outcomes it promises and what it is not |
-| [LEXICON.md](../../LEXICON.md) | Shared terms, the Governance Core, and design-concept routing |
+| [GLOSSARY.md](../../GLOSSARY.md) | Shared terms and the Governance core |
+| [ARCHITECTURE.md](../../ARCHITECTURE.md) | Which artifact owns each kind of truth, the routes to it, and design-concept routing |
 | [TASKBOARD.md](../../TASKBOARD.md) | Current execution state |
 | `workbench/specs/` | Stable capability records, acceptance, evidence, and proof |
 | [RUNBOOK.md](../../RUNBOOK.md) | Exact operating and verification commands |

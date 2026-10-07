@@ -146,7 +146,10 @@ for (const carrier of carriers) {
     const text = read(carrier.agents);
     const all = headings(text);
     const preamble = normalize(text.split('\n').slice(0, all.find((heading) => heading.level === 2).line).join('\n'));
-    assert.match(preamble, /`AGENTS\.md` -> the \[`RUNBOOK\.md` operations index\]\(RUNBOOK\.md#operations-index\) -> `LEXICON\.md`\./, `${carrier.agents}: the opening names the entry route through the index`);
+    // S-004O TK-009F: the route continues to ARCHITECTURE.md, the Lexicon's routing successor.
+    assert.match(preamble, /`AGENTS\.md` -> the \[`RUNBOOK\.md` operations index\]\(RUNBOOK\.md#operations-index\) -> `ARCHITECTURE\.md`\./, `${carrier.agents}: the opening names the entry route through the index`);
+    assert.match(preamble, /the \[`ARCHITECTURE\.md` routes\]\(ARCHITECTURE\.md#routes\)/, `${carrier.agents}: the opening reads the architecture routes`);
+    assert.ok(resolvePointer(carrier.agents, 'ARCHITECTURE.md#routes').ok, `${carrier.agents}: the architecture routes link resolves`);
     assert.match(preamble, /Every session reads that index at entry/, `${carrier.agents}: the opening requires the index read at entry`);
     const traverse = all.find((heading) => heading.title === "Traverse, Don't Search");
     assert.ok(traverse, `${carrier.agents}: Traverse, Don't Search survives`);
@@ -473,7 +476,7 @@ const FAMILIES = [
       {
         section: 'Documentation Ownership And Proof',
         keeps: [
-          /Documentation is part of done/, /documentation owner/, /LEXICON\.md#artifact-ownership-schema/, /workbench\/wiki\//,
+          /Documentation is part of done/, /documentation owner/, /ARCHITECTURE\.md#ownership/, /workbench\/wiki\//,
           /architectural decisions/, /Docs checked; no update needed/, /[Ff]inal response proof/,
           /A citation into a file that changes must say which tree it reads at/, /workbench\/skills\/to-docs\/SKILL\.md#citation-anchors/
         ],
@@ -506,7 +509,7 @@ const FAMILIES = [
         carries: [
           'node workbench/tools/adr.mjs supersede ADR-#### --by ADR-####',
           '`accept` moves a `proposed/` record to the top level once its corrections are reconciled',
-          'Both kinds answer the five read words the Lexicon defines, and reads never write.',
+          'Both kinds answer the five read words the glossary defines, and reads never write.',
           '`normalize` is the explicit repair for a hand-authored record',
           '`workbench-layout.mjs init` creates it; for a room stamped before it',
           'Create a new ADR only when it adds a valuable distinct architectural lens or layer'
