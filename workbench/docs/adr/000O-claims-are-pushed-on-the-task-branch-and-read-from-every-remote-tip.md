@@ -50,7 +50,12 @@ owner's lock; each stays open to his correction.
   `origin/<integration>`. Comparing with the base keeps a status every branch
   merely inherited from integration from counting as a claim by all of them.
   The session's own branch (its upstream and its same-named remote branch) is
-  never a competing claim, so an instance resumes its own work.
+  never a competing claim, so an instance resumes its own work. Amended
+  2026-10-07: a tip claims only the Task's current run. A failed assembled
+  review that continues a done Task returns it to ready under a new
+  Continuation run, and a tip whose record has fewer Continuation rows than
+  the base or the local record shows an older run's state, never a claim on
+  the new one.
 - **When a room coordinates.** Coordination needs a Git work tree, a remote
   named `origin`, an integration branch declared in the manifest
   ([ADR-0039](0039-the-integration-branch-is-a-manifest-declared-fact.md)) and
