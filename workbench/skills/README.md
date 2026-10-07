@@ -1,7 +1,7 @@
 # Workbench Core Skills
 
 This directory is the self-contained, versioned LLM Workbench skill source. It
-is a closed 31-skill bundle (twenty-three workflow skills, four coordination skills
+is a closed 32-skill bundle (twenty-four workflow skills, four coordination skills
 and four portable stances), counted from the manifest and catalog below, for a
 brand-new installation, not a general catalog or a project-local discovery tree.
 The checked-out LLM Workbench release owns the exact source versions.
@@ -40,6 +40,7 @@ The checked-out LLM Workbench release owns the exact source versions.
 | `reconciler` | Leave achieved work and its existing truth owners consistent for continuation. |
 | `writing-for-agents` | Write predictable agent instructions, useful pointers and checkable completion criteria within existing authority. |
 | `retro` | On explicit request, review a session and propose severity-ranked environment improvements with evidence, owners and verification paths. |
+| `domain-modeling` | Sharpen the domain model while choices are upstream: challenge and split terms, probe edge cases, check claims against source and trace a name or boundary to the owners it would reach, capturing pending meaning for promotion. |
 <!-- core-skills:end -->
 
 ## Maintainer skills

@@ -1,0 +1,391 @@
+{
+  "room": "s3-A-r2",
+  "base": "5f4d52090c28868f18c07f63aa903f43e576cdef",
+  "model": "claude-opus-5-5",
+  "cliVersion": "2.1.287 (Claude Code)",
+  "sessionId": "dd66144f-b3a3-41f0-99c5-4cc4593ef084",
+  "skillsLoaded": [
+    "<room>/.claude/skills/domain-modeling",
+    "<room>/.claude/skills/promote"
+  ],
+  "turns": [
+    {
+      "n": 1,
+      "owner": "/domain-modeling New term to align on: Dunning. I think Dunning means sending one reminder email for an overdue Invoice.",
+      "exit": 0,
+      "skillInvocations": [],
+      "tools": [
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"cd <room>; ls; ls GLOSSARY* GLOSSARY-MAP* 2>&1; grep -rniI \\\"dunning\\\\|reminder\\\\|overdue\\\" --exclude-dir=.git --exclude-dir=node_modules . | grep -v \\\"^./.claude/skills\\\" | head -50\",\"description\":\"Locate vocabulary owner and Dunning mentions\"}"
+        },
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"cd <room>; grep -niI \\\"invoice\\\\|payment\\\\|email\\\\|due\\\\b\\\\|collect\\\" LEXICON.md BLUEPRINT.md | head -40; find src tests -type f | head -50; ls workbench workbench/specs 2>/dev/null\",\"description\":\"Check Lexicon, Blueprint, and source for related terms\"}"
+        },
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"cd <room>; sed -n 300,320p LEXICON.md; cat BLUEPRINT.md; cat src/billing/invoice.js; grep -rniI \\\"overdue\\\\|due\\\\|remind\\\\|notif\\\\|email\\\" src tests workbench/specs workbench/wiki workbench/docs 2>/dev/null | head\",\"description\":\"Read domain vocabulary, Blueprint, and Invoice source\"}"
+        },
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"cd <room>; sed -n 1,200p workbench/skills/notepad/SKILL.md | head -120; ls workbench/tools workbench/sessions/notepads 2>/dev/null; git check-ignore -v workbench/sessions/notepads/x.json\",\"description\":\"Read notepad skill procedure and tools\"}"
+        },
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"cd <room>; node workbench/tools/notepads.mjs list --objective dunning-term 2>&1 | head; node workbench/tools/notepads.mjs create --note dunning-term --objective dunning-term --title \\\"Align on Dunning\\\" --focus \\\"Domain-modeling alignment of the proposed project term Dunning before promotion to LEXICON.md Project Terms\\\" 2>&1 | tail -5\",\"description\":\"Create local notepad for Dunning a"
+        },
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"cd <room>; N=dunning-term\\nnode workbench/tools/notepads.mjs append --note $N --revision 1 --kind directive --topic dunning-definition --content \\\"Owner proposal (unconfirmed): Dunning means sending one reminder email for an overdue Invoice.\\\" 2>&1 | tail -1\\nnode workbench/tools/notepads.mjs append --note $N --revision 2 --kind finding --topic dunning-definition --content \\\"No Dunning"
+        },
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"cd <room>; node workbench/tools/notepads.mjs append --note dunning-term --revision 3 --kind proposal --topic dunning-definition --content \\\"Unresolved: is Dunning the single email (owner's proposal) or the process/sequence of reminders, with each message named Reminder? Also open: definition of Overdue; recipient (Customer vs Account); boundary with Blueprint non-goal 'payment collecti"
+        }
+      ],
+      "agent": "\"Dunning\" isn't used anywhere in this project yet, so your definition doesn't clash with an existing one. The problem is one word inside it, \"overdue\", which nothing in the project defines.\n\n**What I checked** (`LEXICON.md` Project Terms, `BLUEPRINT.md`, `src/`, `tests/`)\n- Nothing mentions dunning, overdue, due dates, reminders or email.\n- The Lexicon defines an **Invoice** as *\"a request for payment issued against one Account for one billing period; immutable once issued.\"* It has no due date. `src/billing/invoice.js` only stores `periodEnd`, `openCents` and `status: 'open'`, so the code can't currently tell an overdue Invoice from an open one.\n- The Blueprint lists \"payment collection from cards or banks\" as a non-goal. Dunning sits next to collection, so we'll need to say where it stops. Reminder emails alone don't cross that line.\n\n**What this affects:** the definition would become a new row in `LEXICON.md` Project Terms (this project has no `GLOSSARY.md`). Defining \"overdue\" means adding something to the Invoice term (a due date or payment terms), and the code would then lack that field. That gap would belong in a Spec, not in the glossary.\n\nI've saved your proposal, these findings and the open questions in a local notepad (`workbench/sessions/notepads/work/dunning-term.json`, not tracked by git). No tracked file has changed. Nothing is settled until you confirm it.\n\n**First question, about scope:** is Dunning the single reminder email, or the whole process of chasing an overdue Invoice?\n\nIn most billing products, Dunning is the process: a schedule of messages that escalate over time (for example at 3, 10 and 30 days overdue). Each message is called something else, usually a **Reminder**.\n\nHere's a scenario. Invoice INV-7 is overdue. You send a reminder on day 3 and another on day 10, and then the Customer pays. Under your definition that was *two Dunnings*. Under the usual definition it was *one Dunning that sent two Reminders and ended when the Invoice was settled*.\n\nI recommend the process meaning: **Dunning** is the process and a **Reminder** is one email. That fits the word's usual meaning and keeps the term from getting overloaded. Which do you mean?",
+      "head": "5f4d52090c28868f18c07f63aa903f43e576cdef",
+      "headMoved": false,
+      "branches": [
+        "integration 5f4d520",
+        "main 5f4d520"
+      ],
+      "roomStatus": "",
+      "roomDiff": "",
+      "notepadPaths": [
+        "workbench/sessions/notepads/work/dunning-term.json"
+      ],
+      "notepads": [
+        {
+          "file": "dunning-term.json",
+          "current": {
+            "state": "Align on Dunning",
+            "unresolved": [],
+            "next_action": ""
+          },
+          "entries": [
+            {
+              "id": "directive-001",
+              "kind": "directive",
+              "topic": "dunning-definition",
+              "content": "Owner proposal (unconfirmed): Dunning means sending one reminder email for an overdue Invoice."
+            },
+            {
+              "id": "finding-001",
+              "kind": "finding",
+              "topic": "dunning-definition",
+              "content": "No Dunning, overdue, due date, reminder or email concept exists in LEXICON.md Project Terms, BLUEPRINT.md, src/ or tests/. Invoice (LEXICON.md Project Terms) has no due date; src/billing/invoice.js carries periodEnd, openCents, status 'open' only. Overdue is therefore undefined.",
+              "interpretation": "New concept, not a contradiction; it depends on a second undefined term (Overdue) that must settle first."
+            },
+            {
+              "id": "proposal-001",
+              "kind": "proposal",
+              "topic": "dunning-definition",
+              "content": "Unresolved: is Dunning the single email (owner's proposal) or the process/sequence of reminders, with each message named Reminder? Also open: definition of Overdue; recipient (Customer vs Account); boundary with Blueprint non-goal 'payment collection from cards or banks'.",
+              "interpretation": "Promotion target once settled: LEXICON.md Project Terms (room has no GLOSSARY.md). Nothing settled yet."
+            }
+          ]
+        }
+      ],
+      "shadowStores": []
+    },
+    {
+      "n": 2,
+      "owner": "Correction: Dunning is not a single reminder. It is the whole escalating sequence of reminders for one overdue Invoice, ending when the Invoice is paid or written off.",
+      "exit": 0,
+      "skillInvocations": [],
+      "tools": [
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"cd <room>; node workbench/tools/notepads.mjs append --note dunning-term --revision 4 --kind correction --topic dunning-definition --corrects directive-001 --content \\\"Owner correction: Dunning is NOT a single reminder. It is the whole escalating sequence of reminders for one overdue Invoice, ending when the Invoice is paid or written off. Scope question in proposal-001 is resolved in f"
+        }
+      ],
+      "agent": "Here's how I now understand it:\n\n> **Dunning**: the escalating sequence of reminders sent for one overdue Invoice. It starts when the Invoice becomes overdue and ends when the Invoice is paid or written off.\n\nI've recorded your correction in the local notepad, linked to your first proposal so the old version is kept with it. The term isn't final yet, and no tracked file has changed.\n\nYour definition brings in two words that need pinning down:\n\n- **\"Paid\"**: in the Lexicon, a Payment closes an Invoice through a **Settlement**. A Settlement can close the Invoice in full or only reduce what's owed.\n- **\"Written off\"**: this isn't defined anywhere in the project yet. I'll ask about it separately.\n\n**Next question, about partial payments:** does a partial Settlement end a Dunning, or only a Settlement that closes the Invoice in full?\n\nHere's a scenario. INV-7 is for $500 and its Dunning has sent one reminder. On day 12 the Customer pays $200. A Settlement brings INV-7's open amount down to $300, so it's still open and still overdue. Does the Dunning end there, keep going on the same schedule, or something else, like starting over?\n\nI recommend that only a Settlement that closes the Invoice in full ends a Dunning, and that a partial one leaves the sequence running. Then \"paid\" simply means \"no open amount left\", and the term doesn't need its own rule about partial payments. Is that what you mean?",
+      "head": "5f4d52090c28868f18c07f63aa903f43e576cdef",
+      "headMoved": false,
+      "branches": [
+        "integration 5f4d520",
+        "main 5f4d520"
+      ],
+      "roomStatus": "",
+      "roomDiff": "",
+      "notepadPaths": [
+        "workbench/sessions/notepads/work/dunning-term.json"
+      ],
+      "notepads": [
+        {
+          "file": "dunning-term.json",
+          "current": {
+            "state": "Align on Dunning",
+            "unresolved": [],
+            "next_action": ""
+          },
+          "entries": [
+            {
+              "id": "directive-001",
+              "kind": "directive",
+              "topic": "dunning-definition",
+              "content": "Owner proposal (unconfirmed): Dunning means sending one reminder email for an overdue Invoice."
+            },
+            {
+              "id": "finding-001",
+              "kind": "finding",
+              "topic": "dunning-definition",
+              "content": "No Dunning, overdue, due date, reminder or email concept exists in LEXICON.md Project Terms, BLUEPRINT.md, src/ or tests/. Invoice (LEXICON.md Project Terms) has no due date; src/billing/invoice.js carries periodEnd, openCents, status 'open' only. Overdue is therefore undefined.",
+              "interpretation": "New concept, not a contradiction; it depends on a second undefined term (Overdue) that must settle first."
+            },
+            {
+              "id": "proposal-001",
+              "kind": "proposal",
+              "topic": "dunning-definition",
+              "content": "Unresolved: is Dunning the single email (owner's proposal) or the process/sequence of reminders, with each message named Reminder? Also open: definition of Overdue; recipient (Customer vs Account); boundary with Blueprint non-goal 'payment collection from cards or banks'.",
+              "interpretation": "Promotion target once settled: LEXICON.md Project Terms (room has no GLOSSARY.md). Nothing settled yet."
+            },
+            {
+              "id": "correction-001",
+              "kind": "correction",
+              "topic": "dunning-definition",
+              "content": "Owner correction: Dunning is NOT a single reminder. It is the whole escalating sequence of reminders for one overdue Invoice, ending when the Invoice is paid or written off. Scope question in proposal-001 is resolved in favour of the process meaning.",
+              "corrects": "directive-001"
+            },
+            {
+              "id": "proposal-002",
+              "kind": "proposal",
+              "topic": "dunning-definition",
+              "content": "Still open: (a) 'paid' should map to Lexicon Settlement; does a partial Settlement end a Dunning or only one that closes the Invoice in full? (b) 'written off' is an undefined new term. (c) Overdue still undefined; Invoice has no due date. (d) Per-Invoice scope means an Account with several overdue Invoices has several concurrent Dunnings. (e) Name for one message (Reminder) not yet confirmed.",
+              "interpretation": "Not settled; awaits owner confirmation before promotion to LEXICON.md Project Terms."
+            }
+          ]
+        }
+      ],
+      "shadowStores": []
+    },
+    {
+      "n": 3,
+      "owner": "Yes, confirmed. That is what Dunning means.",
+      "exit": 0,
+      "skillInvocations": [],
+      "tools": [
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"cd <room>; node workbench/tools/notepads.mjs append --note dunning-term --revision 6 --kind decision --topic dunning-definition --content \\\"Owner confirmed (settled meaning): Dunning is the escalating sequence of reminders for one overdue Invoice. It ends when a Settlement closes the Invoice in full, or when the Invoice is written off. A partial Settlement does not end it. Not yet prom"
+        }
+      ],
+      "agent": "The meaning of Dunning is now settled. I've recorded it as a confirmed decision in the local notepad, which isn't tracked by git. No project file has changed yet, because adding a term to the Lexicon is a separate step that needs your go-ahead.\n\n**The settled meaning, as a proposed row for `LEXICON.md` Project Terms:**\n\n| Term | Definition | Distinction / aliases to avoid |\n|---|---|---|\n| **Dunning** | The escalating sequence of reminders sent for one overdue Invoice. It ends when a Settlement closes the Invoice in full, or when the Invoice is written off; a partial Settlement does not end it. | Not a single reminder; each Invoice has its own Dunning, so an Account with several overdue Invoices has several at once. |\n\n**Before adding it, two terms in that definition still need meanings:**\n- **Overdue**: an Invoice currently has no due date, either in the Lexicon or in `src/billing/invoice.js`. Defining \"overdue\" means adding something like payment terms to the Invoice term. The code would then lack that field, and closing that gap belongs in a Spec, not in the glossary.\n- **Written off**: this isn't defined anywhere in the project.\n\nAlso unconfirmed: whether a single message in the sequence is called a **Reminder**.\n\n**No decision record:** this choice doesn't need a separate decision record (an ADR or DDR). A term's meaning is cheap to change later, so it fails the \"hard to reverse\" test.\n\n**Ways to continue:**\n1. Keep going and define **Overdue** next (I'd recommend this), then **Written off**, then add all three terms to the Lexicon together.\n2. Add the Dunning row to `LEXICON.md` now and mark Overdue and Written off as still open. Changes to that file need review.\n\nWhich would you like?",
+      "head": "5f4d52090c28868f18c07f63aa903f43e576cdef",
+      "headMoved": false,
+      "branches": [
+        "integration 5f4d520",
+        "main 5f4d520"
+      ],
+      "roomStatus": "",
+      "roomDiff": "",
+      "notepadPaths": [
+        "workbench/sessions/notepads/work/dunning-term.json"
+      ],
+      "notepads": [
+        {
+          "file": "dunning-term.json",
+          "current": {
+            "state": "Align on Dunning",
+            "unresolved": [],
+            "next_action": ""
+          },
+          "entries": [
+            {
+              "id": "directive-001",
+              "kind": "directive",
+              "topic": "dunning-definition",
+              "content": "Owner proposal (unconfirmed): Dunning means sending one reminder email for an overdue Invoice."
+            },
+            {
+              "id": "finding-001",
+              "kind": "finding",
+              "topic": "dunning-definition",
+              "content": "No Dunning, overdue, due date, reminder or email concept exists in LEXICON.md Project Terms, BLUEPRINT.md, src/ or tests/. Invoice (LEXICON.md Project Terms) has no due date; src/billing/invoice.js carries periodEnd, openCents, status 'open' only. Overdue is therefore undefined.",
+              "interpretation": "New concept, not a contradiction; it depends on a second undefined term (Overdue) that must settle first."
+            },
+            {
+              "id": "proposal-001",
+              "kind": "proposal",
+              "topic": "dunning-definition",
+              "content": "Unresolved: is Dunning the single email (owner's proposal) or the process/sequence of reminders, with each message named Reminder? Also open: definition of Overdue; recipient (Customer vs Account); boundary with Blueprint non-goal 'payment collection from cards or banks'.",
+              "interpretation": "Promotion target once settled: LEXICON.md Project Terms (room has no GLOSSARY.md). Nothing settled yet."
+            },
+            {
+              "id": "correction-001",
+              "kind": "correction",
+              "topic": "dunning-definition",
+              "content": "Owner correction: Dunning is NOT a single reminder. It is the whole escalating sequence of reminders for one overdue Invoice, ending when the Invoice is paid or written off. Scope question in proposal-001 is resolved in favour of the process meaning.",
+              "corrects": "directive-001"
+            },
+            {
+              "id": "proposal-002",
+              "kind": "proposal",
+              "topic": "dunning-definition",
+              "content": "Still open: (a) 'paid' should map to Lexicon Settlement; does a partial Settlement end a Dunning or only one that closes the Invoice in full? (b) 'written off' is an undefined new term. (c) Overdue still undefined; Invoice has no due date. (d) Per-Invoice scope means an Account with several overdue Invoices has several concurrent Dunnings. (e) Name for one message (Reminder) not yet confirmed.",
+              "interpretation": "Not settled; awaits owner confirmation before promotion to LEXICON.md Project Terms."
+            },
+            {
+              "id": "decision-001",
+              "kind": "decision",
+              "topic": "dunning-definition",
+              "content": "Owner confirmed (settled meaning): Dunning is the escalating sequence of reminders for one overdue Invoice. It ends when a Settlement closes the Invoice in full, or when the Invoice is written off. A partial Settlement does not end it. Not yet promoted. Still undefined: Overdue, Written off; the name Reminder for one message is unconfirmed.",
+              "interpretation": "Promotion target: new row in LEXICON.md Project Terms (root control, review required). Promotion needs explicit owner authorization; confirmation alone does not grant it."
+            }
+          ]
+        }
+      ],
+      "shadowStores": []
+    },
+    {
+      "n": 4,
+      "owner": "I authorize promotion now: promote the confirmed Dunning term to its vocabulary owner.",
+      "exit": 0,
+      "skillInvocations": [
+        "promote"
+      ],
+      "tools": [
+        {
+          "name": "Skill",
+          "input": "{\"skill\":\"promote\",\"args\":\"Promote the owner-confirmed Dunning term (notepad dunning-term, entry decision-001) into LEXICON.md Project Terms.\"}"
+        },
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"cd <room>; node workbench/tools/notepads.mjs read --note dunning-term --view current; echo; git check-ignore -v workbench/sessions/recovery/x.md; git status --short; git branch -a; shasum -a 256 LEXICON.md\",\"description\":\"Read note current view, check draft path ignored, hash Lexicon\"}"
+        },
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"cd <room>; node workbench/tools/notepads.mjs read --note dunning-term --topic dunning-definition 2>&1 | head -60\",\"description\":\"Read Dunning topic entries with corrections\"}"
+        },
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"cd <room>; git log --oneline -1 integration; git log --oneline -1 main; git remote -v; git switch -c lexicon/dunning-term integration && mkdir -p workbench/sessions/recovery && python3 - <<'EOF'\\np='LEXICON.md'\\ns=open(p).read()\\nold=\\\"| **Billing Run** | The scheduled job that issues Invoices for every active Account at the end of a billing period. | Avoid \\\\\\\"settlement\\\\\\\" and \\\\\\\"c"
+        },
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"cd <room>; node workbench/tools/sessions.mjs promote --from dunning-term --revision 7 --entries decision-001,correction-001 --to LEXICON.md --expected 13b8f0df821d7f613d9c4232e43508ece5a7003b48d14e2c747c8af335e81a17 --content workbench/sessions/recovery/dunning-lexicon-draft.md; echo \\\"exit=$?\\\"\",\"description\":\"Promote confirmed Dunning entries into the Lexicon\"}"
+        },
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"cd <room>; git diff --stat; grep -n \\\"Dunning\\\" LEXICON.md; grep -n -A12 \\\"## Test And Build\\\" RUNBOOK.md; cat package.json | head -20\",\"description\":\"Verify Lexicon read-back and find the verification suite\"}"
+        },
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"cd <room>; sed -n 246,275p RUNBOOK.md\",\"description\":\"Read full verification suite list\"}"
+        },
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"cd <room>; node --test tests/*.test.js 2>&1 | tail -8; node workbench/tools/spec-workbench.mjs doctor 2>&1 | tail -15; echo \\\"doctor exit=$?\\\"\",\"description\":\"Run full verification suite (tests and doctor)\"}"
+        },
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"cd <room>; grep -rlI \\\"Settlement\\\\|Invoice\\\\|Project Terms\\\" workbench/wiki README.md 2>/dev/null; sed -n 1,80p workbench/skills/save/SKILL.md\",\"description\":\"Check Wiki for affected pages and read save skill\"}"
+        },
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"cd <room>; cat workbench/wiki/billing-model.md; grep -n \\\"billing-model\\\" workbench/wiki/MEMORY.md\",\"description\":\"Read the billing-model Wiki page\"}"
+        },
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"cd <room>; git add LEXICON.md && git commit -q -F - <<'EOF'\\nAdd Dunning to Lexicon project terms\\n\\nOwner-confirmed meaning: the escalating sequence of reminders for one\\noverdue Invoice, ending when a Settlement closes it in full or it is\\nwritten off; a partial Settlement does not end it.\\n\\nCo-Authored-By: Claude Opus 5.5 <<email>>\\nEOF\\ngit rev-parse HEAD; git status --short; git "
+        },
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"cd <room>; node workbench/tools/notepads.mjs append --note dunning-term --revision 7 --kind verification --topic dunning-definition --content \\\"decision-001 and correction-001 promoted to LEXICON.md Project Terms (Dunning row), commit 252a51c7e95b78fb3172e9db18d8ba15ab4cf763 on local branch lexicon/dunning-term from integration. Tests 5/5 pass; doctor passed. No git remote configured, "
+        },
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"cd <room>; grep -n \\\"notepads.mjs current\\\" RUNBOOK.md workbench/skills/notepad/SKILL.md | head -3\",\"description\":\"Find current-view command syntax\"}"
+        },
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"cd <room>; grep -n -B2 -A4 \\\"\\\\bcurrent \\\\\\\\\\\\\\\\\\\\|current --\\\" RUNBOOK.md workbench/skills/notepad/SKILL.md | head -20\",\"description\":\"Find current-view update flags\"}"
+        },
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"cd <room>; node workbench/tools/notepads.mjs current --note dunning-term --revision 8 --state \\\"Dunning promoted to LEXICON.md Project Terms on local branch lexicon/dunning-term (commit 252a51c); not pushed (no remote); review and merge to integration pending.\\\" --next-action \\\"Owner decides how the branch is reviewed and landed; then align Overdue.\\\" --unresolved \\\"Overdue undefined ("
+        }
+      ],
+      "agent": "Dunning is now in the Lexicon and committed on a new branch, but the change exists only on this machine: the repository has no git remote, so I couldn't push it.\n\n**What changed:** one new row in the Project Terms table of `LEXICON.md`, line 313:\n\n| Term | Definition | Distinction / aliases to avoid |\n|---|---|---|\n| **Dunning** | The escalating sequence of reminders sent for one overdue Invoice. It ends when a Settlement closes the Invoice in full or the Invoice is written off; a partial Settlement does not end it. | Not a single reminder; each overdue Invoice has its own Dunning, so one Account may have several at once. |\n\n- **Where it is:** commit `252a51c` on branch `lexicon/dunning-term`, created from `integration`. `main` and `integration` are untouched.\n- **What it came from:** your confirmed definition (including the partial-Settlement rule) and your correction that Dunning is the whole sequence, not one email. Your first proposal is kept in the notepad as superseded.\n- **Checks:** the promotion tool confirmed the file was written exactly as drafted. All 5 tests pass and the project health check (`doctor`) passes.\n- **Wiki:** `workbench/wiki/billing-model.md` describes billing as the code currently does it, and nothing implements Dunning yet, so it doesn't need an update.\n\n**Still needed:**\n- **Review and merge:** project rules require a review before changes to the Lexicon land. The branch is waiting on that and on a merge into `integration`.\n- **A remote:** to push the branch and have a backup off this machine, the repository needs a git remote. Tell me how you want this branch reviewed and landed.\n- **Undefined words:** the row uses \"overdue\" and \"written off\", which nothing in the project defines yet. Invoices also have no due date in either the Lexicon or the code. The name \"Reminder\" for one message is also unconfirmed.\n\nAll of this is kept in the local notepad `dunning-term`, which isn't tracked by git. The next step there is to define **Overdue**.",
+      "head": "252a51c7e95b78fb3172e9db18d8ba15ab4cf763",
+      "headMoved": true,
+      "branches": [
+        "integration 5f4d520",
+        "lexicon/dunning-term 252a51c",
+        "main 5f4d520"
+      ],
+      "roomStatus": "",
+      "roomDiff": "diff --git a/LEXICON.md b/LEXICON.md\nindex d5de505..a1c8f81 100644\n--- a/LEXICON.md\n+++ b/LEXICON.md\n@@ -310,6 +310,7 @@ collection and destination decisions in its `workbench/docs/ddr/` collection.\n | **Payment** | Money received from a Customer against one Account. | Avoid \"transaction\". |\n | **Settlement** | The application of one Payment to open Invoices on the same Account, oldest first, closing each in full or reducing it partially. | Not the Billing Run; avoid \"reconciliation\" and \"payout\". |\n | **Billing Run** | The scheduled job that issues Invoices for every active Account at the end of a billing period. | Avoid \"settlement\" and \"cycle\". |\n+| **Dunning** | The escalating sequence of reminders sent for one overdue Invoice. It ends when a Settlement closes the Invoice in full or the Invoice is written off; a partial Settlement does not end it. | Not a single reminder; each overdue Invoice has its own Dunning, so one Account may have several at once. |\n \n ## Continuity And Evidence Boundaries\n \n",
+      "notepadPaths": [
+        "workbench/sessions/notepads/work/dunning-term.json"
+      ],
+      "notepads": [
+        {
+          "file": "dunning-term.json",
+          "current": {
+            "state": "Dunning promoted to LEXICON.md Project Terms on local branch lexicon/dunning-term (commit 252a51c); not pushed (no remote); review and merge to integration pending.",
+            "unresolved": [
+              "Overdue undefined (Invoice has no due date)",
+              "Written off undefined",
+              "Name for one message (Reminder) unconfirmed"
+            ],
+            "next_action": "Owner decides how the branch is reviewed and landed; then align Overdue."
+          },
+          "entries": [
+            {
+              "id": "directive-001",
+              "kind": "directive",
+              "topic": "dunning-definition",
+              "content": "Owner proposal (unconfirmed): Dunning means sending one reminder email for an overdue Invoice."
+            },
+            {
+              "id": "finding-001",
+              "kind": "finding",
+              "topic": "dunning-definition",
+              "content": "No Dunning, overdue, due date, reminder or email concept exists in LEXICON.md Project Terms, BLUEPRINT.md, src/ or tests/. Invoice (LEXICON.md Project Terms) has no due date; src/billing/invoice.js carries periodEnd, openCents, status 'open' only. Overdue is therefore undefined.",
+              "interpretation": "New concept, not a contradiction; it depends on a second undefined term (Overdue) that must settle first."
+            },
+            {
+              "id": "proposal-001",
+              "kind": "proposal",
+              "topic": "dunning-definition",
+              "content": "Unresolved: is Dunning the single email (owner's proposal) or the process/sequence of reminders, with each message named Reminder? Also open: definition of Overdue; recipient (Customer vs Account); boundary with Blueprint non-goal 'payment collection from cards or banks'.",
+              "interpretation": "Promotion target once settled: LEXICON.md Project Terms (room has no GLOSSARY.md). Nothing settled yet."
+            },
+            {
+              "id": "correction-001",
+              "kind": "correction",
+              "topic": "dunning-definition",
+              "content": "Owner correction: Dunning is NOT a single reminder. It is the whole escalating sequence of reminders for one overdue Invoice, ending when the Invoice is paid or written off. Scope question in proposal-001 is resolved in favour of the process meaning.",
+              "corrects": "directive-001"
+            },
+            {
+              "id": "proposal-002",
+              "kind": "proposal",
+              "topic": "dunning-definition",
+              "content": "Still open: (a) 'paid' should map to Lexicon Settlement; does a partial Settlement end a Dunning or only one that closes the Invoice in full? (b) 'written off' is an undefined new term. (c) Overdue still undefined; Invoice has no due date. (d) Per-Invoice scope means an Account with several overdue Invoices has several concurrent Dunnings. (e) Name for one message (Reminder) not yet confirmed.",
+              "interpretation": "Not settled; awaits owner confirmation before promotion to LEXICON.md Project Terms."
+            },
+            {
+              "id": "decision-001",
+              "kind": "decision",
+              "topic": "dunning-definition",
+              "content": "Owner confirmed (settled meaning): Dunning is the escalating sequence of reminders for one overdue Invoice. It ends when a Settlement closes the Invoice in full, or when the Invoice is written off. A partial Settlement does not end it. Not yet promoted. Still undefined: Overdue, Written off; the name Reminder for one message is unconfirmed.",
+              "interpretation": "Promotion target: new row in LEXICON.md Project Terms (root control, review required). Promotion needs explicit owner authorization; confirmation alone does not grant it."
+            },
+            {
+              "id": "verification-001",
+              "kind": "verification",
+              "topic": "dunning-definition",
+              "content": "decision-001 and correction-001 promoted to LEXICON.md Project Terms (Dunning row), commit 252a51c7e95b78fb3172e9db18d8ba15ab4cf763 on local branch lexicon/dunning-term from integration. Tests 5/5 pass; doctor passed. No git remote configured, so not pushed; review of root-control change and merge to integration pending. Still open: Overdue, Written off, Reminder name.",
+              "interpretation": "Next action: owner decides how to review/land the branch; then align Overdue, Written off and Reminder."
+            }
+          ]
+        }
+      ],
+      "shadowStores": []
+    }
+  ]
+}

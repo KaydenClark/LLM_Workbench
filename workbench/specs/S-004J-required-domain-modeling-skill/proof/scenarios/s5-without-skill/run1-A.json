@@ -1,0 +1,280 @@
+{
+  "room": "s5-A",
+  "base": "0a72b4906365390893d075f751743d10174d4a6e",
+  "model": "claude-opus-5-5",
+  "cliVersion": "2.1.287 (Claude Code)",
+  "sessionId": "efafb0fb-060e-415c-be04-26b50473e8d1",
+  "skillsLoaded": [
+    "<room>/.claude/skills/grilling"
+  ],
+  "turns": [
+    {
+      "n": 1,
+      "owner": "/grilling Grill me on what Settlement should mean in Ledgerline; I'm not sure the current definition is right.",
+      "exit": 0,
+      "skillInvocations": [],
+      "tools": [
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"ls && grep -rn -i \\\"settle\\\" --include=*.md --include=*.json --include=*.js --include=*.mjs --include=*.ts --include=*.py . | grep -v node_modules | grep -v \\\"workbench/tools\\\" | head -80\",\"description\":\"List repo and search for settlement mentions\"}"
+        },
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"grep -rn -i \\\"settle\\\" . --exclude-dir=node_modules --exclude-dir=.git --exclude-dir=tools | head -80; echo ---; ls -R src tests workbench/specs workbench/wiki 2>/dev/null | head -60\",\"description\":\"Search for settlement mentions and list source\"}"
+        },
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"cat src/billing/settlement.js src/billing/invoice.js tests/settlement.test.js workbench/specs/S-001-invoice-settlement/SPEC.md workbench/wiki/billing-model.md; sed -n 295,325p LEXICON.md; cat BLUEPRINT.md | head -30; cat workbench/docs/adr/000A*; grep -n notepad workbench/manifest.json\",\"description\":\"Read settlement source, spec, wiki, lexicon rows\"}"
+        },
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"node workbench/tools/notepads.mjs create --note workbench/sessions/notepads/grilling/settlement-meaning-2026-10-07.json --type grilling \\\\\\n  --objective settlement-meaning --title \\\"What Settlement means in Ledgerline\\\" --focus \\\"Decide the accepted meaning of Settlement before any Lexicon/Spec change\\\" \\\\\\n  --state \\\"Decision map drafted from Lexicon, S-001 Invoice Settlement, src/b"
+        }
+      ],
+      "agent": "I checked the sources, and the doubt is justified: the definition and the code disagree.\n\n**What each source says now**\n- **Lexicon** (the project's glossary, `LEXICON.md:311`): Settlement is \"the application of one Payment to open Invoices on the same Account, oldest first, closing each in full **or reducing it partially**.\"\n- **The Invoice Settlement spec** (S-001): agrees with the Lexicon. The acceptance criterion for a partial payment is still unchecked, and task TK-001, \"Partial Settlement of the oldest open Invoice\", is ready to start.\n- **The code** (`src/billing/settlement.js:14`): does something different. When the remaining Payment can't cover an Invoice in full, it uses `break` to stop. That Invoice isn't touched, and the leftover money goes back to the Account as \"unapplied credit\". `tests/settlement.test.js:15` checks for this, so the tests also contradict the Lexicon.\n- **Other gaps nearby:**\n  - The Lexicon says an Invoice is \"immutable once issued\", but a partial reduction would change its `openCents`.\n  - \"Unapplied credit\" isn't defined anywhere in the Lexicon.\n  - Because of the `break`, a later, smaller Invoice stays unpaid even when the leftover Payment could cover it.\n\n**My working list of decisions** (I've saved it to a local notepad):\n1. Partial application *(asking now)*\n2. Whether a Settlement continues past an Invoice it can't close (depends on 1)\n3. How partial reduction fits with \"immutable once issued\" (depends on 1)\n4. What leftover Payment, the \"unapplied credit\", is (depends on 1 and 2)\n5. Whether a Settlement is a recorded thing or only an action\n6. What \"oldest\" means\n\n---\n\n**Question 1:** When the remaining Payment is smaller than the oldest open Invoice, does a Settlement apply it as a partial payment to that Invoice?\n\n**Recommended answer:** Yes. Keep the Lexicon's meaning, so a Settlement can reduce an Invoice partially. The code is then an unfinished implementation, not the source of truth.\n\n**Why:**\n- The Lexicon, the spec and the Blueprint all agree on this. The Blueprint promises that \"a Payment reduces the open Invoices of its own Account.\"\n- The code's behavior leaves money sitting unused while the oldest debt stays open. For finance teams that want clean Account balances, that's usually the wrong result.\n- The spec's next step is already to build partial Settlement.\n\n**Impact:**\n- **If yes:** TK-001 goes ahead as written. The test at `tests/settlement.test.js:15` would be rewritten when that task is built. We then have to settle questions 2 and 3: what happens after the partially paid Invoice, and how the open amount changes without breaking Invoice immutability.\n- **If no:** the Lexicon definition, the spec's unchecked acceptance criterion and TK-001 all become wrong and need revising. \"Unapplied credit\" becomes a core part of Settlement and needs its own definition.\n\nWhat's your answer?",
+      "head": null,
+      "headMoved": null,
+      "branches": null,
+      "roomStatus": "",
+      "roomDiff": "",
+      "notepadPaths": [
+        "workbench/sessions/notepads/grilling/settlement-meaning-2026-10-07.json"
+      ],
+      "notepads": [
+        {
+          "file": "settlement-meaning-2026-10-07.json",
+          "current": {
+            "state": "Decision map drafted from Lexicon, S-001 Invoice Settlement, src/billing/settlement.js, tests, wiki billing-model, ADR 000A; nothing answered yet. Key finding: Lexicon and S-001 say a Settlement may reduce an Invoice partially; src/billing/settlement.js stops at the first Invoice it cannot cover in full and leaves the remainder as unapplied credit (tests assert that).",
+            "unresolved": [],
+            "next_action": "Ask Q1 (partial application) with recommendation",
+            "questions": [
+              {
+                "id": "1",
+                "status": "open",
+                "question": "Does a Settlement apply a Payment partially to an Invoice it cannot cover in full?"
+              },
+              {
+                "id": "2",
+                "status": "open",
+                "question": "After a partial or blocked Invoice, does a Settlement continue to later (younger) Invoices?"
+              },
+              {
+                "id": "3",
+                "status": "open",
+                "question": "How does partial reduction coexist with Invoice being immutable once issued (open amount as derived balance vs Invoice field)?"
+              },
+              {
+                "id": "4",
+                "status": "open",
+                "question": "What is leftover Payment (unapplied credit) and is it part of Settlement or an Account concept?"
+              },
+              {
+                "id": "5",
+                "status": "open",
+                "question": "Is a Settlement a recorded event/artifact or only an operation?"
+              },
+              {
+                "id": "6",
+                "status": "open",
+                "question": "What defines oldest: period end, issue date, tie-breaks?"
+              }
+            ]
+          },
+          "entries": []
+        }
+      ],
+      "shadowStores": []
+    },
+    {
+      "n": 2,
+      "owner": "I think a Settlement should also cover refunds that go back to the Customer.",
+      "exit": 0,
+      "skillInvocations": [],
+      "tools": [
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"N=workbench/sessions/notepads/grilling/settlement-meaning-2026-10-07.json && node workbench/tools/notepads.mjs --help 2>&1 | head -40\",\"description\":\"Check notepad runtime usage\"}"
+        },
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"N=workbench/sessions/notepads/grilling/settlement-meaning-2026-10-07.json && node workbench/tools/notepads.mjs append --note $N --kind source_record --question-id 7 --content \\\"I think a Settlement should also cover refunds that go back to the Customer.\\\" --interpretation \\\"Pending readback: owner proposes widening Settlement so it also covers money flowing out to the Customer as a ref"
+        },
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"N=workbench/sessions/notepads/grilling/settlement-meaning-2026-10-07.json && node workbench/tools/notepads.mjs append --note $N --revision 1 --kind source_record --question-id 7 --content \\\"I think a Settlement should also cover refunds that go back to the Customer.\\\" --interpretation \\\"Pending readback: owner proposes widening Settlement so it also covers money flowing out to the Cust"
+        },
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"N=workbench/sessions/notepads/grilling/settlement-meaning-2026-10-07.json && node workbench/tools/notepads.mjs append --note $N --revision 1 --topic \\\"Q7 refunds in Settlement\\\" --kind source_record --question-id 7 --content \\\"I think a Settlement should also cover refunds that go back to the Customer.\\\" --interpretation \\\"Pending readback: owner proposes widening Settlement so it also"
+        }
+      ],
+      "agent": "That's a new decision, not an answer to Question 1, so I'm treating it as a separate question. Question 1 is still open. I've saved your words in the notepad, marked as not yet confirmed.\n\n**My read-back (not confirmed yet)**\n\n**Question 7:** Should Settlement also cover refunds that go back to the Customer?\n\n**Your answer, as I understand it:** Yes. Settlement would cover money moving in both directions:\n- a Payment applied to open Invoices, as it does now;\n- money returned to the Customer as a refund.\n\n**Your reason:** You haven't given one yet. I don't want to assume it.\n\n**Impact if confirmed:** this widens the Settlement definition considerably and runs into three existing rules:\n- **The Lexicon:** the Settlement entry says to avoid the word \"payout\". Money sent back to a Customer is essentially a payout, so that wording would have to change.\n- **Customer versus Account:** the decision record \"Invoices belong to Accounts, not Customers\" says a Settlement never crosses Accounts. A refund \"to the Customer\" ties Settlement to the Customer instead of one Account. If that Customer has two Accounts, we'd need to say which Account's money is refunded.\n- **The Blueprint:** it excludes collecting payments from cards or banks. Sending a refund out is the same kind of money movement, so it may be out of scope altogether. Ledgerline might only record that a refund is owed.\n\n**To finish this read-back, I need two things from you:**\n1. **What is being refunded?** Is it leftover Payment that didn't go to any Invoice (the \"unapplied credit\" the code creates now)? Or is it the reversal of an Invoice that was already paid, such as a billing mistake?\n2. **Who receives it?** The Customer, as you said, or the specific Account the money came from?\n\nOnce you answer, I'll revise this read-back for you to confirm. Then we'll come back to Question 1. If you mean refunds of leftover money, your answer to Question 1 affects how much leftover money there is to refund.",
+      "head": null,
+      "headMoved": null,
+      "branches": null,
+      "roomStatus": "",
+      "roomDiff": "",
+      "notepadPaths": [
+        "workbench/sessions/notepads/grilling/settlement-meaning-2026-10-07.json"
+      ],
+      "notepads": [
+        {
+          "file": "settlement-meaning-2026-10-07.json",
+          "current": {
+            "state": "Q1 asked, unanswered. Owner raised new branch Q7 (refunds inside Settlement); readback pending clarification. Conflicts found: Lexicon Settlement row says avoid 'payout'; ADR 000A Settlement never crosses Accounts while a refund 'to the Customer' names the Customer; Blueprint non-goal excludes payment collection from cards/banks.",
+            "unresolved": [
+              "[\"Q7 pending readback: should Settlement cover refunds back to the Customer? Needs clarification of which refunds and to whom\",\"Q1 still open\"]"
+            ],
+            "next_action": "Get owner to confirm or correct Q7 readback, then return to Q1",
+            "questions": [
+              {
+                "id": "1",
+                "status": "open",
+                "question": "Does a Settlement apply a Payment partially to an Invoice it cannot cover in full?"
+              },
+              {
+                "id": "2",
+                "status": "open",
+                "question": "After a partial or blocked Invoice, does a Settlement continue to later (younger) Invoices?"
+              },
+              {
+                "id": "3",
+                "status": "open",
+                "question": "How does partial reduction coexist with Invoice being immutable once issued?"
+              },
+              {
+                "id": "4",
+                "status": "open",
+                "question": "What is leftover Payment (unapplied credit) and is it part of Settlement or an Account concept?"
+              },
+              {
+                "id": "5",
+                "status": "open",
+                "question": "Is a Settlement a recorded event/artifact or only an operation?"
+              },
+              {
+                "id": "6",
+                "status": "open",
+                "question": "What defines oldest: period end, issue date, tie-breaks?"
+              },
+              {
+                "id": "7",
+                "status": "open",
+                "question": "Should Settlement also cover refunds back to the Customer?"
+              }
+            ]
+          },
+          "entries": [
+            {
+              "id": "source_record-001",
+              "kind": "source_record",
+              "topic": "Q7 refunds in Settlement",
+              "content": "I think a Settlement should also cover refunds that go back to the Customer.",
+              "interpretation": "Pending readback: owner proposes widening Settlement so it also covers money flowing out to the Customer as a refund, not only a Payment applied to open Invoices. Not an answer to Q1. Unclear: refund of what (overpayment/unapplied credit vs reversal of a paid Invoice), and to the Customer vs the Account."
+            }
+          ]
+        }
+      ],
+      "shadowStores": []
+    },
+    {
+      "n": 3,
+      "owner": "Thinking about it more: no. A Settlement only applies a Payment to open Invoices; refunds are a separate concept we haven't named yet. I confirm that, and we can stop the grilling here.",
+      "exit": 0,
+      "skillInvocations": [],
+      "tools": [
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"N=workbench/sessions/notepads/grilling/settlement-meaning-2026-10-07.json && node workbench/tools/notepads.mjs append --note $N --revision 3 --topic \\\"Q7 refunds in Settlement\\\" --kind correction --question-id 7 --content \\\"Thinking about it more: no. A Settlement only applies a Payment to open Invoices; refunds are a separate concept we haven't named yet. I confirm that.\\\" --interpret"
+        },
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"N=workbench/sessions/notepads/grilling/settlement-meaning-2026-10-07.json && node workbench/tools/notepads.mjs current --note $N --revision 6 --unresolved \\\"Q1 open: does a Settlement partially reduce an Invoice it cannot cover in full? Lexicon/S-001 say yes, code says no\\\" --unresolved \\\"Refunds: separate concept, unnamed and undefined; not yet a question in this map\\\" --unresolved \\\""
+        }
+      ],
+      "agent": "I've stopped the grilling and saved where we got to. I didn't change the Lexicon, the spec, the code or any other project file.\n\n**Decided: Settlement doesn't include refunds.** A Settlement only applies a Payment to open Invoices. Refunds are a separate concept that hasn't been named yet. I saved this exactly as you confirmed it. It matches the current Lexicon, which already says not to call a Settlement a \"payout\", so this decision alone doesn't require a Lexicon change.\n\n**Still undecided: partial payments (Question 1).** Your answer says what a Settlement applies to, not what happens when the money runs short. The two sources still disagree:\n- The Lexicon and the Invoice Settlement spec say a Settlement can partially reduce an Invoice it can't cover in full.\n- `src/billing/settlement.js:14` stops at that Invoice instead and leaves the rest of the Payment as unapplied credit, and the tests check for that.\n\nThe task to build partial payments (TK-001) is ready to start, so it's worth settling this before anyone picks it up.\n\n**Also still open:**\n- Questions 2 to 6: whether a Settlement continues to later Invoices, the conflict with \"immutable once issued\", unapplied credit, whether a Settlement is a recorded thing, and what \"oldest\" means.\n- A name and definition for refunds, which isn't on the question list yet.\n\nThe notepad is `workbench/sessions/notepads/grilling/settlement-meaning-2026-10-07.json`. It's a local file that isn't committed to git, and I checked that it records everything above accurately. When you pick this up again, I'll start with Question 1.",
+      "head": null,
+      "headMoved": null,
+      "branches": null,
+      "roomStatus": "",
+      "roomDiff": "",
+      "notepadPaths": [
+        "workbench/sessions/notepads/grilling/settlement-meaning-2026-10-07.json"
+      ],
+      "notepads": [
+        {
+          "file": "settlement-meaning-2026-10-07.json",
+          "current": {
+            "state": "Paused by owner after Q7 locked. Q7 locked: Settlement excludes refunds; refunds are a separate unnamed concept. Q1 (partial application) asked but unanswered; owner's Q7 answer does not decide it. Conflict still live: Lexicon/S-001 allow partial reduction, src/billing/settlement.js and tests/settlement.test.js do not.",
+            "unresolved": [
+              "Q1 open: does a Settlement partially reduce an Invoice it cannot cover in full? Lexicon/S-001 say yes, code says no",
+              "Refunds: separate concept, unnamed and undefined; not yet a question in this map",
+              "Q2-Q6 open"
+            ],
+            "next_action": "On resume: ask Q1 (partial application) with recommendation yes; nothing to promote until owner chooses promote",
+            "questions": [
+              {
+                "id": "1",
+                "status": "open",
+                "question": "Does a Settlement apply a Payment partially to an Invoice it cannot cover in full?"
+              },
+              {
+                "id": "2",
+                "status": "open",
+                "question": "After a partial or blocked Invoice, does a Settlement continue to later (younger) Invoices?"
+              },
+              {
+                "id": "3",
+                "status": "open",
+                "question": "How does partial reduction coexist with Invoice being immutable once issued?"
+              },
+              {
+                "id": "4",
+                "status": "open",
+                "question": "What is leftover Payment (unapplied credit) and is it part of Settlement or an Account concept?"
+              },
+              {
+                "id": "5",
+                "status": "open",
+                "question": "Is a Settlement a recorded event/artifact or only an operation?"
+              },
+              {
+                "id": "6",
+                "status": "open",
+                "question": "What defines oldest: period end, issue date, tie-breaks?"
+              },
+              {
+                "id": "7",
+                "status": "locked",
+                "question": "Should Settlement also cover refunds back to the Customer?"
+              }
+            ]
+          },
+          "entries": [
+            {
+              "id": "source_record-001",
+              "kind": "source_record",
+              "topic": "Q7 refunds in Settlement",
+              "content": "I think a Settlement should also cover refunds that go back to the Customer.",
+              "interpretation": "Pending readback: owner proposes widening Settlement so it also covers money flowing out to the Customer as a refund, not only a Payment applied to open Invoices. Not an answer to Q1. Unclear: refund of what (overpayment/unapplied credit vs reversal of a paid Invoice), and to the Customer vs the Account."
+            },
+            {
+              "id": "correction-001",
+              "kind": "correction",
+              "topic": "Q7 refunds in Settlement",
+              "content": "Thinking about it more: no. A Settlement only applies a Payment to open Invoices; refunds are a separate concept we haven't named yet. I confirm that.",
+              "interpretation": "Supersedes source_record-001: owner withdrew the proposal to include refunds in Settlement."
+            },
+            {
+              "id": "decision-001",
+              "kind": "decision",
+              "topic": "Q7 refunds in Settlement",
+              "content": "Settlement does not cover refunds. A Settlement only applies a Payment to open Invoices; refunds are a separate, not-yet-named concept. Confirmed by owner 2026-10-07 in their own words."
+            }
+          ]
+        }
+      ],
+      "shadowStores": []
+    }
+  ]
+}

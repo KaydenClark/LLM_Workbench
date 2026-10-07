@@ -44,7 +44,11 @@ At the pre anchor:
 
 ## Decisions And Contracts
 
-### Paired delivery continuation, 2026-10-07
+### Current-target rebase, 2026-10-07
+
+Domain modeling independently joined the required Core at c80cb282 after the paired hand-back. Preserve that source and its placement after improve-harness; the current combined bundle is 32. Rebased Check verifies exact prior28, pr-only29, domain-only29, pair-only30, pr-and-domain30, and pr-and-pair31 cohorts. The earlier source and native Task closure receipts remain dated proof; current combined verification and independent assembled review bind the updated candidate. No skill body is rewritten and no owner QA/main approval is inferred.
+
+### Historical pre-domain delivery continuation, 2026-10-07
 
 The owner now requests retro and writing-for-agents in their proper home. Deliver this existing pair into the tracked Core lane through integration under current gates. The pr package independently landed at 6101c237 during verification; preserve it and combine the required bundle at 31. Its unresolved review findings remain with S-002U. Current31, exact prior28, pr-only29, pair-only30 and frozen legacy21 policies are checked at the shared compatibility seam. This continuation grants no owner Human QA or main-promotion approval and changes no personal installation.
 
@@ -93,7 +97,7 @@ The current owner request activates this Spec; its record-backed Task covers the
 - [x] Every "needs" and "reads and writes" item resolves to something real or is recorded as a finding; overlap with the feedback review family, feedback tooling and the Reconciler stance is a finding with a named owner.
 - [x] "Compared with Matt's" holds a verdict (same, close, divergent or missing) from a read of `engineering/retro` at the pinned revision.
 - [x] The step 6 lane authorization is recorded before any skill source is added, and the skill source matches the article.
-- [x] Targeted catalog tests, Wiki validation and the full suite in `AGENTS.md` are green for the combined 31-skill delivery, and a fresh-context scenario is observed; no unrun check is reported as passing.
+- [ ] Targeted catalog tests, Wiki validation and the full suite in `AGENTS.md` are green for the combined 32-skill delivery, and a fresh-context scenario is observed; no unrun check is reported as passing.
 
 ## Testing Seams
 
@@ -128,7 +132,7 @@ The draft article `workbench/wiki/skills-draft/main-workflow/retro.md` (the deli
 
 ## Completion Result
 
-The paired source and draft are implemented in the required 31-skill Core alongside pr, preserving all three pinned imports. The earlier clean source 1c44487a passed 53/53 Runbook commands; the new exact 29/30-cohort regression failed at 689cd598 and passed after the frozen transition policies were added. Latest native receipts and proof identify achieved verification, Task closure and review at their actual candidates. Integration containment is recorded after delivery. Native configured-host invocation and reliability, owner Human QA and main closure remain unverified. Existing self-drift is preserved; no clean-update claim is made.
+The paired source and draft are implemented in the required 32-skill Core alongside pr and domain-modeling, preserving all three pinned imports. The earlier clean source 1c44487a passed 53/53 Runbook commands; the new exact 29/30-cohort regression failed at 689cd598 and passed after the frozen transition policies were added. Latest native receipts and proof identify achieved verification, Task closure and review at their actual candidates. Integration containment is recorded after delivery. Native configured-host invocation and reliability, owner Human QA and main closure remain unverified. Existing self-drift is preserved; no clean-update claim is made.
 
 ## Supersession
 

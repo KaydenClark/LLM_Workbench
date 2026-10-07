@@ -1,0 +1,37 @@
+{
+  "room": "s4-A",
+  "base": "a1001106a0c13b070cc47f5367e2960718305270",
+  "model": "claude-opus-5-5",
+  "cliVersion": "2.1.287 (Claude Code)",
+  "sessionId": "6e3cf8e4-0d33-43bf-b80a-c17f619ef778",
+  "skillsLoaded": [
+    "<room>/.claude/skills/domain-modeling"
+  ],
+  "turns": [
+    {
+      "n": 1,
+      "owner": "/domain-modeling We settled four choices while reworking billing today. Which of them, if any, should get a decision record?\n1. Rename the test helper `invoice()` in tests/settlement.test.js to `openInvoice()`.\n2. Invoice ids are numbered sequentially, INV-1, INV-2 and so on, like every invoicing system does.\n3. Store all money as integer cents, because the payment processor we must use only accepts integer cents.\n4. An issued Invoice is never edited; every correction is a Credit Note against it. We chose that over editable Invoices with an audit log, even though support staff lose a quick fix, because auditors need issued Invoices to stay exactly as sent.",
+      "exit": 0,
+      "skillInvocations": [],
+      "tools": [
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"cd \\\"$PWD\\\"; ls; ls workbench/docs/adr workbench/docs/ddr 2>/dev/null; grep -n -i -E \\\"credit note|invoice|cents\\\" LEXICON.md GLOSSARY.md 2>/dev/null | head -20; grep -rn -i -E \\\"cents|credit|INV-|function invoice|openInvoice\\\" src tests 2>/dev/null | head -20; grep -n -A4 '\\\"adr\\\"\\\\|\\\"ddr\\\"\\\\|decision' workbench/manifest.json | head -20\",\"description\":\"Check decision records, vocabula"
+        },
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"ls workbench/docs/adr/proposed workbench/docs/ddr/proposed workbench/docs/ddr/archive; cat workbench/docs/adr/REGISTER.md workbench/docs/ddr/REGISTER.md | head -40; grep -rli -E \\\"credit note|immutable|cents\\\" workbench/docs | head\",\"description\":\"Check existing decision records for overlap\"}"
+        }
+      ],
+      "agent": "Only **#4** qualifies for a decision record, and it should be a DDR rather than an ADR.\n\n| # | Choice | Hard to reverse | Surprising without context | Real trade-off | Record? |\n|---|---|---|---|---|---|\n| 1 | Rename the test helper `invoice()` to `openInvoice()` | ✗ | ✗ | ✗ | No |\n| 2 | Sequential ids `INV-1`, `INV-2`… | partly | ✗ | ✗ | No |\n| 3 | Money as integer cents | ✓ | ✗ | ✗ | No |\n| 4 | Issued Invoices never edited; corrections are Credit Notes | ✓ | ✓ | ✓ | **Yes (DDR)** |\n\n**Why the other three fail**\n1. **Test helper rename.** It's a one-line rename confined to the tests and easy to undo. The new name does fit: the helper in `tests/settlement.test.js:5` builds Invoices with `status: 'open'`. There's no decision here.\n2. **Sequential ids.** It's the convention you said every invoicing system follows, so a future reader won't wonder why, and you didn't weigh an alternative. It fails tests 2 and 3. The code already does this: `src/billing/invoice.js:8` uses `` `INV-${nextNumber++}` ``.\n3. **Integer cents.** It's expensive to change later, but the payment processor forces it. With no real alternative there's no trade-off, and the reason fits in one sentence. It fails test 3, and arguably test 2. Record that reason as a constraint in the billing Spec or a Wiki page. The code already agrees: `amountCents`, `openCents` and `balanceCents` appear throughout `src/`.\n\n**Why #4 qualifies, and why it's a DDR**\n- It passes all three tests:\n  - Once Invoices have gone out, switching to editable ones is costly.\n  - A support engineer will ask why they can't just fix a typo.\n  - You turned down a real alternative (editable Invoices with an audit log) and accepted a cost (support staff lose quick fixes) to meet the auditor requirement.\n- Scope test: the rule would still hold if the architecture were rebuilt differently. It's a choice about what the product must do, so it belongs in the `ddr` collection. That collection is currently empty, and neither the ADR nor the DDR collection already covers this.\n- **Consequence trace:**\n  - The Lexicon's definition of **Invoice** (`LEXICON.md:308`) already says \"immutable once issued\", so that agrees.\n  - **Credit Note** isn't defined anywhere in `LEXICON.md`, and nothing in `src/` or `tests/` mentions it yet. Once the DDR is accepted, the term needs a Lexicon entry, and the billing Spec will have an implementation gap to record.\n  - The rule also affects **Settlement** (`LEXICON.md:311`): it's unclear whether a Credit Note reduces an Invoice's open amount the way a Payment does.\n\nI haven't written anything. A DDR you accept would be written through `to-docs` with `adr.mjs`, and the Credit Note term would be added through promotion.\n\n**One question before that:** does a Credit Note reduce the open balance of the Invoice it's issued against (so Settlement treats that Invoice as partly paid)? Or does it sit on the Account as unapplied credit, the way a Payment's leftover does in `src/billing/settlement.js:3`?",
+      "head": null,
+      "headMoved": null,
+      "branches": null,
+      "roomStatus": "",
+      "roomDiff": "",
+      "notepadPaths": [],
+      "notepads": [],
+      "shadowStores": []
+    }
+  ]
+}

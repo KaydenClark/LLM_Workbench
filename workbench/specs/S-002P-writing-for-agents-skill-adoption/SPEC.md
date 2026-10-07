@@ -15,7 +15,7 @@
 
 ## Outcome
 
-Matt Pocock's `productivity/writing-for-agents` is adopted as a new Workbench skill, `workbench/skills/writing-for-agents/`, and joins retro in the owner-requested Core adoption, bringing the combined required bundle to 31 while preserving the independently delivered pr skill. It replaces `writing-great-skills`. The draft-wiki article, the comparison with Matt's skill and the skill source describe one behavior. This Spec also carries the retirement note for `writing-great-skills`: how it folds in, and that it leaves the owner's personal install only by his hand.
+Matt Pocock's `productivity/writing-for-agents` is adopted as a new Workbench skill, `workbench/skills/writing-for-agents/`, and joins retro in the owner-requested Core adoption, bringing the combined required bundle to 32 while preserving the independently delivered pr skill. It replaces `writing-great-skills`. The draft-wiki article, the comparison with Matt's skill and the skill source describe one behavior. This Spec also carries the retirement note for `writing-great-skills`: how it folds in, and that it leaves the owner's personal install only by his hand.
 
 ## Why It Matters
 
@@ -44,7 +44,11 @@ The following bullets are historical investigation observations at the pre ancho
 
 ## Decisions And Contracts
 
-### Paired delivery continuation, 2026-10-07
+### Current-target rebase, 2026-10-07
+
+Domain modeling independently joined the required Core at c80cb282 after the paired hand-back. Preserve that source and its placement after improve-harness; the current combined bundle is 32. Rebased Check verifies exact prior28, pr-only29, domain-only29, pair-only30, pr-and-domain30, and pr-and-pair31 cohorts. The earlier source and native Task closure receipts remain dated proof; current combined verification and independent assembled review bind the updated candidate. No skill body is rewritten and no owner QA/main approval is inferred.
+
+### Historical pre-domain delivery continuation, 2026-10-07
 
 The owner now requests retro and writing-for-agents in their proper home. Deliver this existing pair into the tracked Core lane through integration under current gates. The pr package independently landed at 6101c237 during verification; preserve it and combine the required bundle at 31. Its unresolved review findings remain with S-002U. Current31, exact prior28, pr-only29, pair-only30 and frozen legacy21 policies are checked at the shared compatibility seam. This continuation grants no owner Human QA or main-promotion approval and changes no personal installation.
 
@@ -101,9 +105,9 @@ Steps 1-5 touch only the draft wiki. Step 6 is the only step that touches a skil
 - [x] The comparison with Matt's skill at `d81f3a183412e71a5b1e84ca21bc1a35eea03a60` records a verdict (same, close, divergent or missing) and the behavior and clarity differences.
 - [x] The fold-in of `writing-great-skills` is recorded per idea or term (survives, covered, dropped with reason), and the retirement note states that the personal-install copy retires only by the owner's hand.
 - [x] `workbench/skills/writing-for-agents/SKILL.md` exists, matches the article, and `THIRD_PARTY_NOTICES.md` keeps the upstream MIT notice.
-- [x] Every closed-bundle touchpoint reads 31 consistently (README, Lexicon row, `skillPolicy.required`, catalog tests, the five-archive-directory requirement), and the owner's 2026-09-30 decision is recorded as the S-00R disposition for `writing-great-skills`.
+- [x] Every closed-bundle touchpoint reads 32 consistently (README, Lexicon row, `skillPolicy.required`, catalog tests, the five-archive-directory requirement), and the owner's 2026-09-30 decision is recorded as the S-00R disposition for `writing-great-skills`.
 - [x] A fresh-context scenario shows an agent using the skill to write or edit a skill with the process the skill describes.
-- [x] The full suite from `AGENTS.md`, `node workbench/tools/wiki.mjs validate`, `render`, `doctor`, the Workbench self-drift pre/post receipts are recorded at their proper gates; no unrun check is reported as passing.
+- [ ] The full suite from `AGENTS.md`, `node workbench/tools/wiki.mjs validate`, `render`, `doctor`, the Workbench self-drift pre/post receipts are recorded at their proper gates; no unrun check is reported as passing.
 
 The separate-context review remains mandatory at the immutable assembled Verify gate, after deterministic acceptance and Task closure. It is not its own self-referential acceptance checkbox.
 
@@ -143,7 +147,7 @@ For step 6, run the targeted catalog and skills-lane tests, then `node workbench
 
 ## Completion Result
 
-The paired source and draft are implemented in the required 31-skill Core alongside pr, preserving all three pinned imports. The earlier clean source 1c44487a passed 53/53 Runbook commands; the new exact 29/30-cohort regression failed at 689cd598 and passed after the frozen transition policies were added. Latest native receipts and proof identify achieved verification, Task closure and review at their actual candidates. Integration containment is recorded after delivery. Native configured-host invocation and reliability, owner Human QA and main closure remain unverified. Existing self-drift is preserved; no clean-update claim is made.
+The paired source and draft are implemented in the required 32-skill Core alongside pr and domain-modeling, preserving all three pinned imports. The earlier clean source 1c44487a passed 53/53 Runbook commands; the new exact 29/30-cohort regression failed at 689cd598 and passed after the frozen transition policies were added. Latest native receipts and proof identify achieved verification, Task closure and review at their actual candidates. Integration containment is recorded after delivery. Native configured-host invocation and reliability, owner Human QA and main closure remain unverified. Existing self-drift is preserved; no clean-update claim is made.
 
 ## Supersession
 

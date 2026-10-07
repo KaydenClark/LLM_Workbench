@@ -57,9 +57,13 @@ export const coordinationSkills = ['director', 'dispatcher', 'spec-planner', 'sp
 // harness improvement for one observed job (baseline, earliest gap, smallest
 // owning intervention, native verification, fresh rerun, then retain, revise
 // or remove), after `workbench-runtime` and ahead of the coordination entries.
+// S-004J TK-00JA adds `domain-modeling`, the Align companion that challenges
+// and sharpens vocabulary and traces an upstream choice to the owners it would
+// reach before it settles, after `improve-harness` and ahead of the
+// coordination entries, so every coordination and stance slice stays exact.
 // S-002U TK-007V adds `pr`, the owner-required PR body-authoring entry, after
 // `improve-harness` and ahead of the coordination entries.
-export const coreSkills = [...currentCoreSkills, 'carry', 'notepad', 'save', 'promote', 'handoff', 'grill-me', 'workbench-runtime', 'improve-harness', 'pr', 'writing-for-agents', 'retro', ...coordinationSkills, ...stanceSkills];
+export const coreSkills = [...currentCoreSkills, 'carry', 'notepad', 'save', 'promote', 'handoff', 'grill-me', 'workbench-runtime', 'improve-harness', 'domain-modeling', 'pr', 'writing-for-agents', 'retro', ...coordinationSkills, ...stanceSkills];
 // The prior28 cohort: rooms built from integration before `pr` joined the
 // required Core carry this exact lane policy under v3.2.1. Keep it readable so
 // layout migration reaches the explicit skills update instead of rejecting its
@@ -72,14 +76,20 @@ const prior28CoreSkills = [
   'improve-harness', 'director', 'dispatcher', 'spec-planner', 'spec-manager',
   'builder', 'auditor', 'reviewer', 'reconciler'
 ];
-// Preserve the exact independently produced v3.2.1 cohorts; these frozen
-// lists never grow with coreSkills and migration leaves their policy intact.
-const priorPrCoreSkills = [
+// Exact 29-skill cohorts from the two parents of the combined bundle.
+const prior29PrCoreSkills = [
   'adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement',
   'make-it-so', 'to-docs', 'to-spec', 'to-tasks', 'tracer-bullet', 'update-harness',
-  'carry', 'notepad', 'save', 'promote', 'handoff', 'grill-me',
-  'workbench-runtime', 'improve-harness', 'pr', 'director', 'dispatcher', 'spec-planner',
-  'spec-manager', 'builder', 'auditor', 'reviewer', 'reconciler'
+  'carry', 'notepad', 'save', 'promote', 'handoff', 'grill-me', 'workbench-runtime',
+  'improve-harness', 'pr', 'director', 'dispatcher', 'spec-planner', 'spec-manager',
+  'builder', 'auditor', 'reviewer', 'reconciler'
+];
+const prior29DomainModelingCoreSkills = [
+  'adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement',
+  'make-it-so', 'to-docs', 'to-spec', 'to-tasks', 'tracer-bullet', 'update-harness',
+  'carry', 'notepad', 'save', 'promote', 'handoff', 'grill-me', 'workbench-runtime',
+  'improve-harness', 'domain-modeling', 'director', 'dispatcher', 'spec-planner', 'spec-manager',
+  'builder', 'auditor', 'reviewer', 'reconciler'
 ];
 const priorWritingRetroCoreSkills = [
   'adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement',
@@ -88,7 +98,7 @@ const priorWritingRetroCoreSkills = [
   'workbench-runtime', 'improve-harness', 'writing-for-agents', 'retro', 'director', 'dispatcher',
   'spec-planner', 'spec-manager', 'builder', 'auditor', 'reviewer', 'reconciler'
 ];
-const v321TransitionCoreSkills = [prior28CoreSkills, priorPrCoreSkills, priorWritingRetroCoreSkills];
+const v321TransitionCoreSkills = [prior28CoreSkills, prior29PrCoreSkills, prior29DomainModelingCoreSkills, priorWritingRetroCoreSkills];
 export const lanes = LANES;
 export const collections = COLLECTIONS;
 export const controls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md'];

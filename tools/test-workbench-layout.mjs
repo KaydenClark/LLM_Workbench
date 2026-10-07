@@ -274,9 +274,10 @@ test('a six-lane schema 2 manifest gains the skills lane through migrate, after 
     // v3.2.1's frozen twenty-one, without the `grill-me` S-00Z grew the live
     // bundle with, the coordination entries that grew it after, or the
     // `workbench-runtime` entry S-004C TK-005J added or the `improve-harness`
-    // entry S-004L TK-008L added, or the `pr` entry S-002U TK-007V added. The
-    // provider-home shape validates only with a stamped row.
-    manifest.skillPolicy = { ...manifest.skillPolicy, required: manifest.skillPolicy.required.filter((name) => !['grill-me', 'workbench-runtime', 'improve-harness', 'pr', 'writing-for-agents', 'retro'].includes(name) && !coordinationSkills.includes(name)), normalSetup: 'presence-only', updates: 'explicit-only' };
+    // entry S-004L TK-008L added, the `domain-modeling` entry S-004J TK-00JA
+    // added, or the `pr` entry S-002U TK-007V added. The provider-home shape
+    // validates only with a stamped row.
+    manifest.skillPolicy = { ...manifest.skillPolicy, required: manifest.skillPolicy.required.filter((name) => !['grill-me', 'workbench-runtime', 'improve-harness', 'domain-modeling', 'pr', 'writing-for-agents', 'retro'].includes(name) && !coordinationSkills.includes(name)), normalSetup: 'presence-only', updates: 'explicit-only' };
     fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
     // The undeclared directory may already exist, empty (init's .gitkeep) or
     // holding a room-local skill; migrate must accept both, not refuse them.
@@ -1153,10 +1154,11 @@ test('each listed legacy version validates only at the policy its release declar
     // v3.2.1 stamped the twenty-one-skill bundle with `handoff`; S-00Z grew the
     // live bundle with `grill-me`, the coordination entries grew it again and
     // S-004C TK-005J added `workbench-runtime` and S-004L TK-008L added
-    // `improve-harness` and S-002U TK-007V added `pr`, so the v3.2.1 row freezes at
+    // `improve-harness`, S-004J TK-00JA added `domain-modeling` and S-002U
+    // TK-007V added `pr`, so the v3.2.1 row freezes at
     // twenty-one and a room stamped v3.2.1 validates with either the frozen row
     // or the current policy the Workbench update writes before restamping.
-    const twentyOne = current.filter((name) => !['grill-me', 'workbench-runtime', 'improve-harness', 'pr', 'writing-for-agents', 'retro'].includes(name) && !coordinationSkills.includes(name));
+    const twentyOne = current.filter((name) => !['grill-me', 'workbench-runtime', 'improve-harness', 'domain-modeling', 'pr', 'writing-for-agents', 'retro'].includes(name) && !coordinationSkills.includes(name));
     assert.equal(twentyOne.length, 21);
     assert.equal(outcome('v3.2.1', twentyOne), 'valid');
     assert.equal(outcome('v3.2.1', current), 'valid');
@@ -2798,6 +2800,40 @@ test('prior28 v3.2.1 room stays readable and migratable at its exact 28-skill la
       'the prior28 transition policy is accepted only at its known stamped version');
   } finally { fs.rmSync(project, { recursive: true, force: true }); }
 });
+
+// The two 29-skill branches must remain readable after their combined bundle grows.
+for (const addedSkill of ['pr', 'domain-modeling']) {
+  test(`prior29 ${addedSkill} room remains readable and migratable`, () => {
+    const project = fixture();
+    try {
+      assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+      const manifestPath = path.join(project, 'workbench', 'manifest.json');
+      const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+      const prior29 = [
+        'adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement',
+        'make-it-so', 'to-docs', 'to-spec', 'to-tasks', 'tracer-bullet', 'update-harness',
+        'carry', 'notepad', 'save', 'promote', 'handoff', 'grill-me', 'workbench-runtime',
+        'improve-harness', addedSkill, 'director', 'dispatcher', 'spec-planner', 'spec-manager',
+        'builder', 'auditor', 'reviewer', 'reconciler'
+      ];
+      manifest.skillPolicy.required = prior29;
+      manifest.workbenchVersion = 'v3.2.1';
+      fs.writeFileSync(manifestPath, JSON.stringify(manifest));
+      assert.equal(run('validate', '--project', project).report.status, 'valid');
+      const migrated = run('migrate', '--project', project, '--version', VERSION);
+      assert.equal(migrated.status, 0, migrated.stdout);
+      assert.deepEqual(JSON.parse(fs.readFileSync(manifestPath, 'utf8')).skillPolicy.required, prior29);
+      for (const invalid of [
+        { ...manifest, skillPolicy: { ...manifest.skillPolicy, required: prior29.slice(0, -1) } },
+        { ...manifest, workbenchVersion: 'v9.9.9' },
+        { ...manifest, skillPolicy: { ...manifest.skillPolicy, normalSetup: 'presence-only' } }
+      ]) {
+        fs.writeFileSync(manifestPath, JSON.stringify(invalid));
+        assert.equal(run('validate', '--project', project).report.error?.code, 'invalid-skill-policy');
+      }
+    } finally { fs.rmSync(project, { recursive: true, force: true }); }
+  });
+}
 
 // Exact policies from the independently delivered PR package (6101c237) and
 // paired writing/retro source (1c44487a), before their combined Core delivery.

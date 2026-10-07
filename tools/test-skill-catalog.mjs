@@ -133,7 +133,7 @@ const bundleSize = coreSkills.length;
 const stanceCount = 4;
 const words = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine',
   'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen',
-  'nineteen', 'twenty', 'twenty-one', 'twenty-two', 'twenty-three'];
+  'nineteen', 'twenty', 'twenty-one', 'twenty-two', 'twenty-three', 'twenty-four'];
 const workflowWord = words[bundleSize - stanceCount - coordinationSkills.length];
 assert.ok(workflowWord, `extend the words table to spell ${bundleSize - stanceCount - coordinationSkills.length} workflow skills`);
 for (const [relative, expected] of [

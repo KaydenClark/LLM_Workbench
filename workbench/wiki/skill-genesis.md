@@ -47,7 +47,7 @@ A Template copy is still greenfield: it starts a new identity and does not inher
 1. Keep the founding prompt verbatim, confirm the target is inside the workspace, and classify it as above.
 2. Prepare owner questions from the prompt. Ask only the ones that change something expensive to reverse. A prepared question or a working assumption is never recorded as an owner decision.
 3. Record locked owner decisions, with ADRs for cross-cutting choices. Verify Actuality with the smallest thing that runs, then derive the first scoped Spec from those inputs.
-4. Build the room. On the manual path that means the seven controls, `workbench-layout.mjs init` (lanes, collections, wiki contract, Git branch declaration), `workbench-tools.mjs install` (runtime tools with a receipt), `workbench-skills.mjs install` (the required Core skills in `workbench/skills` with a receipt and the `.agents/skills` and `.claude/skills` links), the filled wiki router and one active first Spec. The fresh-Template path does the equivalent through `derive`.
+4. Build the room. On the manual path that means the seven controls, `workbench-layout.mjs init` (lanes, collections, wiki contract, Git branch declaration), `workbench-tools.mjs install` (runtime tools with a receipt), `workbench-skills.mjs install` (the 30 core skills in `workbench/skills` with a receipt and the `.agents/skills` and `.claude/skills` links), the filled wiki router and one active first Spec. The fresh-Template path does the equivalent through `derive`.
 5. Commit on a `claude/`, `codex/` or `backup/` branch and push it to a private remote. Genesis never infers public visibility or overwrites an existing remote. Create and push the declared integration branch when authorized, or record why not.
 6. Run the room's verification, render, doctor and the readiness gate `validate --project PATH --genesis`, then report the recovery ref and a one-minute demo.
 
@@ -93,3 +93,6 @@ None is claimed. At the pinned `mattpocock/skills@c55ee46` there is no genesis, 
 ## History
 
 - 2026-09-26: Created by S-01G (genesis skill rebuild Spec) TK-00X (Deliver the genesis skill destination Task). The source now classifies the target before writing, installs the skills lane and names the readiness gate. The tool-level refusal is recorded as a remaining gap.
+- 2026-10-07: Core skill count in the manual build step updated from 28 to 29 for the Required Domain Modeling Skill Spec (S-004J), Task TK-00JC (Wiki reconciliation), after `domain-modeling` joined the bundle; no other claim re-verified.
+
+- 2026-10-07: PR #415 integration conflict repair reconciled the combined `domain-modeling` and `pr` bundle count to thirty; prior dated count observations remain history.

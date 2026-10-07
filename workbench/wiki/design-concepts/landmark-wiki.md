@@ -131,6 +131,9 @@ The tools are the [Wiki validator](../../tools/wiki.mjs), the
 
 - 2026-10-04: created by the Wiki Evolving-Synthesis Migration Spec (S-003W), Task TK-004 (landmark synthesis pages), seeded from the cards' current answers.
 - 2026-10-04: corrected after the whole-Wiki lint of the Wiki Evolving-Synthesis Migration Spec (S-003W), Task TK-006P (Wiki wording): the features collection and the move of the per-Spec articles into it are delivered, so the closed item left the Open list. No card answer was changed.
+- 2026-10-07: skills-reference count corrected for the Required Domain Modeling Skill Spec (S-004J), Task TK-00JC (Wiki reconciliation): the lane now holds twenty-nine skills and twenty-seven of them have a `skill-<name>.md` page, checked against the manifest's required list. No card answer was changed.
+
+- 2026-10-07: PR #415 integration conflict repair reconciled the combined `domain-modeling` and `pr` bundle count to thirty; prior dated count observations remain history.
 - 2026-10-07: corrected after the whole-Wiki lint at review of the pr skill adoption Spec (S-002U), Task TK-007V: the skills-reference item no longer states a skill count, because the Core bundle grew past the twenty-seven skills it named; the catalog owns the count. No card answer was changed.
 
 - 2026-10-07: Writing-for-agents Skill Adoption (S-002P) and Retro Skill Adoption (S-002V) routed the skills reference to the current catalog and Wiki router; no card answer or prior PR Skill Adoption (S-002U) review verdict changed.

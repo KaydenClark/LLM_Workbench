@@ -86,12 +86,12 @@ belong to their individual Specs as they are authored.
 - [Adoption](skill-adoption.md) - bring an existing project into the Workbench once
 - [Genesis](skill-genesis.md) - start a new room from a founding prompt
 - [Improve harness](skill-improve-harness.md) - improve one harnessed job through one loop and keep only what earns its cost; the fifteen-skill harness-review family it replaces is its history
+- [Domain Modeling](skill-domain-modeling.md) - challenge terms and trace a name or boundary to the owners it would reach before it settles; separates Matt Pocock's upstream method, the Workbench adapters and the verified behavior and limits
 - [Skills draft wiki](skills-draft/README.md) - the prototype collection, article template and implement-spec and pr drafts describing each skill's connections and evidence limits
 
 ## Planned And Optional Skill References
 
-- [Domain Modeling](skill-domain-modeling.md) - active language challenges and consequence tracing; explains the compact glossary and richer Wiki distinction, with delivery and capture boundaries linked to their owners
-- [Required Domain Modeling Skill (S-004J)](../specs/S-004J-required-domain-modeling-skill/SPEC.md) - maps the skill into every room's skills lane as a required skill, replacing the superseded Domain Modeling Skill for the Workbench Spec (S-002H); until it is delivered, no room's skills lane carries it
+- [Required Domain Modeling Skill (S-004J)](../specs/S-004J-required-domain-modeling-skill/SPEC.md) - maps the skill into every room's skills lane as a required skill, replacing the superseded Domain Modeling Skill for the Workbench Spec (S-002H); the skill now ships in the lane, and the Spec owns its remaining review and acceptance
 
 ## Release And Distribution Routing
 
