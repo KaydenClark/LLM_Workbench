@@ -523,6 +523,7 @@ test('growth rollback records original absence and restores the historical eleve
   try {
     const {backup,receipt}=grow(room);
     const entry=receipt.backups.at(-1);
+    assert.ok(Array.isArray(entry.absent),'update records original absence before installing new names');
     assert.deepEqual(entry.absent.sort(),room.introduced);
     assert.deepEqual(Object.keys(entry.hashes).sort(),entry.files.slice().sort());
     assert.equal(run(installer,'rollback','--project',room.dir,'--backup',backup).report.status,'rolled-back');
@@ -539,7 +540,7 @@ test('growth rollback recovers the recorded legacy nine-backed-up eleven-to-twen
     assertRestoredGeneration(room);
   } finally {room.cleanup();}
 });
-for(const scenario of ['unrecorded','modified-introduced','modified-restored','corrupt-backup','unsafe-backup','inconsistent-absence','missing-unchanged']) {
+for(const scenario of ['unrecorded','modified-introduced','modified-restored','corrupt-backup','unsafe-backup','inconsistent-absence','missing-unchanged','unknown-legacy-source']) {
   test(`growth rollback refuses ${scenario} before any lane writes`,()=>{
     const room=growthRoom();
     try {
@@ -556,6 +557,9 @@ for(const scenario of ['unrecorded','modified-introduced','modified-restored','c
         fs.unlinkSync(path.join(backup,entry.files[0]));fs.symlinkSync(outside,path.join(backup,entry.files[0]));
       } else if(scenario==='inconsistent-absence') {
         entry.absent=[room.originals[0]];fs.writeFileSync(room.receiptFile,JSON.stringify(receipt));
+      } else if(scenario==='unknown-legacy-source') {
+        delete entry.absent;delete entry.hashes;receipt.source.commit='0'.repeat(40);
+        fs.writeFileSync(room.receiptFile,JSON.stringify(receipt));
       } else fs.unlinkSync(path.join(room.lane,room.originals.find(name=>!entry.files.includes(name))));
       const before=laneBytes(room.lane);
       const result=run(installer,'rollback','--project',room.dir,'--backup',backup);
