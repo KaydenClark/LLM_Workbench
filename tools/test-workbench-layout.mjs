@@ -25,7 +25,7 @@ const controls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASK
 // that one attention finding is correctly present in their clean state, and the
 // These rooms also intentionally have no runtime surface: init and updates
 // must not invent one. Its advisory finding is part of their expected report.
-const UNCOMMITTED_ROOM = ['untracked-controls', 'legibility-undeclared'];
+const UNCOMMITTED_ROOM = ['legibility-undeclared', 'untracked-controls'];
 const codesOf = (findings) => (findings ?? []).map((item) => item.code);
 
 function fixture() {
@@ -2707,11 +2707,12 @@ test('room updates preserve the runtime surface declaration and never inject one
         assert.equal(result.status, 0, result.stdout + result.stderr);
         assert.deepEqual(read(), before, `${command} leaves an up-to-date manifest unchanged`);
       }
-      const withoutDdr = read();
-      delete withoutDdr.collections.ddr;
-      fs.writeFileSync(manifestPath, `${JSON.stringify(withoutDdr, null, 2)}\n`);
-      assert.equal(run('migrate', '--project', project).status, 0);
-      assert.deepEqual(read(), before, 'adding the DDR collection restores only that binding');
+      const withoutLandmarks = read();
+      delete withoutLandmarks.collections.landmarks;
+      fs.writeFileSync(manifestPath, `${JSON.stringify(withoutLandmarks, null, 2)}\n`);
+      const migrated = run('migrate', '--project', project);
+      assert.equal(migrated.status, 0, migrated.stdout + migrated.stderr);
+      assert.deepEqual(read(), before, 'adding the landmarks collection restores only that binding');
       assert.deepEqual(read().legibility, legibility, 'updates preserve absent or pending surfaces');
     } finally {
       fs.rmSync(project, { recursive: true, force: true });
