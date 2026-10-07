@@ -6,7 +6,7 @@ knowledge_role: curated
 provenance:
   - The AI Coding Dictionary Terms Spec (S-004E), its Task that writes the dictionary Wiki entries (TK-006B), written from the owner's adopted AI Coding Dictionary term, 2026-10-03
 source_paths:
-  - LEXICON.md
+  - workbench/docs/ddr/001E-the-lexicon-retires-terms-live-in-the-wiki-and-ownership-routes-and-invariants-live-in-architecture-md.md
   - AGENTS.md
   - workbench/wiki/skill-notepad.md
   - workbench/wiki/skill-handoff.md
@@ -23,7 +23,7 @@ Stateful means carrying information forward. The owner adopted the term from the
 
 ## Sources
 
-- [Lexicon](../../LEXICON.md), the row for this term in the AI Coding Terms section: the Workbench meaning.
+- This page is the term's Workbench home: a general AI coding concept stays Wiki-only and needs no [GLOSSARY.md](../../GLOSSARY.md) entry ([the Lexicon retirement decision (DDR-001E)](../docs/ddr/001E-the-lexicon-retires-terms-live-in-the-wiki-and-ownership-routes-and-invariants-live-in-architecture-md.md)).
 - [AI Coding Dictionary entry](https://www.aihero.dev/ai-coding-dictionary/stateful): attribution only. The Workbench restates the meaning in its own words and does not import later upstream edits until the owner adopts them.
 - [AGENTS.md](../../AGENTS.md): Long Session Control.
 - [Stateless](dictionary-stateless.md): the counterpart.

@@ -175,6 +175,45 @@ The owner adopted terms from the AI Coding Dictionary on 2026-10-03. These entri
 - [Non-determinism: why one passing run is not proof](dictionary-non-determinism.md): why verification and repeated trials are required
 - [Automated review: the Review verb, after the Journey](dictionary-automated-review.md): what a separate-context review is, that it reviews Specs, landmarks or the whole Workbench and never a Task, and why it runs on the owner's chosen host
 
+## Workbench Term Dictionary
+
+Lexicon articles: one flat `dictionary-*.md` entry for each [GLOSSARY.md](../../GLOSSARY.md) term that needs more than its canonical definition, carrying the fuller meaning, the neighbouring words, an example in use and the owning sources. Each declares the term it explains in `glossary_term:` and links its glossary entry, which `wiki.mjs validate` checks; none authorizes anything. Batch one covers the glossary's Destination and direction and Workflow verbs groupings.
+
+### Destination and direction
+
+- [Destination Question Card (DQC)](dictionary-destination-question-card.md): one concept's evolving synthesis of grilling questions, and why it is temporary scaffolding with no authority
+- [Landmark](dictionary-landmark.md): the map at its largest scale below the Blueprint, how it nests Specs and Tasks, and how it retires
+- [Landmark Tracker](dictionary-landmark-tracker.md): the generated view of documentation progress, beside the Taskboard and its older step labels
+- [Landmark Wiki page](dictionary-landmark-wiki-page.md): the readable account of a landmark and what a reached landmark retires into
+- [Expected result](dictionary-expected-result.md): what an answer is meant to make durable, distinct from an achieved Result
+- [Design concept](dictionary-design-concept.md): the shared understanding of what the project is, which the Blueprint helps reconstruct
+- [Traverse, don't search](dictionary-traverse-don-t-search.md): reaching context by following links from known entry points, with search only as repair
+- [Map](dictionary-map.md): the direction to a destination at two scales, and the verb that writes it
+- [Decisions so far](dictionary-decisions-so-far.md): the Map's linked index of settled conclusions
+- [Fog](dictionary-fog.md): anticipated work that cannot yet be phrased as a decision question
+- [Frontier](dictionary-frontier.md): the open, unblocked and unclaimed Tasks at the Map's edge
+- [Align](dictionary-align.md): the inquiry, usually grilling, that turns an idea into a shared design concept
+
+### Workflow verbs
+
+- [Workflow](dictionary-workflow.md): a sequence composed from an open set of verbs, and the delivery workflow
+- [Workflow verb](dictionary-workflow-verb.md): one defined action workflows are built from, and what defining one changes
+- [Idea](dictionary-idea.md): the owner's starting thought, recorded as given, and how it differs from Fog
+- [Confirm](dictionary-confirm.md): the owner's agreement to a readback, what it authorizes and how it differs from Approve
+- [Prototype](dictionary-prototype.md): a rough version that answers what words cannot, needing no map
+- [Plan](dictionary-plan.md): slicing the map into Tasks with provable outcomes
+- [Implement](dictionary-implement.md): changing the source of truth or the working project, the Journey's first verb
+- [Check](dictionary-check.md): the building agent's deterministic verifications, with no judgement in them
+- [QA](dictionary-qa.md): the building agent's self-judgement of its own Task, not Human QA and not a Review
+- [Submit](dictionary-submit.md): handing a Task back through its merge request with its two merge answers
+- [Review](dictionary-review.md): judging a completed destination against its Map after the Journey, never a single Task
+- [Verify](dictionary-verify.md): confirming the work once it is integrated and has passed Review
+- [Journey](dictionary-journey.md): Implement, Check, QA and Submit, the build loop of one Task
+- [Approve](dictionary-approve.md): the owner's Human QA judgment that delivered work is viable, or the send-back
+- [Delivered](dictionary-delivered.md): approved work on main, and why the verb is not Complete
+- [Clean Up](dictionary-clean-up.md): clearing the scaffolding once its knowledge is kept
+- [Writer verb](dictionary-writer-verb.md): the verb at which a claim is written, read through its Governance Plane
+
 ## Roles And Stances
 
 - [Roles and stances](design-concepts/roles-and-stances.md) - scope versus job, and the route to each separately owned capability

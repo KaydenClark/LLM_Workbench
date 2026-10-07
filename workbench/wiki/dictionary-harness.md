@@ -6,7 +6,7 @@ knowledge_role: curated
 provenance:
   - The AI Coding Dictionary Terms Spec (S-004E), its Task that writes the dictionary Wiki entries (TK-006B), written from the owner's adopted AI Coding Dictionary term, 2026-10-03
 source_paths:
-  - LEXICON.md
+  - workbench/docs/ddr/001E-the-lexicon-retires-terms-live-in-the-wiki-and-ownership-routes-and-invariants-live-in-architecture-md.md
   - workbench/docs/ddr/000T-the-workbench-is-an-agentic-management-system-not-a-harness.md
   - workbench/docs/adr/000W-contract-carriers-are-briefs-that-point-to-skills-and-authority-flows-through-the-pointer.md
   - AGENTS.md
@@ -22,11 +22,11 @@ A harness is everything wrapped around a model to make it an agent: the tools it
 
 **Where the Workbench depends on it.** `AGENTS.md` and its host adapter `CLAUDE.md` are instructions to the harness, not to the model; the Contract carriers decision keeps `AGENTS.md` short because the harness loads it every turn. Skills reach an agent through the harness's own skill discovery, and permission settings are the harness's. When the same model behaves differently under two products, or differently from yesterday, suspect the harness before the model: a changed system prompt, tool set, permission default or context-management strategy all change behavior with no change to the model.
 
-**Neighbouring words.** In the Lexicon, "host" means the harness where it names software (a Chat's host, a host adapter) and the machine where it names a machine (Host portability). Names that carry the word stay as they are until the owner renames them: the `update-harness` skill, `HARNESS_FEEDBACK.md`, the version stamp placeholder. Two accepted architecture records, on evidence for outcome claims and on an unavailable baseline for a harness-only change, still use "harness" for the Workbench itself; the harness decision records that as not yet dispositioned.
+**Neighbouring words.** In Workbench vocabulary, "host" means the harness where it names software (a Chat's host, a host adapter) and the machine where it names a machine (Host portability). Names that carry the word stay as they are until the owner renames them: the `update-harness` skill, `HARNESS_FEEDBACK.md`, the version stamp placeholder. Two accepted architecture records, on evidence for outcome claims and on an unavailable baseline for a harness-only change, still use "harness" for the Workbench itself; the harness decision records that as not yet dispositioned.
 
 ## Sources
 
-- [Lexicon](../../LEXICON.md), the row for this term in the AI Coding Terms section: the Workbench meaning.
+- This page is the term's Workbench home: a general AI coding concept stays Wiki-only and needs no [GLOSSARY.md](../../GLOSSARY.md) entry ([the Lexicon retirement decision (DDR-001E)](../docs/ddr/001E-the-lexicon-retires-terms-live-in-the-wiki-and-ownership-routes-and-invariants-live-in-architecture-md.md)).
 - [AI Coding Dictionary entry](https://www.aihero.dev/ai-coding-dictionary/harness): attribution only. The Workbench restates the meaning in its own words and does not import later upstream edits until the owner adopts them.
 - [The workbench is an agentic management system, not a harness (the harness decision)](../docs/ddr/000T-the-workbench-is-an-agentic-management-system-not-a-harness.md): the owner's locked answer and reasons.
 - [Contract carriers are briefs that point to skills (the Contract carriers decision)](../docs/adr/000W-contract-carriers-are-briefs-that-point-to-skills-and-authority-flows-through-the-pointer.md): `AGENTS.md` as the file the harness loads.

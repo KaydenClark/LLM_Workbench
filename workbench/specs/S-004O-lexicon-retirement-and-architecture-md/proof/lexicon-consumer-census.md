@@ -21,10 +21,11 @@ Two inventories, one per carrier, scaffolded with `node tools/check-carrier-land
 - **restates-owner**: root AI Coding Terms intro lines whose claims the Wiki memory router already holds (its adoption date, the delivering Spec and "in Workbench words"). Each `landedText` is present in `workbench/wiki/MEMORY.md` now.
 - **retired-with-reason**: Lexicon file metadata and its 2026-10-03 review-scope note, Markdown table headers and rules of the term tables, the Lexicon row (it defines the retiring file itself) and the TASK pointer row in Stance Terms. Each carries its reason.
 
-Two optional fields, ignored by the landing check, carry routing for later Tasks:
+Three optional fields, ignored by the landing check, carry routing for later Tasks:
 
 - `explanationHome` on glossary entries names the Wiki lexicon article that keeps the row's fuller Distinction text, owner quotes and decision links (TK-009D). The landing check proves only `landedText`; the Distinction column is not machine-proven to land, so TK-009D carries it by this field.
 - `aliasOf` on an `_Avoid_` entry names the glossary term the alias sits under.
+- `explanationText` (TK-009D onward) on a glossary entry is the row's Distinction text as it lands in its `explanationHome` article: verbatim, except that links are re-based to the article's directory and a self-reference to a Lexicon "row" names an "entry". `tools/test-wiki.mjs` proves each one lands, normalized, in an article that declares the entry's term as its `glossary_term` and is routed from Wiki `MEMORY.md`.
 
 All `landedText` values for homes that do not exist yet are planned text: the Task that writes the home may refine the wording and must update the entry to match, without changing what any term means.
 

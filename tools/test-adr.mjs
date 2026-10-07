@@ -860,7 +860,7 @@ function workflowCorpus() {
       assert.ok(record, `missing ADR-${id}`);
       return [id, { ...record, body: record.body.split('\n## Historical proposal')[0] }];
     })),
-    controls: new Map(['LEXICON.md', 'GLOSSARY.md', 'AGENTS.md', 'RUNBOOK.md', 'BLUEPRINT.md'].map(file => [file, fs.readFileSync(path.join(root, file), 'utf8')]))
+    controls: new Map(['LEXICON.md', 'GLOSSARY.md', 'AGENTS.md', 'RUNBOOK.md', 'BLUEPRINT.md', 'workbench/wiki/dictionary-design-concept.md'].map(file => [file, fs.readFileSync(path.join(root, file), 'utf8')]))
   };
 }
 
@@ -908,17 +908,18 @@ function assertWorkflowMeaning(corpus) {
   requires(h, /Task's destination is a Spec's acceptance lines, or a Wiki page when the Task's own destination is producing that page/, 'the Wiki-page destination serves a Task that produces the page');
   const lexicon = controls.get('LEXICON.md');
   // S-004O TK-009C: these Lexicon rows carry Distinction text beyond the
-  // glossary definition; they move with TK-009D and TK-009F.
+  // glossary definition; they move with TK-009I and TK-009F.
   for (const [term, pattern] of [
     // S-004F TK-005V: the Wiki is evidence, never the destination a packet carries, so no corrective Wiki-claim member.
-    ['Destination Packet', /Spec acceptance lines it satisfies, the Task[\s\S]*never the destination a packet carries/],
-    ['Design concept', /exists between participants/]
+    ['Destination Packet', /Spec acceptance lines it satisfies, the Task[\s\S]*never the destination a packet carries/]
   ]) {
     const row = lexicon.split('\n').find(line => line.startsWith(`| **${term}** |`));
     assert.ok(row, `Lexicon defines ${term}`);
     requires(row, pattern, `Lexicon meaning of ${term}`);
     if (term === 'Destination Packet') assert.doesNotMatch(row, /reconciled Wiki claim/, 'the Destination Packet row names no corrective Wiki-claim member');
   }
+  // S-004O TK-009D: the Design concept Distinction lives in its Wiki lexicon article.
+  requires(controls.get('workbench/wiki/dictionary-design-concept.md'), /exists between participants/, 'Wiki meaning of Design concept');
   // S-004O TK-009C: the decision vocabulary's definitions live in the glossary.
   const glossary = controls.get('GLOSSARY.md').split('\n');
   for (const [term, pattern] of [
@@ -995,6 +996,7 @@ test('workflow checks reject substantive and literal-route mutations with accept
     ['Context Map route', 'LEXICON.md', '(RUNBOOK.md#operations-index)', '(MISSING-RUNBOOK.md#operations-index)'],
     ['Context Map heading', 'LEXICON.md', '(#artifact-ownership-schema)', '(#missing-owner-heading)'],
     ['Packet regains a corrective Wiki claim', 'LEXICON.md', 'Spec acceptance lines it satisfies, the Task', 'Spec acceptance lines it satisfies or the reconciled Wiki claim for corrective work, the Task'],
+    ['Design concept article loses its distinction', 'workbench/wiki/dictionary-design-concept.md', 'It exists between participants.', 'It exists in the Blueprint.'],
     ['glossary Task loses its repair destination', 'GLOSSARY.md', 'slice that reaches or repairs a destination', 'slice that reaches a destination'],
     ['operational owner claim', 'AGENTS.md', 'Dispatcher owns whole-Spec QA', 'Worker owns whole-Spec QA']
   ]) {

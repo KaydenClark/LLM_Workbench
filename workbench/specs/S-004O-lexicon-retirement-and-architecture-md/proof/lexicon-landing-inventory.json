@@ -1020,7 +1020,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Destination Question Card (DQC)**: A structured, evolving synthesis of related grilling questions about a concept, preserving understanding, unresolved matters, changes, expected results, source lineage and evidence-bearing alignment assessments.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-destination-question-card.md"
+      "explanationHome": "workbench/wiki/dictionary-destination-question-card.md",
+      "explanationText": "It may exist before a landmark, Spec, Task or known Wiki destination. It is not each individual interview prompt and does not grant authority. It is temporary concept scaffolding: removal requires verified reconciliation of useful understanding, corrections, rationale and lineage into durable owners, with unresolved obligations and live references preserved; a Verified label alone is insufficient."
     },
     {
       "line": 142,
@@ -1030,7 +1031,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Landmark**: A direction toward the destination at the largest scale below the Blueprint: a `LANDMARK.md` artifact, PRD-shaped like a Spec but much bigger, saying where the work goes and what success looks like.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-landmark.md"
+      "explanationHome": "workbench/wiki/dictionary-landmark.md",
+      "explanationText": "Landmarks and Specs are the map at different scales; Tasks are the steps. A landmark forms when groupings appear in the DQCs and DDRs, parents Specs (nested in its `specs` folder) and may hold Tasks directly (in its `tasks` folder), and retires into its Landmark Wiki page once reached and all its children are done. A Spec or DDR has at most one landmark, otherwise it sits under the Blueprint. A landmark is a lane, not a branch, reviewed one size above a Spec. Its statuses are `planned`, `active` and `reached`, and its identifier prefix is `LMK-`. The JSON landmark records in the Landmark Tracker remain until their migration into question cards ([ADR-000U](../docs/adr/000U-landmarks-are-landmark-md-artifacts-one-size-above-specs.md); [the Landmarks article](design-concepts/landmarks-one-size-above-specs.md))."
     },
     {
       "line": 143,
@@ -1040,7 +1042,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Landmark Tracker**: The documentation and alignment view generated from DQCs, landmarks and related source evidence, displaying relationships and distributions across documentation workflow steps.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-landmark-tracker.md"
+      "explanationHome": "workbench/wiki/dictionary-landmark-tracker.md",
+      "explanationText": "Tracker monitors documenting; Taskboard monitors implementation. It replaces neither source records nor existing artifacts, and is not a manually assigned card stage or a source of authority. The installed view still prints Idea, Aligning, Confirmed, Mapped, Planned, Journey, Review and Verified; these evidence-assessed distributions describe documentation progress, not effort, Task state or runtime availability. The delivery workflow reads Idea, Align, Confirm, Map, Plan, Journey, Review, Verify, Approve, Delivered, Clean Up, and Journey is Implement, Check, QA and Submit; the installed labels await migration."
     },
     {
       "line": 144,
@@ -1050,7 +1053,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Landmark Wiki page**: The landmark's evolving synthesis page: a coherent, human-readable Markdown summary of what its question cards add up to, updated whenever a card changes.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-landmark-wiki-page.md"
+      "explanationHome": "workbench/wiki/dictionary-landmark-wiki-page.md",
+      "explanationText": "Its raw source is the landmark's `LANDMARK.md`, which it describes as the landmark currently is without being the same document; a reached landmark retires into it, and the page's `source_paths` names the landmark's historical route ([ADR-000U](../docs/adr/000U-landmarks-are-landmark-md-artifacts-one-size-above-specs.md)). Several Specs may contribute to one article. Identifiers appear only with the artifact's name and context. The structured records keep lineage and state; the page keeps the readable account; its claims remain subject to existing ownership and authority rules ([ADR-000R](../docs/adr/000R-the-wiki-is-the-evolving-synthesis-every-agent-reads-and-updates.md))."
     },
     {
       "line": 145,
@@ -1060,7 +1064,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Expected result**: The intended change or knowledge to become durable once a question is answered, naming the destination when known.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-expected-result.md"
+      "explanationHome": "workbench/wiki/dictionary-expected-result.md",
+      "explanationText": "Result describes achieved delivery, separately from intended Expected result; neither a Result field nor a completed Task establishes Verified. An unanswered question need not have an expected answer or a predetermined destination. These meanings do not establish that a room exposes a Result-writing operation."
     },
     {
       "line": 146,
@@ -1070,7 +1075,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Design concept**: The shared understanding between the parties working on a project about what that project is.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-design-concept.md"
+      "explanationHome": "workbench/wiki/dictionary-design-concept.md",
+      "explanationText": "It exists between participants. `BLUEPRINT.md` helps them reconstruct it but is not itself the design concept."
     },
     {
       "line": 147,
@@ -1080,7 +1086,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Traverse, don't search**: The core Workbench navigation principle: reach task-relevant context by following links from known entry points to its owners.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-traverse-don-t-search.md"
+      "explanationHome": "workbench/wiki/dictionary-traverse-don-t-search.md",
+      "explanationText": "Bounded search repairs missing routes or investigates the selected source area; broad rediscovery is not ordinary entry. `AGENTS.md` owns the behavior."
     },
     {
       "line": 148,
@@ -1090,7 +1097,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Map**: The direction to a destination, at two scales: a landmark and a Spec are each a map, and Tasks are the steps taken on it; a low-resolution view around a destination shows decisions so far, Fog and out-of-scope work. As a workflow verb, Map is writing the direction to a destination: landmarks, Specs and decision records.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-map.md"
+      "explanationHome": "workbench/wiki/dictionary-map.md",
+      "explanationText": "It links to the artifacts that own the detail rather than creating a second file or truth store; it is distinct from the project-wide Context Map. The landmark, Spec and Task folder path carries every parent ([ADR-000U](../docs/adr/000U-landmarks-are-landmark-md-artifacts-one-size-above-specs.md)). One entry serves the noun and the verb because the verb is writing the noun."
     },
     {
       "line": 149,
@@ -1100,7 +1108,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Decisions so far**: The Map's concise index of conclusions, linked to their current owners and evidence.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-decisions-so-far.md"
+      "explanationHome": "workbench/wiki/dictionary-decisions-so-far.md",
+      "explanationText": "Durable reasoning remains in its owning artifact; the Map does not copy it."
     },
     {
       "line": 150,
@@ -1110,7 +1119,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Fog**: Anticipated work toward a destination that cannot yet be stated as a precise decision question.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-fog.md"
+      "explanationHome": "workbench/wiki/dictionary-fog.md",
+      "explanationText": "It becomes plannable when the question can be phrased, not only when its answer is known. Deliberately excluded work stays out of scope."
     },
     {
       "line": 151,
@@ -1120,7 +1130,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Frontier**: The open, unblocked and unclaimed Tasks at the edge of the current Map.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-frontier.md"
+      "explanationHome": "workbench/wiki/dictionary-frontier.md",
+      "explanationText": "Taskboard projects implementation work across Specs; Landmark Tracker separately shows evolving documentation and understanding. Neither view authors the source state."
     },
     {
       "line": 152,
@@ -1130,7 +1141,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Align**: The inquiry, usually grilling, in which an idea becomes a design concept the owner and the agents share.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-align.md"
+      "explanationHome": "workbench/wiki/dictionary-align.md",
+      "explanationText": "Grilling supports that inquiry; Confirm is the owner's agreement to the readback that closes it, and what that agreement authorizes is in the Confirm entry."
     },
     {
       "line": 153,
@@ -1140,7 +1152,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Workflow**: Workflows are composed from workflow verbs, and the verb set stays open. The delivery workflow reads Idea, Align, Confirm, Map, Plan, Journey, Review, Verify, Approve, Delivered, Clean Up.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-workflow.md"
+      "explanationHome": "workbench/wiki/dictionary-workflow.md",
+      "explanationText": "The owner: \"We shouldnt need to Lock in a list. We lock in verbs. We use verbs to create workflows.\" The first eight verbs were the first standardization, and the owner has since added more: \"why cant we add more workflow verbs? They are verbs.\" A verb can be passed through: when there is nothing to map, Confirm goes to Plan, and when everything is good, Review and Verify write nothing beyond saying so ([the workflow verbs decision](../docs/adr/000X-the-workflow-is-eight-verbs-and-each-verb-writes-the-plane-its-claims-live-on.md)). A failed Review returns to Map, Plan and Journey before Verify; a send-back at Approve returns to Align."
     },
     {
       "line": 154,
@@ -1150,7 +1163,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Workflow verb**: A defined action or process that workflows are built from and that people use in ordinary language; each verb has its own glossary entry.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-workflow-verb.md"
+      "explanationHome": "workbench/wiki/dictionary-workflow-verb.md",
+      "explanationText": "The owner's words: \"A workflow verb is an defined action/process that we can use to create workflows and actually use in regular language. And yes, one row per verb\". A verb's entry defines a meaning; it changes no command, status, folder or gate."
     },
     {
       "line": 155,
@@ -1160,7 +1174,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Idea**: The owner's starting thought, recorded as given, before any alignment.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-idea.md"
+      "explanationHome": "workbench/wiki/dictionary-idea.md",
+      "explanationText": "Not Fog: Fog is anticipated work toward a destination that cannot yet be stated as a precise decision question. The owner's note: \"Between idea and Align is the Fog of war mentioned in the Wayfind Skill.\""
     },
     {
       "line": 156,
@@ -1170,7 +1185,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Confirm**: The owner's agreement to a readback that names the concept, its direction, cost, reason and what will be created. It authorizes the agents to carry the concept to its endpoint.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-confirm.md"
+      "explanationHome": "workbench/wiki/dictionary-confirm.md",
+      "explanationText": "A claim moves from Intent to Enduring Context only by the owner's confirmation of its readback, in a grilling session or ordinary conversation, for one answer or a batch; an agent's recommendation is intent too, and the owner's yes confirms it as written. A review surface whose items carry their own Confirm button is the one place the confirmation is that button rather than a chat reply. Once the owner confirms a concept, the agents are authorized to carry it to its endpoint, unless the confirmation names a nearer one ([the confirmation decision](../docs/ddr/000C-confirming-a-concept-authorizes-the-agents-to-carry-it-to-its-endpoint.md)). The Confirmed label the Landmark Tracker prints for a question card is evidence of understanding and, as `AGENTS.md` says, grants no authority by itself; the verb is the owner's agreement to a readback. Whether `AGENTS.md`'s sentence should say so would change a rule's meaning, which the Contract carrier rewrite, a relocation, did not do; it stays open for its own decision. Approve is the owner's later judgment of delivered work."
     },
     {
       "line": 157,
@@ -1180,7 +1196,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Prototype**: Building a rough version to answer a question words cannot. Optional; it needs no map and lands nothing in enduring context.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-prototype.md"
+      "explanationHome": "workbench/wiki/dictionary-prototype.md",
+      "explanationText": "It comes before Confirm or between Confirm and Plan ([the prototype decision](../docs/ddr/000D-prototype-needs-no-map-and-lands-nothing-in-enduring-context.md)). The `prototype` skill carries the method."
     },
     {
       "line": 158,
@@ -1190,7 +1207,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Plan**: The slicing of Map into bounded, executable, planned units of work with provable outcomes and results.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-plan.md"
+      "explanationHome": "workbench/wiki/dictionary-plan.md",
+      "explanationText": "Tasks are written at Plan, through the `to-tasks` skill. When there is nothing to map, Confirm goes to Plan."
     },
     {
       "line": 159,
@@ -1200,7 +1218,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Implement**: Changing the source of truth, or what the project is working on.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-implement.md"
+      "explanationHome": "workbench/wiki/dictionary-implement.md",
+      "explanationText": "The first verb of the Journey. What it writes, Canon or Actuality, is in the Writer verb entry."
     },
     {
       "line": 160,
@@ -1210,7 +1229,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Check**: The deterministic verifications the building agent runs in the environment on its own Task: tests, builds, lints and diagnostics.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-check.md"
+      "explanationHome": "workbench/wiki/dictionary-check.md",
+      "explanationText": "The owner: \"Check's are deterministic verifications that runs in the environment.\" It is an Automated check, with no judgement in it; QA follows. Worker self-check names Check and QA together from the Worker's side."
     },
     {
       "line": 161,
@@ -1220,7 +1240,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**QA**: The building agent's self-judgement of its own Task: whether the work actually does what the Task asked, beyond what Check can prove.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-qa.md"
+      "explanationHome": "workbench/wiki/dictionary-qa.md",
+      "explanationText": "The owner: \"the QA is a self judgement check on the work.\" It comes after Check and before Submit. It is not Human QA, the owner's evaluation of delivered work, and not a Review, which is another agent's judgement."
     },
     {
       "line": 162,
@@ -1230,7 +1251,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Submit**: Handing a Task back through its merge request into its parent branch, carrying its merge answers: can this merge into the branch it targets, and did it complete the Task or is a new one needed.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-submit.md"
+      "explanationHome": "workbench/wiki/dictionary-submit.md",
+      "explanationText": "The last verb of the Journey for that Task. The Spec's Dispatcher, Director or next agent validates the answers and merges when the merge is green; a Task gets no Review ([the rule](../../AGENTS.md#task-merge-answers-and-verify-review))."
     },
     {
       "line": 163,
@@ -1240,7 +1262,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Review**: The judgement, after the Journey is over, of a completed destination against its Map by an agent that did not build it. It decides whether another Journey is needed.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-review.md"
+      "explanationHome": "workbench/wiki/dictionary-review.md",
+      "explanationText": "An Automated review; more in the [Wiki dictionary](dictionary-automated-review.md). Not Human review. Independent review of an assembled Spec at its Verify step is required by `AGENTS.md` [Git Rules](../../AGENTS.md#git-rules); the [Runbook operations index](../../RUNBOOK.md#operations-index) row for reviewing a candidate independently points to the [`code-review` skill](../skills/code-review/SKILL.md#independent-review-boundaries) that prepares, records and checks it; this entry says what counts as one."
     },
     {
       "line": 164,
@@ -1250,7 +1273,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Verify**: Confirming the work once it has merged to integration and passed Review.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-verify.md"
+      "explanationHome": "workbench/wiki/dictionary-verify.md",
+      "explanationText": "A failed Review goes back to Map, Plan and Journey before the work can be verified. `AGENTS.md`'s closure sequence also has a verification on main, after owner approval; this entry gives the verb's own meaning and changes neither."
     },
     {
       "line": 165,
@@ -1260,7 +1284,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Journey**: Journey is Implement, Check, QA and Submit. Map and Plan come before it; Review comes after it and decides whether another Journey is needed.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-journey.md"
+      "explanationHome": "workbench/wiki/dictionary-journey.md",
+      "explanationText": "The owner, 2026-10-05: \"We are adding a self evaluation and submit step between Check and Review... the review is after the Journey is over. It is the deciding factor in if we need to start another Journey.\" It replaces the 2026-10-03 loop, which kept Review and Verify inside the Journey and had itself taken Map and Plan out of it; [the workflow verbs decision](../docs/adr/000X-the-workflow-is-eight-verbs-and-each-verb-writes-the-plane-its-claims-live-on.md) carries both amendments. It is the loop-level name, not a stage a card can sit at."
     },
     {
       "line": 166,
@@ -1270,7 +1295,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Approve**: The owner's Human QA judgment that the delivered result is viable; the alternative is sending it back.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-approve.md"
+      "explanationHome": "workbench/wiki/dictionary-approve.md",
+      "explanationText": "The `approve` command records that judgment against integration content; Human QA is the owner-led evaluation that leads to it. Sending it back returns to Align and delivery at the implicated scope, as the Human QA entry says."
     },
     {
       "line": 167,
@@ -1280,7 +1306,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Delivered**: The verb is Delivered, not Complete: the owner's approved work is on main and the concept is delivered.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-delivered.md"
+      "explanationHome": "workbench/wiki/dictionary-delivered.md",
+      "explanationText": "The owner: \"Let's change this to Delivered\", and \"It would be complete. we have to say delivered to define it.\" The `complete` command and status keep their names. Two nearby uses are earlier and different: the `S-###:delivered` blocker qualifier is satisfied by a reviewed PASS contained in integration, and `AGENTS.md` calls that stage reviewed delivery on integration; both come before owner approval and main. Renaming the qualifier changes a public contract and is the owner's call."
     },
     {
       "line": 168,
@@ -1290,7 +1317,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Clean Up**: Clearing away the scaffolding once its knowledge is kept.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-clean-up.md"
+      "explanationHome": "workbench/wiki/dictionary-clean-up.md",
+      "explanationText": "Scaffolding names what is cleared ([the scaffolding decision](../docs/ddr/000M-working-artifacts-are-scaffolding-cleared-away-once-their-knowledge-is-kept.md)); the Retired entry is the staging place, and `retire-spec` and `discard` carry it out for Specs and Tasks."
     },
     {
       "line": 169,
@@ -1300,7 +1328,8 @@
       "homePath": "GLOSSARY.md",
       "landedText": "**Writer verb**: The workflow verb at which a claim is written, found by viewing the claim through its Governance Plane.",
       "reason": null,
-      "explanationHome": "workbench/wiki/dictionary-writer-verb.md"
+      "explanationHome": "workbench/wiki/dictionary-writer-verb.md",
+      "explanationText": "The owner assigned planes to the first eight verbs only; Prototype, Check, Journey, Approve, Delivered and Clean Up have none assigned. Applied claim by claim, not black and white. Landmarks, Specs and Tasks are architecture artifacts and transient scaffolding, so they need only confirmed enduring context and not the whole process; the Blueprint is a durable routing artifact and goes through the verbs, not through a Spec and Tasks ([ADR-000X](../docs/adr/000X-the-workflow-is-eight-verbs-and-each-verb-writes-the-plane-its-claims-live-on.md))."
     },
     {
       "line": 170,
