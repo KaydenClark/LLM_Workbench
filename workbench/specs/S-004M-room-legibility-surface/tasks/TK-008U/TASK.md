@@ -17,3 +17,9 @@ Register `legibility-undeclared` and `legibility-unconfirmed` in `workbench/tool
 ## Boundaries
 
 No Genesis or adoption change, no Runbook or AGENTS line (the Runbook's installed-state paragraph stays as written; the code list lives in the skill).
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | codex/s004m-tk008u-cloud | 6049f79af3c7c0515c1aabab6873f881ca254725 | none | 0 | Red 5a1974a5: missing legibility diagnostic, expected failure. Green focused doctor case at 35ab07ba; diagnostics 37/37, layout 82/82. Full Runbook suite: all other commands pass, append-only regression still running after 240s timeout; tools 34/34 with umask022, landmark79/79 with isolated TMPDIR outside sandbox. Guardrails73/100 pre/post; self-drift21 unchanged findings; Wiki validation passes. | Runtime diagnostics skill and existing manifest feature article updated; touched-page semantic lint and Wiki validation pass. | Append-only regression suite pending; Task closure and assembly merge wait for it. Whole Spec setup drafting, dedicated article, QA and owner gates remain. | 5cc62bce4705b1be2371e3a59559fe52d44b38c735bb0871033bbb20a9306d15 |
