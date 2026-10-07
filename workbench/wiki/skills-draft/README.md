@@ -87,7 +87,7 @@ Carry work from an idea to a merged change: specify, cut Tasks, implement, revie
 | spec-planner | core | S-002F (spec planner stance) | none |
 | spec-manager | core | S-002G (spec manager stance) | none (nearest implement-spec) |
 | [implement-spec](main-workflow/implement-spec.md) | core lane, Workbench-only maintainer | S-002T (implement spec skill adoption) | implement-spec |
-| pr | new | S-002U (pr skill adoption) | pr |
+| [pr](main-workflow/pr.md) | core lane, owner-approved required Core | S-002U (pr skill adoption) | pr |
 | [retro](main-workflow/retro.md) | core | S-002V (retro skill adoption) | retro |
 
 ## shaping

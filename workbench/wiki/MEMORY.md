@@ -86,7 +86,7 @@ belong to their individual Specs as they are authored.
 - [Adoption](skill-adoption.md) - bring an existing project into the Workbench once
 - [Genesis](skill-genesis.md) - start a new room from a founding prompt
 - [Improve harness](skill-improve-harness.md) - improve one harnessed job through one loop and keep only what earns its cost; the fifteen-skill harness-review family it replaces is its history
-- [Skills draft wiki](skills-draft/README.md) - the prototype collection, article template and implement-spec draft describing each skill's connections and evidence limits
+- [Skills draft wiki](skills-draft/README.md) - the prototype collection, article template and implement-spec and pr drafts describing each skill's connections and evidence limits
 
 ## Planned And Optional Skill References
 

@@ -11,25 +11,31 @@ const archivedSkillsRoot = path.join(root, 'skills-archive', 'optional-active-20
 import { coordinationSkills, coreSkills as runtimeCoreSkills } from '../workbench/tools/workbench-layout.mjs';
 import { readMaintainerSkills } from './maintainer-skills.mjs';
 const coreSkills = [...runtimeCoreSkills].sort();
-// Owner-directed adoption: these references must travel with every room.
-for (const name of ['writing-for-agents', 'retro']) {
-  assert.ok(coreSkills.includes(name), `${name} must ship in the required Core bundle`);
-}
-
 const read = (relative) => fs.readFileSync(path.join(root, relative), 'utf8');
-// Owner correction: these are pinned upstream imports, not rewrites. Ignore
-// checkout line endings and the final newline, preserving every instruction.
+// S-002U TK-007V: the owner made `pr` required in every Workbench on
+// 2026-10-06, so it must ship in the runtime Core list and the manifest policy.
+for (const name of ['pr', 'writing-for-agents', 'retro']) {
+  assert.ok(coreSkills.includes(name), `${name} must ship in the required Core bundle`);
+  assert.ok(JSON.parse(read('workbench/manifest.json')).skillPolicy.required.includes(name),
+    `${name} must be declared in workbench/manifest.json skillPolicy.required`);
+}
+// S-002U TK-007U: pinned upstream imports, not rewrites. Each hash is the
+// pinned upstream text with checkout line endings and the final newline
+// ignored, so any instruction drift fails here.
 const importedSourceHashes = {
   'writing-for-agents/SKILL.md': '482e371e48efc2dbb401aef7d124467f523c52b2bf9c486dedf60e2f48a7ce98',
   'writing-for-agents/SKILL-MECHANICS.md': 'eec74bac6af1f45dee949ef6f08fcfd620f72f8de826753b4362de5e4de2e3b1',
   'retro/SKILL.md': 'cae07b01608af94484df262dd9abdd87a144ec721392c30c051c999d814ee24d',
+  // mattpocock/skills skills/engineering/pr/SKILL.md @ d81f3a183412e71a5b1e84ca21bc1a35eea03a60
+  'pr/SKILL.md': 'bb2f9427da7c83ec95abf1207380c19d726d6d8c933f6d0314cb14e84c3e998b',
 };
 for (const [name, expectedHash] of Object.entries(importedSourceHashes)) {
-  const source = read(`workbench/skills/${name}`).replaceAll('\r\n', '\n').replace(/\n+$/, '');
+  const relative = `workbench/skills/${name}`;
+  assert.ok(fs.existsSync(path.join(root, relative)), `${relative} must carry the pinned upstream source`);
+  const source = read(relative).replaceAll('\r\n', '\n').replace(/\n+$/, '');
   assert.equal(createHash('sha256').update(source).digest('hex'), expectedHash,
-    `${name} must preserve the pinned upstream text with only the declared loading adapter`);
+    `${name} must preserve the pinned upstream text with only the declared adapter`);
 }
-
 const assertIncludesAll = (content, requiredTerms, label) => {
   for (const term of requiredTerms) {
     assert.ok(content.includes(term), `${label} must use ${term}`);
@@ -127,8 +133,9 @@ const bundleSize = coreSkills.length;
 const stanceCount = 4;
 const words = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine',
   'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen',
-  'nineteen', 'twenty', 'twenty-one', 'twenty-two'];
+  'nineteen', 'twenty', 'twenty-one', 'twenty-two', 'twenty-three'];
 const workflowWord = words[bundleSize - stanceCount - coordinationSkills.length];
+assert.ok(workflowWord, `extend the words table to spell ${bundleSize - stanceCount - coordinationSkills.length} workflow skills`);
 for (const [relative, expected] of [
   ['workbench/skills/README.md', [`closed ${bundleSize}-skill bundle`, `${workflowWord} workflow skills`,
     `${words[coordinationSkills.length]} coordination skills`, 'four portable stances']],

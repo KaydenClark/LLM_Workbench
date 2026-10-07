@@ -1,0 +1,68 @@
+== AFTER: 6dbec705 tree as committed ==
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: live discovery source must contain exactly the locked 28 skills and the 4 declared maintainer skills
++ actual - expected
+... Skipped lines
+
+  [
+    'adoption',
+    'auditor',
+    'builder',
+    'carry',
+...
+    'notepad',
++   'pr',
+    'promote',
+    'reconciler',
+    'reviewer',
+    'save',
+    'spec-manager',
+
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: [
+    'adoption',          'auditor',
+    'builder',           'carry',
+    'checkpoint',        'code-review',
+    'director',          'dispatcher',
+    'genesis',           'grill-me',
+    'grilling',          'handoff',
+    'implement',         'implement-spec',
+    'improve-harness',   'make-it-so',
+    'notepad',           'pr',
+    'promote',           'reconciler',
+    'reviewer',          'save',
+    'spec-manager',      'spec-planner',
+    'to-docs',           'to-spec',
+    'to-tasks',          'tracer-bullet',
+    'update-harness',    'workbench-evaluation',
+    'workbench-release', 'workbench-room-checks',
+    'workbench-runtime'
+  ],
+  expected: [
+    'adoption',              'auditor',
+    'builder',               'carry',
+    'checkpoint',            'code-review',
+    'director',              'dispatcher',
+    'genesis',               'grill-me',
+    'grilling',              'handoff',
+    'implement',             'implement-spec',
+    'improve-harness',       'make-it-so',
+    'notepad',               'promote',
+    'reconciler',            'reviewer',
+    'save',                  'spec-manager',
+    'spec-planner',          'to-docs',
+    'to-spec',               'to-tasks',
+    'tracer-bullet',         'update-harness',
+    'workbench-evaluation',  'workbench-release',
+    'workbench-room-checks', 'workbench-runtime'
+  ],
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v26.3.0
+exit=1

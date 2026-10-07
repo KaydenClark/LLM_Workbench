@@ -274,9 +274,9 @@ test('a six-lane schema 2 manifest gains the skills lane through migrate, after 
     // v3.2.1's frozen twenty-one, without the `grill-me` S-00Z grew the live
     // bundle with, the coordination entries that grew it after, or the
     // `workbench-runtime` entry S-004C TK-005J added or the `improve-harness`
-    // entry S-004L TK-008L added. The provider-home shape
-    // validates only with a stamped row.
-    manifest.skillPolicy = { ...manifest.skillPolicy, required: manifest.skillPolicy.required.filter((name) => !['grill-me', 'workbench-runtime', 'improve-harness', 'writing-for-agents', 'retro'].includes(name) && !coordinationSkills.includes(name)), normalSetup: 'presence-only', updates: 'explicit-only' };
+    // entry S-004L TK-008L added, or the `pr` entry S-002U TK-007V added. The
+    // provider-home shape validates only with a stamped row.
+    manifest.skillPolicy = { ...manifest.skillPolicy, required: manifest.skillPolicy.required.filter((name) => !['grill-me', 'workbench-runtime', 'improve-harness', 'pr', 'writing-for-agents', 'retro'].includes(name) && !coordinationSkills.includes(name)), normalSetup: 'presence-only', updates: 'explicit-only' };
     fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
     // The undeclared directory may already exist, empty (init's .gitkeep) or
     // holding a room-local skill; migrate must accept both, not refuse them.
@@ -1153,10 +1153,10 @@ test('each listed legacy version validates only at the policy its release declar
     // v3.2.1 stamped the twenty-one-skill bundle with `handoff`; S-00Z grew the
     // live bundle with `grill-me`, the coordination entries grew it again and
     // S-004C TK-005J added `workbench-runtime` and S-004L TK-008L added
-    // `improve-harness`, so the v3.2.1 row freezes at
+    // `improve-harness` and S-002U TK-007V added `pr`, so the v3.2.1 row freezes at
     // twenty-one and a room stamped v3.2.1 validates with either the frozen row
     // or the current policy the Workbench update writes before restamping.
-    const twentyOne = current.filter((name) => !['grill-me', 'workbench-runtime', 'improve-harness', 'writing-for-agents', 'retro'].includes(name) && !coordinationSkills.includes(name));
+    const twentyOne = current.filter((name) => !['grill-me', 'workbench-runtime', 'improve-harness', 'pr', 'writing-for-agents', 'retro'].includes(name) && !coordinationSkills.includes(name));
     assert.equal(twentyOne.length, 21);
     assert.equal(outcome('v3.2.1', twentyOne), 'valid');
     assert.equal(outcome('v3.2.1', current), 'valid');
@@ -2743,36 +2743,58 @@ test('declare-legibility writes the six entries into an existing manifest and ch
   } finally { fs.rmSync(project, { recursive: true, force: true }); }
 });
 
+// S-002U TK-007V: the owner made `pr` required in every Workbench on
+// 2026-10-06. A generated room declares it in its required policy, in the
+// runtime Core order, ahead of the coordination entries and the stances.
+test('a generated room requires pr in its closed Core policy', () => {
+  const project = fixture();
+  try {
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+    const required = JSON.parse(fs.readFileSync(path.join(project, 'workbench', 'manifest.json'), 'utf8')).skillPolicy.required;
+    assert.ok(coreSkills.includes('pr'), 'the runtime Core list carries pr');
+    assert.ok(required.includes('pr'), 'the generated manifest requires pr');
+    assert.deepEqual(required, coreSkills, 'the generated policy is exactly the runtime Core list');
+    assert.deepEqual(JSON.parse(fs.readFileSync(path.join(root, 'workbench', 'manifest.json'), 'utf8')).skillPolicy.required, coreSkills,
+      'this repository declares exactly the runtime Core list');
+  } finally { fs.rmSync(project, { recursive: true, force: true }); }
+});
 
-test('pre-pair v3.2.1 room stays readable and migratable at its exact 28-skill lane policy', () => {
+// S-002U TK-007V: the prior28 cohort. Rooms built from integration before
+// `pr` joined required Core carry this exact lane policy under v3.2.1. The
+// literal is the pre-adoption manifest at 42431879, independent of later
+// growth in coreSkills and safe in a shallow clone. A sibling package
+// (S-002P/S-002V) carries the same literal; a merge keeps one copy.
+test('prior28 v3.2.1 room stays readable and migratable at its exact 28-skill lane policy', () => {
   const project = fixture();
   try {
     assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
     const manifestPath = path.join(project, 'workbench', 'manifest.json');
     const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-    // Exact required list in the pre-adoption source manifest at 42431879;
-    // independent of future growth in coreSkills and safe in a shallow clone.
-    const previous = [
+    const prior28 = [
       'adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement',
       'make-it-so', 'to-docs', 'to-spec', 'to-tasks', 'tracer-bullet', 'update-harness',
       'carry', 'notepad', 'save', 'promote', 'handoff', 'grill-me', 'workbench-runtime',
       'improve-harness', 'director', 'dispatcher', 'spec-planner', 'spec-manager',
       'builder', 'auditor', 'reviewer', 'reconciler'
     ];
-    manifest.skillPolicy.required = previous;
+    assert.equal(prior28.length, 28);
+    manifest.skillPolicy.required = prior28;
     manifest.workbenchVersion = 'v3.2.1';
     fs.writeFileSync(manifestPath, JSON.stringify(manifest));
     assert.equal(run('validate', '--project', project).report.status, 'valid',
-      'the exact previous lane policy remains readable before the explicit update');
+      'the exact prior28 lane policy remains readable before the explicit skills update');
     const migrated = run('migrate', '--project', project, '--version', VERSION);
     assert.equal(migrated.status, 0, migrated.stdout);
-    assert.deepEqual(JSON.parse(fs.readFileSync(manifestPath, 'utf8')).skillPolicy.required, previous,
-      'layout migration preserves existing skill policy; explicit skill update remains separate');
-    fs.writeFileSync(manifestPath, JSON.stringify({ ...manifest, skillPolicy: { ...manifest.skillPolicy, required: previous.slice(0, -1) } }));
-    assert.equal(run('validate', '--project', project).report.error.code, 'invalid-skill-policy',
+    assert.deepEqual(JSON.parse(fs.readFileSync(manifestPath, 'utf8')).skillPolicy.required, prior28,
+      'layout migration preserves the existing skill policy; the explicit skills update remains separate');
+    fs.writeFileSync(manifestPath, JSON.stringify({ ...manifest, skillPolicy: { ...manifest.skillPolicy, required: prior28.slice(0, -1) } }));
+    assert.equal(run('validate', '--project', project).report.error?.code, 'invalid-skill-policy',
       'a malformed subset is not accepted as a transition policy');
+    fs.writeFileSync(manifestPath, JSON.stringify({ ...manifest, skillPolicy: { ...manifest.skillPolicy, required: [...prior28.slice(0, 20), 'pr', ...prior28.slice(21)] } }));
+    assert.equal(run('validate', '--project', project).report.error?.code, 'invalid-skill-policy',
+      'a same-size list that swaps an entry is not the prior28 policy');
     fs.writeFileSync(manifestPath, JSON.stringify({ ...manifest, workbenchVersion: 'v9.9.9' }));
-    assert.equal(run('validate', '--project', project).report.error.code, 'invalid-skill-policy',
-      'the transition policy is accepted only at its known stamped version');
+    assert.equal(run('validate', '--project', project).report.error?.code, 'invalid-skill-policy',
+      'the prior28 transition policy is accepted only at its known stamped version');
   } finally { fs.rmSync(project, { recursive: true, force: true }); }
 });
