@@ -50,6 +50,26 @@ the directions we go, record the choices we made along the way.
   and ADRs. The owner's workflow of 2026-10-02 settles how both hold: the
   Blueprint comes first, and landmarks form later from groupings of decisions.
 
+## Other consequential decisions and reuse
+
+A **Consequential Decision Record (CDR)** holds a consequential choice that is
+neither architecture nor destination. All three kinds are consequential; CDR
+names the remaining category, not a replacement for ADRs or DDRs. They share
+record identity, lifecycle and tooling. The owner introduced this category and
+asked for decision-centered Grill Board grouping on 2026-10-06.
+
+The decision record preserves the choice and its why, scope, alternatives,
+consequences, source approvals and revisiting conditions. Agents read a fitting
+active record and its operational owners, verify whether the present situation
+matches those premises, and explain their derivation before asking again.
+Existing approvals keep their original scope; a grouped rationale is not approval
+of every associated proposal or delivery. Open premises remain visible.
+
+The [board procedure](../../grill-board/README.md#decision-reconciliation-and-reuse)
+owns the operation. The [decision-reuse record](../../docs/cdr/proposed/000A-consequential-decisions-preserve-the-why-and-are-reused-before-asking-again.md)
+owns the rationale. The board's map is navigation, not another decision store or
+an automated proof that all future issues can be solved from prior decisions.
+
 ## The map at two scales
 
 The owner's workflow, in order: defining a destination creates the Blueprint;

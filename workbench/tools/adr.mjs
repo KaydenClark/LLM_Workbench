@@ -36,18 +36,19 @@ export const ADR_LIFECYCLE_FOLDERS = Object.freeze(['proposed', 'archive']);
 // (`stale-register`, `disagreeing-status`, `untracked-provenance`) are shared.
 export const RECORD_KINDS = Object.freeze({
   adr: Object.freeze({ kind: 'adr', collection: 'adr', prefix: 'ADR', invalid: 'invalid-adr' }),
-  ddr: Object.freeze({ kind: 'ddr', collection: 'ddr', prefix: 'DDR', invalid: 'invalid-ddr' })
+  ddr: Object.freeze({ kind: 'ddr', collection: 'ddr', prefix: 'DDR', invalid: 'invalid-ddr' }),
+  cdr: Object.freeze({ kind: 'cdr', collection: 'cdr', prefix: 'CDR', invalid: 'invalid-cdr' })
 });
 
 export function recordKind(kind = 'adr') {
-  if (typeof kind !== 'string' || !Object.hasOwn(RECORD_KINDS, kind)) throw new Error(`--kind must be adr or ddr, not ${kind}`);
+  if (typeof kind !== 'string' || !Object.hasOwn(RECORD_KINDS, kind)) throw new Error(`--kind must be adr, ddr or cdr, not ${kind}`);
   return RECORD_KINDS[kind];
 }
 
 // The kinds whose collection directory exists in this room, ADR first. A
 // command run without `--kind` acts on each of them.
 export function presentKinds(root) {
-  return Object.keys(RECORD_KINDS).filter((kind) => kind === 'adr' || fs.existsSync(collectionPath(root, RECORD_KINDS[kind].collection)));
+  return Object.keys(RECORD_KINDS).filter((kind) => kind === 'adr' || ((kind !== 'cdr' || readManifest(root)?.collections?.cdr) && fs.existsSync(collectionPath(root, RECORD_KINDS[kind].collection))));
 }
 
 // A record is authored once and checked out on many hosts. Git for Windows
@@ -525,8 +526,8 @@ export function newAdr(root, options) {
   // whose manifest predates the `ddr` collection gains it through the update
   // route first; writing here would conjure an undeclared directory.
   const manifest = readManifest(root);
-  if (spec.kind === 'ddr' && manifest && manifest.collections?.ddr === undefined) {
-    throw new Error('the ddr collection is not declared in workbench/manifest.json; run workbench-layout.mjs migrate --project PATH from the release checkout first');
+  if (spec.kind !== 'adr' && manifest && manifest.collections?.[spec.collection] === undefined) {
+    throw new Error(`the ${spec.collection} collection is not declared in workbench/manifest.json; declare it through the room's authorized layout update first`);
   }
   const directory = collectionPath(root, spec.collection);
   assertSafeWritePath(root, path.join(directory, REGISTER_NAME));
@@ -546,7 +547,7 @@ export function newAdr(root, options) {
   const filePath = path.join(directory, 'proposed', `${next}-${slug}.md`);
   if (fs.existsSync(filePath)) throw new Error(`${filePath} already exists`);
   const date = options.date ?? new Date().toISOString().slice(0, 10);
-  const content = (spec.kind === 'ddr' ? ddrTemplate : adrTemplate)(date, title).join('\n');
+  const content = (spec.kind === 'ddr' ? ddrTemplate : spec.kind === 'cdr' ? cdrTemplate : adrTemplate)(date, title).join('\n');
   writeSafeFile(root, filePath, content, { exclusive: true });
   return { filePath, number: next, id: `${spec.prefix}-${next}`, kind: spec.kind };
 }
@@ -598,6 +599,12 @@ function ddrTemplate(date, title) {
     'Provenance: [the owner-confirmed source of the decision, by name, date or repository-relative path].',
     ''
   ];
+}
+
+function cdrTemplate(date, title) {
+  return adrTemplate(date, title).map(line => line
+    .replace('[The decision in one to three sentences: what is chosen and why it holds.]', '[One consequential choice outside architecture and destination: the choice, its scope and the underlying why.]')
+    .replace('Consequences: [what changes for tools, controls, or agents; name the control that carries the rule].', 'Consequences: [what follows from this rationale, its limits and when to revisit it; name the operational owners in canonicalized_in].'));
 }
 
 export function localLinks(content) {
@@ -823,7 +830,7 @@ export function migrateLifecycleFolders(root) {
 export function resolveRecord(root, id) {
   const match = /^([A-Za-z]{3})-([0-9A-Za-z]+)$/.exec(String(id ?? ''));
   const kind = match?.[1].toLowerCase();
-  if (!match || !Object.hasOwn(RECORD_KINDS, kind)) throw new Error(`${id} is not a decision-record identifier; name an ADR-... or DDR-... record`);
+  if (!match || !Object.hasOwn(RECORD_KINDS, kind)) throw new Error(`${id} is not a decision-record identifier; name an ADR-..., DDR-... or CDR-... record`);
   const spec = RECORD_KINDS[kind];
   const key = visibleIdKey(`${spec.prefix}-${match[2]}`);
   const hits = listAdrs(root, { kind }).filter((record) => visibleIdKey(record.id) === key);

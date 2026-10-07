@@ -171,6 +171,25 @@ not promises about the baseline when Tasks are cut:
   Spec approvals stay on their Specs and decision confirmations on their
   decision records, so a DQC is not redefined to carry approvals.
 
+## Decision-centered reconciliation — 2026-10-06
+
+The owner requested a board organized by consequential decisions: every question
+has an ADR, DDR or residual CDR home, so one underlying rationale guides related
+questions and later issues without repeated owner orchestration. The existing
+local board remains the surface; this does not activate the unfinished discussion,
+Taskboard/Tracker or dispatch capabilities.
+
+This local slice preserves 181 original question records and adds nine grouped
+rationale prompts. Its complete navigation map has 64 primary record homes:
+32 ADRs, 28 DDRs and four CDRs. Prior decisions remain accepted or proposed as
+recorded. One CDR preserves the owner's new decision-reuse direction; three
+other CDRs are agent-proposed policies. Specific delivery approvals retain their
+identities and content-bound gates. The original question view and fixed batches
+remain available, and agent operations never write the owner's answer file.
+
+Verification and the exact branch candidate are recorded in the appended evidence;
+this slice does not close the planned Spec or establish owner Human QA.
+
 ## Open Design Choices
 
 Settle and record each within the slice that needs it:

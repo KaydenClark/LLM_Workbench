@@ -13,11 +13,38 @@ import test from 'node:test';
 import vm from 'node:vm';
 import {
   ANSWERS_SCHEMA, ITEMS_SCHEMA, addItems, applyAnswer, boardPaths, createServer, itemStatus, mergeBoard,
-  pendingForAgents, readAnswers, readItems, readSourceFile, recordAnswer, reviseItem, statusSummary, withdrawItem
+  pendingForAgents, readAnswers, readItems, readSourceFile, recordAnswer, reviseItem, statusSummary, withdrawItem,
+  reconcileDecisions, decisionGroups
 } from './grill-board.mjs';
 
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const tool = path.join(repo, 'tools', 'grill-board.mjs');
+
+test('decision reconciliation covers every question once and preserves answers and item revisions', () => {
+  const dir = room();
+  fs.writeFileSync(path.join(dir, 'workbench/manifest.json'), JSON.stringify({ collections: { adr: 'workbench/docs/adr' } }));
+  fs.mkdirSync(path.join(dir, 'workbench/docs/adr'), { recursive: true });
+  fs.writeFileSync(path.join(dir, 'workbench/docs/adr/000A-context.md'), '---\ndate: 2026-10-06\ncanonicalized_in:\n  - workbench/grill-board/items.json\n---\n\n# Preserve context\n\nWhy: decisions must outlive a chat.\n');
+  addItems(dir, [sample('a'), sample('b', { kind: 'approve-spec' })], { by: 'tester' });
+  recordAnswer(dir, 'GB-0001', { verdict: 'confirm', note: 'my reason', itemRevision: 1 });
+  const before = fs.readFileSync(boardPaths(dir).answers, 'utf8');
+  const items = readItems(dir).items;
+  const groups = [{ record: 'ADR-000A', members: ['GB-0001', 'GB-0002'], prompt: 'GB-0001', question: 'Why must context survive?', why: 'Reuse the reason.', proposal: 'Preserve decisions before cleanup.' }];
+  reconcileDecisions(dir, groups, { by: 'tester', reason: 'owner asked for decision groups' });
+  assert.deepEqual(readItems(dir).items, items, 'navigation must not rewrite any proposal or revision');
+  assert.equal(fs.readFileSync(boardPaths(dir).answers, 'utf8'), before);
+  const result = decisionGroups(dir);
+  assert.equal(result[0].record, 'ADR-000A');
+  assert.equal(result[0].status, 'accepted');
+  assert.equal(result[0].members.length, 2);
+  assert.equal(mergeBoard(dir).items[1].derivedStatus, 'pending', 'a principle answer never approves a member Spec');
+  assert.equal(mergeBoard(dir).decisions[0].record, 'ADR-000A');
+  for (const bad of [[], [{ ...groups[0], members: ['GB-0001'] }], [groups[0], groups[0]], [{ ...groups[0], record: 'ADR-999Z' }], [{ ...groups[0], prompt: 'GB-0002' }]]) {
+    const boardBefore = fs.readFileSync(boardPaths(dir).items, 'utf8');
+    assert.throws(() => reconcileDecisions(dir, bad, { by: 'tester', reason: 'bad map' }));
+    assert.equal(fs.readFileSync(boardPaths(dir).items, 'utf8'), boardBefore, 'invalid maps fail before writing');
+  }
+});
 
 function room() {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'grill-board-'));
@@ -233,7 +260,7 @@ test('artifact reader follows manifest collections, preserves full records and d
   const get = async p => (await fetch(base + p)).json();
   try {
     const catalog = await get('/api/artifacts');
-    assert.deepEqual(catalog.groups.map(g => g.id), ['agents', 'runbook', 'blueprint', 'lexicon', 'landmarks', 'adrs', 'ddrs']);
+    assert.deepEqual(catalog.groups.map(g => g.id), ['agents', 'runbook', 'blueprint', 'lexicon', 'landmarks', 'adrs', 'ddrs', 'cdrs']);
     assert.ok(catalog.artifacts.some(a => a.title === 'Accepted decision' && a.status === 'accepted'));
     assert.ok(catalog.artifacts.some(a => a.title === 'Proposed decision' && a.status === 'proposed'));
     assert.ok(catalog.artifacts.some(a => a.title === 'Old decision' && a.status === 'superseded'));

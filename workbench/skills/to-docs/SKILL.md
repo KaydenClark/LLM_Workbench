@@ -27,7 +27,7 @@ truth store. Authorized room-local extensions follow the Runbook ownership proce
   machine memory -> the canonical wiki owner (`workbench/wiki/`, per its
   `SCHEMA.md`), routed from `workbench/wiki/MEMORY.md`, never a copied live
   queue, task row or Spec evidence;
-- rationale, alternatives, and consequences of a consequential decision -> an
+- rationale, alternatives, and consequences of a consequential architectural decision -> an
   ADR in the manifest `adr` collection (`workbench/docs/adr/`) whose
   `canonicalized_in` names operational owners. Active accepted decision claims
   are architectural Canon; do not duplicate the rule merely to make it bind.
@@ -38,6 +38,17 @@ truth store. Authorized room-local extensions follow the Runbook ownership proce
   `canonicalized_in` names the owners that carry it, `BLUEPRINT.md` when it
   changes or contradicts the Blueprint, and never the Wiki. One decision that
   needs both records gets both, linked rather than merged.
+
+- a consequential choice that is neither architecture nor destination -> a
+  Consequential Decision Record in the manifest's `cdr` collection. This is
+  the residual category beside ADRs and DDRs, all of which are consequential.
+  Reuse or amend a fitting record before allocating another. A room opting in
+  declares `cdr: workbench/docs/cdr` under `collections`, with ordinary
+  `proposed/` and `archive/` folders; `adr.mjs new --kind cdr --title "..."`
+  uses the shared template, identity, reads, validation and lifecycle.
+  Preserve the underlying why, scope, alternatives, consequences, source
+  approvals and conditions for revisiting the decision. The record guides
+  derivation within approved scope; it does not approve related work wholesale.
 
 Route each claim once. Split a mixed finding into its claims and give each
 exactly one owner by its job: a procedure step to its operational owner, a

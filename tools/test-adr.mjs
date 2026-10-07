@@ -12,6 +12,34 @@ import { doctor, render } from '../workbench/tools/spec-workbench.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const layout = path.join(root, 'workbench', 'tools', 'workbench-layout.mjs');
 const adrTool = path.join(root, 'workbench', 'tools', 'adr.mjs');
+
+test('CDRs use the shared decision lifecycle and keep older rooms valid', () => {
+  const dir = fixture();
+  try {
+    assert.throws(() => newAdr(dir, { kind: 'cdr', title: 'Reuse consequential decisions' }), /not declared/);
+    const file = path.join(dir, 'workbench/manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(file));
+    manifest.collections.cdr = 'workbench/docs/cdr';
+    fs.writeFileSync(file, JSON.stringify(manifest));
+    const created = newAdr(dir, { kind: 'cdr', title: 'Reuse consequential decisions', date: '2026-10-06' });
+    assert.match(created.id, /^CDR-/);
+    assert.equal(showRecord(dir, created.id).status, 'proposed');
+    assert.match(showRecord(dir, created.id).content, /rationale|why/);
+    writeDecisionRegisters(dir);
+    assert.deepEqual(validateDecisionRecords(dir), []);
+    assert.equal(listRecords(dir).filter(record => record.kind === 'cdr').length, 1);
+    assert.equal(searchRecords(dir, 'Reuse', { kind: 'cdr' }).length, 1);
+    acceptRecord(dir, created.id);
+    assert.equal(showRecord(dir, created.id).status, 'accepted');
+    const successor = newAdr(dir, { kind: 'cdr', title: 'Reuse decisions within their scope' });
+    acceptRecord(dir, successor.id);
+    supersedeRecord(dir, created.id, { by: successor.id });
+    assert.equal(showRecord(dir, created.id).status, 'superseded');
+    deprecateRecord(dir, successor.id, { reason: 'Fixture policy ended' });
+    assert.equal(showRecord(dir, successor.id).status, 'deprecated');
+    assert.deepEqual(validateDecisionRecords(dir), []);
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
 const VERSION = JSON.parse(fs.readFileSync(path.join(root, 'workbench', 'manifest.json'), 'utf8')).workbenchVersion;
 
 function fixture() {

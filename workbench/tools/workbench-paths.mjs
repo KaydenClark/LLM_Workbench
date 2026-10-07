@@ -52,6 +52,9 @@ export const COLLECTIONS = Object.freeze({
 // before one of them declares an earlier shape; `validateManifest` keeps
 // reading those shapes and `migrate` appends what is missing.
 export const ADDITIVE_COLLECTIONS = Object.freeze(['features', 'ddr', 'landmarks']);
+// CDRs are available to rooms that explicitly declare the collection. Existing
+// installations keep their exact collection shape until they opt in.
+export const OPTIONAL_COLLECTIONS = Object.freeze({ cdr: 'workbench/docs/cdr' });
 // Every room stamped before the features collection declares one of the
 // pre-feature shapes derived from this set; it excludes every additive
 // collection, so appending a later one cannot redefine what an older room held.
@@ -151,14 +154,14 @@ export function laneRelative(root, name) {
 }
 
 export function collectionRelative(root, name) {
-  if (!Object.hasOwn(COLLECTIONS, name)) throw new Error(`unknown collection: ${name}`);
+  if (!Object.hasOwn(COLLECTIONS, name) && !Object.hasOwn(OPTIONAL_COLLECTIONS, name)) throw new Error(`unknown collection: ${name}`);
   const declared = readManifest(root)?.collections?.[name];
   if (declared !== undefined && !isSafeRelative(declared)) {
     const failure = new Error(`manifest collection ${name} is unsafe: ${declared}`);
     failure.code = 'invalid-collection';
     throw failure;
   }
-  return declared ?? COLLECTIONS[name];
+  return declared ?? COLLECTIONS[name] ?? OPTIONAL_COLLECTIONS[name];
 }
 
 // S-01T TK-01X: the Landmark Tracker root is an additive manifest block,

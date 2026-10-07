@@ -47,7 +47,8 @@
     "recovery": "workbench/sessions/recovery",
     "features": "workbench/wiki/features",
     "ddr": "workbench/docs/ddr",
-    "landmarks": "workbench/landmarks"
+    "landmarks": "workbench/landmarks",
+    "cdr": "workbench/docs/cdr"
   },
   "landmarkTracker": {
     "root": "workbench/landmark-tracker",

@@ -516,7 +516,8 @@ export function validateManifest(project) {
   if (![lanes, SIX_LANES].some((shape) => JSON.stringify(manifest.lanes) === JSON.stringify(shape))) {
     return fail('invalid-lane', 'Manifest lanes must exactly match the seven support lanes, or the six lanes declared before the skills lane.', { lanes: manifest.lanes });
   }
-  if (!allowedCollectionShapes.some(shape => JSON.stringify(manifest.collections) === JSON.stringify(shape))) {
+  const { cdr, ...requiredCollections } = manifest.collections ?? {};
+  if ((cdr !== undefined && cdr !== 'workbench/docs/cdr') || !allowedCollectionShapes.some(shape => JSON.stringify(requiredCollections) === JSON.stringify(shape))) {
     return fail('invalid-collection', `Manifest collections must match the current layout or a preserved earlier collection set; the additive features collection, when declared, is ${collections.features}.`, { collections: manifest.collections });
   }
   for (const lane of Object.values(manifest.lanes)) {
