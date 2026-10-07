@@ -17,7 +17,7 @@ source_paths:
   - workbench/specs/S-002V-retro-skill-adoption/SPEC.md
   - workbench/manifest.json
   - THIRD_PARTY_NOTICES.md
-last_verified: 2026-10-06
+last_verified: 2026-10-07
 ---
 # Retro: turn a difficult session into proposed environment improvements
 
@@ -70,12 +70,14 @@ Verdict: same behavior. The entrypoint retains engineering/retro at d81f3a183412
 
 ## Findings
 
-F:retro:01 | overlap | Session environment diagnosis overlaps improve-harness; retro stops at proposals and delegates accepted intervention and rerun to that existing workflow | S-002V
-F:retro:02 | stale-name | The pre-anchor Spec names the historical feedback-review family as nearest behavior; the live improve-harness source has replaced it | S-002V
-F:retro:03 | gap | Native configured-host discovery and explicit-only enforcement need host evidence beyond filesystem and fresh-context fixtures | S-002V
+F:retro:01 | overlap | Session environment diagnosis overlaps improve-harness; retro stops at proposals and delegates accepted intervention and rerun to that existing workflow | Retro Skill Adoption (S-002V)
+F:retro:02 | stale-name | The pre-anchor Spec names the historical feedback-review family as nearest behavior; the live improve-harness source has replaced it | Retro Skill Adoption (S-002V)
+F:retro:03 | gap | Native configured-host discovery and explicit-only enforcement need host evidence beyond filesystem and fresh-context fixtures | Retro Skill Adoption (S-002V)
 
 ## Sources and history
 
 - [Matt's pinned source](https://github.com/mattpocock/skills/blob/d81f3a183412e71a5b1e84ca21bc1a35eea03a60/skills/engineering/retro/SKILL.md) and the owner's supplied copy were read on 2026-10-06.
 - Live reconciler, improve-harness, notepad and to-docs sources were checked to keep their responsibilities separate. Feedback tools and format keep their existing owners.
 - [Template 2](../TEMPLATE.md) supplies this draft's shape. The owner chose required Core on 2026-10-06. Independent review, integration and owner closure remain separately recorded in the Spec.
+
+- 2026-10-07: References, imported source and retained scenario provenance rechecked for paired Core delivery; native invocation and reliability remain unverified.

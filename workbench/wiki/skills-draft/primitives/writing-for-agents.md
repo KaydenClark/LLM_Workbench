@@ -17,7 +17,7 @@ source_paths:
   - workbench/specs/S-002P-writing-for-agents-skill-adoption/SPEC.md
   - workbench/manifest.json
   - THIRD_PARTY_NOTICES.md
-last_verified: 2026-10-06
+last_verified: 2026-10-07
 ---
 # Writing for agents: make instructions easier to find and follow
 
@@ -91,12 +91,14 @@ Verdict: same. The entrypoint and SKILL-MECHANICS.md retain the supplied product
 
 ## Findings
 
-F:writing-for-agents:01 | stale-name | writing-great-skills remains preserved archive and personal provenance; the live authoring route now uses writing-for-agents | S-002P and S-00R for any later archive disposition
-F:writing-for-agents:02 | conflict | Upstream user-invocation rules are host-specific; the unchanged upstream mechanics are interpreted under higher-priority Workbench controls and actual host policy | S-002P
-F:writing-for-agents:03 | gap | Native configured-host discovery requires host evidence beyond structural installation and a direct-path scenario | S-002P
+F:writing-for-agents:01 | stale-name | writing-great-skills remains preserved archive and personal provenance; the live authoring route now uses writing-for-agents | Writing-for-agents Skill Adoption (S-002P) and Core Skill Lifecycle And Optional Source Disposition (S-00R) for any later archive disposition
+F:writing-for-agents:02 | conflict | Upstream user-invocation rules are host-specific; the unchanged upstream mechanics are interpreted under higher-priority Workbench controls and actual host policy | Writing-for-agents Skill Adoption (S-002P)
+F:writing-for-agents:03 | gap | Native configured-host discovery requires host evidence beyond structural installation and a direct-path scenario | Writing-for-agents Skill Adoption (S-002P)
 
 ## Sources and history
 
 - [Matt's pinned writing reference](https://github.com/mattpocock/skills/blob/d81f3a183412e71a5b1e84ca21bc1a35eea03a60/skills/productivity/writing-for-agents/SKILL.md), its skill mechanics, and the preserved writing-great-skills source were read on 2026-10-06.
-- The owner reaffirmed required Core adoption on 2026-10-06. The old archive's retention decision stays with S-00R; the personal install is untouched.
+- The owner reaffirmed required Core adoption on 2026-10-06. The old archive's retention decision stays with Core Skill Lifecycle And Optional Source Disposition (S-00R); the personal install is untouched.
 - [Template 2](../TEMPLATE.md) supplies the draft shape. This is curated context; integration review and owner closure remain separately recorded in the Spec.
+
+- 2026-10-07: References, imported source and retained scenario provenance rechecked for paired Core delivery; native invocation and reliability remain unverified.
