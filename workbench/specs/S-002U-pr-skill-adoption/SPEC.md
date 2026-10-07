@@ -3,13 +3,13 @@
 **Spec ID:** S-002U
 **Status:** active
 **Priority:** 2
-**Owner:** claude-s002u-worker-w
+**Owner:** claude-s002u-correction-worker
 **Stance:** Builder
 **Updated:** 2026-10-07
 **Catalog description:** Ship Matt's PR body-authoring skill as required Core in every Workbench, preserving its visual summary, before/after evidence, merge danger and GLOSSARY.md vocabulary reference.
 **Blockers:** none for specification. Delivery coordinates the required-skill package writer and the glossary migration; no pending-lane permission gate remains.
-**Latest event:** TK-007W closed with proof.
-**Next gate:** Confirm acceptance criteria and completion result.
+**Latest event:** TK-007V claimed by claude-s002u-correction-worker.
+**Next gate:** Close TK-007V with verification and documentation proof.
 
 > **Citation anchors.** pre=`42431879fab3057db9e26ae661b4e92512c281f0` post=`42431879fab3057db9e26ae661b4e92512c281f0`.
 

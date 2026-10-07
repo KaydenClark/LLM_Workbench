@@ -3,12 +3,12 @@
 **Task ID:** TK-007V
 **Spec ID:** S-002U
 **Slice:** Ship pr in required Core with discovery and compatibility
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** TK-007U
 **Destination:** spec-acceptance: Both adapters discover the required skill in a fresh clone; manifest, bundle, catalog and counts agree.
 **Planned verification:** Red catalog and layout checks requiring pr in Core and the prior-cohort transition, then green; fresh-clone discovery through `.agents/skills` and `.claude/skills`; valid prior28 and legacy21 v3.2.1 cohorts accepted, malformed subset and unsupported version refused; full RUNBOOK suite and doctor on the committed candidate.
-**Claimed by:** claude-s002u-worker-v
+**Claimed by:** claude-s002u-worker-v, claude-s002u-correction-worker
 **Proof:** RED then GREEN at candidate 5e965265a832d931457526601ee0acc3d1719d98: test-skill-catalog failed on pr must ship in the required Core bundle, then passed; layout tests (generated room requires pr; prior28 v3.2.1 validates and migrates unchanged, malformed subset, swapped entry and v9.9.9 refused invalid-skill-policy; legacy21 six-lane and legacy-version cohorts stay valid) 4/4 green. Fresh clone: .agents/skills/pr/SKILL.md and .claude/skills/pr/SKILL.md resolve into the lane, sha256 ab63f1cf equal to the pin. Full Runbook suite 53/53 on the clean committed candidate; doctor ok; wiki.mjs validate ok.
 
 ## Scope
