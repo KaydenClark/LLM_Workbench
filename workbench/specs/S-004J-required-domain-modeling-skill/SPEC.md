@@ -3,13 +3,13 @@
 **Spec ID:** S-004J
 **Status:** active
 **Priority:** 2
-**Owner:** claude-s004j-worker-ja
+**Owner:** claude-s004j-worker-jb
 **Stance:** Builder
 **Updated:** 2026-10-07
 **Catalog description:** Ship domain modeling in every room's skills lane as the Align companion that shows the downstream consequences of an upstream name, boundary or relationship before it settles, and hands settled meaning to promotion instead of writing Canon inline.
 **Blockers:** none
-**Latest event:** TK-00JA closed with proof.
-**Next gate:** Complete TK-00JB.
+**Latest event:** TK-00JB claimed by claude-s004j-worker-jb.
+**Next gate:** Close TK-00JB with verification and documentation proof.
 
 > **Citation anchors.** pre=`46ad978956a74a3ee1bda22c36eb16207dcd98fd` post=`46ad978956a74a3ee1bda22c36eb16207dcd98fd`.
 
