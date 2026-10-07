@@ -8,8 +8,8 @@
 **Updated:** 2026-10-07
 **Catalog description:** Ship domain modeling in every room's skills lane as the Align companion that shows the downstream consequences of an upstream name, boundary or relationship before it settles, and hands settled meaning to promotion instead of writing Canon inline.
 **Blockers:** none
-**Latest event:** TK-00JB claimed by claude-s004j-worker-jb.
-**Next gate:** Close TK-00JB with verification and documentation proof.
+**Latest event:** TK-00JB closed with proof.
+**Next gate:** Complete TK-00JC.
 
 > **Citation anchors.** pre=`46ad978956a74a3ee1bda22c36eb16207dcd98fd` post=`46ad978956a74a3ee1bda22c36eb16207dcd98fd`.
 
@@ -254,6 +254,7 @@ Record `Docs checked; no update needed` for any other owner checked.
 | 2026-10-06 | planning-check | Verified documentation reconciliation; all delivery acceptance remains open. | Source `3d40a86505a339096c4629b814eb4fed1c789d5d`: full suite 53/53; ADR/Wiki, citation and diff checks passed. [Shared planning receipt](../S-004O-lexicon-retirement-and-architecture-md/proof/planning-verification.json) preserves the initial Blueprint-link failure, repair, bounded self-drift summaries and existing doctor findings. | Source owners read back; render regenerated projections. | No implementation, independent assembled review, PR or integration delivery claimed; self-drift remains 15 findings and cleanUpdate false. |
 | 2026-10-06 | activation | Activated under the owner's `/implement-spec` launch and cut TK-00JA, TK-00JB and TK-00JC with `convert-tasks --activate`; assembly branch `claude/s004j-assembly` from integration `9b524db3` plus the glossary planning commits at `a7d1ef18`. IDs chosen outside the sequential range to avoid collision with two concurrent Dispatchers. | Task IDs checked free across every `origin/*` tip and local Codex worktrees; draft PR #374 (TK-006U) read and left as historical input. | Spec header, slice section and three Task records. | Every delivery, verification and review gate. |
 | 2026-10-07 | TK-00JA | Task closed | Full RUNBOOK suite 54/54 on clean bac6db41; scoped domain-modeling 10/10 red-then-green; catalog, skills-lane, layout, runbook-index and installer green; fast-forward into assembly verified at bac6db41 | Skill source, catalog, count tokens, root and template RUNBOOK index row and suite list; THIRD_PARTY_NOTICES and AGENTS checked, no update needed | Behavior proof TK-00JB and Wiki TK-00JC; two Wiki pages still say 28 skills; release identity is the release owner's |
+| 2026-10-07 | TK-00JB | Task closed | Eight fresh-context sessions in disposable rooms with installed discovery: all five scenarios PASS (capture and promotion 4/4); full RUNBOOK suite 54/54 on clean c9905d94; fast-forward into assembly verified | proof/scenario-evidence.md with per-scenario observations, curated runs and room/runner scripts; skill checked, no correction needed | promote refuses root GLOSSARY.md until S-004O adds it to the layout controls; single model and run counts, scripted owner, local sessions; Wiki TK-00JC |
 
 ## Completion Result
 
