@@ -221,6 +221,31 @@ still apply to individual claims in the current operation.
 | **Explicit skill update** | The Workbench update's `workbench-skills.mjs update --explicit-update`: replace only changed core skills in the lane, back the previous directories up, and record the rollback path in the receipt. | It is the only path that may replace a core skill in a room; routine setup and doctor cannot imply it. The one-time v2 route (`workbench-upgrade.mjs upgrade --explicit-update` or `--layout-only`) lays the lane down through Adoption instead. Publishing the core into a personal catalog (`core-skill-installer.mjs`) is a separate operation. |
 | **Control fidelity** | How a room's hand-reconciled root files relate to the templates they derive from: every template line is `filled` only when its fixed wording survives placeholder substitution, `unchanged`, `dropped`, or `changed`, and every extra room line is `added`, as `tools/control-fidelity.mjs report` states beside the checkout and manifest versions. | It is a report, never a gate: divergence is legitimate and is restored or recorded as a decision; silent divergence is the defect ([S-034](workbench/specs/S-034-control-fidelity-report/SPEC.md)). |
 
+### Workbench Dashboard
+
+The owner's place to see and manage the workbench, decided in
+[the Workbench Dashboard decision](workbench/docs/ddr/001O-the-workbench-dashboard-is-the-owner-s-always-open-place-to-see-and-manage-the-workbench.md);
+its requirements and delivery state are owned by the
+[Workbench Dashboard Spec](workbench/specs/S-004D-shared-interactive-board/SPEC.md).
+
+| Term | Definition | Distinction |
+|---|---|---|
+| **Workbench Dashboard** | One always-open local website where the owner sees everything in the workbench and makes choices from it, in five sections. | It is a projection over the existing owners, not a second truth store; it holds only its own comments. The Grill Board is its first working form. A producer-room capability of LLM Workbench for now. |
+| **Destination Tracker** (Dashboard section) | The section for Landmarks and Destination Question Cards. | It shows the Landmark Tracker's records; it does not replace them. |
+| **Taskboard** (Dashboard section) | The section for Specs and Tasks. | It shows the generated Taskboard's records; `TASKBOARD.md` stays the projection of Spec state. |
+| **Grilling Board** (Dashboard section) | The section for the questions the owner answers, each with its Priority and Value. | The Grill Board grows into it; the tool and its files keep the `grill-board` name. |
+| **Drafts to approve** (Dashboard section) | The section showing current text against the proposed wording, per file, each change tagged with the question that owns it. | Approval binds to that exact wording. |
+| **Wiki** (Dashboard section) | The section for controls, decision records, Wiki pages, glossary and skills. | Every question that uses a decision record links to it here. Its test, in the owner's words: "if I need it summarized on this dashboard, it should probably be in the wiki." |
+
+The Dashboard's answer words carry the owner's meanings:
+
+| Answer | Meaning |
+|---|---|
+| **Confirm** | It is confirmed; nothing needs changing. On a question with alternatives it confirms the selected one. See the Confirm row for what a confirmation authorizes. |
+| **Rework wording** | Mostly correct; it needs to be restated better. |
+| **Change the why** | Something about it is correct, but the underlying reason or cause is wrong. |
+| **Change** | It needs changing, including dropping it. The owner chose Change over Correct: "to me correct means I am telling you its good to go". |
+
 ### Priority And Value
 
 **Priority** describes when to attend. **Value** describes return versus
@@ -240,7 +265,7 @@ Labels alone establish neither approval nor delivery state.
 
 The [Grill Board P/V decision](workbench/docs/ddr/proposed/001L-priority-and-value-help-the-owner-choose-grill-board-questions.md)
 applies these meanings to answering questions; its planned capability is owned
-by [Shared Interactive Workbench Board](workbench/specs/S-004D-shared-interactive-board/SPEC.md#priority-and-value-for-answering-questions).
+by the [Workbench Dashboard Spec](workbench/specs/S-004D-shared-interactive-board/SPEC.md#priority-and-value-for-answering-questions).
 
 ### Feedback Dispositions
 
