@@ -26,6 +26,7 @@ export const COORDINATION_REMOTE = 'origin';
 
 // A tip that moved a Task to one of these, away from the base, has claimed it:
 // in-progress is the claim itself, done is a claim closed and awaiting review.
+// Only a tip at the Task's current run counts (see `claimsFromTips`).
 const TAKEN = new Set(['in-progress', 'done']);
 
 // Never let a credential prompt hang a claim: a fetch or push that needs one
@@ -85,64 +86,136 @@ export function coordinationContext(root, { specsPrefix, landmarksPrefix = null,
   const listed = gitOk(root, ['for-each-ref', '--format=%(refname)%00%(symref)', `refs/remotes/${COORDINATION_REMOTE}`], 'cannot list remote refs');
   const tips = listed.split('\n').filter(Boolean).map((line) => line.split('\0'))
     .filter(([ref, symref]) => !symref && !shared.has(ref) && !own.has(ref)).map(([ref]) => ref);
-  const statuses = readTaskStatusesAt(root, [baseRef, ...tips], specsPrefix, landmarksPrefix);
-  const baseStatuses = statuses.get(baseRef) ?? new Map();
+  const states = readTaskStatesAt(root, [baseRef, ...tips], specsPrefix, landmarksPrefix);
+  const localStates = readLocalTaskStates(root, specsPrefix, landmarksPrefix);
+  const claims = claimsFromTips(states, baseRef, tips, localStates);
+  return { mode: 'remote', remote: COORDINATION_REMOTE, base, baseRef, integrationBranch: declared.integrationBranch, defaultBranch: declared.defaultBranch, fetched, fetchError, state, claims };
+}
+
+// A tip claims a Task when it moved the Task to a TAKEN status away from the
+// base, at the Task's current run or a later one. The current run is the later
+// of the base's and the local record's Continuation run count: a fail verdict
+// that continues a done Task (`verdict --result fail` with `continue TK-###`)
+// returns it to ready under a new run, and every tip cut before that still
+// shows the old run's `done` (or a stale `in-progress`) without claiming the
+// new run. Returns a Map of `PARENT/TK` to the claiming tips' short names.
+function claimsFromTips(states, baseRef, tips, local = new Map()) {
+  const baseStates = states.get(baseRef) ?? new Map();
   const claims = new Map();
   for (const tip of tips) {
-    for (const [key, status] of statuses.get(tip) ?? []) {
-      if (!TAKEN.has(status) || baseStatuses.get(key) === status) continue;
+    for (const [key, { status, run }] of states.get(tip) ?? []) {
+      if (!TAKEN.has(status)) continue;
+      const base = baseStates.get(key);
+      if (base && base.status === status && base.run === run) continue;
+      if (run < Math.max(base?.run ?? 0, local.get(key)?.run ?? 0)) continue;
       if (!claims.has(key)) claims.set(key, []);
       claims.get(key).push(tip.slice('refs/remotes/'.length));
     }
   }
-  return { mode: 'remote', remote: COORDINATION_REMOTE, base, baseRef, integrationBranch: declared.integrationBranch, defaultBranch: declared.defaultBranch, fetched, fetchError, state, claims };
+  return claims;
 }
 
 // Task status per `SPEC-ID/TK-ID` at each ref, from Task records and the
-// slice rows of table-backed Specs, in one `git grep` across every ref.
+// slice rows of table-backed Specs, read across every ref at once.
 // S-003Z TK-008G: with `landmarksPrefix`, a landmark-direct Task record keys
 // as `LMK-ID/TK-ID` from its `**Landmark ID:**` field.
 export function readTaskStatusesAt(root, refs, specsPrefix, landmarksPrefix = null) {
   const statuses = new Map();
-  if (refs.length === 0) return statuses;
-  const pattern = '^\\*\\*(Spec ID|Landmark ID|Task ID|Status):\\*\\*|^\\|[[:space:]]*TK-';
-  const result = git(root, ['grep', '-I', '-E', pattern, ...refs, '--', specsPrefix, ...(landmarksPrefix ? [landmarksPrefix] : [])]);
-  if (![0, 1].includes(result.status)) throw new Error(`Cannot read remote claims: ${failure(result)}`);
+  for (const [ref, map] of readTaskStatesAt(root, refs, specsPrefix, landmarksPrefix)) {
+    statuses.set(ref, new Map([...map].map(([key, state]) => [key, state.status])));
+  }
+  return statuses;
+}
+
+// As `readTaskStatusesAt`, but each Task maps to `{ status, run }`, where `run`
+// counts the rows of a Task record's `## Continuation` section (task-record.mjs
+// `readContinuations`); a slice-table row has no continuation and reads run 0.
+export function readTaskStatesAt(root, refs, specsPrefix, landmarksPrefix = null) {
+  if (refs.length === 0) return new Map();
   const byLength = [...refs].sort((a, b) => b.length - a.length);
-  const files = new Map();
+  const locate = (line) => {
+    const ref = byLength.find((candidate) => line.startsWith(`${candidate}:`));
+    return ref ? { ref, rest: line.slice(ref.length + 1) } : null;
+  };
+  const read = (pattern, pathspecs) => grepLines(root, ['-I', '-E', pattern, ...refs, '--', ...pathspecs], locate, 'Cannot read remote claims');
+  return taskStates(read(STATUS_PATTERN, lanes(specsPrefix, landmarksPrefix)), read(RUN_PATTERN, taskRecords(specsPrefix, landmarksPrefix)));
+}
+
+// The working tree's own Task states, tracked and untracked records alike:
+// the local record is the run a remote tip must reach to claim the Task.
+function readLocalTaskStates(root, specsPrefix, landmarksPrefix) {
+  const locate = (line) => ({ ref: '', rest: line });
+  const read = (pattern, pathspecs) => grepLines(root, ['--untracked', '-I', '-E', pattern, '--', ...pathspecs], locate, 'Cannot read local Task records');
+  return taskStates(read(STATUS_PATTERN, lanes(specsPrefix, landmarksPrefix)), read(RUN_PATTERN, taskRecords(specsPrefix, landmarksPrefix))).get('') ?? new Map();
+}
+
+const STATUS_PATTERN = '^\\*\\*(Spec ID|Landmark ID|Task ID|Status):\\*\\*|^\\|[[:space:]]*TK-';
+// Section headings and `| Run | Date |`-shaped rows of Task records only: the
+// headings bound the Continuation section, and a Receipt row (`| Run | Branch |`)
+// never matches. Kept apart from STATUS_PATTERN so every Spec's headings and
+// tables are never read across every remote tip.
+const RUN_PATTERN = '^## |^\\|[[:space:]]*[0-9]+[[:space:]]*\\|[[:space:]]*[0-9]{4}-[0-9]{2}-[0-9]{2}[[:space:]]*\\|';
+
+function lanes(specsPrefix, landmarksPrefix) {
+  return [specsPrefix, ...(landmarksPrefix ? [landmarksPrefix] : [])];
+}
+
+function taskRecords(specsPrefix, landmarksPrefix) {
+  return lanes(specsPrefix, landmarksPrefix).map((prefix) => `:(glob)${prefix}/**/TASK.md`);
+}
+
+// One `git grep`, split into `{ ref, file, text }` in output order, which is
+// file order within each file.
+function grepLines(root, args, locate, message) {
+  const result = git(root, ['grep', ...args]);
+  if (![0, 1].includes(result.status)) throw new Error(`${message}: ${failure(result)}`);
+  const lines = [];
   for (const line of result.stdout.split('\n')) {
     if (!line) continue;
-    const ref = byLength.find((candidate) => line.startsWith(`${candidate}:`));
-    if (!ref) continue;
-    const rest = line.slice(ref.length + 1);
-    const cut = rest.indexOf(':');
+    const located = locate(line);
+    if (!located) continue;
+    const cut = located.rest.indexOf(':');
     if (cut < 0) continue;
-    const file = rest.slice(0, cut);
-    const text = rest.slice(cut + 1);
+    lines.push({ ref: located.ref, file: located.rest.slice(0, cut), text: located.rest.slice(cut + 1) });
+  }
+  return lines;
+}
+
+function taskStates(statusLines, runLines) {
+  const runs = new Map();
+  const sections = new Map();
+  for (const { ref, file, text } of runLines) {
     const key = `${ref}\0${file}`;
-    if (!files.has(key)) files.set(key, { ref, file, fields: {}, rows: [] });
+    if (text.startsWith('## ')) sections.set(key, text.trim());
+    else if (sections.get(key) === '## Continuation') runs.set(key, (runs.get(key) ?? 0) + 1);
+  }
+  const files = new Map();
+  for (const { ref, file, text } of statusLines) {
+    const key = `${ref}\0${file}`;
+    if (!files.has(key)) files.set(key, { ref, file, fields: {}, rows: [], run: runs.get(key) ?? 0 });
     const entry = files.get(key);
     const field = text.match(/^\*\*(Spec ID|Landmark ID|Task ID|Status):\*\*\s*(\S+)/);
     if (field) entry.fields[field[1]] ??= field[2];
     else entry.rows.push(text);
   }
-  for (const { ref, file, fields, rows } of files.values()) {
-    if (!statuses.has(ref)) statuses.set(ref, new Map());
-    const map = statuses.get(ref);
+  const states = new Map();
+  for (const { ref, file, fields, rows, run } of files.values()) {
+    if (!states.has(ref)) states.set(ref, new Map());
+    const map = states.get(ref);
     const specId = fields['Spec ID'];
     const parentId = specId ?? fields['Landmark ID'];
     if (!parentId) continue;
     if (path.posix.basename(file) === 'TASK.md') {
-      if (fields['Task ID'] && TASK_STATUSES.includes(fields.Status)) map.set(`${parentId}/${fields['Task ID']}`, fields.Status);
+      if (fields['Task ID'] && TASK_STATUSES.includes(fields.Status)) map.set(`${parentId}/${fields['Task ID']}`, { status: fields.Status, run });
       continue;
     }
     if (path.posix.basename(file) !== 'SPEC.md' || !specId) continue;
     for (const row of rows) {
       const cells = parseMarkdownTableRow(row);
-      if (/^TK-[0-9A-Za-z]{3,}$/.test(cells[0] ?? '') && TASK_STATUSES.includes(cells[2])) map.set(`${specId}/${cells[0]}`, cells[2]);
+      if (/^TK-[0-9A-Za-z]{3,}$/.test(cells[0] ?? '') && TASK_STATUSES.includes(cells[2])) map.set(`${specId}/${cells[0]}`, { status: cells[2], run: 0 });
     }
   }
-  return statuses;
+  return states;
 }
 
 // The JSON a caller sees: where the session coordinated and what it skipped.
