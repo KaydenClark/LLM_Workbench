@@ -85,7 +85,8 @@ review.
   [QA](dictionary-qa.md), [Submit](dictionary-submit.md) and
   [Journey](dictionary-journey.md) entries.
 - [AI Coding Dictionary entry](https://www.aihero.dev/ai-coding-dictionary/automated-review):
-  attribution only; the Workbench restates the meaning in its own words.
+  attribution only. The Workbench restates the meaning in its own words and
+  does not import later upstream edits until the owner adopts them.
 - [AGENTS.md, Task Merge Answers And Verify Review](../../AGENTS.md#task-merge-answers-and-verify-review):
   the operative rule for Tasks, Review placement and providers.
 - [The workflow verbs decision (ADR-000X)](../docs/adr/000X-the-workflow-is-eight-verbs-and-each-verb-writes-the-plane-its-claims-live-on.md):

@@ -1530,7 +1530,7 @@
       "hash": "7708e8744446b6c367b5f106f043845a3e05a140d99e245602a41422b7647f6e",
       "homeKind": "wiki",
       "homePath": "workbench/wiki/dictionary-progressive-disclosure.md",
-      "landedText": "Loading only the context an agent needs now, with context pointers to the rest.",
+      "landedText": "Progressive disclosure is loading only the context an agent needs now, with context pointers to the rest.",
       "reason": null
     },
     {
@@ -1799,7 +1799,7 @@
       "hash": "9e3e8f765c5e5c8f2e6ecf86ed11d9a22127072209cee728305bc79ee8ad23fa",
       "homeKind": "wiki",
       "homePath": "workbench/wiki/dictionary-seam.md",
-      "landedText": "A public boundary where behavior can be exercised and verified without depending on implementation details.",
+      "landedText": "A seam is a public boundary where behavior can be exercised and verified without depending on implementation details.",
       "reason": null
     },
     {
@@ -2048,7 +2048,7 @@
       "hash": "dd51b01cf9f0cbd7ca0a5c027afcfd1e36d0b1192455a0015a8379854110b4f6",
       "homeKind": "wiki",
       "homePath": "workbench/wiki/dictionary-model.md",
-      "landedText": "The trained parameters on their own: something that predicts the next token from the text it is handed.",
+      "landedText": "A model is the trained parameters on their own: something that predicts the next token from the text it is handed.",
       "reason": null
     },
     {
@@ -2057,7 +2057,7 @@
       "hash": "d668044bc141cef592fabc9e0ad81c63bbc34b43d2644768db5be3d8aad76ffd",
       "homeKind": "wiki",
       "homePath": "workbench/wiki/dictionary-parameters.md",
-      "landedText": "The numbers inside a model, also called its weights.",
+      "landedText": "Parameters are the numbers inside a model, also called its weights.",
       "reason": null
     },
     {
@@ -2066,7 +2066,7 @@
       "hash": "a03d0b5044d3cc3c3b1e9500db4444f0adf4a3c1bb23a65e2748672cff0d915c",
       "homeKind": "wiki",
       "homePath": "workbench/wiki/dictionary-effort.md",
-      "landedText": "A per-request setting for how much the model reasons before it answers.",
+      "landedText": "Effort is a per-request setting for how much the model reasons before it answers.",
       "reason": null
     },
     {
@@ -2075,7 +2075,7 @@
       "hash": "7ee08800e14f718556ea4c14a104f51508d19268390b2309330cd1516117c829",
       "homeKind": "wiki",
       "homePath": "workbench/wiki/dictionary-inference.md",
-      "landedText": "Running a trained model to produce output, which happens on every request to a model provider.",
+      "landedText": "Inference is running a trained model to produce output, which happens on every request to a model provider.",
       "reason": null
     },
     {
@@ -2084,7 +2084,7 @@
       "hash": "8f54f3f928b3ee004ef0cb8075969066a6339734a6702d1e8e8ed082652e3587",
       "homeKind": "wiki",
       "homePath": "workbench/wiki/dictionary-token.md",
-      "landedText": "What a model reads in and writes out, cut from text by a fixed tokenizer vocabulary.",
+      "landedText": "A token is what a model reads in and writes out, cut from text by a fixed tokenizer vocabulary.",
       "reason": null
     },
     {
@@ -2093,7 +2093,7 @@
       "hash": "3f5cccb90ae8832844e5dc56fb0ea7236acb733dce9b5e9b9c75e0796555d3c4",
       "homeKind": "wiki",
       "homePath": "workbench/wiki/dictionary-next-token-prediction.md",
-      "landedText": "The model's one operation: from the context so far it samples a single next token, appends it and goes again, so every output, a tool call included, is assembled a token at a time.",
+      "landedText": "Next-token prediction is the model's one operation: from the context so far it samples a single next token, appends it and goes again, so every output, a tool call included, is assembled a token at a time.",
       "reason": null
     },
     {
@@ -2111,7 +2111,7 @@
       "hash": "bd217c98685fb5cb8ffe0595fcb3926ad7f42a867d45ff63f79df5b4dbe9dd02",
       "homeKind": "wiki",
       "homePath": "workbench/wiki/dictionary-model-provider.md",
-      "landedText": "Whatever runs a model to answer requests, remote or local.",
+      "landedText": "A model provider is whatever runs a model to answer requests, remote or local.",
       "reason": null
     },
     {
@@ -2129,7 +2129,7 @@
       "hash": "bf7f1125e0d5c3f6b6ae2b90bdf062a20546cf4d2f3920ba2ba27c3e7029ef2f",
       "homeKind": "wiki",
       "homePath": "workbench/wiki/dictionary-input-tokens.md",
-      "landedText": "The tokens a harness sends with every request: the system prompt, the history and the tool results.",
+      "landedText": "Input tokens are the tokens a harness sends with every request: the system prompt, the history and the tool results.",
       "reason": null
     },
     {
@@ -2138,7 +2138,7 @@
       "hash": "705b6b366a991eb9c0135d3e3b48664334fc4ad6f84cbd6abfef8d5334630bdf",
       "homeKind": "wiki",
       "homePath": "workbench/wiki/dictionary-output-tokens.md",
-      "landedText": "The tokens the model generates, tool calls and hidden reasoning included.",
+      "landedText": "Output tokens are the tokens the model generates, tool calls and hidden reasoning included.",
       "reason": null
     },
     {
@@ -2174,7 +2174,7 @@
       "hash": "f541e685da08eb39b88a1a68a7d581decbd038645fb459ab7bfa042300072e28",
       "homeKind": "wiki",
       "homePath": "workbench/wiki/dictionary-agent.md",
-      "landedText": "A model that a harness has equipped with tools, a system prompt and a window of context, taking turns with a user: the unit one talks to and delegates to.",
+      "landedText": "An agent is a model that a harness has equipped with tools, a system prompt and a window of context, taking turns with a user: the unit one talks to and delegates to.",
       "reason": null
     },
     {
@@ -2183,7 +2183,7 @@
       "hash": "babc2202ef0b5251bc2b10e9b52b4c502b93067576923992d7d39b1951b010be",
       "homeKind": "wiki",
       "homePath": "workbench/wiki/dictionary-system-prompt.md",
-      "landedText": "The standing instructions a harness puts at the front of every request: identity, behavior, available tools and conventions.",
+      "landedText": "The system prompt is the set of standing instructions a harness puts at the front of every request: identity, behavior, available tools and conventions.",
       "reason": null
     },
     {
@@ -2219,7 +2219,7 @@
       "hash": "eef3e5f89fc712dd6b08794417637bfc38450808eb1c933e6f131c8e06ab01a9",
       "homeKind": "wiki",
       "homePath": "workbench/wiki/dictionary-smart-zone.md",
-      "landedText": "The early stretch of a session in which an agent does its best work, before quality slides as its context grows.",
+      "landedText": "The smart zone is the early stretch of a session in which an agent does its best work, before quality slides as its context grows.",
       "reason": null
     },
     {
@@ -2228,7 +2228,7 @@
       "hash": "fb31d07ac35e23e2abe2d15cf795363bd4407bd8207c94c10babe06c6d27b3d5",
       "homeKind": "wiki",
       "homePath": "workbench/wiki/dictionary-attention-budget.md",
-      "landedText": "The fixed amount of influence each token spreads over everything else in the context, so every token added dilutes the others.",
+      "landedText": "The attention budget is the fixed amount of influence each token spreads over everything else in the context, so every token added dilutes the others.",
       "reason": null
     },
     {
@@ -2237,7 +2237,7 @@
       "hash": "a82b655485ff8122bf812da18fd6fccbf1588f7be252bf476ce9334ced7abee5",
       "homeKind": "wiki",
       "homePath": "workbench/wiki/dictionary-attention-degradation.md",
-      "landedText": "The gradual loss of instruction-following as a session grows: the mechanism behind leaving the smart zone.",
+      "landedText": "Attention degradation is the gradual loss of instruction-following as a session grows: the mechanism behind leaving the smart zone.",
       "reason": null
     },
     {
@@ -2246,7 +2246,7 @@
       "hash": "71d879eaf0505a9b594d8fab1d1d22bb29208851f96523eee9a22f69c97abaa1",
       "homeKind": "wiki",
       "homePath": "workbench/wiki/dictionary-automated-check.md",
-      "landedText": "A deterministic pass-or-fail verification, such as a test, a type check, a lint or a build, which an agent can correct its own work against.",
+      "landedText": "An automated check is a deterministic pass-or-fail verification, such as a test, a type check, a lint or a build, which an agent can correct its own work against.",
       "reason": null
     },
     {
@@ -2265,7 +2265,7 @@
       "hash": "af4cdf7c4f7ab42c418318c350c2214d574f7af466502b9a3fce87e8e9141d79",
       "homeKind": "wiki",
       "homePath": "workbench/wiki/dictionary-human-review.md",
-      "landedText": "A person reading the actual change, not the agent's account of it.",
+      "landedText": "A human review is a person reading the actual change, not the agent's account of it.",
       "reason": null
     },
     {
@@ -2284,7 +2284,7 @@
       "hash": "e734c98827d4ec4579613fe38c4243928871a56c57af67d16b5f86a2d4bcbc3b",
       "homeKind": "wiki",
       "homePath": "workbench/wiki/dictionary-environment.md",
-      "landedText": "The world an agent works in, outside its harness: what it sees through tool results and alters through tool calls.",
+      "landedText": "The environment is the world an agent works in, outside its harness: what it sees through tool results and alters through tool calls.",
       "reason": null
     },
     {
@@ -2293,7 +2293,7 @@
       "hash": "87f1f153e9bc7a97e00db07ee3ef9e39ea1b106c70e633ab11a16eba2b8cfd12",
       "homeKind": "wiki",
       "homePath": "workbench/wiki/dictionary-filesystem.md",
-      "landedText": "The most common environment: the files and directories an agent reads and writes, where a project and its workbench live.",
+      "landedText": "The filesystem is the most common environment: the files and directories an agent reads and writes, where a project and its workbench live.",
       "reason": null
     },
     {
@@ -2302,7 +2302,7 @@
       "hash": "fad697b6df7fdda73ba0e8d549df3d64e0d787ce8441421335712ab2c37e9bf0",
       "homeKind": "wiki",
       "homePath": "workbench/wiki/dictionary-software-factory.md",
-      "landedText": "A system in which triggers, not a person, start agent sessions, so more work runs while nobody is watching.",
+      "landedText": "A software factory is a system in which triggers, not a person, start agent sessions, so more work runs while nobody is watching.",
       "reason": null
     },
     {
