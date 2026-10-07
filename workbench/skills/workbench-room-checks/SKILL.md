@@ -580,10 +580,11 @@ review; `no-machine-finding` means only the implemented checks found no issue.
 
 A maintainer verification tool for a rewrite of the Contract carriers, run at
 rewrite review; it is not installed into rooms. It lists every line a candidate
-removed from `AGENTS.md`, `RUNBOOK.md`, `LEXICON.md` or `templates/LEXICON.md`
-since a base commit and refuses unless each one has an inventory entry whose
-home file holds its landed text at the candidate. It reads Git objects only and
-never decides which home is right:
+removed from `AGENTS.md` or `RUNBOOK.md`, or from the retired `LEXICON.md` and
+`templates/LEXICON.md` that the Lexicon retirement deleted (checked from their
+pre-removal base), since a base commit and refuses unless each one has an
+inventory entry whose home file holds its landed text at the candidate. It
+reads Git objects only and never decides which home is right:
 
 ```bash
 node tools/check-carrier-landing.mjs scaffold --base BASE_SHA --carrier AGENTS.md --out INVENTORY.json
@@ -601,7 +602,7 @@ mirror), `restates-owner` (the named owner already holds the claim) or
 `retired-with-reason` (no home; `reason` required). Normalization trims and
 collapses whitespace runs, so a reordered, re-indented or rewrapped line is not
 removed; blank lines and headings never need to land. A carrier deleted at the
-candidate, as the Lexicon retirement deletes `LEXICON.md`, has removed every
+candidate, as the Lexicon retirement deleted `LEXICON.md`, has removed every
 line and reports `carrierRemoved`. `scaffold` writes every other line
 unclassified and refuses to overwrite an existing inventory. `check` exits 0
 when every removed line landed, 1 on an unlanded line (`no-entry`,
@@ -612,7 +613,9 @@ a usage or Git error. The Contract Carrier Pointer-Brief Rewrite
 ([S-004C](../../specs/S-004C-contract-carrier-pointer-brief-rewrite/SPEC.md))
 keeps its inventories in its Spec folder, and the Lexicon retirement
 ([S-004O](../../specs/S-004O-lexicon-retirement-and-architecture-md/SPEC.md))
-keeps the Lexicon inventories in its `proof/` folder.
+keeps the Lexicon inventories in its `proof/` folder: the census inventories,
+the final inventories re-scaffolded at the pre-removal commit, and the
+landing-check output that shows every removed line landed.
 
 ## Socket Contract Registry
 
