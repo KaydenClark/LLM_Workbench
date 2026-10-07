@@ -41,7 +41,7 @@ Provenance: The owner-confirmed Promote Decision skill and entry-point design
 of 2026-10-07, followed by explicit delivery authorization. This proposed ADR
 is an authored account of that confirmed design; the owner has not separately
 confirmed this record's wording. The delivery owner is
-[Promote Confirmed Decisions (S-005C)](../../specs/S-005C-promote-confirmed-decisions/SPEC.md).
+[Promote Confirmed Decisions (S-005C)](../../../specs/S-005C-promote-confirmed-decisions/SPEC.md).
 The existing [confirmation decision (DDR-000C)](../../ddr/000C-confirming-a-concept-authorizes-the-agents-to-carry-it-to-its-endpoint.md)
 supplies the endpoint boundary. S-01B's earlier primitive evidence and pending
 owner Human QA remain separate.
