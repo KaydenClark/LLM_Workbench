@@ -748,14 +748,17 @@ test('both Lexicons carry the installed decision-record vocabulary, and the gene
   const termRows = (content, term) => content.split('\n').filter((line) => line.startsWith(`| **${term}** |`));
   for (const relative of ['LEXICON.md', 'templates/LEXICON.md']) {
     const content = read(root, relative);
-    const collection = termRows(content, 'Collection').join('\n');
+    // S-004O TK-009J: the root Collection list and Read words Distinction are
+    // read from their Wiki lexicon articles.
+    const fromArticle = (term, slug) => (relative === 'LEXICON.md' ? read(root, `workbench/wiki/dictionary-${slug}.md`) : termRows(content, term).join('\n'));
+    const collection = fromArticle('Collection', 'collection');
     assert.match(collection, /`docs\/ddr`/, `${relative} lists the ddr collection`);
     assert.match(collection, /`wiki\/features`/, `${relative} lists the features collection`);
     const blueprint = termRows(content, 'Blueprint').join('\n');
     assert.match(blueprint, /ADR or DDR inventory/, `${relative} Blueprint row`);
     assert.match(blueprint, /links no record that carries an identifier/, `${relative} Blueprint row narrows linking`);
     assert.match(termRows(content, 'Decisions').join('\n'), /workbench\/docs\/ddr\/REGISTER\.md/, `${relative} routes destination decisions to the DDR register`);
-    assert.match(termRows(content, 'Read words').join('\n'), /decision-record tool answers all five/, `${relative} says which tool answers the read words`);
+    assert.match(fromArticle('Read words', 'read-words'), /decision-record tool answers all five/, `${relative} says which tool answers the read words`);
     for (const line of termRows(content, 'Decisions')) {
       assert.doesNotMatch(line, /not installed yet|will live in|remain in delivery|as the accepted destination, a DDR/, `${relative} presents installed DDR tooling as pending: ${line.slice(0, 80)}`);
     }
@@ -846,11 +849,15 @@ test('both Lexicons define every workflow verb once and state the delivery workf
   assert.match(read(root, 'workbench/wiki/dictionary-review.md'), /\]\(dictionary-automated-review\.md\)/, 'the Review lexicon article routes depth to the Automated review entry');
   for (const relative of ['LEXICON.md', 'templates/LEXICON.md']) {
     const content = read(root, relative);
-    assert.match(content.split('\n').find((line) => line.startsWith('| **Automated review** (')), /a Spec, sometimes a landmark, or the Workbench as a whole[^|]*never a Task/, `${relative} Automated review row scope`);
+    // S-004O TK-009J: the root Automated review scope is read from its Wiki lexicon article.
+    const automatedReview = relative === 'LEXICON.md'
+      ? read(root, 'workbench/wiki/dictionary-automated-review.md').replace(/\s+/g, ' ')
+      : content.split('\n').find((line) => line.startsWith('| **Automated review** ('));
+    assert.match(automatedReview, /a Spec, sometimes a landmark, or the Workbench as a whole[^|]*never a Task/, `${relative} Automated review scope`);
     // Owner, 2026-10-05 (confirmed readback): Review judges a completed
     // destination against its Map, and confirmation is the gate a claim
     // passes from Intent to Enduring Context, for one answer or a batch.
-    assert.match(content.split('\n').find((line) => line.startsWith('| **Automated review** (')), /against its Map/, `${relative} Automated review row judges against the Map`);
+    assert.match(automatedReview, /against its Map/, `${relative} Automated review judges against the Map`);
     const [confirmSource, confirm] = relative === 'LEXICON.md'
       ? ['workbench/wiki/dictionary-confirm.md', read(root, 'workbench/wiki/dictionary-confirm.md').replace(/\s+/g, ' ')]
       : [relative, rowsOf(content, 'Confirm')[0]];
@@ -901,8 +908,9 @@ test('the Blueprint and Foundry rows carry the owner\'s confirmed answers and no
     assert.match(blueprint, /The Blueprint makes us ask questions; it does not give definite answers/, `${relative} Blueprint row`);
     assert.match(blueprint, /not current status, an ADR or DDR inventory/, `${relative} Blueprint row keeps its boundaries`);
   }
-  const foundry = rowOf(read(root, 'LEXICON.md'), 'Foundry');
-  assert.match(foundry, /never its source, copy target, tool runtime, or prerequisite/, 'Foundry row keeps the sole-source boundary');
+  // S-004O TK-009J: the root Foundry Distinction is read from its Wiki lexicon article.
+  const foundry = read(root, 'workbench/wiki/dictionary-foundry.md').replace(/\s+/g, ' ');
+  assert.match(foundry, /never its source, copy target, tool runtime, or prerequisite/, 'the Foundry article keeps the sole-source boundary');
 });
 
 test('TK-009C: the glossary Blueprint and Foundry entries carry the owner\'s confirmed answers and not the replaced ones', () => {
@@ -1073,17 +1081,17 @@ test('TK-009C: neither glossary calls the Workbench a harness or a room', () => 
 // page, which carries the term's one dictionary link and the no-live-import
 // rule the Lexicon section's preamble stated; MEMORY.md's AI Coding
 // Dictionary Entries section states the rule for the set. Grilling's page is
-// the glossary-term article of TK-009J, which adds it here.
+// the glossary-term article of TK-009J.
 const AI_CODING_WIKI_ENTRIES = Object.fromEntries(AI_CODING_TERMS
-  .filter((term) => term !== 'Grilling')
   .map((term) => [`dictionary-${dictionarySlug(term)}.md`, dictionarySlug(term)]));
+const AI_CODING_GLOSSARY_PAGES = ['dictionary-automated-review.md', 'dictionary-grilling.md'];
 
 test('each AI Coding Dictionary Wiki entry is routed from MEMORY.md and links its row, its dictionary entry and its owners', () => {
   const memory = read(root, 'workbench/wiki/MEMORY.md');
   const section = memory.split(/^## AI Coding Dictionary Entries$/m)[1]?.split(/^## /m)[0] ?? '';
   assert.match(section.replace(/\s+/g, ' '), /The dictionary link is attribution, not a live import: the dictionary's source carries no license, and an edit upstream changes no Workbench meaning until the owner adopts it\./, 'MEMORY.md states the no-live-import rule for the dictionary entries');
   assert.doesNotMatch(section, /LEXICON\.md/, 'MEMORY.md routes the dictionary entries to the Wiki, not the Lexicon');
-  assert.equal(Object.keys(AI_CODING_WIKI_ENTRIES).length, AI_CODING_TERMS.length - 1, 'every adopted term but Grilling has its own page here');
+  assert.equal(Object.keys(AI_CODING_WIKI_ENTRIES).length, AI_CODING_TERMS.length, 'every adopted term has its own page here');
   for (const [file, slug] of Object.entries(AI_CODING_WIKI_ENTRIES)) {
     const page = read(root, `workbench/wiki/${file}`);
     const routed = memory.split('\n').filter((line) => line.includes(`](${file})`));
@@ -1092,7 +1100,7 @@ test('each AI Coding Dictionary Wiki entry is routed from MEMORY.md and links it
     // S-004O TK-009D: the Lexicon source is re-pointed: Automated review links
     // its glossary definition, and the general AI coding terms stay Wiki-only.
     assert.doesNotMatch(page, /\]\([^)]*LEXICON\.md/, `${file} links no Lexicon`);
-    if (file === 'dictionary-automated-review.md') assert.ok(page.includes('(../../GLOSSARY.md#workbench-meanings-of-ai-coding-terms)'), `${file} links its glossary definition`);
+    if (AI_CODING_GLOSSARY_PAGES.includes(file)) assert.ok(page.includes('(../../GLOSSARY.md#workbench-meanings-of-ai-coding-terms)'), `${file} links its glossary definition`);
     else assert.match(page, /stays Wiki-only and needs no \[GLOSSARY\.md\]\(\.\.\/\.\.\/GLOSSARY\.md\) entry/, `${file} says it is the Wiki-only home of its term`);
     assert.deepEqual(page.match(/https:\/\/www\.aihero\.dev\/ai-coding-dictionary\/[a-z-]+/g) || [], [`https://www.aihero.dev/ai-coding-dictionary/${slug}`], `${file} links its dictionary entry once`);
     assert.match(page.replace(/\s+/g, ' '), /does not import later upstream edits until the owner adopts them/, `${file} states the no-live-import rule`);
@@ -1281,13 +1289,16 @@ test('TK-005N: both Lexicons and the README describe the delivered carrier shape
   const rootLexicon = read(root, 'LEXICON.md');
   const rootRow = (start) => rootLexicon.split('\n').find((line) => line.startsWith(start)) ?? '';
   const ddr = { contract: '001C-agents-md-is-the-map-and-the-only-contract-file.md', runbook: '001D-the-runbook-lines-the-workflow-verbs-up-next-to-their-scenarios-and-binds-nothing.md', lexicon: '001E-the-lexicon-retires-terms-live-in-the-wiki-and-ownership-routes-and-invariants-live-in-architecture-md.md' };
-  for (const [name, needs] of [['Root files', ['contract', 'runbook', 'lexicon']], ['Contract artifact', ['contract', 'runbook', 'lexicon']], ['Routing artifact', ['runbook', 'lexicon']], ['Workbench Contract', ['contract']], ['Context pointer', ['contract']]]) {
+  for (const [name, needs] of [['Root files', ['contract', 'runbook', 'lexicon']], ['Contract artifact', ['contract', 'runbook', 'lexicon']], ['Routing artifact', ['runbook', 'lexicon']], ['Context pointer', ['contract']]]) {
     const cell = rootRow(`| **${name}** |`);
     assert.ok(cell, `root Lexicon has the ${name} row`);
     for (const key of needs) assert.ok(cell.includes(`workbench/docs/ddr/${ddr[key]}`), `root ${name} row links the ${key} decision`);
   }
   assert.match(rootRow('| **Root files** |'), /binds nothing/, 'root Root files row says the Runbook binds nothing');
-  assert.match(rootRow('| **Workbench Contract** |'), /still names `RUNBOOK\.md` and `LEXICON\.md` as the other carriers/, 'root Workbench Contract row names the gap until AGENTS.md follows the decision');
+  // S-004O TK-009J: the root Workbench Contract Distinction is read from its Wiki lexicon article.
+  const contractArticle = read(root, 'workbench/wiki/dictionary-workbench-contract.md');
+  assert.ok(contractArticle.includes(`(../docs/ddr/${ddr.contract})`), 'the Workbench Contract article links the contract decision');
+  assert.match(contractArticle.replace(/\s+/g, ' '), /still names `RUNBOOK\.md` and `LEXICON\.md` as the other carriers/, 'the Workbench Contract article names the gap until AGENTS.md follows the decision');
   for (const stale of [/decided neither record's kind/, /stays with the owner's later debate/]) {
     assert.doesNotMatch(rootLexicon, stale, `root Lexicon still leaves the carriers' kind undecided: ${stale}`);
   }

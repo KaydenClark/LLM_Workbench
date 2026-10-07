@@ -641,7 +641,7 @@ assertIncludesAll(codeReview, [
 // S-01Q: the Auditor stance reports one classified finding per named claim,
 // each traceable to its pinned evidence, check and limit, and stays inside the
 // assigned target. These pin the source contract; the fresh-context run in
-// S-01Q records the behavior. "bounded verdict" stays the LEXICON wrapper.
+// S-01Q records the behavior. "bounded verdict" stays the glossary wrapper.
 const auditorSkill = read('workbench/skills/auditor/SKILL.md');
 assertIncludesAll(auditorSkill, [
   'bounded verdict',
@@ -1042,7 +1042,8 @@ assert.ok(adoptionOpening.includes('workbench-upgrade.mjs upgrade --layout-only'
 assert.match(read('templates/ADOPTION.md'), /already-adopted[^.]*`tools\/workbench-upgrade\.mjs upgrade --layout-only`/,
   'templates/ADOPTION.md must name the layout-only route for an already-adopted room');
 assert.match(read('workbench/skills/workbench-room-checks/SKILL.md'), /--layout-only/, 'the explicit upgrade procedure (workbench-room-checks, S-004C TK-005K) must document the layout-only mode');
-assert.match(read('LEXICON.md'), /--layout-only/, 'the Lexicon distinction must gain the layout-only mode');
+// S-004O TK-009J: the Explicit skill update Distinction lives in its Wiki lexicon article.
+assert.match(read('workbench/wiki/dictionary-explicit-skill-update.md'), /--layout-only/, 'the Explicit skill update article must name the layout-only mode');
 
 for (const name of ['grilling', 'checkpoint', 'make-it-so', 'to-docs', 'to-spec', 'to-tasks', 'tracer-bullet', 'implement', 'code-review', 'carry', 'notepad']) {
   const skill = read(`workbench/skills/${name}/SKILL.md`);

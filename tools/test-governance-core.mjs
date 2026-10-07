@@ -32,8 +32,20 @@ test('root and template AGENTS separate instruction authority from state resolut
   }
 });
 
-test('root and template Lexicons carry the Governance Core terms and keep the owner definition of design concept', () => {
-  for (const relative of ['LEXICON.md', 'templates/LEXICON.md']) {
+// S-004O TK-009J: in this room each Governance Core term is explained by its
+// Wiki lexicon article, which declares the term and links the glossary's
+// Governance core grouping; the definitions themselves are checked in the
+// glossaries by test-control-fidelity. The Template half stays on the
+// Template Lexicon until its removal.
+test('root lexicon articles and the template Lexicon carry the Governance Core terms and keep the owner definition of design concept', () => {
+  for (const term of CORE_TERMS) {
+    const slug = term.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+    const article = read(`workbench/wiki/dictionary-${slug}.md`);
+    assert.match(article, new RegExp(`^glossary_term: ${term}$`, 'm'), `the ${term} article declares its glossary term`);
+    assert.ok(article.includes('(../../GLOSSARY.md#governance-core)'), `the ${term} article links the Governance core grouping`);
+  }
+  assert.match(read('GLOSSARY.md'), /\*\*Design concept\*\*:\nThe shared understanding between the parties working on a project about what that project is/);
+  for (const relative of ['templates/LEXICON.md']) {
     const lexicon = read(relative);
     assert.match(lexicon, /^## Governance Core$/m, `${relative} has a Governance Core section`);
     for (const term of CORE_TERMS) assert.match(lexicon, new RegExp(`^\\| \\*\\*${term}\\*\\* \\|`, 'm'), `${relative} defines ${term}`);
