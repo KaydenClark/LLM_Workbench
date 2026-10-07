@@ -14,6 +14,9 @@ const source = sourceOption < 0
 const { render, moveSpecDirectory, moveSpecToLandmark, moveTaskRecord, scanReferences } = await import(
   pathToFileURL(path.join(source, 'workbench/tools/spec-workbench.mjs')));
 const version = JSON.parse(fs.readFileSync(path.join(source, 'workbench/manifest.json'), 'utf8')).workbenchVersion;
+// S-004O TK-009G: a runtime that installs the Template Wiki vocabulary
+// articles at init (older runtimes export no such list).
+const { wikiVocabularyFiles = [] } = await import(pathToFileURL(path.join(source, 'workbench/tools/workbench-layout.mjs')));
 
 const kindOption = process.argv.indexOf('--kind');
 // S-003Z TK-008F: `landmark` moves an active Spec under a landmark with
@@ -41,6 +44,13 @@ for (const kind of kinds) {
       '--project', room, '--provenance', 'genesis', '--version', version], { stdio: ['ignore', 'pipe', 'pipe'] });
     write('AGENTS.md', '# Fixture controls\n');
     write('BLUEPRINT.md', '# Blueprint\n');
+    // S-004O TK-009G: the room's installed controls include GLOSSARY.md and
+    // ARCHITECTURE.md, and its lane holds the core skills; the Wiki vocabulary
+    // articles init installed link the glossary, the Runbook and a lane skill.
+    write('GLOSSARY.md', '# Directory link fixture\n\nA fixture room.\n\n## Language\n');
+    write('ARCHITECTURE.md', '# Directory link fixture - Architecture\n');
+    write('RUNBOOK.md', '# Runbook\n');
+    write('workbench/skills/code-review/SKILL.md', '# Code review\n');
     write('TASKBOARD.md', '# Taskboard\n\n<!-- hot-specs:start -->\n<!-- hot-specs:end -->\n');
     write('README.md', '# Directory link fixture\n');
     const spec = 'workbench/specs/S-616-directory-links';
@@ -117,6 +127,7 @@ Fixture complete.
     write(directoryOnly, `# Directory only\n\n[Root](${link(directoryOnly, oldDir)}/)\n`);
     git('init', '--quiet'); git('config', 'user.email', 'fixture@example.invalid'); git('config', 'user.name', 'Fixture');
     render(room); commit('seed directory link fixture');
+    for (const article of wikiVocabularyFiles) assert.ok(fs.existsSync(path.join(room, 'workbench/wiki', article)), `${kind}: init installed ${article}`);
     assert.deepEqual(scanReferences(room), [], `${kind}: all live links initially resolve`);
     const move = () => kind === 'spec' ? moveSpecDirectory(room, 'S-616', 'retired')
       : kind === 'landmark' ? moveSpecToLandmark(room, 'S-616', 'LMK-0AA') : moveTaskRecord(room, 'S-616', 'TK-001', 'retired');

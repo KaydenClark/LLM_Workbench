@@ -15,6 +15,7 @@ import { COLLECTIONS, LANES, collectionRelative } from '../workbench/tools/workb
 import * as layout from '../workbench/tools/workbench-layout.mjs';
 import { templatedControls } from './control-fidelity.mjs';
 import { scanReferences } from '../workbench/tools/spec-workbench.mjs';
+import { writeRegister } from '../workbench/tools/adr.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const VERSION = JSON.parse(fs.readFileSync(path.join(root, 'workbench', 'manifest.json'), 'utf8')).workbenchVersion;
@@ -1925,19 +1926,36 @@ test('classify never reads a workbench/ symlink out of the room', () => {
   }
 });
 
+// S-004O TK-009G: a room built before the Lexicon retired holds the earlier
+// closed control set, with LEXICON.md in place of GLOSSARY.md and
+// ARCHITECTURE.md; its unstamped shape is still a Workbench installation's.
+test('TK-009G: classify still reads a pre-retirement room that holds LEXICON.md as harness-shaped', () => {
+  const room = fixture();
+  try {
+    for (const control of ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md']) {
+      fs.writeFileSync(path.join(room, control), `# ${control}\n\nProject truth.\n`);
+    }
+    const result = classify(room);
+    assert.equal(result.status, 0, `${result.stdout}${result.stderr}`);
+    assert.equal(result.report.verdict, 'unclassifiable', 'the earlier control set is harness-shaped, so an unstamped room is not guessed');
+    assert.ok(result.report.reasons.some((reason) => /all 7 root controls/.test(reason)), 'the reason names the earlier closed set');
+    assert.deepEqual(result.report.evidence.legacyControlShapes?.controlsMissing ?? [], [], 'no control of the earlier set is missing');
+  } finally { fs.rmSync(room, { recursive: true, force: true }); }
+});
+
 test('classify treats an unreadable root control as a room condition, not a crash', () => {
   if (typeof process.getuid === 'function' && process.getuid() === 0) return;
   const stamped = fixture();
   const working = fixture();
   try {
     legacyRoom(stamped, { stamp: 'v3.0.0' });
-    fs.chmodSync(path.join(stamped, 'LEXICON.md'), 0o000);
+    fs.chmodSync(path.join(stamped, 'GLOSSARY.md'), 0o000);
     const stampedBefore = roomSnapshot(stamped);
     const stampedResult = classify(stamped);
     assert.equal(stampedResult.status, 0, `${stampedResult.stdout}${stampedResult.stderr}`);
     assert.equal(stampedResult.report.status, 'classified', 'an unreadable control is a room condition, not an unreadable invocation');
-    assert.equal(stampedResult.report.verdict, 'upgrade', 'the six readable controls still carry the stamp');
-    assert.deepEqual(stampedResult.report.evidence.versionStamp.unreadable, ['LEXICON.md'],
+    assert.equal(stampedResult.report.verdict, 'upgrade', 'the seven readable controls still carry the stamp');
+    assert.deepEqual(stampedResult.report.evidence.versionStamp.unreadable, ['GLOSSARY.md'],
       'the control that could not be read must be reported as evidence');
     assert.deepEqual(roomSnapshot(stamped), stampedBefore, 'classify must write nothing into a room with an unreadable control');
 
@@ -1952,7 +1970,7 @@ test('classify treats an unreadable root control as a room condition, not a cras
       'a control that cannot be read leaves the stamp evidence incomplete, so the room cannot be classified');
     assert.deepEqual(roomSnapshot(working), workingBefore, 'classify must write nothing into a working room with an unreadable control');
   } finally {
-    for (const [project, control] of [[stamped, 'LEXICON.md'], [working, 'README.md']]) {
+    for (const [project, control] of [[stamped, 'GLOSSARY.md'], [working, 'README.md']]) {
       try { fs.chmodSync(path.join(project, control), 0o644); } catch { /* already gone */ }
       fs.rmSync(project, { recursive: true, force: true });
     }
@@ -2872,7 +2890,11 @@ test('TK-009G: the installed control set is GLOSSARY.md and ARCHITECTURE.md in p
   assert.deepEqual([...(layout.wikiVocabularyFiles ?? [])].sort(), articles, 'the runtime installs every Template vocabulary article');
   for (const protocol of ['GENESIS.md', 'ADOPTION.md']) {
     const content = fs.readFileSync(path.join(root, 'templates', protocol), 'utf8');
-    assert.doesNotMatch(content, /LEXICON\.md/, `${protocol} names no Lexicon a new room would need`);
+    // A new room needs no Lexicon; Adoption names one only as an earlier
+    // Workbench's control that its migration retires once the lines land.
+    for (const paragraph of content.split(/\n\s*\n/).filter((text) => /LEXICON\.md/.test(text))) {
+      assert.ok(protocol === 'ADOPTION.md' && /retires the Lexicon/.test(paragraph) && /lexicon-unlanded/.test(paragraph), `${protocol} names LEXICON.md only as the retired control: ${paragraph}`);
+    }
     for (const name of ['GLOSSARY.md', 'ARCHITECTURE.md']) assert.match(content, new RegExp(`\`${name.replace('.', '\\.')}\``), `${protocol} names ${name}`);
     assert.match(content, /ARCHITECTURE\.md`?[^.]*codemap[\s\S]{0,400}(?:project|source)[\s\S]{0,400}grilling/i, `${protocol} drafts the ARCHITECTURE.md codemap from project evidence for grilling to confirm`);
   }
@@ -2914,11 +2936,19 @@ test('TK-009G: a freshly generated room has GLOSSARY.md, ARCHITECTURE.md and the
       fs.writeFileSync(path.join(project, control), control === 'CLAUDE.md' ? '@AGENTS.md\n' : fill(fs.readFileSync(path.join(root, 'templates', control), 'utf8')));
     }
     fs.writeFileSync(path.join(project, 'workbench', 'wiki', 'MEMORY.md'), fill(fs.readFileSync(path.join(root, 'templates', 'wiki', 'MEMORY.project.md'), 'utf8')));
+    // Genesis registers its decisions (Phase 1); the registers exist even
+    // before the first record, and ARCHITECTURE.md routes decisions to them.
+    writeRegister(project);
+    writeRegister(project, { kind: 'ddr' });
     render(project);
     for (const name of ['GLOSSARY.md', 'ARCHITECTURE.md']) assert.ok(fs.statSync(path.join(project, name)).isFile(), `${name} is a root control of the room`);
     assert.ok(!fs.existsSync(path.join(project, 'LEXICON.md')), 'a new room has no Lexicon');
     for (const name of layout.wikiVocabularyFiles ?? []) assert.ok(fs.existsSync(path.join(project, 'workbench', 'wiki', name)), `${name} is installed`);
-    assert.deepEqual(scanReferences(project), [], 'every live link in the generated room resolves');
+    // The scan reads every live surface; the controls this Task installs and
+    // the Wiki they are explained in (router, contract files and vocabulary
+    // articles) must resolve completely.
+    const installed = scanReferences(project).filter((item) => ['GLOSSARY.md', 'ARCHITECTURE.md'].includes(item.file) || item.file.startsWith('workbench/wiki/'));
+    assert.deepEqual(installed, [], 'every live link in the generated room glossary, architecture and Wiki resolves');
   } finally { fs.rmSync(project, { recursive: true, force: true }); }
 });
 

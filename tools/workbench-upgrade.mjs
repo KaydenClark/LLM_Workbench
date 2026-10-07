@@ -106,8 +106,12 @@ function upgrade(options) {
     const tools = { status: 'installed', receipt: `${validation.manifest.lanes.tools}/.workbench-tools.json`, source: receipt.source };
     const skillsReceipt = JSON.parse(fs.readFileSync(path.join(project, validation.manifest.lanes.skills, '.workbench-skills.json'), 'utf8'));
     const skillsLane = { status: 'installed', receipt: `${validation.manifest.lanes.skills}/.workbench-skills.json`, source: skillsReceipt.source };
-    fs.writeFileSync(path.join(project, recoveryPath), `${JSON.stringify({ schemaVersion: 1, lifecycle: 'upgrade', skills, preMigration: { gitSha: readiness.gitSha, inventory: readiness.inventory }, skillBackups, coreRecovery, tools, skillsLane }, null, 2)}\n`);
-    return { status: 'complete', manifestPath: path.join('workbench', 'manifest.json'), recoveryPath, skills, skillBackups, coreRecovery, tools, skillsLane, migration: adoptionReport };
+    // S-004O TK-009G: the Lexicon outcome of the migration (installed
+    // GLOSSARY.md/ARCHITECTURE.md, a retired Lexicon's backup, or the lines
+    // that keep it); the pre-migration SHA remains the rollback point.
+    const lexicon = adoptionReport.lexicon ?? { status: 'absent' };
+    fs.writeFileSync(path.join(project, recoveryPath), `${JSON.stringify({ schemaVersion: 1, lifecycle: 'upgrade', skills, preMigration: { gitSha: readiness.gitSha, inventory: readiness.inventory }, skillBackups, coreRecovery, tools, skillsLane, lexicon }, null, 2)}\n`);
+    return { status: 'complete', manifestPath: path.join('workbench', 'manifest.json'), recoveryPath, skills, skillBackups, coreRecovery, tools, skillsLane, lexicon, migration: adoptionReport };
   } catch (error) {
     return { status: 'partial', skillBackups, coreRecovery, error: { code: 'upgrade-failed', message: error.message } };
   }

@@ -12,7 +12,7 @@ import { templatePlaceholders } from '../workbench/tools/template-placeholders.m
 import { LANES, isMainModule, isSafeRelative, readManifest } from '../workbench/tools/workbench-paths.mjs';
 
 const productRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-export const templatedControls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'README.md'];
+export const templatedControls = ['AGENTS.md', 'BLUEPRINT.md', 'GLOSSARY.md', 'ARCHITECTURE.md', 'RUNBOOK.md', 'TASKBOARD.md', 'README.md'];
 export const CLAUDE_CONTROL = '@AGENTS.md';
 export const KINDS = ['filled', 'unchanged', 'dropped', 'changed', 'added'];
 // S-004C TK-005M: given the room's earlier template generation, a difference

@@ -204,7 +204,8 @@ try {
   const productTemplates = path.join(product, 'templates');
   write(first, 'AGENTS.md', withTemplateBody('AGENTS.md', productTemplates, `# Round Trip - Agent Operating System\n\n${stamp}\n\n## Authority Order\n\n1. The current user request.\n2. This file.\n3. The assigned spec.\n\n## Work Selection And Lifecycle\n\nRun \`node workbench/tools/spec-workbench.mjs doctor\`, then \`next --json\`, then \`show\`, claim, implement red/green, close, render, doctor, push.`));
   write(first, 'BLUEPRINT.md', `# Round Trip - Blueprint\n\n${stamp}\n\n## Product Map\n\nA tiny CLI that greets.\n\n## Spec Catalog\n\n<!-- spec-catalog:start -->\n<!-- spec-catalog:end -->\n`);
-  write(first, 'LEXICON.md', withTemplateBody('LEXICON.md', productTemplates, `# Round Trip - Lexicon\n\n${stamp}\n\n## Terms\n\nNone yet.`));
+  write(first, 'GLOSSARY.md', withTemplateBody('GLOSSARY.md', productTemplates, `# Round Trip\n\n${stamp}\n\nA tiny CLI that greets.\n\n## Language\n\nNo project terms yet.`));
+  write(first, 'ARCHITECTURE.md', withTemplateBody('ARCHITECTURE.md', productTemplates, `# Round Trip - Architecture\n\n${stamp}\n\n## Codemap\n\n| Path | What lives there |\n|---|---|\n| \`src/hello.mjs\` | The CLI that greets. |`));
   write(first, 'RUNBOOK.md', withTemplateBody('RUNBOOK.md', productTemplates, `# Round Trip - Runbook\n\n${stamp}\n\n## Test And Build\n\n\`\`\`bash\nnode --test tests/hello.test.mjs\nnode workbench/tools/spec-workbench.mjs doctor\n\`\`\``));
   write(first, 'TASKBOARD.md', `# Round Trip - Hot Taskboard\n\n${stamp}\n\n## Active Specs\n\n<!-- hot-specs:start -->\n<!-- hot-specs:end -->\n`);
   write(first, 'README.md', withTemplateBody('README.md', productTemplates, `# Round Trip\n\n${stamp}\n\n## Usage\n\nRun \`node src/hello.mjs\`.`));
@@ -228,9 +229,9 @@ try {
   // runs after its own derive().
   {
     const controlHits = [];
-    for (const name of ['AGENTS.md', 'RUNBOOK.md', 'LEXICON.md', 'README.md']) {
+    for (const name of ['AGENTS.md', 'RUNBOOK.md', 'GLOSSARY.md', 'ARCHITECTURE.md', 'README.md']) {
       fs.readFileSync(path.join(first, name), 'utf8').split('\n').forEach((line, index) => {
-        if (name === 'LEXICON.md' && line.includes('**Ticket** | Retired as a live term.')) return;
+        if (name === 'GLOSSARY.md' && line.trim() === '_Avoid_: ticket') return;
         if (/ticket/i.test(line)) controlHits.push(`${name}:${index + 1}: ${line.trim()}`);
       });
     }

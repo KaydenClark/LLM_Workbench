@@ -12,7 +12,7 @@
 // facts it reports.
 import fs from 'node:fs';
 import path from 'node:path';
-import { controls, versionStamp } from '../workbench/tools/workbench-layout.mjs';
+import { RETIRED_LEXICON, controls, versionStamp, vocabularyControls } from '../workbench/tools/workbench-layout.mjs';
 import { isMainModule } from '../workbench/tools/workbench-paths.mjs';
 import { RECEIPT_NAME, RUNTIME_TOOLS } from './workbench-tools.mjs';
 
@@ -147,9 +147,18 @@ function manifestEvidence(project, supportRoot) {
 // unresolved, and whether the control is still an unfilled template copy. A
 // control the room will not let us read is a fact about the room, never a
 // failed invocation.
+// S-004O TK-009G: a room built before the Lexicon retired holds LEXICON.md in
+// place of GLOSSARY.md and ARCHITECTURE.md; its control set is the earlier
+// closed set, so its shape still reads as a Workbench installation.
+function controlSet(project) {
+  if (!lstatOrNull(path.join(project, RETIRED_LEXICON))) return controls;
+  if (vocabularyControls.some((name) => lstatOrNull(path.join(project, name)))) return controls;
+  return controls.flatMap((name) => (name === vocabularyControls[0] ? [RETIRED_LEXICON] : vocabularyControls.includes(name) ? [] : [name]));
+}
+
 function controlEvidence(project) {
   const read = { present: [], missing: [], unreadable: [], bracketed: [], stamped: [], versions: [], unresolved: [] };
-  for (const control of controls) {
+  for (const control of controlSet(project)) {
     const controlPath = path.join(project, control);
     const entry = lstatOrNull(controlPath);
     // A control the room will not even stat is present-or-absent unknown, so it
@@ -364,7 +373,7 @@ function decide(evidence) {
       ]
     };
   }
-  // The seven controls are the Workbench's exact closed set, so the whole set
+  // The controls are the Workbench's exact closed set, so the whole set
   // corroborates itself. A managed runtime-tool filename does not: those names
   // are ordinary (`privacy.mjs`, `sessions.mjs`), and one of them under a root
   // `tools/` says nothing on its own. That limb counts only when the room also
@@ -373,9 +382,10 @@ function decide(evidence) {
   const harnessShaped = legacyControlShapes.controlsMissing.length === 0
     || (lifecycleTools.rootManagedNames.length > 0 && controlMajority);
   if (!stamp.stamped.length && harnessShaped) {
+    const total = legacyControlShapes.controlsPresent.length + legacyControlShapes.controlsMissing.length;
     const shape = legacyControlShapes.controlsMissing.length === 0
-      ? `all ${controls.length} root controls`
-      : `${legacyControlShapes.controlsPresent.length} of ${controls.length} root controls and root tools/ files from the managed runtime set (${lifecycleTools.rootManagedNames.join(', ')})`;
+      ? `all ${total} root controls`
+      : `${legacyControlShapes.controlsPresent.length} of ${total} root controls and root tools/ files from the managed runtime set (${lifecycleTools.rootManagedNames.join(', ')})`;
     const reasons = [
       `The room carries ${shape}, the shape a Workbench installation leaves behind, but no manifest and no version stamp records that any release installed here.`,
       'An unstamped Workbench room (upgrade) and an independent dialect reusing the same names (adoption) produce exactly this evidence, and the room does not say which.',
