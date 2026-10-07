@@ -267,9 +267,12 @@ follows the update route's rule instead of being refused: the migration
 installs a missing `GLOSSARY.md` or `ARCHITECTURE.md` from the Template and
 retires the Lexicon, with a backup in the recovery collection, only after every
 one of its lines has landed in the room's glossary, architecture or Wiki (or
-is a line of the Template Lexicon). Otherwise it keeps the Lexicon and reports
+is a line of the Template Lexicon while those homes carry the Template
+content; a term row lands as a `**Term**:` glossary entry with its definition,
+its distinction in a Wiki article). Otherwise it keeps the Lexicon and reports
 each unlanded line as a `lexicon-unlanded` finding; move those lines into
-their homes, confirmed by grilling, and the next update retires it.
+their homes, confirmed by grilling, remove each landed row from `LEXICON.md`,
+and the next update retires it.
 
 Produce a missing or unfilled one in this order:
 

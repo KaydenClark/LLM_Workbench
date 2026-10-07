@@ -140,9 +140,17 @@ Settle the target's starting point first:
   still holds `LEXICON.md` receives `GLOSSARY.md` and `ARCHITECTURE.md` from
   the Template through `migrate`, which retires the Lexicon (backed up in the
   recovery collection) only after every line has landed and otherwise keeps
-  it and names the unlanded lines in a `lexicon-unlanded` finding; move each
-  into the glossary, `ARCHITECTURE.md` or the Wiki, confirmed by grilling,
-  and rerun `migrate`.
+  it and names the unlanded lines in a `lexicon-unlanded` finding. A generic
+  Template line counts only while the room's glossary, architecture and Wiki
+  vocabulary articles carry the Template content; a term row lands as a
+  `**Term**:` glossary entry with its definition, its distinction in a Wiki
+  article. Move each unlanded line into its home, confirmed by grilling,
+  remove each landed row from the room's `LEXICON.md`, and rerun `migrate`.
+  Then finish the installed controls: draft the `ARCHITECTURE.md`
+  description and codemap from project evidence (source tree, entry points,
+  modules) for grilling to confirm and set its status, and replace
+  `GLOSSARY.md`'s description and clear its empty `**[TERM]**` slot, so no
+  `[BRACKETED]` placeholder remains.
 
 For the v3 spec-centered Workbench:
 
