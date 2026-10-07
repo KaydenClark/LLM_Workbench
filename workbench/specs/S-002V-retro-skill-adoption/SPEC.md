@@ -3,13 +3,13 @@
 **Spec ID:** S-002V
 **Status:** active
 **Priority:** 2
-**Owner:** unassigned
+**Owner:** codex-retro
 **Stance:** Builder
-**Updated:** 2026-10-06
+**Updated:** 2026-10-07
 **Catalog description:** Look back over finished work and turn what went wrong or right into a few named lessons, each routed to the owner that should act on it.
 **Blockers:** none. The delivered draft collection is available; the current owner request authorizes Core source adoption.
-**Latest event:** Owner directed required Core adoption of retro and reiterated writing-for-agents; one isolated writer prepares both sources and their draft comparisons.
-**Next gate:** Verify the assembled candidate, then independent review; integration delivery, owner Human QA and main closure remain separate.
+**Latest event:** TK-006Z claimed by codex-retro.
+**Next gate:** Close TK-006Z with verification and documentation proof.
 
 > **Citation anchors.** pre=`07edccc57b8f75613ad1d09203a3e414d867b90c` post=`07edccc57b8f75613ad1d09203a3e414d867b90c`.
 
