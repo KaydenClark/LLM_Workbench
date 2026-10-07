@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // Tests for tools/check-carrier-landing.mjs, the Contract carrier line-landing
-// check (Spec S-004C, Task TK-005C). Every case builds a temporary Git
+// check (Spec S-004C, Task TK-005C; Lexicon carriers and the glossary and
+// architecture home kinds, Spec S-004O, Task TK-009A). Every case builds a temporary Git
 // repository with a base commit and a candidate commit, so the check reads
 // carriers and homes exactly as it does in a real rewrite.
 import assert from 'node:assert/strict';
@@ -93,7 +94,7 @@ test('normalization is one rule: trim and collapse every whitespace run', () => 
   assert.equal(normalizeText('A claim the Lexicon\n   already owns.'), 'A claim the Lexicon already owns.');
   assert.equal(lineHash('Keep notes in JSON.'), lineHash('  Keep  notes in JSON. '));
   assert.match(lineHash('Keep notes in JSON.'), /^[0-9a-f]{64}$/);
-  assert.deepEqual(HOME_KINDS, ['stays', 'skill', 'pointer', 'lexicon', 'wiki', 'restates-owner', 'retired-with-reason']);
+  assert.deepEqual(HOME_KINDS, ['stays', 'skill', 'pointer', 'lexicon', 'wiki', 'glossary', 'architecture', 'restates-owner', 'retired-with-reason']);
   assert.equal(isExemptLine(''), true);
   assert.equal(isExemptLine('   '), true);
   assert.equal(isExemptLine('## Safety'), true);
@@ -260,6 +261,72 @@ test('a fully landed fixture passes, with homes matched after whitespace normali
     assert.equal(report.removedLines, 5);
     assert.equal(report.landed, 5);
     assert.equal(report.ok, true);
+  } finally { cleanup(dir); }
+});
+
+test('a Lexicon carrier lands its lines in glossary and architecture homes, which need a home path and landed text', () => {
+  const lexicon = [
+    '# Example - Lexicon',
+    '',
+    '| Term | Meaning |',
+    '|---|---|',
+    '| Spec | One capability record with its Tasks. |',
+    '| Task | One vertical slice of a Spec. |',
+    '',
+    'Each artifact has exactly one owner.',
+    'Routes start at AGENTS.md.',
+    ''
+  ].join('\n');
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'carrier-landing-'));
+  try {
+    git(dir, 'init', '-q');
+    write(dir, 'LEXICON.md', lexicon);
+    write(dir, 'templates/LEXICON.md', lexicon);
+    git(dir, 'add', '.');
+    git(dir, 'commit', '-qm', 'base');
+    const base = git(dir, 'rev-parse', 'HEAD');
+    write(dir, 'LEXICON.md', '# Example - Lexicon\n');
+    write(dir, 'templates/LEXICON.md', '# Example - Lexicon\n');
+    write(dir, 'GLOSSARY.md', '# Example\n\n## Language\n\n**Spec**:\nOne capability record with its Tasks.\n\n**Task**:\nOne vertical slice of a Spec.\n');
+    write(dir, 'templates/GLOSSARY.md', '# Example\n\n## Language\n\n**Spec**:\nOne capability record with its Tasks.\n\n**Task**:\nOne vertical slice of a Spec.\n');
+    write(dir, 'ARCHITECTURE.md', '# Architecture\n\n## Invariants\n\n- Each artifact has exactly one owner.\n- Routes start at AGENTS.md.\n');
+    write(dir, 'templates/ARCHITECTURE.md', '# Architecture\n\n## Invariants\n\n- Each artifact has exactly one owner.\n');
+    git(dir, 'add', '-A');
+    git(dir, 'commit', '-qm', 'candidate');
+    const candidate = git(dir, 'rev-parse', 'HEAD');
+    for (const carrier of ['LEXICON.md', 'templates/LEXICON.md']) {
+      const prefix = carrier.startsWith('templates/') ? 'templates/' : '';
+      const inventory = scaffoldInventory({ repo: dir, base, carrier });
+      assert.equal(inventory.carrier, carrier);
+      assert.deepEqual(inventory.entries.map((entry) => entry.line), [3, 4, 5, 6, 8, 9]);
+      const classify = {
+        '| Term | Meaning |': { homeKind: 'retired-with-reason', reason: 'Table header; the glossary uses the Language list.' },
+        '|---|---|': { homeKind: 'retired-with-reason', reason: 'Table rule; the glossary uses the Language list.' },
+        '| Spec | One capability record with its Tasks. |': { homeKind: 'glossary', homePath: `${prefix}GLOSSARY.md`, landedText: '**Spec**: One capability record with its Tasks.' },
+        '| Task | One vertical slice of a Spec. |': { homeKind: 'glossary', homePath: `${prefix}GLOSSARY.md`, landedText: '**Task**: One vertical slice of a Spec.' },
+        'Each artifact has exactly one owner.': { homeKind: 'architecture', homePath: `${prefix}ARCHITECTURE.md`, landedText: 'Each artifact has exactly one owner.' },
+        'Routes start at AGENTS.md.': { homeKind: 'architecture', homePath: `${prefix}ARCHITECTURE.md`, landedText: 'Routes start at AGENTS.md.' }
+      };
+      for (const entry of inventory.entries) Object.assign(entry, classify[entry.text]);
+      const report = checkCarrierLanding({ repo: dir, base, candidate, inventory });
+      if (prefix) {
+        assert.equal(report.ok, false, 'the Template architecture home lacks one invariant');
+        assert.deepEqual(report.unlanded.map((finding) => [finding.code, finding.homePath]), [['home-lacks-text', 'templates/ARCHITECTURE.md']]);
+      } else {
+        assert.deepEqual(report.unlanded, []);
+        assert.deepEqual(report.inventoryErrors, []);
+        assert.equal(report.removedLines, 6);
+        assert.equal(report.landed, 6);
+        assert.equal(report.ok, true);
+      }
+    }
+    const inventory = scaffoldInventory({ repo: dir, base, carrier: 'LEXICON.md' });
+    for (const entry of inventory.entries) Object.assign(entry, { homeKind: 'retired-with-reason', reason: 'fixture' });
+    Object.assign(inventory.entries.find((entry) => entry.line === 5), { homeKind: 'glossary', homePath: null, landedText: null, reason: null });
+    Object.assign(inventory.entries.find((entry) => entry.line === 8), { homeKind: 'architecture', homePath: 'ARCHITECTURE.md', landedText: null, reason: null });
+    const report = checkCarrierLanding({ repo: dir, base, candidate, inventory });
+    assert.ok(report.inventoryErrors.some((error) => error.code === 'invalid-home-path' && error.line === 5));
+    assert.deepEqual(report.unlanded.find((finding) => finding.baseLines[0] === 8).code, 'landed-text-missing');
   } finally { cleanup(dir); }
 });
 
