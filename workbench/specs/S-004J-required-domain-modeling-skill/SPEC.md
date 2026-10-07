@@ -5,10 +5,10 @@
 **Priority:** 2
 **Owner:** unassigned
 **Stance:** Builder
-**Updated:** 2026-10-04
+**Updated:** 2026-10-06
 **Catalog description:** Ship domain modeling in every room's skills lane as the Align companion that shows the downstream consequences of an upstream name, boundary or relationship before it settles, and hands settled meaning to promotion instead of writing Canon inline.
 **Blockers:** none
-**Latest event:** Authored from the owner's 2026-10-04 remap direction; replaces the superseded Domain Modeling Skill for the Workbench (S-002H).
+**Latest event:** Reconciled the confirmed glossary destination and retained capture boundary on 2026-10-06; remains planned and unassigned, with no Tasks cut.
 **Next gate:** Activate and cut Tasks from live Actuality with `/to-tasks`.
 
 > **Citation anchors.** pre=`46ad978956a74a3ee1bda22c36eb16207dcd98fd` post=`46ad978956a74a3ee1bda22c36eb16207dcd98fd`.
@@ -84,6 +84,8 @@ Checked at the pre anchor unless a line says otherwise.
 - **Wiki.** [Domain Modeling article](../../wiki/skill-domain-modeling.md)
   explains the method and Matt's comparison; this pass points it at this Spec.
 
+At refreshed integration `42431879fab3057db9e26ae661b4e92512c281f0` on 2026-10-06, the required bundle contains 28 skills and still lacks `domain-modeling`. The original 27-skill observation above stays dated to its pre anchor. The glossary destination is accepted in [refined DDR-001E](../../docs/ddr/001E-the-lexicon-retires-terms-live-in-the-wiki-and-ownership-routes-and-invariants-live-in-architecture-md.md), with migration owned by [Lexicon Retirement And ARCHITECTURE.md (S-004O)](../S-004O-lexicon-retirement-and-architecture-md/SPEC.md); neither new root owner exists at this integration base. Read [Matt's pinned glossary-based source](https://github.com/mattpocock/skills/blob/d81f3a183412e71a5b1e84ca21bc1a35eea03a60/skills/engineering/domain-modeling/SKILL.md) and [format](https://github.com/mattpocock/skills/blob/d81f3a183412e71a5b1e84ca21bc1a35eea03a60/skills/engineering/domain-modeling/GLOSSARY-FORMAT.md) rather than treating the old CONTEXT source or rewritten PR #251 candidate as the adoption baseline.
+
 ## Desired Behavior
 
 1. **Ships in every room.** The skill lives at `workbench/skills/domain-modeling/`,
@@ -95,8 +97,8 @@ Checked at the pre anchor unless a line says otherwise.
    force while it runs; a lane skill no carrier points to teaches but does not
    instruct ([ADR-000W](../../docs/adr/000W-contract-carriers-are-briefs-that-point-to-skills-and-authority-flows-through-the-pointer.md)).
 3. **Trace consequences upstream.** Before an upstream name, boundary or
-   relationship settles, follow it to the owners that would read it (Lexicon
-   rows, Specs and acceptance lines, decision records, Wiki pages, source
+   relationship settles, follow it to the owners that would read it (current vocabulary
+   definitions and their glossary destination, Specs and acceptance lines, decision records, Wiki pages, source
    identifiers, tests) and put the few consequences that could change the
    choice in front of the owner, with the file or line behind each. This is a
    bounded trace, not a whole-room audit.
@@ -106,12 +108,13 @@ Checked at the pre anchor unless a line says otherwise.
    and classify it as agreement, documentation drift, implementation gap or
    unresolved contradiction, as `AGENTS.md` State Resolution names them. Ask one
    question at a time inside grilling's rhythm.
-5. **Write nothing during Align.** Pending interpretations and open questions
-   stay in the objective's notepad or its question card; the Lexicon holds
-   settled meaning only. A settled shared term reaches `LEXICON.md`, a
-   capability-local meaning its Spec and an explanation the Wiki, through
-   promotion or scoped Task work once the answer is locked and confirmed, never
-   as an inline edit from the modeling conversation.
+5. **Preserve capture and promotion.** Intent, pending interpretations and
+   proposed vocabulary stay in the objective's notepad; explicit confirmation
+   settles meaning. Promotion moves confirmed canonical project vocabulary to
+   `GLOSSARY.md`, capability requirements to their Spec and richer explanation
+   to the Wiki under [the refined retirement decision](../../docs/ddr/001E-the-lexicon-retires-terms-live-in-the-wiki-and-ownership-routes-and-invariants-live-in-architecture-md.md).
+   The skill adds no inline glossary-writing exception. Before migration, read
+   the current Lexicon rather than pretend the glossary is delivered.
 6. **Offer decision records sparingly.** Offer one only when the choice is hard
    to reverse, surprising without context and a real tradeoff, naming the test
    that fails otherwise. Choose ADR or DDR by the scope test (would it still
@@ -119,8 +122,16 @@ Checked at the pre anchor unless a line says otherwise.
    `to-docs` with `adr.mjs` at Map.
 7. **A companion, not a dependency.** The owner or a caller invokes it; grilling
    and the destination-question-card flow complete without it.
-8. **No parallel stores.** No `GLOSSARY.md`, `CONTEXT.md`,
-   `UBIQUITOUS_LANGUAGE.md`, context map or local `docs/adr/`.
+8. **One vocabulary owner.** Follow S-004O's canonical glossary destination
+   and linked Wiki explanations; create no shadow `CONTEXT.md`,
+   `UBIQUITOUS_LANGUAGE.md` or local `docs/adr/`. Root glossary placement is
+   settled for a single-context room. Actual multi-context layout is inspected
+   at Plan; do not infer an unapproved map or new ADR collection.
+9. **Minimal source adaptation.** Preserve Matt's active method and glossary
+   format. Record each necessary Workbench adapter: capture/promotion instead
+   of inline writes, manifest decision-record owners and ADR/DDR scope, and the
+   owner's upstream consequence tracing. Retain source pin and credits; do not
+   duplicate unrelated Workbench policy in the imported instruction body.
 
 ## Decisions And Contracts
 
@@ -142,7 +153,7 @@ Each decision below has an owner answer; none is open.
   [ADR-000Y](../../docs/adr/000Y-a-locked-and-confirmed-answer-is-promoted-without-further-ceremony.md):
   promote ends a grilling, and a locked and confirmed answer is promoted with
   no further ceremony.
-- **Lexicon holds settled meaning only.** Locked answer FND-Q09.
+- **Canonical vocabulary destination.** Refined DDR-001E owns the confirmed 2026-10-06 glossary/Wiki/architecture split. It replaces this Spec's former blanket ban on `GLOSSARY.md`; FND-Q09's settled-meaning boundary remains. Inline capture remains deferred.
 - **ADR or DDR.** [ADR-000S](../../docs/adr/000S-destination-decision-records-are-decision-records-beside-adrs.md)
   sets the scope test; [ADR-000X](../../docs/adr/000X-the-workflow-is-eight-verbs-and-each-verb-writes-the-plane-its-claims-live-on.md)
   writes decision records at Map; ADR-000Y point 2 routes them through `to-docs`.
@@ -153,11 +164,11 @@ Each decision below has an owner answer; none is open.
 - **Ownership.** This Spec owns the `domain-modeling` skill only. S-003L and
   S-003O own `ubiquitous-language` and `lexicon`; S-00W owns grilling
   composition; S-00R owns the pending source; S-01U owns the Lexicon's own
-  reconciliation. The pending source stays where it is.
+  reconciliation and S-004O owns its retirement and new vocabulary layout. The pending source stays where it is.
 
 ## Non-Goals
 
-- Editing `LEXICON.md`, `lexicon`, `ubiquitous-language`, `grilling` or the
+- Performing the glossary migration, rewriting canonical definitions or editing `LEXICON.md`, `lexicon`, `ubiquitous-language`, `grilling` or the
   personal catalog, or deciding the neighbors' verdicts.
 - Removing or relocating `skills-pending/domain-modeling/`.
 - Making the skill a required step of grilling or the question-card flow.
@@ -169,13 +180,17 @@ No owner blocker. Coordinate one writer with any concurrent lane on the bundle,
 catalog and count-bearing files (`workbench/manifest.json`,
 `workbench/tools/workbench-layout.mjs`, `workbench/skills/README.md`, RUNBOOK's
 operations index), and with S-00R on the pending source. S-003L and S-003O
-read this skill's delivered boundary.
+read this skill's delivered boundary. Coordinate with S-004O for vocabulary layout and
+consumer migration; a missing glossary is an implementation dependency, not an
+open owner choice. Do not ship references to an absent vocabulary owner or
+remove the Lexicon fallback before migration is verified.
 
 ## Vertical Implementation Slices
 
 No Tasks cut. Tasks are cut from live Actuality at activation with `/to-tasks`.
-Intended direction: (1) lane source from the PR #251 candidate, revised to the
-Decisions above, with its scoped test red then green; (2) bundle, catalog,
+Intended direction: (1) lane source from Matt's pinned glossary-based source,
+with justified minimal Workbench adapters and scoped tests red then green; use
+PR #251 only as historical consequence-tracing input; (2) bundle, catalog,
 counts and the operations index row; (3) fresh-context scenarios in disposable
 rooms; (4) Wiki article reconciliation.
 
@@ -192,8 +207,12 @@ rooms; (4) Wiki article reconciliation.
   empty.
 - [ ] A conflicting term, an overloaded term and an edge case each draw a
   specific challenge; a stated behavior is classified against named source.
-- [ ] After a locked and confirmed answer, the settled term reaches the Lexicon
-  only through promotion or a scoped Task; no inline Lexicon write occurs.
+- [ ] A pending term and its correction remain in the notepad; confirmation
+  records settled meaning and promotion reaches the canonical glossary only at
+  the authorized boundary. No inline Canon or glossary write occurs.
+- [ ] Source and format comparison records the pin, credits and each necessary
+  adapter; the upstream language challenges, scenario probes and code checks
+  are preserved without unrelated policy rewrites.
 - [ ] An easily reversed, an unsurprising and a no-alternative choice each fail
   the decision-record offer; a qualifying one is offered as ADR or DDR by the
   scope test.
@@ -205,7 +224,7 @@ rooms; (4) Wiki article reconciliation.
 ## Testing Seams
 
 A scoped source test over the lane `SKILL.md` (operating contract and absent
-parallel stores); `tools/test-skill-catalog.mjs`, `tools/test-workbench-layout.mjs`
+shadow stores and preserved glossary format); `tools/test-skill-catalog.mjs`, `tools/test-workbench-layout.mjs`
 and `tools/test-skills-lane.mjs` for distribution; fresh-context agents in
 disposable rooms with scripted owner turns for behavior, asserting observed
 turns and room diffs, not exact prose. Structural checks prove routing, not
@@ -231,6 +250,8 @@ Record `Docs checked; no update needed` for any other owner checked.
 | Date | Task | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-10-04 | planning | Authored from the owner's remap direction, replacing S-002H; no Task cut | Live sources read at 46ad9789: manifest, layout, skills catalog, grilling, pending source, ledger answers PW-4, GX-2, FND-Q09 and FND-Q13, DDR-000J, ADR-000M, ADR-000S, ADR-000W, ADR-000X, ADR-000Y; PR #251 candidate at e3e0b5f0; personal copy read-only | Spec authored; Wiki article and router now point here | Activation, Tasks, delivery and every verification gate |
+| 2026-10-06 | planning | Reconciled the confirmed glossary destination and capture correction; replaced the blanket glossary ban and old-candidate adoption baseline. | Current bundle and root vocabulary owners inspected at integration 42431879fab3057db9e26ae661b4e92512c281f0; Matt source and GLOSSARY-FORMAT inspected at d81f3a183412e71a5b1e84ca21bc1a35eea03a60. No delivered behavior claimed. | Existing Spec and Domain Modeling article reconciled; DDR-001E and S-004O own vocabulary destination. | Activation, Tasks, migration coordination, skill distribution and behavioral proof. |
+| 2026-10-06 | planning-check | Verified documentation reconciliation; all delivery acceptance remains open. | Source `3d40a86505a339096c4629b814eb4fed1c789d5d`: full suite 53/53; ADR/Wiki, citation and diff checks passed. [Shared planning receipt](../S-004O-lexicon-retirement-and-architecture-md/proof/planning-verification.json) preserves the initial Blueprint-link failure, repair, bounded self-drift summaries and existing doctor findings. | Source owners read back; render regenerated projections. | No implementation, independent assembled review, PR or integration delivery claimed; self-drift remains 15 findings and cleanUpdate false. |
 
 ## Completion Result
 
