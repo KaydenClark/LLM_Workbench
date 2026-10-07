@@ -394,9 +394,23 @@ test('updating a room with no landmarks through the managed route leaves its wor
 const ARTICLES = fs.readdirSync(path.join(root, 'templates', 'wiki')).filter((name) => /^vocabulary-.+\.md$|^ai-coding-reference\.md$/.test(name)).sort();
 const PROJECT_ROW = '| **Greeting** | The single line the CLI prints for a name. | Not a banner or a log line. |';
 
+function retiredTemplateLexicon() {
+  // The Template no longer ships LEXICON.md (S-004O TK-009H); read its last
+  // shipped text from this checkout's history the way the runtime does: the
+  // parent of the commit that deleted it.
+  const relative = 'templates/LEXICON.md';
+  if (fs.existsSync(path.join(root, relative))) return fs.readFileSync(path.join(root, relative), 'utf8');
+  const deleted = spawnSync('git', ['log', '-1', '--format=%H', '--diff-filter=D', 'HEAD', '--', relative], { cwd: root, encoding: 'utf8' });
+  const commit = deleted.stdout.trim();
+  assert.match(commit, /^[0-9a-f]{40}$/, 'the release history records the Template Lexicon deletion');
+  const shown = spawnSync('git', ['show', `${commit}^:${relative}`], { cwd: root, encoding: 'utf8' });
+  assert.equal(shown.status, 0, shown.stderr);
+  return shown.stdout;
+}
+
 function templateLexicon() {
   // A room's Lexicon as Genesis left it: the Template Lexicon, filled.
-  return fs.readFileSync(path.join(root, 'templates', 'LEXICON.md'), 'utf8')
+  return retiredTemplateLexicon()
     .replaceAll('[PROJECT_NAME]', 'Greeter').replaceAll('[HARNESS_VERSION]', VERSION.slice(1))
     .replaceAll('[YYYY-MM-DD]', '2026-09-01').replaceAll('[active / partial / stale]', 'active');
 }

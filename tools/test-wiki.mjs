@@ -985,7 +985,7 @@ test('TK-009D: a lexicon article declares its glossary term and links GLOSSARY.m
 // `explanationHome` lexicon article, which declares the entry's term and is
 // routed from MEMORY.md. Batch one is the glossary's Destination and direction
 // and Workflow verbs groups; later batches add their entries the same way.
-const ROOT_INVENTORY = 'workbench/specs/S-004O-lexicon-retirement-and-architecture-md/proof/lexicon-landing-inventory.json';
+const ROOT_INVENTORY = 'workbench/specs/S-004O-lexicon-retirement-and-architecture-md/proof/lexicon-landing-inventory-final.json';
 const flat = (text) => String(text).replace(/\s+/g, ' ').trim();
 
 function glossaryGroupTerms(group) {

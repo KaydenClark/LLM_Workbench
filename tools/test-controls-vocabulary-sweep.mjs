@@ -3,7 +3,7 @@
 // term across root controls, skills, and the generic template mirrors.
 // TK-003 already swept `workbench/tools` and `tools` (tools/test-spec-workbench.mjs);
 // this sweep covers everything that instructs an agent outside those tool
-// files: AGENTS.md, RUNBOOK.md, LEXICON.md, GLOSSARY.md, README.md,
+// files: AGENTS.md, RUNBOOK.md, GLOSSARY.md, ARCHITECTURE.md, README.md,
 // BLUEPRINT.md, CLAUDE.md, skills/**, templates/** and `team templates/**`. It never
 // touches `workbench/specs/` (historical `TK-###` and `Ticket closed`
 // evidence rows live there, outside this sweep's scope by design) and does
@@ -25,16 +25,12 @@ const ALLOWLIST = [
     reason: 'the glossary Task entry lists the retired term as the alias to avoid' },
   { file: 'templates/GLOSSARY.md', match: '_Avoid_: ticket',
     reason: 'the generic mirror of the same avoided alias' },
-  { file: 'LEXICON.md', match: '**Ticket** | Retired as a live term.',
-    reason: 'the Lexicon row that defines the retired term necessarily names it' },
-  { file: 'templates/LEXICON.md', match: '**Ticket** | Retired as a live term.',
-    reason: 'the generic mirror of the same retired-term row' },
-  { file: 'LEXICON.md', match: 'task-replaces-ticket-as-the-execution-slice-term.md',
-    reason: 'the accepted ADR-000H\'s own filename names the historical replacement it enacted; the file is immutable Canon history, cited nowhere else in this sweep\'s scope, and renaming it is out of this vocabulary-only lane' }
+  // S-004O TK-009H: the Lexicons are removed, so their retired-term row and
+  // ADR-000H filename entries left with them.
 ];
 
 // Each entry excuses only its own exact matched substring, not the whole
-// line: the ADR-000H entry sits inside one long Lexicon table-row line, and
+// line: an entry could sit inside one long line, and
 // excusing that entire line the way `line.includes(entry.match)` alone would
 // do could silently swallow unrelated new `ticket` prose added later
 // anywhere else on that same row. Stripping just the matched token and
@@ -53,13 +49,13 @@ function lineHasLiveTicket(relFile, line) {
 }
 
 // Mutation check, run before the real sweep: appending unrelated `ticket`
-// prose after the allow-listed ADR-000H filename on the same line must still
-// be caught. If a future edit widens the entry back to a whole-line match,
-// this assertion turns red.
+// prose after the allow-listed glossary alias on the same line must still be
+// caught. If a future edit widens the entry back to a whole-line match, this
+// assertion turns red.
 {
-  const mutated = 'reference the ADR filename (workbench/docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md) and also a stray ticket queue';
-  assert.ok(lineHasLiveTicket('LEXICON.md', mutated),
-    'narrowing regression: the ADR-000H allow-list entry must not excuse unrelated ticket prose sharing its line');
+  const mutated = '_Avoid_: ticket, and also a stray ticket queue';
+  assert.ok(lineHasLiveTicket('GLOSSARY.md', mutated),
+    'narrowing regression: the glossary alias allow-list entry must not excuse unrelated ticket prose sharing its line');
 }
 
 function walk(dir) {
@@ -74,7 +70,7 @@ function walk(dir) {
 }
 
 const targets = [];
-for (const file of ['AGENTS.md', 'RUNBOOK.md', 'LEXICON.md', 'GLOSSARY.md', 'README.md', 'BLUEPRINT.md', 'CLAUDE.md']) {
+for (const file of ['AGENTS.md', 'RUNBOOK.md', 'GLOSSARY.md', 'ARCHITECTURE.md', 'README.md', 'BLUEPRINT.md', 'CLAUDE.md']) {
   targets.push(path.join(root, file));
 }
 for (const dir of ['skills', 'templates', 'team templates']) {

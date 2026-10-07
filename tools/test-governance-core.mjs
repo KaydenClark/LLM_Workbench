@@ -35,9 +35,10 @@ test('root and template AGENTS separate instruction authority from state resolut
 // S-004O TK-009J: in this room each Governance Core term is explained by its
 // Wiki lexicon article, which declares the term and links the glossary's
 // Governance core grouping; the definitions themselves are checked in the
-// glossaries by test-control-fidelity. The Template half stays on the
-// Template Lexicon until its removal.
-test('root lexicon articles and the template Lexicon carry the Governance Core terms and keep the owner definition of design concept', () => {
+// glossaries by test-control-fidelity. S-004O TK-009H: the Template Lexicon is
+// removed, so the Template half reads the Governance core grouping of
+// templates/GLOSSARY.md and its Template Wiki vocabulary article.
+test('root lexicon articles and the template glossary and Wiki carry the Governance Core terms and keep the owner definition of design concept', () => {
   for (const term of CORE_TERMS) {
     const slug = term.toLowerCase().replace(/[^a-z0-9]+/g, '-');
     const article = read(`workbench/wiki/dictionary-${slug}.md`);
@@ -45,21 +46,28 @@ test('root lexicon articles and the template Lexicon carry the Governance Core t
     assert.ok(article.includes('(../../GLOSSARY.md#governance-core)'), `the ${term} article links the Governance core grouping`);
   }
   assert.match(read('GLOSSARY.md'), /\*\*Design concept\*\*:\nThe shared understanding between the parties working on a project about what that project is/);
-  for (const relative of ['templates/LEXICON.md']) {
-    const lexicon = read(relative);
-    assert.match(lexicon, /^## Governance Core$/m, `${relative} has a Governance Core section`);
-    for (const term of CORE_TERMS) assert.match(lexicon, new RegExp(`^\\| \\*\\*${term}\\*\\* \\|`, 'm'), `${relative} defines ${term}`);
-    assert.match(lexicon, /\*\*Design concept\*\*.*shared understanding between the parties working on a project about what that project is/s);
+  const glossary = read('templates/GLOSSARY.md');
+  const grouping = glossary.split(/^### Governance core$/m)[1]?.split(/^### /m)[0];
+  assert.ok(grouping, 'templates/GLOSSARY.md has a Governance core grouping');
+  const article = read('templates/wiki/vocabulary-governance-core.md');
+  for (const term of CORE_TERMS) {
+    assert.match(grouping, new RegExp(`^\\*\\*${term}\\*\\*:$`, 'm'), `templates/GLOSSARY.md defines ${term} in the Governance core grouping`);
+    assert.match(article, new RegExp(`^## ${term}$`, 'm'), `templates/wiki/vocabulary-governance-core.md explains ${term}`);
   }
-  const template = read('templates/LEXICON.md');
-  assert.doesNotMatch(template, /workbench\/docs\/adr\/00\d\d-/, 'the template Lexicon must not link product-specific ADRs');
-  assert.match(template, /workbench\/docs\/adr\//, 'the template Lexicon routes to the project ADR collection');
+  assert.ok(article.includes('(../../GLOSSARY.md#governance-core)'), 'the Template Governance core article links the glossary grouping');
+  assert.match(glossary, /\*\*Design concept\*\*:\nThe shared understanding between the parties working on a project about what that project is/);
+  for (const relative of ['templates/GLOSSARY.md', 'templates/ARCHITECTURE.md', 'templates/wiki/vocabulary-governance-core.md']) {
+    assert.doesNotMatch(read(relative), /workbench\/docs\/adr\/00\d\d-/, `${relative} must not link product-specific ADRs`);
+  }
+  assert.match(read('templates/ARCHITECTURE.md'), /workbench\/docs\/adr\//, 'templates/ARCHITECTURE.md routes to the project ADR collection');
 });
 
-test('template Blueprint and Runbook route decision records, diagnostics, and the tools lane', () => {
-  const route = read('templates/LEXICON.md');
-  assert.match(route, /workbench\/docs\/adr\//, 'the Context Map names the ADR collection');
-  assert.match(route, /Workbench Contract/, 'the Lexicon names the contract');
+// S-004O TK-009H: the Template Context Map routes moved from the Template
+// Lexicon to templates/ARCHITECTURE.md.
+test('template ARCHITECTURE.md, Blueprint and Runbook route decision records, diagnostics, and the tools lane', () => {
+  const route = read('templates/ARCHITECTURE.md');
+  assert.match(route, /workbench\/docs\/adr\//, 'the Template routes name the ADR collection');
+  assert.match(route, /Workbench Contract/, 'templates/ARCHITECTURE.md names the contract');
   const runbook = read('templates/RUNBOOK.md');
   // S-004C TK-005J: the decision-record procedure lives in the to-docs skill
   // the template Runbook points to; the Runbook keeps the runtime command list.
@@ -216,8 +224,8 @@ const ARCHITECTURE_LINE_BUDGET = 175;
 const ARCHITECTURE_SECTIONS = ["Bird's-Eye View", 'Codemap', 'Ownership', 'Routes', 'Invariants And Boundaries'];
 const S004O_PROOF = 'workbench/specs/S-004O-lexicon-retirement-and-architecture-md/proof';
 const ARCHITECTURE_INVENTORIES = [
-  { inventory: `${S004O_PROOF}/lexicon-landing-inventory.json`, home: 'ARCHITECTURE.md' },
-  { inventory: `${S004O_PROOF}/template-lexicon-landing-inventory.json`, home: 'templates/ARCHITECTURE.md' }
+  { inventory: `${S004O_PROOF}/lexicon-landing-inventory-final.json`, home: 'ARCHITECTURE.md' },
+  { inventory: `${S004O_PROOF}/template-lexicon-landing-inventory-final.json`, home: 'templates/ARCHITECTURE.md' }
 ];
 
 test('root and template ARCHITECTURE.md carry the bird\'s-eye view, codemap, ownership table, routes and invariants', () => {
