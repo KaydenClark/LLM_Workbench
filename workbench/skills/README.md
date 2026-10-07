@@ -1,7 +1,7 @@
 # Workbench Core Skills
 
 This directory is the self-contained, versioned LLM Workbench skill source. It
-is a closed 28-skill bundle (twenty workflow skills, four coordination skills
+is a closed 29-skill bundle (twenty-one workflow skills, four coordination skills
 and four portable stances), counted from the manifest and catalog below, for a
 brand-new installation, not a general catalog or a project-local discovery tree.
 The checked-out LLM Workbench release owns the exact source versions.
@@ -29,6 +29,7 @@ The checked-out LLM Workbench release owns the exact source versions.
 | `notepad` | Keep one objective's local JSON working context: save it as it appears, retrieve a topic with its corrections, trim only what is reconciled. |
 | `workbench-runtime` | Operate the room's installed runtime tools: read a finding and what it blocks, validate the Wiki, repair installed state, allocate visible identifiers, keep the connection identity, check a configured host and add a room-local skill. |
 | `improve-harness` | Improve one harnessed job through one loop: baseline, earliest gap, smallest owning intervention, native verification, fresh rerun, then retain, revise or remove, with a result record in the feedback lane. |
+| `domain-modeling` | Sharpen the domain model while choices are upstream: challenge and split terms, probe edge cases, check claims against source and trace a name or boundary to the owners it would reach, capturing pending meaning for promotion. |
 | `director` | Coordinate the whole project across Spec-bound Dispatchers and integrate independently reviewed results. |
 | `dispatcher` | Operate as the assigned Dispatcher for one Spec and its branch: plan its Tasks, dispatch and monitor Workers, own assembled verification and hand the candidate to the Director. |
 | `spec-planner` | Plan small Tasks and parallel vertical slices for one assigned Spec from current Actuality at flight launch, then hand the plan to Spec Manager. |
@@ -188,7 +189,6 @@ candidates the review checked and found unreferenced.
 <!-- referenced-skills:start -->
 | Skill | Reference | Requirement | Disposition | Reason |
 |---|---|---|---|---|
-| `domain-modeling` | `workbench/skills/grilling/SKILL.md` | optional | optional mention | Grilling says it "may challenge a concept" within the caller's authorization; the interview completes without it. |
 | `wayfinder` | `workbench/skills/grilling/SKILL.md`, `BLUEPRINT.md` | optional | optional mention | Grilling says it "may" narrow an oversized inquiry and the Blueprint says wayfinding "can open Align"; neither makes it a step. |
 | `tdd` | `workbench/skills/tracer-bullet/SKILL.md` | optional | optional mention | Cited as an example of verifying at a public seam. The required red/green practice is stated in AGENTS.md Engineering And Verification and carried by the lane's `implement` and `builder`, so the practice needs no separate skill. |
 | `brainstorm` | `workbench/wiki/design-concepts/idea-to-delivery-workflow.md` | optional | optional mention | Brainstorming "can open Align" (the Blueprint carried this line until the four-part short page replaced it; the workflow page carries it now); the stated session entry is `grill-me`, which ships in the lane. |

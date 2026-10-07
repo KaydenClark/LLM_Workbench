@@ -57,7 +57,11 @@ export const coordinationSkills = ['director', 'dispatcher', 'spec-planner', 'sp
 // harness improvement for one observed job (baseline, earliest gap, smallest
 // owning intervention, native verification, fresh rerun, then retain, revise
 // or remove), after `workbench-runtime` and ahead of the coordination entries.
-export const coreSkills = [...currentCoreSkills, 'carry', 'notepad', 'save', 'promote', 'handoff', 'grill-me', 'workbench-runtime', 'improve-harness', ...coordinationSkills, ...stanceSkills];
+// S-004J TK-00JA adds `domain-modeling`, the Align companion that challenges
+// and sharpens vocabulary and traces an upstream choice to the owners it would
+// reach before it settles, after `improve-harness` and ahead of the
+// coordination entries, so every coordination and stance slice stays exact.
+export const coreSkills = [...currentCoreSkills, 'carry', 'notepad', 'save', 'promote', 'handoff', 'grill-me', 'workbench-runtime', 'improve-harness', 'domain-modeling', ...coordinationSkills, ...stanceSkills];
 export const lanes = LANES;
 export const collections = COLLECTIONS;
 export const controls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md'];
