@@ -3,11 +3,12 @@
 **Task ID:** TK-009D
 **Spec ID:** S-004O
 **Slice:** Wiki lexicon articles explain the destination and workflow-verb terms and the validator checks glossary links
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** TK-009C
 **Destination:** spec-acceptance: Rich Wiki lexicon articles explain concepts and show usage, link to canonical glossary definitions, and remain routed from Wiki memory; general reference pages can remain Wiki-only.
 **Planned verification:** Red: a Wiki validator case (`workbench/tools/wiki.mjs`, `tools/test-wiki.mjs`) that refuses a lexicon article whose canonical-definition link names a term missing from `GLOSSARY.md` fails first. Green: that case, the validator over this room's Wiki, the batch's articles present, then the full suite.
+**Claimed by:** claude-s004o-worker-e
 
 ## Scope
 
