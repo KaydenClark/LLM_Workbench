@@ -5,11 +5,11 @@
 **Priority:** 2
 **Owner:** claude-fable-5-1
 **Stance:** Builder
-**Updated:** 2026-09-26
+**Updated:** 2026-10-06
 **Catalog description:** Provide a repository-owned entry point that composes grilling with notepad.
 **Blockers:** none.
-**Latest event:** TK-00Q closed with proof.
-**Next gate:** Owner Human QA of conversational fidelity on `integration`, then `complete S-00Z`.
+**Latest event:** 2026-10-06: owner Human QA approved at integration `42431879` (the owner, in chat: "Human QA passes. I declare it here.").
+**Next gate:** Owner promotion of the approved content to `main`, then `complete S-00Z` on observed `origin/main`.
 
 > **Citation anchors.** pre=`4940233e74a93a8390f73f8ac6ba39ef53131798` post=`4940233e74a93a8390f73f8ac6ba39ef53131798`.
 
@@ -105,6 +105,7 @@ steps 1-5 touch only the draft wiki and step 6 only this skill's lane.
 | 2026-09-26 | TK-00Q | Task closed | Red/green tools/test-skill-catalog.mjs (red 3425511, green eebc034); frozen v3.2.1 row assertions in tools/test-workbench-layout.mjs; full AGENTS suite 48/48 at 7d376ad; fresh-context six-turn scenario across two subagents matched the pending, correction, separate-objective and resume contract; wiki validate ok | workbench/skills/grill-me/SKILL.md, workbench/manifest.json, workbench/skills/README.md, workbench/wiki/skill-grill-me.md, bundle-size lines in README, RUNBOOK, LEXICON and templates/GENESIS.md, and the RUNBOOK and templates/RUNBOOK.md behavior row; AGENTS, BLUEPRINT, ADRs and the grilling and notepad articles checked with no update needed because none restates the entry point's behavior | Separate-context candidate review; owner Human QA of conversational fidelity; installed personal skill copies not updated; archived wrapper disposition stays with S-00R; S-00W shared-journey checks TK-00L/M/N |
 | 2026-09-26 | TK-00Q review | Separate-context review of immutable candidate `11edb0798ef51e639ac9e8eed5ebaf5bf73243b8` against base `147ad3f`: PASS, no High/Medium/Low findings | Codex CLI `codex exec -s read-only -m gpt-5.5`; reviewer ran `wiki.mjs validate` and `git diff --check` (both pass) and confirmed by source review that the diff is one skill wide with no change to grilling, notepad, the notepad runtime, the archived wrapper or the audit files, that every notepad command and flag the source names exists in the runtime, that the pending convention matches grilling and notepad, the 22-skill bundle with the stances last, the frozen v3.2.1 row, the append-only rows and the evidence SHAs. A first launch of the reviewer from a backgrounded shell waited on stdin for 43 minutes without reviewing; rerun with stdin closed | None | Reviewer could not run fixture tests in its sandbox (`EPERM` on `mkdtemp`). Owner Human QA remains |
 | 2026-09-26 | review | Review verdict: pass at eec12cf74ee3f649fa199cfe618c67f4df697938 [9108ef5c2278] #1 | none; final-content review of the Spec at eec12cf (checked acceptance lines supported by recorded evidence, Completion Result accurate against source, header and Wiki route consistent); refreshes the digest after the boxes and Completion Result were written post-verdict; fixture tests not run in the reviewer sandbox | Codex CLI codex exec -s read-only -m gpt-5.5, separate context (Lane E log E-gate-review-1.log) | 4 |
+| 2026-10-07 | owner-qa | Owner QA: approve at 42431879fab3057db9e26ae661b4e92512c281f0 [6aba258de3bd] #1 | none | Kayden (owner, in chat 2026-10-06: "Human QA passes. I declare it here.") | none |
 
 ## Completion Result
 

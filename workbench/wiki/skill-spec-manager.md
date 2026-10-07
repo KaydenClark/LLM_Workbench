@@ -16,7 +16,7 @@ source_paths:
   - workbench/docs/adr/000P-roles-scope-work-and-stances-define-the-job.md
   - workbench/docs/adr/0036-stances-change-method-not-authority.md
   - workbench/wiki/design-concepts/roles-and-stances.md
-last_verified: 2026-09-30
+last_verified: 2026-10-06
 ---
 
 # Spec Manager: dispatch and monitor one Spec's Tasks to an assembled candidate
@@ -30,14 +30,14 @@ Use the `spec-manager` stance when you hold the Dispatcher role for one assigned
 The [skill](../skills/spec-manager/SKILL.md) is a stance, composed with a Dispatcher role that is already assigned. The role supplies the scope (one Spec and its branch) and the dispatch responsibility; the stance supplies the execution method and its obligations. Loading it changes the method only. It grants, removes or transfers no authority and spawns no agent, as [ADR-0036](../docs/adr/0036-stances-change-method-not-authority.md) records. [ADR-000P](../docs/adr/000P-roles-scope-work-and-stances-define-the-job.md) makes Spec Planner and Spec Manager distinct Dispatcher-usable stances with separate capability Specs: the planner cuts the Tasks, the manager sends and monitors the execution Workers. [RUNBOOK Role And Stance Coordination](../../RUNBOOK.md#role-and-stance-coordination) owns the operating route.
 
 - **Consume the plan; no second queue.** The manager works from the records Spec Planner left: each Task's Status and Blockers, the concurrency groups, and the named writer of each shared file. It keeps no private list of what runs next. A Task's state lives in its record, kept current by the Spec's single writer, and a gap in the plan goes back to the Spec rather than into a side queue.
-- **Dispatch only ready, non-conflicting Tasks.** Each Worker gets one Task and one attempt, within a small named concurrency. Its assignment quotes the governing owner instruction verbatim and names its endpoint, its worktree or branch, the files it may touch, its log path and what to hand back.
+- **Dispatch only ready, non-conflicting Tasks.** Each Worker gets one Task scope and claim at a time, within a small named concurrency. The whole-Spec correction pass may reuse one Worker across explicitly named Task scopes in sequence. Its assignment quotes the governing owner instruction verbatim and names its endpoint, its worktree or branch, the files it may touch, its log path and what to hand back.
 - **Hold a conflicting write under one writer.** When two ready Tasks would write the same file, one proceeds under the named writer and the other waits, and the condition that releases it is recorded. Independent slices proceed at the same time. The Dispatcher stays the single writer of `SPEC.md`, the Task records and the rendered projections, and Workers never edit that shared state.
 - **Release later work only on satisfied dependencies.** A waiting Task starts when what it depends on is actually satisfied, as the evidence shows, not when that work is expected to finish.
 - **Assess each hand-back against its commit.** The manager checks what a Worker claims at the exact commit it names: the files touched, the checks it says it ran, the docs status. A Task closes only on proof that holds. A claim that does not hold goes back with the gap named.
 - **One attempt per Worker.** A Worker that ends without a hand-back leaves its pushed Task branch as input for the Dispatcher, not as lost or finished work. Incomplete or failing work gets a new attempt of the same Task (same Task ID, same branch, a fresh Worker) with the remaining gap named.
 - **Integrate through merge requests into the Spec branch.** Normal containment is a Worker Task-branch merge request into the Spec branch, then a separately reviewed Spec-branch merge request into `integration` under Director coordination ([AGENTS Git Rules](../../AGENTS.md#git-rules)). The manager reads the [release owner's exemptions](../specs/S-00O-workbench-v4-0-0-release/SPEC.md#bootstrap-exemptions) before choosing a target.
-- **Arrange assembled verification and report to the Director.** Whole-Spec verification uses Reviewer or Auditor stance work for a named job. Changing stance never makes the Dispatcher independent of work it dispatched, so the integration review still needs a separate context. The manager reports the fixed candidate, its proof and its remaining gaps to the Director, and routes cross-Spec issues there rather than settling them alone.
-- **Unsupported host.** If the host cannot run Workers, the manager reports the missing capability and performs the Tasks sequentially rather than inventing an API. A permission refusal is recorded and reported, not routed around.
+- **Arrange assembled verification and report to the Director.** Whole-Spec verification uses Reviewer or Auditor stance work for a named job. Changing stance never makes the Dispatcher independent of work it dispatched, so the integration review still needs a separate context. The manager reports the fixed candidate, its proof and its remaining gaps to the Director, and coordinates cross-Spec prerequisites there when a Director is present. Without one, delegate only necessary directly connected Tasks, preserving their original ownership, claims and proof. A correction Worker may address explicit Task scopes sequentially under serialized claims.
+- **Unsupported host.** If the host cannot run Workers or worktrees, the manager preserves state and reports the missing capability; the Dispatcher does not implement instead. A permission refusal is recorded and reported, not routed around.
 
 ### Example, from the verification run
 
@@ -79,6 +79,8 @@ The [roles and stances design concept](design-concepts/roles-and-stances.md) exp
 - [Wiki router](MEMORY.md)
 
 ## History
+
+- 2026-10-06: Reconciled role and cross-Spec boundaries for the owner-confirmed implement-spec operation (S-002T); older scenario observations remain dated evidence.
 
 - 2026-09-30: Created by S-002G (Spec Manager Stance Spec) TK-003H (Route the spec-manager Wiki article from the Roles And Stances router).
 - 2026-09-30: Example and verified behavior reconciled by the Dispatcher from the TK-003I (Observe the Spec Manager scenario in a fresh context and assemble the Spec proof) scenario.

@@ -11,6 +11,8 @@ source_paths:
   - workbench/docs/adr/0038-setup-proof-precedes-feedback-reporting.md
   - workbench/docs/adr/000K-every-feedback-finding-carries-one-of-four-dispositions.md
   - workbench/feedback/REPORT_FORMAT.md
+  - workbench/skills/improve-harness/SKILL.md
+  - workbench/docs/ddr/001I-harness-improvement-is-one-playbook-not-a-family-of-review-skills.md
 parent: none
 authorized_by: the Wiki Evolving-Synthesis Migration Spec (S-003W), Task TK-004 (landmark synthesis pages)
 last_verified: 2026-10-04
@@ -92,12 +94,15 @@ The same card appears under the Verification landmark; see
   result. The diagnostics test file now holds a registry-wide remediation check,
   but whether that counts as the delivered ratchet is for the owning Spec to say,
   and that Spec's own header still reads active; do not cite it as done from here.
-- Tension to resolve, not settle here: the context-cost card quotes the owner
-  that LLM Workbench does not itself do harness feedback reviews, while a Spec
-  aligning the fifteen-skill review family and the Runbook's manual report
-  procedure both exist in this repository. The Spec is planned and the skills'
-  source is not in the skills lane; whether the review itself belongs here, or
-  only the report format and intake, is not decided on any card.
+- The context-cost card quotes the owner that LLM Workbench does not itself do
+  harness feedback reviews. Since 2026-10-06 the fifteen-skill host-installed
+  review family is retired in favor of one core skill every room carries,
+  [`improve-harness`](../skill-improve-harness.md), which improves one observed
+  job through one loop and writes its result record in the room's feedback lane
+  ([Harness improvement is one playbook, not a family of review skills](../../docs/ddr/001I-harness-improvement-is-one-playbook-not-a-family-of-review-skills.md),
+  delivered by the [Harness Improvement Playbook Skill Spec (S-004L)](../../specs/S-004L-harness-improvement-playbook-skill/SPEC.md)).
+  This repository keeps only its maintainer harvest and report steps around
+  that loop. No card has been revised to say so yet.
 - No measurement mechanism for context cost or agent outcomes exists in this
   repository by these answers; any claim that a harness change improved agent
   outcomes still needs repeated controlled trials, as the decision record
@@ -111,7 +116,9 @@ for the route, the stance skills and the report workflow, and
 [Feedback Finding Dispositions (S-00N)](../../specs/S-00N-feedback-finding-dispositions/SPEC.md)
 for the disposition vocabulary and its ratchet test. The earlier integrity work
 is [Harness Feedback Integrity (S-028)](../../specs/S-028-harness-feedback-integrity/SPEC.md),
-and the review skill family is planned in
+and the one harness improvement skill was delivered by the
+[Harness Improvement Playbook Skill Spec (S-004L)](../../specs/S-004L-harness-improvement-playbook-skill/SPEC.md),
+which overtook the planned
 [harness feedback review skill family alignment (S-003K)](../../specs/S-003K-harness-feedback-review-skill-family-alignment/SPEC.md).
 The format is [REPORT_FORMAT](../../feedback/REPORT_FORMAT.md) in the feedback
 lane. The decision is
@@ -133,3 +140,4 @@ and the vocabulary in the [LEXICON](../../../LEXICON.md).
 ## History
 
 - 2026-10-04: created by the Wiki Evolving-Synthesis Migration Spec (S-003W), Task TK-004 (landmark synthesis pages), seeded from the cards' current answers.
+- 2026-10-06: the Harness Improvement Playbook Skill Spec (S-004L), at its whole-Spec QA, replaced the stale "family is planned" statements with the retired family and the one `improve-harness` skill; the cards themselves are unchanged.

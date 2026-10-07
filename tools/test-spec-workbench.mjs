@@ -27,6 +27,7 @@ import {
   moveTaskRecord,
   nextWork,
   nextIdentity,
+  occupiedIdentities,
   parseCliArgs,
   receiptTask,
   referencesToPath,
@@ -38,16 +39,19 @@ import {
 import { assembleSpecReport, computeSpecDigest, createCorrectiveTasks, recordOwnerApproval, recordReviewVerdict } from '../workbench/tools/spec-report.mjs';
 import { parseSpecPacket } from '../workbench/tools/spec-packet.mjs';
 import { validateAdrs, writeRegister } from '../workbench/tools/adr.mjs';
-import { TASK_STATUSES, listRetiredTaskRecords, listTaskRecords, readTaskRecord, taskStatus, unmetBlockers } from '../workbench/tools/task-record.mjs';
+import { TASK_STATUSES, appendContinuationToContent, listRetiredTaskRecords, listTaskRecords, readTaskRecord, taskStatus, unmetBlockers } from '../workbench/tools/task-record.mjs';
 import { assembleTaskPacket } from '../workbench/tools/task-packet.mjs';
 import { appendReceiptRowToContent, readReceiptFromFile } from '../workbench/tools/task-receipt.mjs';
 import { parseMarkdownTableRow } from '../workbench/tools/markdown-table.mjs';
+import { readTaskStatusesAt } from '../workbench/tools/claim-coordination.mjs';
 // S-00I TK-01U: features capture reads the Wiki validator and note frontmatter.
 import { moveNote, validateWiki } from '../workbench/tools/wiki.mjs';
 import { parseFrontmatter } from '../workbench/tools/adr.mjs';
 if (!process.argv.includes('--close-recovery-only')) {
   await import('./test-lifecycle-directory-links.mjs');
   await import('./test-taskboard-json.mjs');
+  // S-003Z TK-008G: the Task record seam for a landmark-direct Task.
+  await import('./test-task-record.mjs');
 }
 
 // S-00I TK-004F: public CLI interrupted close recovery. Each preload only
@@ -6233,6 +6237,725 @@ function commitAll(dir, message) {
   } finally { fs.rmSync(root, { recursive: true, force: true }); }
 }
 
+// ---- S-003Z TK-008D: the landmarks collection and the LANDMARK.md artifact ----
+// A room declares `collections.landmarks` (the third additive collection); a
+// `LANDMARK.md` authored from `templates/LANDMARK.md` validates through the
+// public seams (`doctor`, `landmark-artifact.mjs validate|list`); doctor names
+// a malformed landmark and a folder that does not start `<collection>/LMK-###-`;
+// and `next-id --prefix LMK` folds the Tracker's JSON records, the artifacts at
+// both lifecycle folders and every remote tip into one occupied set.
+function landmarkFromTemplate(id, overrides = {}) {
+  const template = fs.readFileSync(path.join(repoToolRoot(), 'templates', 'LANDMARK.md'), 'utf8');
+  let content = template
+    .replaceAll('LMK-[###]', id)
+    .replaceAll('[###]', '000A')
+    .replaceAll('[slug]', 'fixture-slug')
+    .replaceAll('[0-9]', '2')
+    .replaceAll('[YYYY-MM-DD]', '2026-10-05')
+    .replaceAll('[HARNESS_VERSION]', '0.0.0');
+  // Every remaining fillable placeholder: a bracketed token holding a letter
+  // that is not a Markdown link label. The `- [ ]` reached checks are kept.
+  content = content.replace(/\[([^\]\n]*[A-Za-z][^\]\n]*)\](?!\()/g, (_token, inner) => `Filled ${inner.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim()}`);
+  for (const [field, value] of Object.entries(overrides)) {
+    content = content.replace(new RegExp(`^\\*\\*${escapeForRegExp(field)}:\\*\\* .*$`, 'm'), `**${field}:** ${value}`);
+  }
+  return content;
+}
+
+{
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'landmark-artifact-'));
+  try {
+    initLifecycleFixture(root);
+    const manifestFile = path.join(root, 'workbench/manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(manifestFile, 'utf8'));
+    // The declaration a migrated or freshly initialized room carries, plus the
+    // Tracker whose JSON landmark records the migration Spec still owns.
+    manifest.collections.landmarks = 'workbench/landmarks';
+    manifest.landmarkTracker = { root: 'workbench/landmark-tracker', collections: { 'destination-questions': 'workbench/landmark-tracker/destination-questions', landmarks: 'workbench/landmark-tracker/landmarks' } };
+    fs.writeFileSync(manifestFile, `${JSON.stringify(manifest, null, 2)}\n`);
+    fs.mkdirSync(path.join(root, 'workbench/landmark-tracker/destination-questions'), { recursive: true });
+    writeAt(root, 'workbench/landmark-tracker/landmarks/LMK-000A.json', '{"id":"LMK-000A"}\n');
+    const authored = landmarkFromTemplate('LMK-0AA', { Status: 'active', Owner: 'director' });
+    assert.ok(!/\[[A-Z_]+\]/.test(authored), 'the fixture fills every uppercase placeholder the template ships');
+    writeAt(root, 'workbench/landmarks/LMK-0AA-first-direction/LANDMARK.md', authored);
+    writeAt(root, 'workbench/landmarks/retired/LMK-000B-old-direction/LANDMARK.md', landmarkFromTemplate('LMK-000B', { Status: 'reached' }));
+    execFileSync('git', ['init', '--quiet', root]);
+    execFileSync('git', ['-C', root, 'config', 'user.email', 'fixture@example.com']);
+    execFileSync('git', ['-C', root, 'config', 'user.name', 'Fixture']);
+    execFileSync('git', ['-C', root, 'add', '-A']);
+    execFileSync('git', ['-C', root, 'commit', '--quiet', '-m', 'local landmarks']);
+    const base = headSha(root);
+    writeAt(root, 'workbench/landmarks/LMK-000C-remote-direction/LANDMARK.md', landmarkFromTemplate('LMK-000C'));
+    execFileSync('git', ['-C', root, 'add', '-A']);
+    execFileSync('git', ['-C', root, 'commit', '--quiet', '-m', 'remote-only landmark']);
+    execFileSync('git', ['-C', root, 'update-ref', 'refs/remotes/origin/parallel', 'HEAD']);
+    execFileSync('git', ['-C', root, 'reset', '--hard', '--quiet', base]);
+
+    const specTool = path.join(repoToolRoot(), 'workbench', 'tools', 'spec-workbench.mjs');
+    const artifactTool = path.join(repoToolRoot(), 'workbench', 'tools', 'landmark-artifact.mjs');
+    const doctorJson = () => {
+      const run = spawnSync(process.execPath, [specTool, 'doctor', '--path', root, '--json'], { encoding: 'utf8' });
+      assert.ok(run.stdout.trim(), `doctor printed findings: ${run.stderr}`);
+      return JSON.parse(run.stdout);
+    };
+    const clean = doctorJson();
+    assert.ok(!clean.some(item => ['invalid-manifest', 'invalid-collection', 'malformed-landmark', 'unstable-path'].includes(item.code)),
+      `a room declaring the landmarks collection with a template-authored landmark is clean: ${JSON.stringify(clean.map(item => item.code))}`);
+
+    const next = spawnSync(process.execPath, [specTool, 'next-id', '--prefix', 'LMK', '--path', root], { encoding: 'utf8' });
+    assert.equal(next.status, 0, next.stdout + next.stderr);
+    assert.equal(JSON.parse(next.stdout).id, 'LMK-000D', 'LMK-0AA (active), LMK-000A (Tracker JSON record), LMK-000B (retired) and LMK-000C (remote-only) stay reserved');
+    const withSpec = spawnSync(process.execPath, [specTool, 'next-id', 'S-00A', '--prefix', 'LMK', '--path', root], { encoding: 'utf8' });
+    assert.notEqual(withSpec.status, 0, 'a landmark identity proposal takes no spec ID');
+
+    const validated = spawnSync(process.execPath, [artifactTool, 'validate', 'LMK-0AA', '--path', root, '--json'], { encoding: 'utf8' });
+    assert.equal(validated.status, 0, validated.stdout + validated.stderr);
+    const report = JSON.parse(validated.stdout);
+    assert.equal(report.status, 'valid');
+    assert.equal(report.landmark.id, 'LMK-0AA');
+    assert.equal(report.landmark.status, 'active');
+    assert.equal(report.landmark.owner, 'director');
+    assert.equal(report.landmark.path, 'workbench/landmarks/LMK-0AA-first-direction/LANDMARK.md');
+    assert.deepEqual(report.landmark.successChecks.map(check => check.done), [false], 'the template seeds one unticked reached check');
+    assert.equal(report.landmark.decisionRecords.length, 1, 'the Decision Records section lists one linked record');
+    assert.deepEqual(report.landmark.blockers, [], 'Blockers: none parses as no blockers');
+
+    const listed = spawnSync(process.execPath, [artifactTool, 'list', '--path', root, '--json'], { encoding: 'utf8' });
+    assert.equal(listed.status, 0, listed.stdout + listed.stderr);
+    const roster = JSON.parse(listed.stdout);
+    assert.deepEqual(roster.active.map(item => item.id), ['LMK-0AA']);
+    assert.deepEqual(roster.retired.map(item => [item.id, item.lifecycleFolder]), [['LMK-000B', 'retired']]);
+
+    const missing = spawnSync(process.execPath, [artifactTool, 'validate', 'LMK-0ZZ', '--path', root, '--json'], { encoding: 'utf8' });
+    assert.notEqual(missing.status, 0, 'validating an unknown landmark is refused');
+
+    // Malformed artifacts are named by doctor, one finding each, without
+    // hiding the healthy landmark or aborting the run.
+    writeAt(root, 'workbench/landmarks/LMK-0AB-bad-status/LANDMARK.md', landmarkFromTemplate('LMK-0AB', { Status: 'done' }));
+    writeAt(root, 'workbench/landmarks/LMK-0AC-bad-blockers/LANDMARK.md', landmarkFromTemplate('LMK-0AC', { Blockers: 'waiting on the owner' }));
+    writeAt(root, 'workbench/landmarks/LMK-0AD-no-checks/LANDMARK.md', landmarkFromTemplate('LMK-0AD').replace(/^- \[ \] .*$/m, 'No checks yet.'));
+    writeAt(root, 'workbench/landmarks/unstable-direction/LANDMARK.md', landmarkFromTemplate('LMK-0AE'));
+    const findings = doctorJson();
+    const malformed = findings.filter(item => item.code === 'malformed-landmark');
+    assert.deepEqual(malformed.map(item => item.landmarkId).sort(), ['LMK-0AB', 'LMK-0AC', 'LMK-0AD'], JSON.stringify(findings));
+    assert.ok(malformed.every(item => item.message.includes(item.landmarkId)), 'each malformed landmark is named in its finding');
+    assert.ok(malformed.some(item => item.landmarkId === 'LMK-0AB' && /done/.test(item.message)), 'the bad status is quoted');
+    assert.ok(malformed.some(item => item.landmarkId === 'LMK-0AC' && /Blockers/.test(item.message)), 'the prose blocker is named');
+    assert.ok(malformed.some(item => item.landmarkId === 'LMK-0AD' && /What Success Looks Like/.test(item.message)), 'the missing reached check is named');
+    const unstable = findings.filter(item => item.code === 'unstable-path' && item.landmarkId);
+    assert.deepEqual(unstable.map(item => item.landmarkId), ['LMK-0AE']);
+    assert.match(unstable[0].message, /workbench\/landmarks\/LMK-0AE-/);
+    const refused = spawnSync(process.execPath, [artifactTool, 'validate', 'LMK-0AB', '--path', root, '--json'], { encoding: 'utf8' });
+    assert.notEqual(refused.status, 0, 'validate exits non-zero for a malformed landmark');
+    assert.match(refused.stdout + refused.stderr, /LMK-0AB/);
+
+    const { RUNTIME_TOOLS } = await import('../workbench/tools/workbench-layout.mjs');
+    assert.ok(RUNTIME_TOOLS.includes('landmark-artifact.mjs'), 'landmark-artifact.mjs is one of the Workbench-managed runtime tools');
+    console.log('ok - a room declares the landmarks collection, validates a template-authored LANDMARK.md, names malformed ones, and next-id reserves LMK identities from every source');
+  } finally { fs.rmSync(root, { recursive: true, force: true }); }
+}
+
+// ---- S-003Z TK-008G: a Task directly under an assigned landmark ----
+// A `tasks/TK-###/TASK.md` beside a `LANDMARK.md` carries `**Landmark ID:**`
+// in place of `**Spec ID:**`. `next` offers it only while its landmark is
+// `active` with an Owner other than `unassigned`; `claim LMK-###` claims it,
+// `receipt`, `close` and `gate --task TK-### --landmark LMK-###` work on it
+// under the Task-PR exemption, `close` appends to the landmark's own evidence
+// log, the Taskboard shows it under the landmark and `move-task` retires it
+// into `<landmark>/tasks/retired/`. Blockers name S-, TK- and LMK- ids, and a
+// reached landmark satisfies an `LMK-###` blocker.
+function landmarkTaskRecord({ id, landmarkId, slice, status = 'ready', blockers = 'none' }) {
+  return [
+    `# ${id} - ${slice}`,
+    '',
+    `**Task ID:** ${id}`,
+    `**Landmark ID:** ${landmarkId}`,
+    `**Slice:** ${slice}`,
+    `**Status:** ${status}`,
+    '**Stance:** Builder',
+    `**Blockers:** ${blockers}`,
+    `**Destination:** spec-acceptance: ${landmarkId} What Success Looks Like`,
+    '**Planned verification:** A failing test first, then green; full suite.',
+    ''
+  ].join('\n');
+}
+
+function landmarkWithDirectTasks(id, overrides, tasks = []) {
+  const content = landmarkFromTemplate(id, overrides);
+  if (tasks.length === 0) return content;
+  const lines = tasks.map(([taskId, slice]) => `- [${taskId} - ${slice}](tasks/${taskId}/TASK.md)`).join('\n');
+  const listed = content.replace(/(## Direct Tasks\n[\s\S]*?\n)- none\n/, (_match, head) => `${head}${lines}\n`);
+  assert.notEqual(listed, content, 'the fixture lists its direct Tasks in the Direct Tasks section');
+  return listed;
+}
+
+{
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'landmark-direct-task-'));
+  try {
+    initLifecycleFixture(root);
+    const manifestFile = path.join(root, 'workbench/manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(manifestFile, 'utf8'));
+    manifest.collections.landmarks = 'workbench/landmarks';
+    fs.writeFileSync(manifestFile, `${JSON.stringify(manifest, null, 2)}\n`);
+    const assigned = 'workbench/landmarks/LMK-0AA-first-direction';
+    writeAt(root, `${assigned}/LANDMARK.md`, landmarkWithDirectTasks('LMK-0AA', { Status: 'active', Owner: 'director', Priority: '2', Updated: TODAY }, [['TK-000A', 'Advance the direction']]));
+    writeAt(root, `${assigned}/tasks/TK-000A/TASK.md`, landmarkTaskRecord({ id: 'TK-000A', landmarkId: 'LMK-0AA', slice: 'Advance the direction' }));
+    // An active landmark no Director holds, and a planned one a Director
+    // holds: neither runs a Task (the Spec's decision; the Contract names only
+    // an assigned delegate).
+    writeAt(root, 'workbench/landmarks/LMK-0AB-unassigned-direction/LANDMARK.md', landmarkWithDirectTasks('LMK-0AB', { Status: 'active', Owner: 'unassigned', Priority: '0' }, [['TK-000B', 'Wait for a Director']]));
+    writeAt(root, 'workbench/landmarks/LMK-0AB-unassigned-direction/tasks/TK-000B/TASK.md', landmarkTaskRecord({ id: 'TK-000B', landmarkId: 'LMK-0AB', slice: 'Wait for a Director' }));
+    writeAt(root, 'workbench/landmarks/LMK-0AC-planned-direction/LANDMARK.md', landmarkWithDirectTasks('LMK-0AC', { Status: 'planned', Owner: 'director', Priority: '0' }, [['TK-000C', 'Wait for activation']]));
+    writeAt(root, 'workbench/landmarks/LMK-0AC-planned-direction/tasks/TK-000C/TASK.md', landmarkTaskRecord({ id: 'TK-000C', landmarkId: 'LMK-0AC', slice: 'Wait for activation' }));
+    writeAt(root, 'workbench/landmarks/retired/LMK-0AD-reached-direction/LANDMARK.md', landmarkFromTemplate('LMK-0AD', { Status: 'reached', Owner: 'director' }));
+    // A Blueprint-level Spec whose Tasks wait on landmarks: a reached one
+    // satisfies the blocker, a planned one does not.
+    const specDir = 'workbench/specs/S-0AA-blueprint-level';
+    writeAt(root, `${specDir}/SPEC.md`, emptyTableRecordBackedSpec('S-0AA').replace('**Priority:** 0', '**Priority:** 9').replace('**Updated:** 2026-09-18', `**Updated:** ${TODAY}`));
+    writeAt(root, `${specDir}/tasks/TK-000D/TASK.md`, taskRecordFixture({ id: 'TK-000D', specId: 'S-0AA', slice: 'After the reached landmark', status: 'ready', blockers: 'LMK-0AD', destination: 'spec-acceptance: S-0AA Acceptance Criteria' }));
+    writeAt(root, `${specDir}/tasks/TK-000E/TASK.md`, taskRecordFixture({ id: 'TK-000E', specId: 'S-0AA', slice: 'Before the planned landmark', status: 'ready', blockers: 'LMK-0AC', destination: 'spec-acceptance: S-0AA Acceptance Criteria' }));
+    render(root);
+    initGitRoot(root);
+    publishFixture(root, 'landmark direct task fixture');
+
+    const specTool = path.join(repoToolRoot(), 'workbench', 'tools', 'spec-workbench.mjs');
+    const cli = (...args) => spawnSync(process.execPath, [specTool, ...args, '--path', root], { encoding: 'utf8' });
+    const json = (run) => { assert.equal(run.status, 0, run.stdout + run.stderr); return JSON.parse(run.stdout); };
+    const taskFile = path.join(root, assigned, 'tasks/TK-000A/TASK.md');
+    const landmarkFile = path.join(root, assigned, 'LANDMARK.md');
+
+    // The record reader names the landmark as the Task's one parent.
+    const [direct] = listTaskRecords(path.join(root, assigned), root);
+    assert.equal(direct.id, 'TK-000A');
+    assert.equal(direct.landmarkId, 'LMK-0AA', 'a TASK.md under a landmark is read with its Landmark ID');
+
+    // next offers the landmark-direct Task (priority 2 beats the Spec's 9) and
+    // names its landmark, never a Spec.
+    const offered = json(cli('next', '--json', '--local'));
+    assert.equal(offered.landmarkId, 'LMK-0AA', JSON.stringify(offered));
+    assert.equal(offered.taskId, 'TK-000A');
+    assert.equal(offered.specId, undefined, 'a landmark-direct offer names no Spec');
+    assert.equal(offered.path, `${assigned}/LANDMARK.md`);
+
+    // No Task runs under an unassigned or a non-active landmark.
+    const landmarkBytes = (dir) => fs.readFileSync(path.join(root, dir, 'LANDMARK.md'), 'utf8');
+    const unassignedBefore = landmarkBytes('workbench/landmarks/LMK-0AB-unassigned-direction');
+    const unassigned = cli('claim', 'LMK-0AB', '--agent', 'worker', '--local');
+    assert.notEqual(unassigned.status, 0, 'claim refuses a Task under an unassigned landmark');
+    assert.match(unassigned.stderr, /LMK-0AB.*unassigned/);
+    assert.equal(landmarkBytes('workbench/landmarks/LMK-0AB-unassigned-direction'), unassignedBefore, 'the refused claim writes nothing');
+    const planned = cli('claim', 'LMK-0AC', '--agent', 'worker', '--local');
+    assert.notEqual(planned.status, 0, 'claim refuses a Task under a planned landmark');
+    assert.match(planned.stderr, /LMK-0AC is planned, not active/);
+
+    const claimed = json(cli('claim', 'LMK-0AA', '--agent', 'worker', '--local', '--date', TODAY, '--json'));
+    assert.equal(claimed.id, 'LMK-0AA', 'claim shows the landmark it claimed under');
+    assert.deepEqual(claimed.coordination, { mode: 'local', reason: 'requested with --local' });
+    assert.match(fs.readFileSync(taskFile, 'utf8'), /^\*\*Status:\*\* in-progress$/m, 'claim moves the landmark-direct Task to in-progress');
+    const claimedLandmark = fs.readFileSync(landmarkFile, 'utf8');
+    assert.match(claimedLandmark, /^\*\*Owner:\*\* director$/m, 'the claim keeps the Director who holds the lane');
+    assert.match(claimedLandmark, /^\*\*Latest event:\*\* TK-000A claimed by worker\.$/m);
+    assert.match(claimedLandmark, /^\*\*Next gate:\*\* Close TK-000A with verification and documentation proof\.$/m);
+
+    // The unassigned and planned landmarks' Tasks are never offered; the
+    // reached landmark satisfies TK-000D's blocker, the planned one does not.
+    const after = json(cli('next', '--json', '--local'));
+    assert.deepEqual([after.specId, after.taskId], ['S-0AA', 'TK-000D'], JSON.stringify(after));
+
+    // The Taskboard projection shows the Task under its landmark.
+    render(root);
+    const board = fs.readFileSync(path.join(root, 'TASKBOARD.md'), 'utf8');
+    assert.match(board, /^\| \[LMK-0AA\]\(workbench\/landmarks\/LMK-0AA-first-direction\/LANDMARK\.md\) \| TK-000A: Advance the direction \(in-progress\) \| director \| none \| TK-000A claimed by worker\. \|/m, board);
+    const findings = doctor(root);
+    assert.deepEqual(findings.filter((item) => ['all', 'selection'].includes(item.blocks)).map((item) => `${item.code}: ${item.message}`), [], 'the room carries no blocking finding');
+    assert.ok(findings.some((item) => item.code === 'blocked-slice' && item.taskId === 'TK-000E' && /LMK-0AC/.test(item.message)), 'doctor names the Task waiting on a landmark that is not reached');
+
+    // receipt appends to the in-progress landmark-direct Task only.
+    const receipt = json(cli('receipt', 'LMK-0AA', '--task', 'TK-000A', '--tests', 'fixture run', '--docs', 'none', '--remaining-gap', 'none', '--json'));
+    assert.equal(receipt.landmarkId, 'LMK-0AA');
+    assert.equal(readReceiptFromFile(taskFile).length, 1, 'receipt appends one row to the landmark-direct Task');
+    const notInProgress = cli('receipt', 'LMK-0AB', '--task', 'TK-000B', '--tests', 'x', '--docs', 'none', '--remaining-gap', 'none');
+    assert.notEqual(notInProgress.status, 0);
+    assert.match(notInProgress.stderr, /LMK-0AB\/TK-000B is ready, not in-progress/);
+
+    // gate reports the Task PR under the exemption, and refuses a Task the
+    // landmark does not hold.
+    const gated = json(cli('gate', '--task', 'TK-000A', '--landmark', 'LMK-0AA', '--json'));
+    assert.equal(gated.mode, 'task-pr');
+    assert.equal(gated.landmarkId, 'LMK-0AA');
+    assert.equal(gated.taskId, 'TK-000A');
+    assert.equal(gated.refused, false, gated.reason);
+    assert.match(gated.exemption, /S-00O exemption 2/);
+    const foreign = cli('gate', '--task', 'TK-000B', '--landmark', 'LMK-0AA', '--json');
+    assert.equal(foreign.status, 1, 'a Task PR naming a Task the landmark does not hold is refused');
+    assert.match(JSON.parse(foreign.stdout).reason, /TK-000B/);
+    const both = cli('gate', '--task', 'TK-000A', '--landmark', 'LMK-0AA', '--spec', 'S-0AA');
+    assert.notEqual(both.status, 0, 'a gate names one parent');
+    assert.match(both.stderr, /either --spec or --landmark/);
+
+    // close appends the row to the landmark's own evidence log.
+    publishFixture(root, 'receipt the landmark-direct Task');
+    const closed = json(cli('close', 'LMK-0AA', '--proof', 'landmark fixture proof', '--docs', 'Docs checked; no update needed', '--remaining-gap', 'none', '--date', TODAY, '--json'));
+    assert.equal(closed.id, 'LMK-0AA');
+    const closedTask = fs.readFileSync(taskFile, 'utf8');
+    assert.match(closedTask, /^\*\*Status:\*\* done$/m);
+    assert.match(closedTask, /^\*\*Proof:\*\* landmark fixture proof$/m);
+    assert.doesNotMatch(closedTask, /Close pending/, 'the pending close marker is cleared');
+    assert.equal(readReceiptFromFile(taskFile).length, 2, 'close appends its own Receipt row');
+    const closedLandmark = fs.readFileSync(landmarkFile, 'utf8');
+    const evidenceRow = `| ${TODAY} | TK-000A | Task closed | landmark fixture proof | Docs checked; no update needed | none |`;
+    assert.ok(closedLandmark.split('\n').includes(evidenceRow), closedLandmark);
+    assert.match(closedLandmark, /^\*\*Latest event:\*\* TK-000A closed with proof\.$/m);
+    assert.match(closedLandmark, /^\*\*Next gate:\*\* Confirm the reached checks and the reached result\.$/m);
+    assert.equal(fs.readFileSync(path.join(root, specDir, 'SPEC.md'), 'utf8').includes('TK-000A'), false, 'no Spec log receives the landmark-direct row');
+
+    // move-task retires it into the landmark's tasks/retired/ and repairs the
+    // landmark's link to it; the frozen evidence row is left as it was.
+    render(root);
+    publishFixture(root, 'close the landmark-direct Task');
+    const moved = json(cli('move-task', 'LMK-0AA', '--task', 'TK-000A', '--to', 'retired', '--json'));
+    assert.equal(moved.landmarkId, 'LMK-0AA');
+    assert.equal(moved.to, `${assigned}/tasks/retired/TK-000A`);
+    assert.ok(fs.existsSync(path.join(root, assigned, 'tasks/retired/TK-000A/TASK.md')));
+    assert.ok(!fs.existsSync(taskFile));
+    const movedLandmark = fs.readFileSync(landmarkFile, 'utf8');
+    assert.match(movedLandmark, /^- \[TK-000A - Advance the direction\]\(tasks\/retired\/TK-000A\/TASK\.md\)$/m, 'the Direct Tasks link follows the move');
+    assert.ok(movedLandmark.split('\n').includes(evidenceRow), 'the evidence row is untouched');
+    const shown = showSpec(root, 'LMK-0AA');
+    assert.deepEqual(shown.tasks, []);
+    assert.deepEqual(shown.retiredTasks.map((task) => task.id), ['TK-000A']);
+
+    // A new Task identity skips every landmark-direct Task's, and a Task
+    // proposal may name a landmark as its parent.
+    assert.equal(nextIdentity(root, 'S-0AA', { prefix: 'TK' }).id, 'TK-000F', 'TK-000A to TK-000C under landmarks stay reserved');
+    assert.deepEqual(nextIdentity(root, 'LMK-0AA', { prefix: 'TK' }), { status: 'proposed', id: 'TK-000F', reserved: false, landmarkId: 'LMK-0AA' });
+
+    // A record under a landmark that names another parent is named by doctor
+    // and stops selection rather than being run under the wrong landmark.
+    writeAt(root, `${assigned}/tasks/TK-000G/TASK.md`, landmarkTaskRecord({ id: 'TK-000G', landmarkId: 'LMK-0AB', slice: 'Misfiled Task' }));
+    assert.ok(doctor(root).some((item) => item.code === 'invalid-state' && item.taskId === 'TK-000G' && /LMK-0AB, expected parent LMK-0AA/.test(item.message)));
+    writeAt(root, `${assigned}/tasks/TK-000G/TASK.md`, taskRecordFixture({ id: 'TK-000G', specId: 'S-0AA', slice: 'Misfiled Task', status: 'ready', blockers: 'none', destination: 'spec-acceptance: S-0AA Acceptance Criteria' }));
+    assert.ok(doctor(root).some((item) => item.code === 'invalid-state' && item.taskId === 'TK-000G' && /S-0AA, expected parent LMK-0AA/.test(item.message)));
+    console.log('ok - a Task directly under an assigned landmark is offered, claimed, receipted, gated, closed into the landmark log, shown on the Taskboard and retired; unassigned and planned landmarks run nothing');
+  } finally { fs.rmSync(root, { recursive: true, force: true }); }
+}
+
+// S-003Z TK-008H: the whole-landmark review at the CLI seam - the plain
+// `report LMK-###` form, `verify LMK-###` refused while a nested child Spec is
+// open, and a fail `verdict LMK-###` whose corrective Task joins the
+// landmark's direct Tasks on the Taskboard.
+{
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'landmark-review-cli-'));
+  try {
+    initLifecycleFixture(root);
+    const manifestFile = path.join(root, 'workbench/manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(manifestFile, 'utf8'));
+    manifest.collections.landmarks = 'workbench/landmarks';
+    fs.writeFileSync(manifestFile, `${JSON.stringify(manifest, null, 2)}\n`);
+    const lmk = 'workbench/landmarks/LMK-0CA-review-direction';
+    writeAt(root, `${lmk}/LANDMARK.md`, landmarkWithDirectTasks('LMK-0CA', { Status: 'active', Owner: 'director', Priority: '1', Updated: TODAY }, [['TK-0CA', 'Advance the direction']]));
+    writeAt(root, `${lmk}/tasks/TK-0CA/TASK.md`, landmarkTaskRecord({ id: 'TK-0CA', landmarkId: 'LMK-0CA', slice: 'Advance the direction', status: 'done' }).replace('**Planned verification:**', '**Proof:** landed\n**Planned verification:**'));
+    const childDir = `${lmk}/specs/S-0CA-nested-child`;
+    writeAt(root, `${childDir}/SPEC.md`, emptyTableRecordBackedSpec('S-0CA').replace('**Updated:** 2026-09-18', `**Updated:** ${TODAY}`));
+    writeAt(root, `${childDir}/tasks/TK-0CB/TASK.md`, taskRecordFixture({ id: 'TK-0CB', specId: 'S-0CA', slice: 'Nested child work', status: 'ready', blockers: 'none', destination: 'spec-acceptance: S-0CA Acceptance Criteria' }));
+    render(root);
+    initGitRoot(root);
+    publishFixture(root, 'landmark review fixture');
+    const head = execFileSync('git', ['-C', root, 'rev-parse', 'HEAD'], { encoding: 'utf8' }).trim();
+    const specTool = path.join(repoToolRoot(), 'workbench', 'tools', 'spec-workbench.mjs');
+    const cli = (...args) => spawnSync(process.execPath, [specTool, ...args, '--path', root], { encoding: 'utf8' });
+
+    const plain = cli('report', 'LMK-0CA', '--candidate', head);
+    assert.equal(plain.status, 0, plain.stdout + plain.stderr);
+    assert.match(plain.stdout, /^LMK-0CA - .+ \[active\]$/m);
+    assert.match(plain.stdout, /^Landmark digest: [0-9a-f]{12}$/m);
+    assert.match(plain.stdout, new RegExp(`^Candidate ${head} .*matchesContent=true`, 'm'));
+    assert.match(plain.stdout, /^ {2}S-0CA active \(open\)/m);
+    assert.match(plain.stdout, /^ {2}TK-0CA done$/m);
+    assert.match(plain.stdout, /^Gaps \(2\):$/m, 'the open child and the unticked reached check are the gaps');
+    assert.match(plain.stdout, /^ {2}- Child Spec S-0CA is active/m);
+
+    const verify = cli('verify', 'LMK-0CA');
+    assert.notEqual(verify.status, 0);
+    assert.match(verify.stderr, /verify refused: LMK-0CA has open children: S-0CA/);
+
+    const failed = cli('verdict', 'LMK-0CA', '--candidate', head, '--result', 'fail', '--findings', 'new Task: Close the integration gap', '--reviewer', 'fresh landmark reviewer', '--json');
+    assert.equal(failed.status, 0, failed.stdout + failed.stderr);
+    const [corrective] = JSON.parse(failed.stdout).correctiveTasks;
+    render(root);
+    const board = fs.readFileSync(path.join(root, 'TASKBOARD.md'), 'utf8');
+    assert.match(board, new RegExp(`^\\| \\[LMK-0CA\\]\\(${lmk}/LANDMARK\\.md\\) \\| ${corrective.id}: Close the integration gap \\(ready\\)`, 'm'), board);
+    assert.deepEqual(doctor(root).filter((item) => ['all', 'selection'].includes(item.blocks)).map((item) => `${item.code}: ${item.message}`), []);
+    console.log('ok - the whole-landmark review reports in plain text, refuses verify while a nested child is open, and a fail verdict puts its corrective Task under the landmark on the Taskboard');
+  } finally { fs.rmSync(root, { recursive: true, force: true }); }
+}
+
+// S-003Z TK-008G: claim publishing carries a landmark-direct claim to the
+// remote, and another instance skips it.
+{
+  const gitIn = (dir, ...args) => execFileSync('git', ['-C', dir, ...args], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
+  const base = fs.mkdtempSync(path.join(os.tmpdir(), 'landmark-claim-coordination-'));
+  const origin = path.join(base, 'origin.git');
+  const clone = (name) => {
+    const dir = path.join(base, name);
+    execFileSync('git', ['clone', '--quiet', origin, dir], { stdio: 'ignore' });
+    gitIn(dir, 'config', 'user.email', `${name}@example.com`);
+    gitIn(dir, 'config', 'user.name', name);
+    gitIn(dir, 'switch', '--quiet', 'integration');
+    return dir;
+  };
+  try {
+    execFileSync('git', ['init', '--quiet', '--bare', '-b', 'main', origin]);
+    const seed = path.join(base, 'seed');
+    execFileSync('git', ['init', '--quiet', '-b', 'main', seed]);
+    gitIn(seed, 'config', 'user.email', 'seed@example.com');
+    gitIn(seed, 'config', 'user.name', 'seed');
+    initLifecycleFixture(seed);
+    const manifestFile = path.join(seed, 'workbench/manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(manifestFile, 'utf8'));
+    manifest.collections.landmarks = 'workbench/landmarks';
+    fs.writeFileSync(manifestFile, `${JSON.stringify(manifest, null, 2)}\n`);
+    const dir = 'workbench/landmarks/LMK-0AA-coordinated-direction';
+    writeAt(seed, `${dir}/LANDMARK.md`, landmarkFromTemplate('LMK-0AA', { Status: 'active', Owner: 'director', Updated: TODAY }));
+    for (const id of ['TK-000A', 'TK-000B']) writeAt(seed, `${dir}/tasks/${id}/TASK.md`, landmarkTaskRecord({ id, landmarkId: 'LMK-0AA', slice: `Coordinated slice ${id}` }));
+    render(seed);
+    gitIn(seed, 'add', '-A');
+    gitIn(seed, 'commit', '--quiet', '-m', 'seed room');
+    gitIn(seed, 'remote', 'add', 'origin', origin);
+    gitIn(seed, 'branch', 'integration');
+    gitIn(seed, 'push', '--quiet', 'origin', 'main', 'integration');
+    const alpha = clone('alpha');
+    const beta = clone('beta');
+    const claimed = claimWork(alpha, 'LMK-0AA', { agent: 'alpha-lane', date: TODAY });
+    assert.equal(claimed.coordination?.mode, 'remote');
+    assert.equal(claimed.coordination.branch, 'alpha/lmk0aa-tk000a', 'the claim branch names the landmark and the Task');
+    assert.equal(gitIn(alpha, 'status', '--porcelain'), '', 'the landmark-direct claim is committed');
+    assert.equal(gitIn(alpha, 'log', '-1', '--format=%s'), 'Claim LMK-0AA TK-000A');
+    assert.match(gitIn(alpha, 'show', '--stat', '--format=', 'HEAD'), /LMK-0AA-coordinated-direction\/tasks\/TK-000A\/TASK\.md/, 'the claim commit carries the Task record');
+    const next = nextWork(beta);
+    assert.equal(next.taskId, 'TK-000B', 'another instance skips the Task claimed on a remote tip');
+    assert.deepEqual(next.coordination.remoteClaimed, [{ landmarkId: 'LMK-0AA', taskId: 'TK-000A', refs: ['origin/alpha/lmk0aa-tk000a'] }]);
+    console.log('ok - a landmark-direct claim is committed and pushed on its task branch, and another instance skips it');
+  } finally { fs.rmSync(base, { recursive: true, force: true }); }
+}
+
+// ---- S-003Z TK-008E: a Spec nested in its landmark's folder ----
+// A Spec may sit at `<landmark>/specs/S-###-slug/` as well as at the
+// Blueprint-level `workbench/specs/`. One `specHomes(root)` reader lists both
+// homes, so the Spec tools find, select, claim, receipt, close, report, gate,
+// move and render a nested Spec as they do a Blueprint-level one; the loaded
+// Spec names the home it sits in (`specsPrefix`) and its parent landmark
+// (`landmarkId`, `null` at the Blueprint level); and `unstable-path` judges a
+// nested Spec against its own home. The fixture room holds one landmark (with
+// a direct Task), a nested Spec with a Task record, a Blueprint-level Spec and
+// two completed Specs to move.
+{
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'landmark-nested-spec-'));
+  try {
+    initLifecycleFixture(root);
+    const manifestFile = path.join(root, 'workbench/manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(manifestFile, 'utf8'));
+    manifest.collections.landmarks = 'workbench/landmarks';
+    fs.writeFileSync(manifestFile, `${JSON.stringify(manifest, null, 2)}\n`);
+    const lmk = 'workbench/landmarks/LMK-0AA-first-direction';
+    writeAt(root, `${lmk}/LANDMARK.md`, landmarkWithDirectTasks('LMK-0AA', { Status: 'active', Owner: 'director', Priority: '5', Updated: TODAY }, [['TK-000A', 'Advance the direction']]));
+    writeAt(root, `${lmk}/tasks/TK-000A/TASK.md`, landmarkTaskRecord({ id: 'TK-000A', landmarkId: 'LMK-0AA', slice: 'Advance the direction' }));
+    writeAt(root, 'tools/nested-seam.mjs', '// fixture seam\n');
+    fs.writeFileSync(path.join(root, 'AGENTS.md'), '# Agents\n\nRoutes to workbench/wiki.\n');
+    // The nested Spec cites a seam path and links the Blueprint-level Spec it
+    // builds on, four folders up from its own directory.
+    const nested = `${lmk}/specs/S-0AB-nested-capability`;
+    const blueprintLink = '../../../../specs/S-0AH-blueprint-complete/SPEC.md';
+    writeAt(root, `${nested}/SPEC.md`, emptyTableRecordBackedSpec('S-0AB')
+      .replace('**Updated:** 2026-09-18', `**Updated:** ${TODAY}`)
+      .replace('## Acceptance Criteria', `## Testing Seams\n\n\`tools/nested-seam.mjs\` after [S-0AH](${blueprintLink}).\n\n## Acceptance Criteria`));
+    writeAt(root, `${nested}/tasks/TK-0AC/TASK.md`, taskRecordFixture({ id: 'TK-0AC', specId: 'S-0AB', slice: 'Nested slice', status: 'ready', blockers: 'none', destination: 'spec-acceptance: S-0AB Testing Seams' }));
+    const blueprintSpec = 'workbench/specs/S-0AD-blueprint-level';
+    writeAt(root, `${blueprintSpec}/SPEC.md`, emptyTableRecordBackedSpec('S-0AD').replace('**Priority:** 0', '**Priority:** 9').replace('**Updated:** 2026-09-18', `**Updated:** ${TODAY}`));
+    writeAt(root, `${blueprintSpec}/tasks/TK-0AE/TASK.md`, taskRecordFixture({ id: 'TK-0AE', specId: 'S-0AD', slice: 'Blueprint slice', status: 'ready', blockers: 'none', destination: 'spec-acceptance: S-0AD Acceptance Criteria' }));
+    writeAt(root, 'workbench/specs/S-0AH-blueprint-complete/SPEC.md', completeFixtureSpec('S-0AH').replaceAll('TK-001', 'TK-0AI'));
+    writeAt(root, `${lmk}/specs/S-0AJ-nested-complete/SPEC.md`, completeFixtureSpec('S-0AJ').replaceAll('TK-001', 'TK-0AK'));
+    initGitRoot(root);
+    publishFixture(root, 'nested spec fixture');
+
+    const specTool = path.join(repoToolRoot(), 'workbench', 'tools', 'spec-workbench.mjs');
+    const cli = (...args) => spawnSync(process.execPath, [specTool, ...args, '--path', root], { encoding: 'utf8' });
+    const json = (run) => { assert.equal(run.status, 0, run.stdout + run.stderr); return JSON.parse(run.stdout); };
+
+    // render then doctor: the nested Spec joins the catalog and the hot board,
+    // and the room carries no blocking finding.
+    assert.equal(cli('render').status, 0);
+    const catalog = fs.readFileSync(path.join(root, 'workbench/specs/CATALOG.md'), 'utf8');
+    assert.match(catalog, /\[S-0AB - Task Lifecycle Fixture\]\(\.\.\/landmarks\/LMK-0AA-first-direction\/specs\/S-0AB-nested-capability\/SPEC\.md\)/, catalog);
+    assert.match(catalog, /\[S-0AD - Task Lifecycle Fixture\]\(S-0AD-blueprint-level\/SPEC\.md\)/, 'a Blueprint-level link keeps its catalog-relative form');
+    assert.match(fs.readFileSync(path.join(root, 'TASKBOARD.md'), 'utf8'), /^\| \[S-0AB\]\(workbench\/landmarks\/LMK-0AA-first-direction\/specs\/S-0AB-nested-capability\/SPEC\.md\) \|/m);
+    const doctored = cli('doctor', '--json');
+    const findings = JSON.parse(doctored.stdout);
+    assert.deepEqual(findings.filter((item) => ['all', 'selection'].includes(item.blocks)).map((item) => `${item.code}: ${item.message}`), [], 'the room carries no blocking finding');
+    assert.ok(!findings.some((item) => item.code === 'unstable-path'), 'unstable-path does not fire for a Spec at its landmark home');
+    assert.equal(doctored.status, 0);
+
+    // The loaded Spec names its home and its parent.
+    const loaded = new Map(loadSpecs(root).map((spec) => [spec.id, spec]));
+    assert.equal(loaded.get('S-0AB').specsPrefix, `${lmk}/specs`);
+    assert.equal(loaded.get('S-0AB').landmarkId, 'LMK-0AA');
+    assert.equal(loaded.get('S-0AD').specsPrefix, 'workbench/specs');
+    assert.equal(loaded.get('S-0AD').landmarkId, null);
+
+    // show and next find the nested Spec (priority 0 beats the landmark's 5
+    // and the Blueprint-level Spec's 9).
+    const shown = json(cli('show', 'S-0AB', '--json'));
+    assert.equal(shown.path, `${nested}/SPEC.md`);
+    assert.equal(shown.landmarkId, 'LMK-0AA', 'show names the landmark the Spec sits under');
+    assert.deepEqual(shown.tasks.map((task) => task.id), ['TK-0AC']);
+    const offered = json(cli('next', '--json', '--local'));
+    assert.deepEqual([offered.specId, offered.taskId, offered.path], ['S-0AB', 'TK-0AC', `${nested}/SPEC.md`], JSON.stringify(offered));
+
+    // The Task packet resolves its destination in the nested Spec.
+    const packet = assembleTaskPacket(root, `${nested}/tasks/TK-0AC/TASK.md`);
+    assert.equal(packet.destination.specPath, `${nested}/SPEC.md`);
+    assert.deepEqual(packet.citedPaths, ['tools/nested-seam.mjs']);
+
+    // A new Spec identity skips the nested ones.
+    assert.ok(!['S-0AB', 'S-0AJ'].includes(nextIdentity(root, undefined, { prefix: 'S' }).id));
+    assert.ok(occupiedIdentities(root, 'S').includes('S-0AJ'), 'a nested Spec identity is occupied');
+    // Remote claim coordination reads the nested Spec's Task status from the
+    // landmarks collection at a ref.
+    assert.equal(readTaskStatusesAt(root, ['HEAD'], 'workbench/specs', 'workbench/landmarks').get('HEAD').get('S-0AB/TK-0AC'), 'ready');
+
+    // claim, receipt, gate --task and close work on the nested Spec's Task.
+    const claimed = json(cli('claim', 'S-0AB', '--agent', 'worker', '--local', '--date', TODAY, '--json'));
+    assert.equal(claimed.id, 'S-0AB');
+    const taskFile = path.join(root, nested, 'tasks/TK-0AC/TASK.md');
+    assert.match(fs.readFileSync(taskFile, 'utf8'), /^\*\*Status:\*\* in-progress$/m);
+    assert.match(fs.readFileSync(path.join(root, nested, 'SPEC.md'), 'utf8'), /^\*\*Owner:\*\* worker$/m);
+    const receipt = json(cli('receipt', 'S-0AB', '--task', 'TK-0AC', '--tests', 'fixture run', '--docs', 'none', '--remaining-gap', 'none', '--json'));
+    assert.equal(receipt.specId, 'S-0AB');
+    const taskGate = json(cli('gate', '--task', 'TK-0AC', '--spec', 'S-0AB', '--json'));
+    assert.equal(taskGate.refused, false, taskGate.reason);
+    assert.equal(cli('render').status, 0);
+    publishFixture(root, 'receipt the nested Task');
+    const closed = json(cli('close', 'S-0AB', '--proof', 'nested fixture proof', '--docs', 'Docs checked; no update needed', '--remaining-gap', 'none', '--date', TODAY, '--json'));
+    assert.equal(closed.id, 'S-0AB');
+    assert.match(fs.readFileSync(taskFile, 'utf8'), /^\*\*Status:\*\* done$/m);
+    assert.ok(fs.readFileSync(path.join(root, nested, 'SPEC.md'), 'utf8').split('\n').includes(`| ${TODAY} | TK-0AC | Task closed | nested fixture proof | Docs checked; no update needed | none |`), 'close appends to the nested Spec log');
+
+    // report and verdict read the nested Spec.
+    assert.equal(cli('render').status, 0);
+    publishFixture(root, 'close the nested Task');
+    const candidate = headSha(root);
+    const report = json(cli('report', 'S-0AB', '--candidate', candidate, '--json'));
+    assert.equal(report.path, `${nested}/SPEC.md`);
+    assert.equal(report.candidate.existsInRepository, true);
+    const verdict = json(cli('verdict', 'S-0AB', '--candidate', candidate, '--digest', report.specDigest, '--result', 'fail', '--findings', 'new Task: tick the acceptance line', '--reviewer', 'separate fixture context', '--json'));
+    assert.equal(verdict.result, 'fail');
+    assert.match(fs.readFileSync(path.join(root, nested, 'SPEC.md'), 'utf8'), /Review verdict: fail at/, 'the verdict lands in the nested Spec log');
+    assert.equal(fs.readdirSync(path.join(root, nested, 'tasks')).length, 2, 'the corrective Task is written beside the nested Spec');
+    const specGate = cli('gate', '--spec', 'S-0AB', '--candidate', candidate, '--json');
+    assert.equal(specGate.status, 1, 'an incomplete nested Spec is refused at the review gate');
+    assert.match(JSON.parse(specGate.stdout).reason, /S-0AB is not complete/);
+    assert.equal(cli('render').status, 0);
+    publishFixture(root, 'record the nested verdict');
+
+    // move-spec moves a completed nested Spec into its own home's retired
+    // folder; show still finds it there.
+    const movedNested = json(cli('move-spec', 'S-0AJ', '--to', 'retired', '--json'));
+    assert.equal(movedNested.to, `${lmk}/specs/retired/S-0AJ-nested-complete`);
+    assert.ok(fs.existsSync(path.join(root, lmk, 'specs/retired/S-0AJ-nested-complete/SPEC.md')));
+    const retiredShown = json(cli('show', 'S-0AJ', '--json'));
+    assert.equal(retiredShown.path, `${lmk}/specs/retired/S-0AJ-nested-complete/SPEC.md`);
+    assert.deepEqual(loadRetiredSpecs(root).map((spec) => [spec.id, spec.specsPrefix, spec.landmarkId]), [['S-0AJ', `${lmk}/specs`, 'LMK-0AA']]);
+    assert.equal(cli('render').status, 0);
+    publishFixture(root, 'retire the nested complete Spec');
+
+    // move-spec of a Blueprint-level Spec rewrites the nested Spec's link.
+    const movedBlueprint = json(cli('move-spec', 'S-0AH', '--to', 'retired', '--json'));
+    assert.equal(movedBlueprint.to, 'workbench/specs/retired/S-0AH-blueprint-complete');
+    assert.match(fs.readFileSync(path.join(root, nested, 'SPEC.md'), 'utf8'), /\[S-0AH\]\(\.\.\/\.\.\/\.\.\/\.\.\/specs\/retired\/S-0AH-blueprint-complete\/SPEC\.md\)/, 'the nested Spec is a live reference surface');
+    // (The template-authored LANDMARK.md links a fixture DDR this room never
+    // wrote; only the Spec records' own links are checked here.)
+    assert.deepEqual(scanReferences(root).filter((item) => /\/(SPEC|TASK)\.md$/.test(item.file)), [], 'no Spec or Task record link dangles after both moves');
+    assert.equal(cli('render').status, 0);
+    publishFixture(root, 'retire the Blueprint-level complete Spec');
+    const after = JSON.parse(cli('doctor', '--json').stdout);
+    assert.deepEqual(after.filter((item) => ['all', 'selection'].includes(item.blocks)).map((item) => `${item.code}: ${item.message}`), []);
+
+    // unstable-path judges a nested Spec against its own home.
+    writeAt(root, `${lmk}/specs/misfiled-folder/SPEC.md`, emptyTableRecordBackedSpec('S-0AM'));
+    fs.mkdirSync(path.join(root, lmk, 'specs/misfiled-folder/tasks'));
+    const unstable = doctor(root).filter((item) => item.code === 'unstable-path');
+    assert.deepEqual(unstable.map((item) => [item.specId, item.message]), [['S-0AM', `S-0AM path must start ${lmk}/specs/S-0AM-`]]);
+    console.log('ok - a Spec nested in its landmark folder is rendered, shown, offered, claimed, receipted, gated, closed, reported, given a verdict and moved, and unstable-path judges it against its own home');
+  } finally { fs.rmSync(root, { recursive: true, force: true }); }
+}
+
+// ---- S-003Z TK-008F: a Spec moves into, out of or between landmarks ----
+// `move-spec S-### --landmark LMK-###` moves an active-roster Spec directory
+// (Task records and all, with `git mv`) under `<landmark>/specs/`; a second
+// `--landmark` moves it between parents and `--landmark none` returns it to
+// the Blueprint-level `workbench/specs/`. Each move is the link-safe move:
+// every live Markdown reference (root controls, every SPEC.md and TASK.md at
+// both homes, the landmark's own LANDMARK.md) is rewritten, the moved Spec's
+// own outgoing links are recomputed for its new depth, the Append-Only
+// Evidence rows are counted as historical, and the result reports
+// `referencesRewritten` and `historicalReferencesLeft`. Any status moves; the
+// refusals are named: unknown Spec or landmark, a retired landmark or Spec, a
+// Spec already under that parent, an occupied destination, a dirty tree, no
+// Git tree, and a malformed option pair.
+{
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'landmark-move-spec-'));
+  const bare = fs.mkdtempSync(path.join(os.tmpdir(), 'landmark-move-spec-nogit-'));
+  try {
+    initLifecycleFixture(root);
+    const manifestFile = path.join(root, 'workbench/manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(manifestFile, 'utf8'));
+    manifest.collections.landmarks = 'workbench/landmarks';
+    fs.writeFileSync(manifestFile, `${JSON.stringify(manifest, null, 2)}\n`);
+    const lmkA = 'workbench/landmarks/LMK-0AA-first-direction';
+    const lmkB = 'workbench/landmarks/LMK-0BA-second-direction';
+    const blueprintDir = 'workbench/specs/S-0AB-moving-capability';
+    const basename = 'S-0AB-moving-capability';
+    // The template's Decision Records line links a fixture DDR this room
+    // never writes; the fixture lists none so the link scan stays exact.
+    const landmark = (id, overrides, childSpecs = '- none') => landmarkFromTemplate(id, overrides)
+      .replace(/(## Decision Records\n[\s\S]*?\n)- \[[^\n]*\n/, (_match, head) => `${head}- none\n`)
+      .replace(/(## Child Specs\n[\s\S]*?\n)- none\n/, (_match, head) => `${head}${childSpecs}\n`);
+    writeAt(root, `${lmkA}/LANDMARK.md`, landmark('LMK-0AA', { Status: 'active', Owner: 'director', Updated: TODAY }, `- [S-0AB - Moving capability](../../specs/${basename}/SPEC.md)`));
+    writeAt(root, `${lmkB}/LANDMARK.md`, landmark('LMK-0BA', { Status: 'planned', Updated: TODAY }));
+    writeAt(root, 'workbench/landmarks/retired/LMK-000R-old-direction/LANDMARK.md', landmark('LMK-000R', { Status: 'reached', Updated: TODAY }));
+    writeAt(root, 'tools/moving-seam.mjs', '// fixture seam\n');
+    fs.writeFileSync(path.join(root, 'AGENTS.md'), `# Agents\n\nThe moving capability is [S-0AB](${blueprintDir}/SPEC.md).\n`);
+    // The active Spec that moves links a seam (a non-Markdown file) and a
+    // sibling Spec; its Task record links back to it.
+    writeAt(root, `${blueprintDir}/SPEC.md`, emptyTableRecordBackedSpec('S-0AB')
+      .replace('**Updated:** 2026-09-18', `**Updated:** ${TODAY}`)
+      .replace('## Acceptance Criteria', '## Testing Seams\n\n[The seam](../../../tools/moving-seam.mjs) after [S-0AD](../S-0AD-sibling/SPEC.md).\n\n## Acceptance Criteria'));
+    writeAt(root, `${blueprintDir}/tasks/TK-0AC/TASK.md`, `${taskRecordFixture({ id: 'TK-0AC', specId: 'S-0AB', slice: 'Moving slice', status: 'ready', blockers: 'none', destination: 'spec-acceptance: S-0AB Testing Seams' })}\nSee [the Spec](../../SPEC.md).\n`);
+    // The sibling links the moving Spec live and in its frozen evidence log.
+    writeAt(root, 'workbench/specs/S-0AD-sibling/SPEC.md', emptyTableRecordBackedSpec('S-0AD')
+      .replace('**Priority:** 0', '**Priority:** 9')
+      .replace('**Updated:** 2026-09-18', `**Updated:** ${TODAY}`)
+      .replace('## Acceptance Criteria', `## Testing Seams\n\nBuilds on [S-0AB](../${basename}/SPEC.md).\n\n## Acceptance Criteria`)
+      .replace('|---|---|---|---|---|---|\n', `|---|---|---|---|---|---|\n| 2026-09-18 | TK-0AE | Linked [S-0AB](../${basename}/SPEC.md) | fixture | none | none |\n`));
+    writeAt(root, 'workbench/specs/S-0AD-sibling/tasks/TK-0AE/TASK.md', taskRecordFixture({ id: 'TK-0AE', specId: 'S-0AD', slice: 'Sibling slice', status: 'ready', blockers: 'none', destination: 'spec-acceptance: S-0AD Acceptance Criteria' }));
+    writeAt(root, 'workbench/specs/S-0AF-planned-capability/SPEC.md', emptyTableRecordBackedSpec('S-0AF').replace('**Status:** active', '**Status:** planned').replace('**Updated:** 2026-09-18', `**Updated:** ${TODAY}`));
+    writeAt(root, 'workbench/specs/S-0AH-retiring-capability/SPEC.md', completeFixtureSpec('S-0AH').replaceAll('TK-001', 'TK-0AI'));
+    initGitRoot(root);
+    const specTool = path.join(repoToolRoot(), 'workbench', 'tools', 'spec-workbench.mjs');
+    const cli = (...args) => spawnSync(process.execPath, [specTool, ...args, '--path', root], { encoding: 'utf8' });
+    const json = (run) => { assert.equal(run.status, 0, run.stdout + run.stderr); return JSON.parse(run.stdout); };
+    const read = (relative) => fs.readFileSync(path.join(root, relative), 'utf8');
+    const blocking = () => JSON.parse(cli('doctor', '--json').stdout).filter((item) => ['all', 'selection'].includes(item.blocks)).map((item) => `${item.code}: ${item.message}`);
+    assert.equal(cli('render').status, 0);
+    publishFixture(root, 'landmark move fixture');
+    assert.deepEqual(scanReferences(root), [], 'every live link resolves before the moves');
+    assert.deepEqual(blocking(), [], 'the fixture room carries no blocking finding');
+
+    // Into a landmark: an active Spec moves with its Task record.
+    const into = json(cli('move-spec', 'S-0AB', '--landmark', 'LMK-0AA', '--json'));
+    const intoDir = `${lmkA}/specs/${basename}`;
+    assert.deepEqual([into.specId, into.from, into.to, into.fromLandmarkId, into.landmarkId, into.usesGit], ['S-0AB', blueprintDir, intoDir, null, 'LMK-0AA', true]);
+    assert.ok(!fs.existsSync(path.join(root, blueprintDir)) && fs.existsSync(path.join(root, intoDir, 'tasks/TK-0AC/TASK.md')), 'the whole directory moved, Task record and all');
+    assert.ok(execFileSync('git', ['-C', root, 'status', '--porcelain'], { encoding: 'utf8' }).split('\n').some((line) => line.startsWith('R ') && line.includes(`${intoDir}/SPEC.md`)), 'the move is staged as a git rename');
+    assert.ok(read('AGENTS.md').includes(`[S-0AB](${intoDir}/SPEC.md)`), 'a root control link is rewritten');
+    assert.ok(read(`${lmkA}/LANDMARK.md`).includes(`(specs/${basename}/SPEC.md)`), "the landmark's own LANDMARK.md link is rewritten");
+    const siblingAfterInto = read('workbench/specs/S-0AD-sibling/SPEC.md');
+    assert.ok(siblingAfterInto.includes(`Builds on [S-0AB](../../landmarks/LMK-0AA-first-direction/specs/${basename}/SPEC.md).`), 'a sibling Spec link is rewritten');
+    assert.ok(siblingAfterInto.includes(`| 2026-09-18 | TK-0AE | Linked [S-0AB](../${basename}/SPEC.md) |`), 'the Append-Only Evidence row stays byte-identical');
+    assert.equal(into.historicalReferencesLeft['workbench/specs/S-0AD-sibling/SPEC.md'], 1, 'the historical link is counted');
+    const movedSpec = read(`${intoDir}/SPEC.md`);
+    assert.ok(movedSpec.includes('[The seam](../../../../../tools/moving-seam.mjs) after [S-0AD](../../../../specs/S-0AD-sibling/SPEC.md).'), "the moved Spec's outgoing links are recomputed for its new depth");
+    assert.ok(read(`${intoDir}/tasks/TK-0AC/TASK.md`).includes('See [the Spec](../../SPEC.md).'), 'a link inside the moving directory keeps its spelling');
+    for (const file of ['AGENTS.md', `${lmkA}/LANDMARK.md`, 'workbench/specs/S-0AD-sibling/SPEC.md', `${intoDir}/SPEC.md`]) {
+      assert.ok(into.referencesRewritten[file] >= 1, `referencesRewritten names ${file}: ${JSON.stringify(into.referencesRewritten)}`);
+    }
+    assert.deepEqual(scanReferences(root), [], 'no live link dangles after the move into a landmark');
+    const nested = new Map(loadSpecs(root).map((spec) => [spec.id, spec]));
+    assert.deepEqual([nested.get('S-0AB').landmarkId, nested.get('S-0AB').specsPrefix, nested.get('S-0AB').status], ['LMK-0AA', `${lmkA}/specs`, 'active']);
+    // The projections re-render against the new home.
+    assert.equal(cli('render').status, 0);
+    assert.match(read('workbench/specs/CATALOG.md'), new RegExp(`\\]\\(\\.\\./landmarks/LMK-0AA-first-direction/specs/${basename}/SPEC\\.md\\)`));
+    assert.match(read('TASKBOARD.md'), new RegExp(`^\\| \\[S-0AB\\]\\(${intoDir.replaceAll('/', '\\/')}\\/SPEC\\.md\\) \\|`, 'm'));
+    assert.deepEqual(blocking(), [], 'no blocking finding after the move into a landmark');
+    publishFixture(root, 'move S-0AB into LMK-0AA');
+
+    // Between parents: a second --landmark moves it from LMK-0AA to LMK-0BA.
+    const between = json(cli('move-spec', 'S-0AB', '--landmark', 'LMK-0BA', '--json'));
+    const betweenDir = `${lmkB}/specs/${basename}`;
+    assert.deepEqual([between.from, between.to, between.fromLandmarkId, between.landmarkId], [intoDir, betweenDir, 'LMK-0AA', 'LMK-0BA']);
+    assert.ok(read(`${lmkA}/LANDMARK.md`).includes(`(../LMK-0BA-second-direction/specs/${basename}/SPEC.md)`), "the former parent's LANDMARK.md link follows the Spec");
+    assert.ok(read('AGENTS.md').includes(`[S-0AB](${betweenDir}/SPEC.md)`));
+    assert.ok(read(`${betweenDir}/SPEC.md`).includes('[The seam](../../../../../tools/moving-seam.mjs) after [S-0AD](../../../../specs/S-0AD-sibling/SPEC.md).'), 'same depth, same outgoing spelling');
+    assert.deepEqual(scanReferences(root), [], 'no live link dangles after the move between landmarks');
+    assert.equal(loadSpecs(root).find((spec) => spec.id === 'S-0AB').landmarkId, 'LMK-0BA');
+    assert.equal(cli('render').status, 0);
+    assert.match(read('workbench/specs/CATALOG.md'), new RegExp(`\\]\\(\\.\\./landmarks/LMK-0BA-second-direction/specs/${basename}/SPEC\\.md\\)`));
+    assert.deepEqual(blocking(), []);
+    publishFixture(root, 'move S-0AB into LMK-0BA');
+
+    // Out again: --landmark none returns it to the Blueprint level, and every
+    // rewritten link returns to its original spelling.
+    const out = json(cli('move-spec', 'S-0AB', '--landmark', 'none', '--json'));
+    assert.deepEqual([out.from, out.to, out.fromLandmarkId, out.landmarkId], [betweenDir, blueprintDir, 'LMK-0BA', null]);
+    assert.ok(read('AGENTS.md').includes(`[S-0AB](${blueprintDir}/SPEC.md)`));
+    assert.ok(read('workbench/specs/S-0AD-sibling/SPEC.md').includes(`Builds on [S-0AB](../${basename}/SPEC.md).`));
+    assert.ok(read(`${lmkA}/LANDMARK.md`).includes(`(../../specs/${basename}/SPEC.md)`));
+    assert.ok(read(`${blueprintDir}/SPEC.md`).includes('[The seam](../../../tools/moving-seam.mjs) after [S-0AD](../S-0AD-sibling/SPEC.md).'));
+    assert.deepEqual(scanReferences(root), [], 'no live link dangles after the move out of a landmark');
+    assert.equal(loadSpecs(root).find((spec) => spec.id === 'S-0AB').landmarkId, null);
+    assert.equal(cli('render').status, 0);
+    assert.match(read('workbench/specs/CATALOG.md'), new RegExp(`\\]\\(${basename}/SPEC\\.md\\)`));
+    assert.deepEqual(blocking(), []);
+    publishFixture(root, 'move S-0AB back to the Blueprint level');
+
+    // Any status moves: a planned Spec gains its landmark.
+    const planned = json(cli('move-spec', 'S-0AF', '--landmark', 'LMK-0AA', '--json'));
+    assert.equal(planned.to, `${lmkA}/specs/S-0AF-planned-capability`);
+    assert.equal(loadSpecs(root).find((spec) => spec.id === 'S-0AF').status, 'planned');
+    assert.equal(cli('render').status, 0);
+    publishFixture(root, 'move the planned S-0AF into LMK-0AA');
+    // Only retirement keeps the complete-only rule.
+    assert.match(cli('move-spec', 'S-0AF', '--to', 'retired').stderr, /S-0AF is planned, not complete/);
+    assert.equal(json(cli('move-spec', 'S-0AH', '--to', 'retired', '--json')).to, 'workbench/specs/retired/S-0AH-retiring-capability');
+    assert.equal(cli('render').status, 0);
+    publishFixture(root, 'retire S-0AH');
+
+    // Refusals by name, each leaving HEAD, index and tree untouched.
+    const refuses = (args, pattern, label) => {
+      const head = headSha(root);
+      const status = execFileSync('git', ['-C', root, 'status', '--porcelain', '--untracked-files=all'], { encoding: 'utf8' });
+      const run = cli('move-spec', ...args);
+      assert.notEqual(run.status, 0, `${label}: refused`);
+      assert.match(run.stderr, pattern, `${label}: ${run.stderr}`);
+      assert.equal(headSha(root), head, `${label}: HEAD unchanged`);
+      assert.equal(execFileSync('git', ['-C', root, 'status', '--porcelain', '--untracked-files=all'], { encoding: 'utf8' }), status, `${label}: tree unchanged`);
+    };
+    refuses(['S-0ZZ', '--landmark', 'LMK-0AA'], /Unknown spec ID: S-0ZZ/, 'unknown Spec');
+    refuses(['S-0AB', '--landmark', 'LMK-0ZZ'], /Unknown landmark ID: LMK-0ZZ/, 'unknown landmark');
+    refuses(['S-0AB', '--landmark', 'LMK-000R'], /LMK-000R is retired/, 'retired landmark');
+    refuses(['S-0AH', '--landmark', 'LMK-0AA'], /S-0AH is already retired/, 'retired Spec');
+    refuses(['S-0AF', '--landmark', 'LMK-0AA'], /S-0AF is already under LMK-0AA/, 'already under that landmark');
+    refuses(['S-0AB', '--landmark', 'none'], /S-0AB is already at the Blueprint level/, 'already at the Blueprint level');
+    refuses(['S-0AB', '--landmark', 'LMK-0AA', '--to', 'retired'], /--to FOLDER or --landmark LMK-###\|none, not both/, 'both options');
+    refuses(['S-0AB', '--landmark', ''], /--landmark requires a landmark identity or none/, 'missing landmark value');
+    writeAt(root, `${lmkB}/specs/${basename}/stray.txt`, 'occupies the destination\n');
+    publishFixture(root, 'occupy the destination');
+    refuses(['S-0AB', '--landmark', 'LMK-0BA'], new RegExp(`move-spec destination already exists: ${lmkB}/specs/${basename}`), 'occupied destination');
+    writeAt(root, 'untracked.txt', 'dirty\n');
+    refuses(['S-0AB', '--landmark', 'LMK-0AA'], /move-spec refuses a dirty working tree/, 'dirty tree');
+    fs.rmSync(path.join(root, 'untracked.txt'));
+    fs.cpSync(root, bare, { recursive: true, filter: (source) => path.basename(source) !== '.git' });
+    const noGit = spawnSync(process.execPath, [specTool, 'move-spec', 'S-0AB', '--landmark', 'LMK-0AA', '--path', bare], { encoding: 'utf8' });
+    assert.notEqual(noGit.status, 0);
+    assert.match(noGit.stderr, /move-spec requires a Git working tree/);
+    assert.ok(fs.existsSync(path.join(bare, blueprintDir, 'SPEC.md')), 'no Git tree: nothing moved');
+    console.log('ok - move-spec --landmark moves a Spec into, between and out of landmarks through the link-safe move, and refuses by name');
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+    fs.rmSync(bare, { recursive: true, force: true });
+  }
+}
+
 // ---- S-00J TK-01T: reviewed-delivery blocker `S-###:delivered` (begin) ----
 // A dependent that needs only a blocker Spec's reviewed integration delivery
 // (T0 of S-00J's closure-capture transition contract) writes
@@ -7041,6 +7764,94 @@ function parseTaskRecordForTest(content) {
     fs.rmSync(localRoot, { recursive: true, force: true });
   }
 }
+
+// A remote tip claims a Task only from the Task's current run. A failed
+// assembled review (`verdict --result fail` with `continue TK-###`) returns a
+// done Task to ready under a new Continuation run; every branch cut before
+// that still shows the old run's `done`, and none of them is a live claim.
+// The baseline run is the later of the integration base and the local record.
+{
+  const gitIn = (dir, ...args) => execFileSync('git', ['-C', dir, ...args], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
+  const continuationBase = fs.mkdtempSync(path.join(os.tmpdir(), 'claim-continuation-'));
+  const origin = path.join(continuationBase, 'origin.git');
+  const clone = (name) => {
+    const dir = path.join(continuationBase, name);
+    execFileSync('git', ['clone', '--quiet', origin, dir], { stdio: 'ignore' });
+    gitIn(dir, 'config', 'user.email', `${name}@example.com`);
+    gitIn(dir, 'config', 'user.name', name);
+    gitIn(dir, 'switch', '--quiet', 'integration');
+    return dir;
+  };
+  const specDir = 'workbench/specs/S-803-continuation';
+  const recordPath = (taskId) => `${specDir}/tasks/${taskId}/TASK.md`;
+  const writeTask = (dir, taskId, status) => writeAt(dir, recordPath(taskId), taskRecordFixture({
+    id: taskId, specId: 'S-803', slice: `Continued slice ${taskId}`, status, blockers: 'none', destination: 'spec-acceptance: S-803 Acceptance Criteria'
+  }));
+  // Return a done Task to ready under Continuation run 1, as a fail verdict does.
+  const continueTask = (dir, taskId) => {
+    const file = path.join(dir, recordPath(taskId));
+    const ready = fs.readFileSync(file, 'utf8').replace('**Status:** done', '**Status:** ready');
+    fs.writeFileSync(file, appendContinuationToContent(ready, { date: TODAY, answers: 'evidence row 9 (fail verdict)', handoff: 'Close the open acceptance line' }, taskId));
+  };
+  const commitAll = (dir, message) => { render(dir); gitIn(dir, 'add', '-A'); gitIn(dir, 'commit', '--quiet', '-m', message); };
+  try {
+    execFileSync('git', ['init', '--quiet', '--bare', '-b', 'main', origin]);
+    const seed = path.join(continuationBase, 'seed');
+    execFileSync('git', ['init', '--quiet', '-b', 'main', seed]);
+    gitIn(seed, 'config', 'user.email', 'seed@example.com');
+    gitIn(seed, 'config', 'user.name', 'seed');
+    initLifecycleFixture(seed);
+    writeAt(seed, `${specDir}/SPEC.md`, recordBackedSpec('S-803').replace('**Updated:** 2026-07-12', `**Updated:** ${TODAY}`));
+    writeTask(seed, 'TK-004', 'done');
+    writeTask(seed, 'TK-005', 'ready');
+    commitAll(seed, 'seed room: TK-004 done in run 0, TK-005 ready');
+    gitIn(seed, 'remote', 'add', 'origin', origin);
+    gitIn(seed, 'branch', 'integration');
+    gitIn(seed, 'push', '--quiet', 'origin', 'main', 'integration');
+    // Stale tips cut while TK-004 was done in run 0.
+    gitIn(seed, 'push', '--quiet', 'origin', 'integration:refs/heads/codex/old-lane', 'integration:refs/heads/backup/old-lane');
+    // A tip that closed TK-005 in run 0 and is not merged yet: a live claim.
+    gitIn(seed, 'switch', '--quiet', '-c', 'codex/closed-lane', 'integration');
+    writeTask(seed, 'TK-005', 'done');
+    commitAll(seed, 'close TK-005 run 0');
+    gitIn(seed, 'push', '--quiet', 'origin', 'codex/closed-lane');
+    // The fail verdict lands on integration: TK-004 is ready again in run 1.
+    gitIn(seed, 'switch', '--quiet', 'integration');
+    continueTask(seed, 'TK-004');
+    commitAll(seed, 'fail verdict continues TK-004');
+    gitIn(seed, 'push', '--quiet', 'origin', 'integration');
+
+    // (1) Every older-run tip shows TK-004 done, yet none claims run 1.
+    const alpha = clone('alpha');
+    const beta = clone('beta');
+    const nextA = nextWork(alpha);
+    assert.equal(nextA.taskId, 'TK-004', '(1) a continued Task is offered although older-run tips show it done');
+    assert.deepEqual(nextA.coordination.remoteClaimed, [{ specId: 'S-803', taskId: 'TK-005', refs: ['origin/codex/closed-lane'] }], '(1) only the same-run close is reported as a claim');
+    const claimedA = claimWork(alpha, 'S-803', { agent: 'alpha', task: 'TK-004', date: TODAY });
+    assert.equal(claimedA.coordination?.mode, 'remote', '(1) the continued Task is claimed through remote coordination, without --local');
+    assert.equal(claimedA.coordination.branch, 'alpha/s803-tk004');
+    assert.equal(readTaskRecord(path.join(alpha, recordPath('TK-004')), alpha).status, 'in-progress');
+
+    // (2) A claim made in the current run still takes the Task.
+    assert.equal(nextWork(beta), null, '(2) with TK-004 claimed in run 1 and TK-005 closed on a tip, nothing is offered');
+    assert.throws(() => claimWork(beta, 'S-803', { agent: 'beta', task: 'TK-004', date: TODAY }), /claimed on a remote tip: TK-004 \(origin\/alpha\/s803-tk004\)/, '(2) the run-1 claim is reported, the older-run tips are not');
+
+    // (3) A local record newer than every tip: the continuation exists only
+    // on this lane (not yet on integration), so the run-0 close of TK-005 on
+    // codex/closed-lane is an older run than the local record.
+    const gamma = clone('gamma');
+    gitIn(gamma, 'switch', '--quiet', '-c', 'claude/gamma-lane');
+    writeTask(gamma, 'TK-005', 'done');
+    continueTask(gamma, 'TK-005');
+    commitAll(gamma, 'fail verdict continues TK-005 on the lane');
+    const claimedG = claimWork(gamma, 'S-803', { agent: 'gamma', task: 'TK-005', date: TODAY });
+    assert.equal(claimedG.coordination.branch, 'claude/gamma-lane', '(3) a Task whose local record is a newer run than the tip is claimable');
+    assert.equal(readTaskRecord(path.join(gamma, recordPath('TK-005')), gamma).status, 'in-progress');
+    console.log('ok - remote coordination counts a Task claimed only on a tip at its current run, so a continued Task is claimable without --local while a same-run claim still takes it');
+  } finally {
+    fs.rmSync(continuationBase, { recursive: true, force: true });
+  }
+}
 // ---- S-00V TK-01L: push-on-claim and fetch-before-select (end) ----
 
 // ---- S-01W TK-002O: explicit widen-id touch (start) ----
@@ -7286,4 +8097,164 @@ function parseTaskRecordForTest(content) {
   } finally {
     fs.rmSync(continueRoot, { recursive: true, force: true });
   }
+}
+
+// ---- S-003Z TK-008I: a reached landmark retires into its Landmark Wiki page ----
+// `retire-landmark LMK-### --wiki <page>` is the Spec's `retire-spec` one size
+// up: it refuses by name a landmark that is not reached, one with an open
+// child, one without a current pass verdict, a dirty tree, a page outside the
+// Wiki lane, a page whose `source_paths` does not name the landmark's
+// historical `LANDMARK.md` route, and one without the owner's approval - which
+// `approve LMK-###` records as the operator supplies it and retirement never
+// records itself. Then the whole landmark folder, nested Specs and Tasks
+// included, moves to `<collection>/retired/` with every live reference
+// rewritten, and `show LMK-###` finds it by its historical route. The owner
+// here is an explicitly simulated fixture actor: these receipts prove the
+// runtime machinery, never real Human QA.
+{
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'landmark-retire-'));
+  try {
+    initLifecycleFixture(root);
+    const manifestFile = path.join(root, 'workbench/manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(manifestFile, 'utf8'));
+    manifest.collections.landmarks = 'workbench/landmarks';
+    fs.writeFileSync(manifestFile, `${JSON.stringify(manifest, null, 2)}\n`);
+    const lmk = 'workbench/landmarks/LMK-0DA-retiring-direction';
+    const retiredDir = 'workbench/landmarks/retired/LMK-0DA-retiring-direction';
+    const historicalRoute = `${retiredDir}/LANDMARK.md`;
+    const landmarkFile = path.join(root, lmk, 'LANDMARK.md');
+    const page = 'workbench/wiki/design-concepts/landmark-retiring-direction.md';
+    const owner = 'Simulated fixture owner (LMK-0DA only; not Kayden Human QA)';
+    const reviewer = 'Simulated independent landmark reviewer (machinery only)';
+    const landmarkText = landmarkWithDirectTasks('LMK-0DA', { Status: 'active', Owner: 'lane-director', Priority: '1', Updated: TODAY }, [['TK-0DA', 'Advance the retiring direction']])
+      .replace('- [ ] ', '- [x] ')
+      .replace(/(## Child Specs\n[\s\S]*?\n)- none\n/, '$1- [S-0DA - Retiring child](specs/S-0DA-retiring-child/SPEC.md)\n');
+    writeAt(root, `${lmk}/LANDMARK.md`, landmarkText);
+    writeAt(root, `${lmk}/tasks/TK-0DA/TASK.md`, landmarkTaskRecord({ id: 'TK-0DA', landmarkId: 'LMK-0DA', slice: 'Advance the retiring direction', status: 'done' }).replace('**Planned verification:**', '**Proof:** landed\n**Planned verification:**'));
+    writeAt(root, `${lmk}/specs/S-0DA-retiring-child/SPEC.md`, completeFixtureSpec('S-0DA').replaceAll('TK-001', 'TK-0DB'));
+    fs.writeFileSync(path.join(root, 'AGENTS.md'), `# Agents\n\nRoutes to workbench/wiki. The [Retiring Direction landmark](${lmk}/LANDMARK.md) holds the fixture direction.\n`);
+    const pageBody = [
+      '# Landmark: Retiring Direction', '',
+      'The Retiring Direction landmark ([Retiring Direction landmark](../../landmarks/LMK-0DA-retiring-direction/LANDMARK.md)) reached its destination; this page is its evolving synthesis.', '',
+      '## Evidence and Sources', '', '- The Retiring Direction landmark record, named in source_paths.', '',
+      '## History', '', '- 2026-10-06: written at retirement.', ''
+    ].join('\n');
+    const landmarkPage = (sourcePaths) => retirementGuidebookNote(historicalRoute, {
+      type: 'design-concept', knowledgeRole: 'curated', sourcePaths,
+      authorizedBy: 'the LANDMARK.md Artifact And Lane Runtime Spec (S-003Z) retirement fixture', parent: 'none', body: pageBody
+    });
+    // First the page names the landmark's live route, not its historical one.
+    writeAt(root, page, landmarkPage([`${lmk}/LANDMARK.md`]));
+    writeAt(root, 'workbench/wiki/MEMORY.md', '# Fixture Room Brain\n\nSee [Landmark: Retiring Direction](design-concepts/landmark-retiring-direction.md).\n');
+    initGitRoot(root);
+    const branch = execFileSync('git', ['-C', root, 'rev-parse', '--abbrev-ref', 'HEAD'], { encoding: 'utf8' }).trim();
+    declareFixtureGit(root, { defaultBranch: branch, integrationBranch: branch });
+    render(root);
+    commitAll(root, 'landmark retirement fixture');
+    const specTool = path.join(repoToolRoot(), 'workbench', 'tools', 'spec-workbench.mjs');
+    const cli = (...args) => spawnSync(process.execPath, [specTool, ...args, '--path', root], { encoding: 'utf8' });
+    const json = (run) => { assert.equal(run.status, 0, run.stdout + run.stderr); return JSON.parse(run.stdout); };
+    const refused = (pattern, ...args) => {
+      const run = cli(...args);
+      assert.notEqual(run.status, 0, `${args.join(' ')} must be refused: ${run.stdout}`);
+      assert.match(run.stderr, pattern, run.stderr);
+      return run;
+    };
+    const retire = (wiki = page) => ['retire-landmark', 'LMK-0DA', '--wiki', wiki, '--json'];
+
+    // A landmark that is not reached is refused, and so is a missing page.
+    refused(/LMK-0DA is active, not reached; only a reached landmark retires/, ...retire());
+    refused(/retire-landmark requires --wiki/, 'retire-landmark', 'LMK-0DA');
+
+    // Reached by hand but with no review verdict for its current content.
+    fs.writeFileSync(landmarkFile, landmarkText.replace('**Status:** active', '**Status:** reached'));
+    refused(/LMK-0DA cannot retire: no whole-landmark review verdict is recorded for its current content \(current digest [0-9a-f]{12}\)/, ...retire());
+    // Reached, with an open direct Task.
+    writeAt(root, `${lmk}/tasks/TK-0DC/TASK.md`, landmarkTaskRecord({ id: 'TK-0DC', landmarkId: 'LMK-0DA', slice: 'Late open work' }));
+    refused(/LMK-0DA cannot retire: it has open children: TK-0DC \(ready, not done\)/, ...retire());
+    fs.rmSync(path.join(root, lmk, 'tasks/TK-0DC'), { recursive: true, force: true });
+    fs.writeFileSync(landmarkFile, landmarkText);
+
+    // The whole-landmark review passes and reaches the landmark.
+    const passed = json(cli('verdict', 'LMK-0DA', '--candidate', headSha(root), '--result', 'pass', '--findings', 'none', '--reviewer', reviewer, '--json'));
+    assert.equal(passed.reached, true, passed.notReached?.join('; '));
+    commitAll(root, 'record the passing whole-landmark review');
+
+    // A dirty tree, a page outside the Wiki lane, and a page whose
+    // source_paths names the live route rather than the historical one.
+    fs.writeFileSync(path.join(root, 'stray.txt'), 'uncommitted\n');
+    refused(/retire-landmark refuses a dirty working tree/, ...retire());
+    fs.rmSync(path.join(root, 'stray.txt'));
+    refused(/--wiki docs\/landmark-retiring-direction\.md must name a page under the Wiki lane/, ...retire('docs/landmark-retiring-direction.md'));
+    refused(new RegExp(`source_paths must name LMK-0DA's historical route ${escapeForRegExp(historicalRoute)}`), ...retire());
+
+    // A valid, routed page - and still no owner approval: refused, and the
+    // refusal records nothing.
+    writeAt(root, page, landmarkPage([historicalRoute]));
+    commitAll(root, 'name the historical LANDMARK.md route');
+    const beforeApproval = fs.readFileSync(landmarkFile, 'utf8');
+    refused(/LMK-0DA cannot retire: no owner Human QA approval is recorded for LMK-0DA \(current digest [0-9a-f]{12}\)/, ...retire());
+    assert.equal(fs.readFileSync(landmarkFile, 'utf8'), beforeApproval, 'retire-landmark never records an approval itself');
+    assert.doesNotMatch(beforeApproval, /owner-qa/);
+    assert.equal(execFileSync('git', ['-C', root, 'status', '--porcelain'], { encoding: 'utf8' }), '', 'every refusal leaves the tree clean');
+
+    // `approve LMK-###` records the owner's approval as the operator supplies
+    // it, bound to the landmark's committed content on integration.
+    const candidate = headSha(root);
+    const digest = json(cli('report', 'LMK-0DA', '--json')).landmarkDigest;
+    refused(/does not exist in this repository/, 'approve', 'LMK-0DA', '--candidate', 'deadbeef'.repeat(5), '--owner', owner);
+    refused(/requires --owner/, 'approve', 'LMK-0DA', '--candidate', candidate);
+    refused(/digest 000000000000 named for candidate .* does not match/, 'approve', 'LMK-0DA', '--candidate', candidate, '--owner', owner, '--digest', '0'.repeat(64));
+    refused(/approve LMK-### records the owner's approval only/, 'approve', 'LMK-0DA', '--candidate', candidate, '--owner', owner, '--finding', 'new Task: Another gap');
+    assert.equal(fs.readFileSync(landmarkFile, 'utf8'), beforeApproval, 'a refused approval writes nothing');
+    const approved = json(cli('approve', 'LMK-0DA', '--candidate', candidate, '--owner', owner, '--digest', digest, '--json'));
+    assert.equal(approved.landmarkId, 'LMK-0DA');
+    assert.equal(approved.result, 'approve');
+    assert.equal(approved.owner, owner);
+    const approvalRow = `| ${TODAY} | owner-qa | Owner QA: approve at ${candidate} [${digest.slice(0, 12)}] #1 | none | ${owner} | none |`;
+    assert.ok(fs.readFileSync(landmarkFile, 'utf8').split('\n').includes(approvalRow), fs.readFileSync(landmarkFile, 'utf8'));
+    refused(/identical owner QA entry/, 'approve', 'LMK-0DA', '--candidate', candidate, '--owner', owner);
+    const approvedReport = json(cli('report', 'LMK-0DA', '--json'));
+    assert.equal(approvedReport.landmarkDigest, digest, 'recording the approval leaves the digest unchanged');
+    assert.equal(approvedReport.latestOwnerApproval?.owner, owner);
+    commitAll(root, 'record the simulated owner approval');
+
+    // Retirement: the whole folder moves, every live reference follows it,
+    // the retirement row lands in the moved log, and the result is staged.
+    const result = json(cli(...retire()));
+    assert.equal(result.landmarkId, 'LMK-0DA');
+    assert.equal(result.route, historicalRoute);
+    assert.equal(result.wikiNote, page);
+    assert.equal(result.ownerApproval.approvedBy, owner);
+    assert.equal(result.verdict.result, 'pass');
+    assert.ok(result.referencesRewrittenCount >= 2, JSON.stringify(result.referencesRewritten));
+    assert.ok(!fs.existsSync(path.join(root, lmk)), 'the active folder is gone');
+    for (const moved of ['LANDMARK.md', 'tasks/TK-0DA/TASK.md', 'specs/S-0DA-retiring-child/SPEC.md']) {
+      assert.ok(fs.existsSync(path.join(root, retiredDir, moved)), `${moved} travels with the landmark`);
+    }
+    assert.match(fs.readFileSync(path.join(root, 'AGENTS.md'), 'utf8'), new RegExp(`\\(${escapeForRegExp(historicalRoute)}\\)`), 'a live control link follows the move');
+    assert.match(fs.readFileSync(path.join(root, page), 'utf8'), /\(\.\.\/\.\.\/landmarks\/retired\/LMK-0DA-retiring-direction\/LANDMARK\.md\)/, 'the page link follows the move');
+    const retiredText = fs.readFileSync(path.join(root, historicalRoute), 'utf8');
+    assert.ok(retiredText.split('\n').includes(result.evidenceRow), retiredText);
+    assert.match(result.evidenceRow, new RegExp(`^\\| ${TODAY} \\| landmark \\| Landmark retired to ${escapeForRegExp(historicalRoute)} \\| ${escapeForRegExp(page)} \\|`));
+    assert.ok(retiredText.split('\n').includes(approvalRow), 'the approval row travels with the landmark');
+    assert.match(retiredText, /^\*\*Next gate:\*\* none$/m);
+    const porcelain = execFileSync('git', ['-C', root, 'status', '--porcelain'], { encoding: 'utf8' }).split('\n').filter(Boolean);
+    assert.ok(porcelain.length > 0 && porcelain.every((line) => /^[MADRC] /.test(line)), `the retirement is staged whole:\n${porcelain.join('\n')}`);
+    commitAll(root, 'retire LMK-0DA');
+
+    // `show` finds the retired landmark and its child Spec by their
+    // historical routes; the room carries no blocking finding; the page
+    // stays a valid Wiki note whose recorded source exists.
+    const shown = json(cli('show', 'LMK-0DA', '--json'));
+    assert.equal(shown.lifecycleFolder, 'retired');
+    assert.equal(shown.path, historicalRoute);
+    assert.match(shown.body, new RegExp(`^Retired: ${escapeForRegExp(historicalRoute)} \\(historical route`));
+    assert.equal(json(cli('show', 'S-0DA', '--json')).path, `${retiredDir}/specs/S-0DA-retiring-child/SPEC.md`);
+    assert.deepEqual(doctor(root).filter((item) => ['all', 'selection'].includes(item.blocks)).map((item) => `${item.code}: ${item.message}`), []);
+    assert.deepEqual(validateWiki(root).filter((item) => item.note === page), []);
+    refused(/LMK-0DA is already retired/, ...retire());
+    refused(/LMK-0DA is retired/, 'approve', 'LMK-0DA', '--candidate', headSha(root), '--owner', owner);
+    console.log('ok - S-003Z TK-008I: retire-landmark refuses by name a landmark not reached, with an open child, without a current pass verdict, on a dirty tree, with a page outside the Wiki lane or not naming the historical LANDMARK.md route, or without the owner approval approve LMK-### records; then moves the whole folder link-safely and show finds it by its historical route');
+  } finally { fs.rmSync(root, { recursive: true, force: true }); }
 }

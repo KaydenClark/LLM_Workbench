@@ -164,6 +164,17 @@ exact candidate and recovery ref, checks, documentation, and next gate. A local
 checkpoint with blocked publication remains partial; never call it remote
 recovery, integration approval, installed behavior, or owner acceptance.
 
+## Explicit Task selection for orchestration
+
+A single durable writer coordinating multiple Tasks may use
+`claim S-### --task TK-### --agent NAME` and
+`close S-### --task TK-### --proof TEXT --docs TEXT --remaining-gap TEXT`.
+The Task must belong to that Spec (or the named landmark) and pass the same
+eligibility, blocker, capability, claim and Git-state checks. Never infer a
+successful close for a different Task from an out-of-order Worker hand-back.
+Without `--task`, the existing first-eligible claim and first-in-progress
+close defaults remain. Recover a pending close before targeting another Task.
+
 ## Work selection and lifecycle
 
 Unless the user names work directly:
@@ -174,8 +185,9 @@ Unless the user names work directly:
 4. Load only the returned Spec with `show S-###` and its selected Task record;
    inspect the assigned destination, blockers and referenced source/tests.
 5. Claim before editing: `claim S-### --agent NAME`. This selects one eligible Task
-   in that Spec and writes its record to `in-progress`; it takes a Spec ID,
-   not a `TASK.md` path. Follow the assigned stance and single writer lane.
+   in that Spec, writes its record to `in-progress` and appends the agent to
+   its `Claimed by` list; it takes a Spec ID (or `LMK-###` for a Task directly
+   under a landmark), not a `TASK.md` path. Follow the assigned stance and single writer lane.
 6. Implement that tracer-bullet Task using red/green TDD, actual behavior checks
    and owned documentation. Preserve proof and unresolved gaps as work proceeds.
 7. Worker self-checks the scoped result and hands proof to the Dispatcher;

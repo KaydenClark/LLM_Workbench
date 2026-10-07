@@ -5,11 +5,11 @@
 **Priority:** 2
 **Owner:** claude-s003x-dispatcher
 **Stance:** Builder
-**Updated:** 2026-10-03
+**Updated:** 2026-10-06
 **Catalog description:** Give a room one tool and one set of read words for both kinds of decision record, the ADR and the Destination Decision Record, with the lifecycle moves the ADR tool lacks.
 **Blockers:** none. How a DDR records its single landmark is open, outside this acceptance, and waits on the landmark capability.
-**Latest event:** Reviewed integration delivery: PR #299 merged as 760a625a, containing the reviewed candidate 98d80e92 (whole-Spec verdict #3 pass); all seven Tasks are done and every Task PR passed its own separate-context review.
-**Next gate:** Owner Human QA on integration, then owner main promotion and complete S-003X.
+**Latest event:** 2026-10-06: owner Human QA approved at integration `42431879` (the owner, in chat: "Human QA passes. I declare it here.").
+**Next gate:** Owner promotion of the approved content to `main`, then `complete S-003X` on observed `origin/main`.
 
 > **Citation anchors.** pre=`5f3df1f99c04b4b75f1dc5ff585f9377ea2ff61a` post=`e584cb74b90571f3982e817c8a1f641bbff6234e`.
 
@@ -128,6 +128,7 @@ Maintain the Lexicon rows, the Runbook decision-record commands and the `to-docs
 | 2026-10-03 | S-003X/TK-005U | Collision identity recovered to TK-006K | S-003X/TK-005U@6cd175863c213ae18a12094940cac0052d874181:workbench/specs/S-003X-decision-record-tooling/tasks/TK-005U/TASK.md; retained S-004F/TK-005U@1558ef2b8577d8a1bcd647f2a8038e05f43e3ba7:workbench/specs/S-004F-corrective-work-rules/tasks/TK-005U/TASK.md | S-004F/TK-005U is the earlier identity (committed 08:43:26 vs 08:44:15) and is already contained in integration; S-003X's corrective record moves to the next free label | Identity repair only; no review or owner approval transferred. |
 | 2026-10-03 | review | Review verdict: pass at 98d80e92bc4cc80b2e4e3ac83dc0f770f61ffcbd [fbec24330994] #3 | none | Codex CLI codex exec -s read-only -m gpt-5.5, separate context, third whole-Spec review of 98d80e92bc4cc80b2e4e3ac83dc0f770f61ffcbd (no findings; fixture suites unrunnable in its sandbox, read-only report, adr.mjs reads and validate, doctor and wiki validate passed; the Dispatcher's full AGENTS suite passed 48/48 on the clean candidate) | none |
 | 2026-10-03 | review | Review verdict: pass at 5187f7fc979e138710329f3f3e4b89e4eb925135 [223be5487651] #4 | none | Codex CLI codex exec -s read-only -m gpt-5.5, separate context, records-only review of 5187f7fc979e138710329f3f3e4b89e4eb925135, whose only change since verdict #3's fully reviewed candidate 98d80e92 (contained in integration via PR #299 and the header PR #301) is the Blockers header dropping the resolved Lexicon-branch note and its TASKBOARD row; no findings | none |
+| 2026-10-07 | owner-qa | Owner QA: approve at 42431879fab3057db9e26ae661b4e92512c281f0 [223be5487651] #1 | none | Kayden (owner, in chat 2026-10-06: "Human QA passes. I declare it here.") | none |
 
 ## Completion Result
 

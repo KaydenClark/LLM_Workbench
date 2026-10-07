@@ -5,7 +5,7 @@
 **Priority:** 1
 **Owner:** codex
 **Stance:** Builder
-**Updated:** 2026-09-10
+**Updated:** 2026-10-06
 **Catalog description:** Require each new LLM Workbench version to upgrade the named Workbench_Template repository and pass its installed update checks before release readiness can be claimed
 **Blockers:** none
 **Latest event:** Spec completed and removed from the hot board.
@@ -23,7 +23,14 @@ this installed reference was updated.
 
 ## Current Verified State
 
-Source integration 385218a declares v3.2.1; Workbench_Template integration 4010003 and main e4e1985 still declare v3.2.0. Prior upstream tests and fresh-project proof did not upgrade this repository.
+At completion on 2026-09-10, Workbench_Template integration fc0fc18 declares
+v3.2.1 through the reviewed upgrade recorded under Delivered Template Evidence.
+This Spec makes no claim about either repository's main.
+
+Baseline at assignment, 2026-09-10 (historical): source integration 385218a
+declared v3.2.1 while Workbench_Template integration 4010003 and main e4e1985
+still declared v3.2.0, and prior upstream tests and fresh-project proof had not
+upgraded that repository.
 
 ## Desired Behavior
 
@@ -137,6 +144,7 @@ AGENTS.md, RUNBOOK.md, README.md and the existing S-014 release owner route to t
 | 2026-09-10 | TK-001 | Policy candidate618d1b8 independently passed; all45 source commands pass | Guardrail78 unchanged; no core/runtime delta; named Template reviewed and delivered through PR8/9 atfc0fc18 with fresh21-test and16-hash proof | Gate owns the requirement in AGENTS; Runbook procedure, README and S014 route agree; complete target proof linked | Final evidence candidate verification and independent integration review remain branch delivery gates; one wrong-artifact coordination correction recorded |
 | 2026-09-10 | TK-001 | Ticket closed | Policy618d1b8 full45 and independent PASS; Template PR8/9 atfc0fc18 with independent reviews,fresh21tests and16 exact hashes | AGENTS release gate, Runbook procedure, README/S014 routes and target proof reconciled | none for the Template gate; main remains owner-only |
 | 2026-09-10 | spec | Spec completed | Acceptance gates satisfied | Documentation impact recorded above | none |
+| 2026-10-06 | spec | Current-state drift repaired | Separate-context main-readiness review found Current Verified State still presenting the 4010003/v3.2.0 assignment baseline as current; the Delivered Template Evidence section and proof JSON are unchanged | Current Verified State now states the delivered state and labels the baseline as dated history; completed evidence and decisions unchanged | none |
 
 ## Completion Result
 

@@ -5,7 +5,7 @@ sensitivity: normal
 knowledge_role: curated
 provenance:
   - Owner reaction during the 2026-09-22 Taskboard grilling session
-  - Promoted from host auto-memory by the S-00V TK-00I audit, 2026-09-26
+  - Promoted from host auto-memory by the Portable Workbench Spec (S-00V) Host Memory To Wiki Task (TK-00I) audit, 2026-09-26
 source_paths:
   - workbench/skills/grilling/SKILL.md
 last_verified: 2026-09-26

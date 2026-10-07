@@ -4,7 +4,7 @@ status: active
 sensitivity: normal
 knowledge_role: canonical
 provenance:
-  - draft skills wiki index authored for S-002L TK-006O on 2026-10-04 from the owner's 2026-09-30 draft-skills-wiki direction
+  - draft skills wiki index authored for the skills draft wiki collection Spec (S-002L) Collection Index README Task (TK-006O) on 2026-10-04 from the owner's 2026-09-30 draft-skills-wiki direction
 source_paths:
   - workbench/wiki/skills-draft/TEMPLATE.md
   - workbench/specs/S-002L-skills-draft-wiki-collection/SPEC.md
@@ -86,7 +86,7 @@ Carry work from an idea to a merged change: specify, cut Tasks, implement, revie
 | dispatcher | core | S-002D (dispatcher role) | none |
 | spec-planner | core | S-002F (spec planner stance) | none |
 | spec-manager | core | S-002G (spec manager stance) | none (nearest implement-spec) |
-| implement-spec | new | S-002T (implement spec skill adoption) | implement-spec |
+| [implement-spec](main-workflow/implement-spec.md) | core lane, Workbench-only maintainer | S-002T (implement spec skill adoption) | implement-spec |
 | pr | new | S-002U (pr skill adoption) | pr |
 | retro | new | S-002V (retro skill adoption) | retro |
 
@@ -116,21 +116,21 @@ Keep a room healthy: update the harness, fix bugs and conflicts, triage, and rev
 | diagnosing-bugs | pending | S-003H (diagnosing bugs skill alignment) | diagnosing-bugs |
 | resolving-merge-conflicts | pending | S-003I (resolving merge conflicts skill alignment) | removed from the upstream tree |
 | triage | new | S-003J (triage skill adoption) | triage |
-| harness-feedback-review | personal | S-003K (harness feedback review skill family alignment) | none |
-| harness-review-actions | personal | S-003K (harness feedback review skill family alignment) | none |
-| harness-review-actuality | personal | S-003K (harness feedback review skill family alignment) | none |
-| harness-review-assay-follow-up | personal | S-003K (harness feedback review skill family alignment) | none |
-| harness-review-canon | personal | S-003K (harness feedback review skill family alignment) | none |
-| harness-review-classify-causes | personal | S-003K (harness feedback review skill family alignment) | none |
-| harness-review-diagnosis | personal | S-003K (harness feedback review skill family alignment) | none |
-| harness-review-disposition | personal | S-003K (harness feedback review skill family alignment) | none |
-| harness-review-feedback-lifecycle | personal | S-003K (harness feedback review skill family alignment) | none |
-| harness-review-grounding | personal | S-003K (harness feedback review skill family alignment) | none |
-| harness-review-map-gaps | personal | S-003K (harness feedback review skill family alignment) | none |
-| harness-review-meta-risks | personal | S-003K (harness feedback review skill family alignment) | none |
-| harness-review-reconnaissance | personal | S-003K (harness feedback review skill family alignment) | none |
-| harness-review-report | personal | S-003K (harness feedback review skill family alignment) | none |
-| harness-review-scope | personal | S-003K (harness feedback review skill family alignment) | none |
+| harness-feedback-review | personal, retired | S-004L (harness improvement playbook skill), which retired it in favor of improve-harness | none |
+| harness-review-actions | personal, retired | S-004L (harness improvement playbook skill), which retired it in favor of improve-harness | none |
+| harness-review-actuality | personal, retired | S-004L (harness improvement playbook skill), which retired it in favor of improve-harness | none |
+| harness-review-assay-follow-up | personal, retired | S-004L (harness improvement playbook skill), which retired it in favor of improve-harness | none |
+| harness-review-canon | personal, retired | S-004L (harness improvement playbook skill), which retired it in favor of improve-harness | none |
+| harness-review-classify-causes | personal, retired | S-004L (harness improvement playbook skill), which retired it in favor of improve-harness | none |
+| harness-review-diagnosis | personal, retired | S-004L (harness improvement playbook skill), which retired it in favor of improve-harness | none |
+| harness-review-disposition | personal, retired | S-004L (harness improvement playbook skill), which retired it in favor of improve-harness | none |
+| harness-review-feedback-lifecycle | personal, retired | S-004L (harness improvement playbook skill), which retired it in favor of improve-harness | none |
+| harness-review-grounding | personal, retired | S-004L (harness improvement playbook skill), which retired it in favor of improve-harness | none |
+| harness-review-map-gaps | personal, retired | S-004L (harness improvement playbook skill), which retired it in favor of improve-harness | none |
+| harness-review-meta-risks | personal, retired | S-004L (harness improvement playbook skill), which retired it in favor of improve-harness | none |
+| harness-review-reconnaissance | personal, retired | S-004L (harness improvement playbook skill), which retired it in favor of improve-harness | none |
+| harness-review-report | personal, retired | S-004L (harness improvement playbook skill), which retired it in favor of improve-harness | none |
+| harness-review-scope | personal, retired | S-004L (harness improvement playbook skill), which retired it in favor of improve-harness | none |
 
 ## primitives
 
@@ -196,5 +196,5 @@ Foundry-origin skills and two adjacent personal skills (`chronicle`, `clean-my-a
 
 - `to-tickets` is the stale name of `to-tasks`; it has a row so its retirement is visible, and its owning Spec folds it into the `to-tasks` article.
 - `writing-for-agents` replaces `writing-great-skills`, which folds into its Spec and has no row of its own.
-- The 15-skill Harness Feedback Review family (`harness-feedback-review`, its three composites and its eleven stages) shares one Spec, and the Foundry triage Spec covers eleven skills: the nine in `foundry` plus `role-engineer` and `first-responder` in `stances`. Both are the owner's accepted exceptions to one Spec per skill.
+- The 15-skill Harness Feedback Review family (`harness-feedback-review`, its three composites and its eleven stages) was retired by the Harness Improvement Playbook Skill Spec (S-004L) in favor of the one `improve-harness` core skill, whose article is [skill-improve-harness.md](../skill-improve-harness.md); its rows stay so the retirement is visible, no draft article is written for them, and removing the host copies is the owner's. The Foundry triage Spec covers eleven skills: the nine in `foundry` plus `role-engineer` and `first-responder` in `stances`, the owner's accepted exception to one Spec per skill.
 - Whether a Foundry-origin skill is adopted, retired or handed back is decided later from that triage Spec's output, never by drafting an article.

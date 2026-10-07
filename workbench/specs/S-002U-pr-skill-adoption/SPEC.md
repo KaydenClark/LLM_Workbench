@@ -5,101 +5,98 @@
 **Priority:** 2
 **Owner:** unassigned
 **Stance:** Builder
-**Updated:** 2026-09-30
-**Catalog description:** Open, describe and land a pull request into the room's integration branch, and never into the owner-only final branch.
-**Blockers:** S-002L Skills draft wiki collection must deliver the draft-wiki location and article template before steps 2-5. Step 6 also needs the pending-lane edit authorization named under Dependencies And Blockers.
-**Latest event:** Authored from the owner's 2026-09-30 draft-skills-wiki direction.
-**Next gate:** Deliver S-002L, then activate this Spec and cut Tasks from live Actuality with `/to-tasks`.
+**Updated:** 2026-10-06
+**Catalog description:** Ship Matt's PR body-authoring skill as required Core in every Workbench, preserving its visual summary, before/after evidence, merge danger and GLOSSARY.md vocabulary reference.
+**Blockers:** none for specification. Delivery coordinates the required-skill package writer and the glossary migration; no pending-lane permission gate remains.
+**Latest event:** Reconciled the owner's required-Core approval, pinned PR body-authoring source and confirmed glossary destination; remains planned with no Task cut.
+**Next gate:** Under an implementation assignment, recover the required-skill package checkpoint, verify live target and source, then activate and cut Tasks with `/to-tasks`.
 
-> **Citation anchors.** pre=`07edccc57b8f75613ad1d09203a3e414d867b90c` post=`07edccc57b8f75613ad1d09203a3e414d867b90c`.
+> **Citation anchors.** pre=`42431879fab3057db9e26ae661b4e92512c281f0` post=`42431879fab3057db9e26ae661b4e92512c281f0`.
 
 ## Outcome
 
-A `pr` skill exists as a new adoption from Matt Pocock's `engineering/pr` (formerly a "skip" in the grouping report), with one draft Wiki article, a recorded comparison with his skill, and a skill source that all describe the same behavior. This Spec owns the investigation of what the Workbench already does for pull requests, the draft article, the comparison, and the skill source in its lane. Group: main-workflow.
+Every Workbench carries a discoverable required `pr` skill for writing a PR body. Matt's pinned source, its draft Wiki article and the delivered skill agree. The body uses a small useful visual summary, concrete before/after evidence, and merge danger expressed as door reversibility and blast radius. It uses the project's canonical vocabulary from `GLOSSARY.md`.
 
 ## Why It Matters
 
-The Workbench has pull-request behavior but no skill that names it. The rules sit in `AGENTS.md` (Git Rules, Branch Completion) and the commands in `RUNBOOK.md` (Version-Control Procedures); several skills mention a Task PR in passing (`workbench/skills/implement/SKILL.md`, `workbench/skills/carry/SKILL.md`, `workbench/skills/code-review/SKILL.md`). An agent that wants "open a PR for this" has no single entry. The owner wants the skills prototyped as draft Wiki articles to find where skills should connect and do not; `pr` is a likely overlap with the personal `land` skill and with the closeout recipe.
+The owner explicitly approved `pr` as required in every Workbench on 2026-10-06. The earlier Spec conflated description writing with opening and landing PRs and defaulted it to Pending. The supplied Matt source authors a body. Existing Git operations remain in their current owners; adding policy rewrites to this small source would hide its useful purpose.
 
 ## Current Verified State
 
-- No `pr` skill exists in `workbench/skills/`, `skills-pending/` or `skills-archive/` at the pre anchor.
-- Nearest ours, as policy: `AGENTS.md` Git Rules (branch per spec or task from `integration`; default PR target is `integration`; agents may merge below `integration` when safe; only the owner merges `integration` into `main`) and Branch Completion (a pushed branch is not delivered; merge a PR whose integration review passed, confirm containment, then clean up).
-- Nearest ours, as commands: `RUNBOOK.md` Version-Control Procedures give `gh pr create --base integration --fill`, require PR descriptions to state what changed, why, risks and verification, and hold the closeout recipe (`gate`, `gh pr merge --match-head-commit`, containment check, guarded branch deletion). `tools/test-branch-closeout.mjs` demonstrates it against a disposable repository.
-- Nearest ours, as a skill: the personal-install `~/.agents/skills/land/SKILL.md` (Foundry origin, read-only here). It covers getting blocked work into `integration`: a read-only mergeability check, blocker classification, and a hard stop that `integration` to `main` belongs to the owner. It is a repair skill, not a PR-authoring skill. Its fate belongs to the Foundry-origin skills triage Spec (S-003E), so this Spec only references it.
-- Not verified: whether `save`, `implement` or `carry` already open a PR themselves, and what Matt's `pr` does. Both are step 1 and step 3 questions.
+At refreshed integration `42431879fab3057db9e26ae661b4e92512c281f0`, the required bundle has 28 skills and lacks `pr`; no `workbench/skills/pr/` or draft `workbench/wiki/skills-draft/main-workflow/pr.md` exists. The draft Wiki collection and Template 2 already exist under [Skills draft wiki collection (S-002L)](../S-002L-skills-draft-wiki-collection/SPEC.md); its remaining owner Human QA does not make the draft location unknown.
+
+The owner-supplied [Matt PR source at d81f3a183412e71a5b1e84ca21bc1a35eea03a60](https://github.com/mattpocock/skills/blob/d81f3a183412e71a5b1e84ca21bc1a35eea03a60/skills/engineering/pr/SKILL.md) says to write the PR body and credits Dex Horthy / Humanlayer's `show-me`. It does not open or land a PR. Its `GLOSSARY.md` reference matches the confirmed destination in [refined Lexicon retirement (DDR-001E)](../../docs/ddr/001E-the-lexicon-retires-terms-live-in-the-wiki-and-ownership-routes-and-invariants-live-in-architecture-md.md). The glossary is not yet delivered; [Lexicon Retirement And ARCHITECTURE.md (S-004O)](../S-004O-lexicon-retirement-and-architecture-md/SPEC.md) owns that gap.
+
+The separate local required-skill package checkpoint `005bc9c4d18c2d51a52023bb5498330970679771` is recoverable on `codex/retro-skill`. Its source candidate is `9a63801b5abf1ad7b0d3265abe4cac96a7a74544`; the checkpoint adds receipts and continuation state. Its manifest carries 30 required skills, adding writing-for-agents and retro, but still lacks `pr`. Adding PR there would make 31; these are package/base counts, not a fixed count to impose on a future target. Inspect the tracked package owners with `git show 005bc9c4d18c2d51a52023bb5498330970679771:workbench/specs/S-002P-writing-for-agents-skill-adoption/SPEC.md` and its S-002V counterpart. Their verification and review do not prove this skill or a final combined package; do not overwrite their receipts or close their Tasks from this planning record.
 
 ## Desired Behavior
 
-1. A `pr` skill opens a pull request from the current branch into the room's declared integration branch (`git.integrationBranch` in `workbench/manifest.json`), with a description that states what changed, why, risks and verification.
-2. It never targets, merges or proposes merging `integration` into `main`; that stays owner-only and the skill states the stop plainly.
-3. It does not merge a PR whose review is pending, and it defers merge and cleanup to the existing closeout recipe rather than restating it.
-4. The draft article, the comparison with Matt's skill, and the skill source agree on verified or intended behavior, with differences logged as findings.
+1. Add `workbench/skills/pr/SKILL.md` to required Core and both tracked discovery adapters. Use the pinned source almost verbatim; justify only necessary runtime or reference adapters and preserve Dex Horthy / Humanlayer credits.
+2. Preserve the source's Summary, Evidence and Merge Danger structure. Choose the smallest useful diagram, diff, pseudocode or tree; place it beside brief prose. Report actual before/after evidence and reversibility/blast radius without inventing checks or screenshots.
+3. Retain `GLOSSARY.md` unchanged as the vocabulary reference. Follow S-004O's delivered canonical vocabulary layout; do not substitute `LEXICON.md` or silently create another vocabulary store.
+4. Author the main-workflow draft article using the delivered draft collection. Compare source, article and observed behavior, explicitly labeling intended behavior and limitations.
+5. Coordinate Core lists, counts, layout and catalog tests with the existing package writer. Preserve valid installed-room transitions for the current30, prior28 and legacy21 v3.2.1 cohorts where applicable; reject malformed subsets and unsupported versions.
+6. Exercise body authoring in a fresh context with a known change and real evidence. Merely authoring a body performs no GitHub publication, merge or branch cleanup.
 
 ## Decisions And Contracts
 
-- Group is main-workflow and the Matt counterpart is `engineering/pr`, per the owner's 2026-09-30 decisions. The skill defaults to Pending (owner decision 1) unless this Spec later decides otherwise.
-- The skill must not relax any rule in `AGENTS.md` Git Rules or Branch Completion. `AGENTS.md` and `RUNBOOK.md` stay the owners of the rules and commands; the skill points to them.
-- Cite the upstream pin `mattpocock/skills@d81f3a183412e71a5b1e84ca21bc1a35eea03a60` for every comparison. Matt's skill is outside evidence, not Canon.
-- Origin is recorded in step 1 from what is found, not guessed now.
+- Required Core placement is the owner's explicit 2026-10-06 answer, replacing the old Pending default; do not reopen it as an extra permission request.
+- Scope is PR body authoring, as the pinned source states. [Implement](../../skills/implement/SKILL.md#version-control-procedures) and the [Runbook](../../../RUNBOOK.md#version-control-procedures) retain Git operations; this skill adds no merge or main authority.
+- DDR-001E owns the settled glossary destination. That answer resolves the vocabulary question; implementation availability remains a dependency.
+- Preserve upstream pin and source lineage, including Dex Horthy / Humanlayer credits, outside any unnecessary local policy rewrite.
+- Group remains main-workflow. This Spec owns only `pr`; the writing-for-agents and retro Specs keep their assignments, evidence and final-package gates.
 
 ## Non-Goals
 
-- Deciding the fate of `land`, `landing-check` or other Foundry-origin skills; the Foundry triage Spec owns that.
-- Changing the integration review gate, the closeout recipe or branch rules.
-- Merging any PR, or any action on `main`.
-- Changing the Core bundle; this skill is Pending by default.
-- Writing a Task, claiming or activating this Spec.
+- Opening, publishing, reviewing, landing or cleaning up a PR from the body-authoring invocation.
+- Rewriting branch rules or the review gate; deciding the fate of land or other Foundry skills.
+- Glossary or Lexicon migration, domain-modeling adoption, personal installs or pending/archive removal.
+- Activation, Task cuts, implementation, release stamping or main promotion during this planning pass.
 
 ## Dependencies And Blockers
 
-- **S-002L Skills draft wiki collection** must deliver the draft-wiki location and article template before steps 2-5.
-- **Pending-lane edit authority.** `skills-pending/` is not listed in `AGENTS.md` Edit Scope. Before step 6 writes a new `skills-pending/pr/` source, the owner's direction must authorize it, as S-00R is the owner of optional-source dispositions and requires a per-item owner decision for archive or pending relocation. S-00R has a live Codex lane (`codex/S-00R-optional-inventory`), so this Spec does not edit it. Whether the owner's 2026-09-30 adoption decision is sufficient authority, or a separate request is needed, is an open question; record it in step 1 and stop at step 6 until answered.
-- The pending-versus-Core placement may also be revisited by the Director if the skill proves to belong in the closed Core bundle.
+- S-002L supplies the existing draft collection and article template; inspect its actual delivered owners rather than treating its whole-Spec closure as a new writing gate.
+- S-004O supplies canonical glossary availability. The reference is settled; a package lacking the glossary needs an explicit delivered prerequisite or truthful scoped limitation before claiming the vocabulary scenario passed.
+- Coordinate one writer with [writing-for-agents skill adoption (S-002P)](../S-002P-writing-for-agents-skill-adoption/SPEC.md) and [retro skill adoption (S-002V)](../S-002V-retro-skill-adoption/SPEC.md) for the combined catalog, count and compatibility changes. Recover their local checkpoint and compare current integration before assembling.
+- The [release owner](../S-00O-workbench-v4-0-0-release/SPEC.md) retains bundle identity, installed Template and owner gates. No release or merge is authorized by this record.
 
 ## Vertical Implementation Slices
 
-These are the intended slice direction, in prose. No Task is cut yet; Tasks are cut from live Actuality at activation by `/to-tasks`.
-
-1. **Investigate ours.** Read `AGENTS.md` Git Rules and Branch Completion, the `RUNBOOK.md` PR and closeout procedures, `tools/test-branch-closeout.mjs`, the PR mentions in the core skills, and the personal `land` skill. Record inputs, outputs, writes and composition at a named commit, and list the overlaps (expected: `land`, the closeout recipe, `save`).
-2. **Draft the article.** Fill Template 2 (owned by S-002L) at `workbench/wiki/skills-draft/main-workflow/pr.md`, tentative until S-002L decides, from step 1.
-3. **Investigate Matt's.** Read `engineering/pr` at `d81f3a183412e71a5b1e84ca21bc1a35eea03a60`.
-4. **Compare.** Fill "Compared with Matt's" with a verdict (same, close, divergent, missing) and log findings, one per line (`overlap`, `gap`, `conflict`, and so on).
-5. **Align the article.** Rewrite until the wording matches real or intended behavior; log what remains.
-6. **Create the skill.** Add `pr/SKILL.md` in the pending lane with catalog tests and a fresh-context scenario, once pending-lane authority is settled.
+No Tasks cut. At activation, `/to-tasks` cuts from live Actuality: source and draft fidelity; required bundle/discovery with compatibility regressions red then green; fresh-context body-authoring evidence; combined-package verification and review. Preserve existing package Tasks under their owners.
 
 ## Acceptance Criteria
 
-- [ ] Every section of the draft article is filled, and `workbench/wiki/skills-draft/main-workflow/pr.md` (tentative location) exists.
-- [ ] Every "needs" and "reads/writes" item in the article resolves to something real or is logged as a finding, including the overlap with `land` and the closeout recipe.
-- [ ] A verdict against Matt's `engineering/pr` at the pin is recorded.
-- [ ] The skill source matches the article, and states that only the owner merges `integration` into `main`.
-- [ ] A fresh-context scenario shows `pr` opening a PR into `integration` and refusing a request to target `main`.
-- [ ] Catalog and Wiki checks and the full suite from `AGENTS.md` are green for step 6, with no unrun check reported as passing.
+- [ ] Both adapters discover the required skill in a fresh clone; manifest, bundle, catalog and counts agree.
+- [ ] Pinned source and article agree on body authoring; the necessary adapter diff and Dex Horthy / Humanlayer lineage are recorded.
+- [ ] A fresh-context scenario produces a useful brief visual summary, actual before/after evidence and accurate door/blast-radius discussion, using supplied canonical glossary terms.
+- [ ] `GLOSSARY.md` stays unchanged in the source reference; any unavailable vocabulary prerequisite is recorded rather than asserted delivered.
+- [ ] The invocation authors a body without opening or merging a PR or changing Git state.
+- [ ] Compatibility accepts valid current30, prior28 and legacy21 cohorts where supported and refuses malformed subsets or unsupported versions; combined-package final proof is recorded without reusing old receipts as new proof.
+- [ ] Targeted checks, Wiki validation, full suite, render, doctor and required immutable assembled review are recorded with their actual limits before integration delivery is claimed.
 
 ## Testing Seams
 
-Steps 1-5 are checked by reading: each article claim traces to a cited file or finding. Step 6 uses the skill catalog and lane tests (`tools/test-skill-catalog.mjs`, `tools/test-skills-lane.mjs`) as the structural seam, and a fresh-context scenario as the behavioral seam. Structural tests prove routing, not agent behavior.
+Source-fidelity and catalog/lane/layout tests; valid transition and malformed-subset fixtures; a fresh-context body-writing scenario with known diff, glossary, failing/passing evidence and expected reversibility. Observe artifact output and environment diff, not exact prose. Structural discovery is distinct from configured-host invocation and conversational judgment.
 
 ## Verification Procedure
 
-For steps 1-5, run `node workbench/tools/wiki.mjs validate` once S-002L has made the draft collection valid. For step 6, run the targeted catalog tests, then the full suite in `AGENTS.md`, `render` and `doctor`, with the self-drift pre and post receipts and a separate-context review of the immutable candidate. Record the actual commands and results here.
+Capture before/after room checks. Demonstrate the meaningful catalog/compatibility failures before implementation, then run targeted checks and the full Runbook suite on the clean committed candidate. Validate and lint the draft Wiki page, render and doctor. Preserve final combined-package proof and required independent assembled review at its immutable candidate, including unverified host behavior, ongoing Human QA findings and remaining release gates.
 
 ## Documentation Impact
 
-- Draft article: `workbench/wiki/skills-draft/main-workflow/pr.md` (tentative until S-002L decides).
-- Step 6 may touch `skills-pending/pr/SKILL.md` and the optional-source inventory in `workbench/skills/README.md` (S-00R's lane; coordinate, do not edit in parallel). It touches no Core control, since the skill is Pending by default.
-- If step 1 finds `AGENTS.md` or `RUNBOOK.md` needs a pointer to the skill, record it as a finding first; route changes go through their owners.
+Draft `workbench/wiki/skills-draft/main-workflow/pr.md`, required skills catalog, manifest/layout/count owners and appropriate operation routes during implementation. Source attribution and comparison stay with the skill and article; S-004O owns glossary and Template vocabulary migration. This planning-only pass changes no Core bundle or runtime Template.
 
 ## Append-Only Evidence And Execution Log
 
 | Date | Task | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-09-30 | planning | Spec authored from the owner's draft-skills-wiki direction; planning only | Nearest existing behavior read at the pre anchor (`AGENTS.md`, `RUNBOOK.md`, personal `land`); no implementation, article or skill source touched | This Spec authored; article and skill remain future work | S-002L, steps 1-6 and pending-lane authority remain open |
+| 2026-10-06 | planning | Reconciled the owner-approved required-Core body-authoring scope and confirmed glossary reference; removed the stale Pending and PR-opening gates. | Integration base 42431879fab3057db9e26ae661b4e92512c281f0 and local package checkpoint 005bc9c4d18c2d51a52023bb5498330970679771 inspected; source content supplied at Matt pin d81f3a183412e71a5b1e84ca21bc1a35eea03a60. No PR behavior or final-package proof claimed. | Existing Spec reconciled; source, draft and Core installation remain future work. | Activation, Tasks, glossary dependency, package assembly and all delivery gates. |
+| 2026-10-06 | planning-check | Verified documentation reconciliation; all delivery acceptance remains open. | Source `3d40a86505a339096c4629b814eb4fed1c789d5d`: full suite 53/53; ADR/Wiki, citation and diff checks passed. [Shared planning receipt](../S-004O-lexicon-retirement-and-architecture-md/proof/planning-verification.json) preserves the initial Blueprint-link failure, repair, bounded self-drift summaries and existing doctor findings. | Source owners read back; render regenerated projections. | No implementation, independent assembled review, PR or integration delivery claimed; self-drift remains 15 findings and cleanUpdate false. |
 
 ## Completion Result
 
-Not complete.
+Not complete. Planning reconciliation only.
 
 ## Supersession
 

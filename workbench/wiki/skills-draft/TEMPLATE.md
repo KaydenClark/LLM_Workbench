@@ -4,7 +4,7 @@ status: active
 sensitivity: normal
 knowledge_role: canonical
 provenance:
-  - owner-approved draft article template (Template 2), 2026-09-30, carried into S-002L TK-006N on 2026-10-04
+  - owner-approved draft article template (Template 2), 2026-09-30, carried into the skills draft wiki collection Spec (S-002L) Draft Article Template Task (TK-006N) on 2026-10-04
 source_paths:
   - workbench/tools/wiki.mjs
   - workbench/specs/S-002L-skills-draft-wiki-collection/SPEC.md

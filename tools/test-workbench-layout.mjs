@@ -10,6 +10,7 @@ import test from 'node:test';
 import { doctor, nextWork, render } from '../workbench/tools/spec-workbench.mjs';
 import { coordinationSkills, coreSkills, legacyCoreSkills, validateManifest, readContextUnit, ContextUnitUndeclaredError } from '../workbench/tools/workbench-layout.mjs';
 import { genesisTemplateFiles, templatePlaceholders } from '../workbench/tools/template-placeholders.mjs';
+import * as placeholderVocabulary from '../workbench/tools/template-placeholders.mjs';
 import { COLLECTIONS, LANES, collectionRelative } from '../workbench/tools/workbench-paths.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -152,9 +153,14 @@ test('copy-ready v3 templates route active spec authority through workbench/spec
   assert.match(fs.readFileSync(path.join(templateRoot, 'GENESIS.md'), 'utf8'), /workbench\/feedback\/WORKBENCH_FEEDBACK\.md/, 'Genesis places the feedback file in the lane');
 });
 
-test('the committed placeholder vocabulary exactly matches the shipped Genesis templates', () => {
+// S-003Z TK-008J: the vocabulary also covers the record templates a room
+// copies after Genesis, starting with LANDMARK.md, so an unfilled landmark
+// placeholder is detected like an unfilled Spec placeholder.
+test('the committed placeholder vocabulary exactly matches the shipped Genesis and record templates', () => {
+  const recordTemplateFiles = placeholderVocabulary.recordTemplateFiles ?? [];
+  assert.ok(recordTemplateFiles.includes('LANDMARK.md'), 'the LANDMARK.md template is covered by the placeholder vocabulary');
   const actual = new Set();
-  for (const name of genesisTemplateFiles) {
+  for (const name of [...genesisTemplateFiles, ...recordTemplateFiles]) {
     const content = fs.readFileSync(path.join(root, 'templates', name), 'utf8');
     for (const match of content.matchAll(/(?<!\[)\[(?!\[|[ xX]\])[^\]\n]+\](?!\()/g)) actual.add(match[0]);
   }
@@ -267,9 +273,10 @@ test('a six-lane schema 2 manifest gains the skills lane through migrate, after 
     // A room stamped before the lane holds the bundle its release stamped:
     // v3.2.1's frozen twenty-one, without the `grill-me` S-00Z grew the live
     // bundle with, the coordination entries that grew it after, or the
-    // `workbench-runtime` entry S-004C TK-005J added. The provider-home shape
+    // `workbench-runtime` entry S-004C TK-005J added or the `improve-harness`
+    // entry S-004L TK-008L added. The provider-home shape
     // validates only with a stamped row.
-    manifest.skillPolicy = { ...manifest.skillPolicy, required: manifest.skillPolicy.required.filter((name) => !['grill-me', 'workbench-runtime'].includes(name) && !coordinationSkills.includes(name)), normalSetup: 'presence-only', updates: 'explicit-only' };
+    manifest.skillPolicy = { ...manifest.skillPolicy, required: manifest.skillPolicy.required.filter((name) => !['grill-me', 'workbench-runtime', 'improve-harness'].includes(name) && !coordinationSkills.includes(name)), normalSetup: 'presence-only', updates: 'explicit-only' };
     fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
     // The undeclared directory may already exist, empty (init's .gitkeep) or
     // holding a room-local skill; migrate must accept both, not refuse them.
@@ -393,9 +400,10 @@ test('the additive features collection resolves, is created and seeded by init, 
 
     // S-003X TK-004W: a pre-feature room also predates the later additive
     // `ddr` collection, so its shape lacks both.
-    const { features, ddr, ...preFeature } = manifest.collections;
+    const { features, ddr, landmarks, ...preFeature } = manifest.collections;
     assert.equal(features, 'workbench/wiki/features');
     assert.equal(ddr, 'workbench/docs/ddr');
+    assert.equal(landmarks, 'workbench/landmarks');
     fs.writeFileSync(manifestPath, `${JSON.stringify({ ...manifest, collections: preFeature }, null, 2)}\n`);
     assert.equal(run('validate', '--project', project).report.status, 'valid', 'the current seven-lane room declared before features still validates');
     assert.equal(collectionRelative(project, 'features'), 'workbench/wiki/features', 'an undeclared room resolves the default path');
@@ -415,7 +423,9 @@ test('the additive features collection resolves, is created and seeded by init, 
     assert.equal(migrated.report.status, 'migrated');
     // S-003X TK-004W: a pre-feature room also lacks the later additive `ddr`
     // collection, so one migrate appends both, in declaration order.
-    assert.deepEqual(migrated.report.added, ['collections.features', 'collections.ddr']);
+    // S-003Z TK-008D: and the later additive `landmarks` collection, so one
+    // migrate appends all three in declaration order.
+    assert.deepEqual(migrated.report.added, ['collections.features', 'collections.ddr', 'collections.landmarks']);
     const after = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
     assert.deepEqual(after.collections, COLLECTIONS, 'migrate appends exactly the missing additive collections');
     assert.deepEqual({ ...after, collections: preFeature }, { ...manifest, collections: preFeature }, 'nothing else in the manifest changes');
@@ -442,7 +452,9 @@ test('the additive ddr collection is created with its lifecycle folders by init,
     const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
     const ddrPath = path.join(project, 'workbench', 'docs', 'ddr');
     assert.equal(manifest.collections.ddr, 'workbench/docs/ddr', 'init declares the ddr collection');
-    assert.equal(Object.keys(manifest.collections).at(-1), 'ddr', 'ddr is appended after every earlier collection key');
+    // S-003Z TK-008D: `landmarks` is appended after `ddr`, so `ddr` follows
+    // `features` and precedes only the later additive collection.
+    assert.equal(Object.keys(manifest.collections).indexOf('ddr'), Object.keys(manifest.collections).indexOf('features') + 1, 'ddr is appended directly after features');
     assert.deepEqual(manifest.lanes, LANES, 'ddr is a collection, never a lane');
     assert.equal(collectionRelative(project, 'ddr'), 'workbench/docs/ddr', 'the resolver answers the declared collection');
     for (const folder of ['proposed', 'archive']) {
@@ -451,7 +463,8 @@ test('the additive ddr collection is created with its lifecycle folders by init,
     }
     assert.equal(run('validate', '--project', project).report.status, 'valid');
 
-    const { ddr, ...preDdr } = manifest.collections;
+    const { ddr, landmarks, ...preDdr } = manifest.collections;
+    assert.equal(landmarks, 'workbench/landmarks');
     fs.writeFileSync(manifestPath, `${JSON.stringify({ ...manifest, collections: preDdr }, null, 2)}\n`);
     assert.equal(run('validate', '--project', project).report.status, 'valid', 'the current room declared before ddr still validates');
     assert.equal(collectionRelative(project, 'ddr'), 'workbench/docs/ddr', 'an undeclared room resolves the default path');
@@ -480,7 +493,7 @@ test('the additive ddr collection is created with its lifecycle folders by init,
     const migrated = run('migrate', '--project', project);
     assert.equal(migrated.status, 0, `${migrated.stdout}\n${migrated.stderr}`);
     assert.equal(migrated.report.status, 'migrated');
-    assert.deepEqual(migrated.report.added, ['collections.ddr']);
+    assert.deepEqual(migrated.report.added, ['collections.ddr', 'collections.landmarks'], 'a pre-ddr room also lacks the later additive landmarks collection');
     const after = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
     assert.deepEqual(after.collections, COLLECTIONS, 'migrate appends exactly the ddr collection');
     assert.deepEqual({ ...after, collections: preDdr }, { ...manifest, collections: preDdr }, 'nothing else in the manifest changes');
@@ -495,7 +508,7 @@ test('the additive ddr collection is created with its lifecycle folders by init,
     fs.writeFileSync(path.join(ddrPath, 'proposed', '000A-room-draft.md'), '# Room draft\n');
     const adopted = run('migrate', '--project', project);
     assert.equal(adopted.status, 0, `${adopted.stdout}\n${adopted.stderr}`);
-    assert.deepEqual(adopted.report.added, ['collections.ddr']);
+    assert.deepEqual(adopted.report.added, ['collections.ddr', 'collections.landmarks']);
     assert.equal(fs.readFileSync(path.join(ddrPath, 'proposed', '000A-room-draft.md'), 'utf8'), '# Room draft\n', 'an existing record in the folder is kept');
     assert.equal(fs.lstatSync(path.join(ddrPath, 'archive')).isDirectory(), true, 'a missing lifecycle folder is created');
 
@@ -512,6 +525,83 @@ test('the additive ddr collection is created with its lifecycle folders by init,
       assert.deepEqual(JSON.parse(fs.readFileSync(manifestPath, 'utf8')).collections, preDdr, 'a refused migrate leaves the manifest unchanged');
       assert.equal(fs.readFileSync(blocked, 'utf8'), 'not a directory\n');
     }
+  } finally { fs.rmSync(project, { recursive: true, force: true }); }
+});
+
+// S-003Z TK-008D: `landmarks` is the third additive collection, the home of
+// the `LANDMARK.md` artifacts one size above a Spec (ADR-000U). A new room
+// declares it last and holds the empty folder; every earlier collection shape
+// (pre-feature, pre-ddr and the pre-landmark shape every current room carries)
+// still validates; and the ordinary update route (`migrate`) appends exactly
+// `collections.landmarks` and creates the empty folder, changing nothing else,
+// so updating a room with no landmarks leaves it otherwise unchanged. A link
+// or file where the collection belongs is refused before anything is written.
+test('the additive landmarks collection is declared last by init, every pre-landmark collection shape still validates, and migrate appends only it with its empty folder', () => {
+  const project = fixture();
+  try {
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+    const manifestPath = path.join(project, 'workbench', 'manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    const landmarksPath = path.join(project, 'workbench', 'landmarks');
+    assert.equal(manifest.collections.landmarks, 'workbench/landmarks', 'init declares the landmarks collection');
+    assert.equal(Object.keys(manifest.collections).at(-1), 'landmarks', 'landmarks is appended after every earlier collection key');
+    assert.deepEqual(manifest.lanes, LANES, 'landmarks is a collection, never a lane');
+    assert.equal(collectionRelative(project, 'landmarks'), 'workbench/landmarks', 'the resolver answers the declared collection');
+    assert.equal(fs.lstatSync(landmarksPath).isDirectory(), true);
+    assert.deepEqual(fs.readdirSync(landmarksPath), ['.gitkeep'], 'the collection starts empty and kept in Git');
+    assert.equal(run('validate', '--project', project).report.status, 'valid');
+
+    const { landmarks, ...preLandmark } = manifest.collections;
+    fs.writeFileSync(manifestPath, `${JSON.stringify({ ...manifest, collections: preLandmark }, null, 2)}\n`);
+    assert.equal(run('validate', '--project', project).report.status, 'valid', 'the current room declared before landmarks still validates');
+    assert.equal(collectionRelative(project, 'landmarks'), 'workbench/landmarks', 'an undeclared room resolves the default path');
+
+    fs.writeFileSync(manifestPath, `${JSON.stringify({ ...manifest, collections: { ...preLandmark, landmarks: 'workbench/docs/landmarks' } }, null, 2)}\n`);
+    assert.equal(run('validate', '--project', project).report.error.code, 'invalid-collection', 'a relocated landmarks declaration is not the contract');
+
+    const { ddr, features, ...preFeature } = preLandmark;
+    const legacy = { ...preFeature };
+    delete legacy.recovery; delete legacy.notepads; delete legacy['notepad-templates'];
+    fs.writeFileSync(manifestPath, `${JSON.stringify({ ...manifest, collections: { ...legacy, features, ddr, landmarks } }, null, 2)}\n`);
+    assert.equal(run('validate', '--project', project).report.status, 'valid', 'the preserved v3.1 collection set with all three additive collections appended still validates');
+
+    // The ordinary update of a room on the pre-landmark shape: the folder and
+    // declaration are added and nothing else changes - no Spec, Task, seeded
+    // document or other manifest byte.
+    fs.writeFileSync(manifestPath, `${JSON.stringify({ ...manifest, collections: preLandmark }, null, 2)}\n`);
+    fs.rmSync(landmarksPath, { recursive: true });
+    const before = Object.fromEntries(markdownFiles(path.join(project, 'workbench')).map((file) => [path.relative(project, file), fs.readFileSync(file, 'utf8')]));
+    const migrated = run('migrate', '--project', project);
+    assert.equal(migrated.status, 0, `${migrated.stdout}\n${migrated.stderr}`);
+    assert.equal(migrated.report.status, 'migrated');
+    assert.deepEqual(migrated.report.added, ['collections.landmarks']);
+    const after = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    assert.deepEqual(after.collections, COLLECTIONS, 'migrate appends exactly the landmarks collection');
+    assert.deepEqual({ ...after, collections: preLandmark }, { ...manifest, collections: preLandmark }, 'nothing else in the manifest changes');
+    assert.deepEqual(fs.readdirSync(landmarksPath), ['.gitkeep'], 'migrate creates the empty folder kept in Git');
+    assert.deepEqual(Object.fromEntries(markdownFiles(path.join(project, 'workbench')).map((file) => [path.relative(project, file), fs.readFileSync(file, 'utf8')])), before, 'every other document under workbench/ is byte-identical after migrate');
+    assert.equal(run('validate', '--project', project).report.status, 'valid');
+    assert.equal(run('migrate', '--project', project).report.status, 'current');
+
+    // An existing ordinary folder with room content is adopted as is.
+    fs.writeFileSync(manifestPath, `${JSON.stringify({ ...manifest, collections: preLandmark }, null, 2)}\n`);
+    fs.rmSync(path.join(landmarksPath, '.gitkeep'));
+    fs.mkdirSync(path.join(landmarksPath, 'LMK-000A-room-direction'));
+    fs.writeFileSync(path.join(landmarksPath, 'LMK-000A-room-direction', 'LANDMARK.md'), '# Room landmark\n');
+    const adopted = run('migrate', '--project', project);
+    assert.equal(adopted.status, 0, `${adopted.stdout}\n${adopted.stderr}`);
+    assert.deepEqual(adopted.report.added, ['collections.landmarks']);
+    assert.deepEqual(fs.readdirSync(landmarksPath), ['LMK-000A-room-direction'], 'an existing folder keeps its contents and gains no .gitkeep');
+
+    // A file where the collection belongs is refused before the manifest is written.
+    fs.writeFileSync(manifestPath, `${JSON.stringify({ ...manifest, collections: preLandmark }, null, 2)}\n`);
+    fs.rmSync(landmarksPath, { recursive: true, force: true });
+    fs.writeFileSync(landmarksPath, 'not a directory\n');
+    const refused = run('migrate', '--project', project);
+    assert.notEqual(refused.status, 0, refused.stdout);
+    assert.equal(refused.report.error.code, 'lane-collision');
+    assert.deepEqual(JSON.parse(fs.readFileSync(manifestPath, 'utf8')).collections, preLandmark, 'a refused migrate leaves the manifest unchanged');
+    assert.equal(fs.readFileSync(landmarksPath, 'utf8'), 'not a directory\n');
   } finally { fs.rmSync(project, { recursive: true, force: true }); }
 });
 
@@ -1062,10 +1152,11 @@ test('each listed legacy version validates only at the policy its release declar
     assert.equal(outcome('v3.2.0', [...twelve, 'carry', 'notepad', ...current.slice(-4)]), 'invalid-skill-policy');
     // v3.2.1 stamped the twenty-one-skill bundle with `handoff`; S-00Z grew the
     // live bundle with `grill-me`, the coordination entries grew it again and
-    // S-004C TK-005J added `workbench-runtime`, so the v3.2.1 row freezes at
+    // S-004C TK-005J added `workbench-runtime` and S-004L TK-008L added
+    // `improve-harness`, so the v3.2.1 row freezes at
     // twenty-one and a room stamped v3.2.1 validates with either the frozen row
     // or the current policy the Workbench update writes before restamping.
-    const twentyOne = current.filter((name) => !['grill-me', 'workbench-runtime'].includes(name) && !coordinationSkills.includes(name));
+    const twentyOne = current.filter((name) => !['grill-me', 'workbench-runtime', 'improve-harness'].includes(name) && !coordinationSkills.includes(name));
     assert.equal(twentyOne.length, 21);
     assert.equal(outcome('v3.2.1', twentyOne), 'valid');
     assert.equal(outcome('v3.2.1', current), 'valid');
@@ -2593,3 +2684,61 @@ test(`Genesis accepts first spec and task suffix ${suffix} without truncation or
   } finally { fs.rmSync(project, { recursive: true, force: true }); }
 });
 }
+
+// S-004M TK-008T: the legibility surface is an additive manifest block, like
+// the git block - absent is valid, a malformed block is a malformed manifest.
+const LEGIBILITY = Object.freeze({ run: 'npm start', operate: 'npm run cli -- --help', inspect: 'npm run status', errors: 'npm test; tail -f app.log', journey: 'npm run e2e', measure: 'npm run bench' });
+
+test('the legibility block is additive: absent stays valid, six string entries validate, and a malformed block is invalid-manifest', () => {
+  const project = fixture();
+  try {
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+    const manifestPath = path.join(project, 'workbench', 'manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    assert.equal(Object.hasOwn(manifest, 'legibility'), false, 'init declares no surface; setup drafts it and grilling confirms it');
+    assert.equal(run('validate', '--project', project).report.status, 'valid', 'a manifest without the block stays valid');
+    const write = (legibility) => fs.writeFileSync(manifestPath, `${JSON.stringify({ ...manifest, legibility }, null, 2)}\n`);
+    write(LEGIBILITY);
+    const full = run('validate', '--project', project).report;
+    assert.equal(full.status, 'valid', JSON.stringify(full.error));
+    assert.deepEqual(full.manifest.legibility, LEGIBILITY, 'the validated manifest carries the block as declared');
+    write({ ...LEGIBILITY, confirmation: 'pending' });
+    assert.equal(run('validate', '--project', project).report.status, 'valid', 'a setup draft marked pending is a valid declaration');
+    write({ run: '', operate: '[OPERATE_COMMAND]' });
+    assert.equal(run('validate', '--project', project).report.status, 'valid', 'an incomplete block is valid at the schema; doctor reports it as attention');
+    for (const [label, malformed] of [['an array', ['npm start']], ['a string', 'npm start'], ['an unknown key', { ...LEGIBILITY, telemetry: 'x' }], ['a non-string entry', { ...LEGIBILITY, run: ['npm', 'start'] }], ['a confirmation other than pending', { ...LEGIBILITY, confirmation: 'done' }]]) {
+      write(malformed);
+      const result = run('validate', '--project', project).report;
+      assert.equal(result.error?.code, 'invalid-manifest', `${label} is a malformed manifest: ${JSON.stringify(result)}`);
+      assert.match(result.error.message, /legibility/);
+    }
+  } finally { fs.rmSync(project, { recursive: true, force: true }); }
+});
+
+test('declare-legibility writes the six entries into an existing manifest and changes nothing else', () => {
+  const project = fixture();
+  try {
+    assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+    const manifestPath = path.join(project, 'workbench', 'manifest.json');
+    const before = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    const flags = Object.entries(LEGIBILITY).flatMap(([entry, value]) => [`--${entry}`, value]);
+    const declared = run('declare-legibility', '--project', project, ...flags);
+    assert.equal(declared.status, 0, declared.stdout);
+    assert.equal(declared.report.status, 'declared');
+    assert.deepEqual(declared.report.legibility, LEGIBILITY);
+    const after = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    assert.deepEqual(after.legibility, LEGIBILITY);
+    const { legibility, ...rest } = after;
+    assert.deepEqual(rest, before, 'every other manifest key is unchanged');
+    assert.equal(run('validate', '--project', project).report.status, 'valid');
+
+    const pending = run('declare-legibility', '--project', project, ...flags, '--pending');
+    assert.equal(pending.status, 0, pending.stdout);
+    assert.deepEqual(JSON.parse(fs.readFileSync(manifestPath, 'utf8')).legibility, { ...LEGIBILITY, confirmation: 'pending' }, 'a rerun replaces the block; --pending marks it for grilling confirmation');
+
+    const partial = run('declare-legibility', '--project', project, '--run', 'npm start');
+    assert.notEqual(partial.status, 0, 'every entry is required; declare a placeholder rather than omit one');
+    assert.equal(partial.report.error.code, 'invalid-invocation');
+    assert.deepEqual(JSON.parse(fs.readFileSync(manifestPath, 'utf8')).legibility, { ...LEGIBILITY, confirmation: 'pending' }, 'a refused declaration writes nothing');
+  } finally { fs.rmSync(project, { recursive: true, force: true }); }
+});

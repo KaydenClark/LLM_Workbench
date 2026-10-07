@@ -5,11 +5,11 @@
 **Priority:** 2
 **Owner:** claude-lane-B-w1
 **Stance:** Builder
-**Updated:** 2026-09-26
+**Updated:** 2026-10-06
 **Catalog description:** Move selected supported working claims into their existing durable owners.
 **Blockers:** none.
-**Latest event:** TK-00S closed with proof.
-**Next gate:** Owner Human QA of conversational fidelity on `integration`, then `complete S-01B`.
+**Latest event:** 2026-10-06: owner Human QA approved at integration `42431879` (the owner, in chat: "Human QA passes. I declare it here.").
+**Next gate:** Owner promotion of the approved content to `main`, then `complete S-01B` on observed `origin/main`.
 
 > **Citation anchors.** pre=`4940233e74a93a8390f73f8ac6ba39ef53131798` post=`4940233e74a93a8390f73f8ac6ba39ef53131798`.
 
@@ -106,6 +106,7 @@ steps 1-5 touch only the draft wiki and step 6 only this skill's lane. When ther
 | 2026-09-26 | review | Review verdict: pass at ce2d8e65cb3d65501c4c8a7a63397cb585491fd5 [7320e10da687] #1 | No High/Medium/Low findings. Reviewed immutable candidate 6a7d4f04e22b3d1f57508af51ab4c4f070174339 against base 89d4042; ce2d8e6 merges origin/integration ec848e5 into it (739d32b) and keeps integration's already-generic Skills Reference intro instead of the candidate's rewording (ce2d8e6), so the landed diff equals the reviewed one outside generated TASKBOARD/CATALOG apart from that intro and one blank line; the MEMORY router keeps every sibling entry. Reviewer ran wiki.mjs validate and git diff --check (pass) and checked by source that project-contained drafts are enforced by path safety, ignored-note citations are refused and pending source_record entries stay unresolved; fixture tests hit EPERM on mkdtemp in its sandbox. Landing agent ran the full AGENTS suite 48/48 on ce2d8e6 | Codex CLI codex exec -s read-only -m gpt-5.5, separate context from the builder and landing agent | 4 |
 | 2026-09-26 | TK-00S retro review | Post-merge separate-context delta review of the landed PR #177 contribution (merge `0c44198`, head `692ff50`) against the reviewed candidate `6a7d4f0` (base `89d4042`): PASS, no findings | Codex gpt-5.5 read-only (Lane B, separate context, session 01a0de79) compared the reviewed diff with the landed `git diff <merge>^1 <merge>` outside TASKBOARD.md and CATALOG.md: the promote assertion block is preserved, the MEMORY.md intro rewording in the candidate gave way to integration's generic intro with the promote route added once, and the Spec differs only by the post-review state (Next gate, acceptance line 5, Completion Result, verdict row); `wiki.mjs validate` passed; fixture tests not run in its sandbox (EPERM) | Docs checked; no update needed: record-only row, written by Lane E after Lane B ended | none; closes the gap left when the landed tip merged after the review without a fresh one (AGENTS.md integration gate) |
 | 2026-09-26 | review | Review verdict: pass at eec12cf74ee3f649fa199cfe618c67f4df697938 [7e38e738acba] #2 | none; final-content review of the Spec at eec12cf (checked acceptance lines supported by recorded evidence, Completion Result accurate against source, header and Wiki route consistent); refreshes the digest after the boxes and Completion Result were written post-verdict; fixture tests not run in the reviewer sandbox | Codex CLI codex exec -s read-only -m gpt-5.5, separate context (Lane E log E-gate-review-1.log) | 4 |
+| 2026-10-07 | owner-qa | Owner QA: approve at 42431879fab3057db9e26ae661b4e92512c281f0 [6ffdb1f6f36e] #1 | none | Kayden (owner, in chat 2026-10-06: "Human QA passes. I declare it here.") | none |
 
 ## Completion Result
 

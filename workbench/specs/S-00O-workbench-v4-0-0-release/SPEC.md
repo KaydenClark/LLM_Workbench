@@ -279,6 +279,14 @@ surface. The reworked Blueprint describes the nested topology as the intended
 destination; a later Spec derived from it delivers the tooling and ends this
 exemption.
 
+**Operation-specific exception, owner-confirmed 2026-10-06.** The
+[implement-spec skill adoption (S-002T)](../S-002T-implement-spec-skill-adoption/SPEC.md)
+delivers an agent-orchestrated route: Worker Task branches accumulate on a
+Spec assembly branch and its PR targets integration. An authorized invocation
+stops at ready-for-review; later independent integration review and owner
+Human QA remain. Exemption 2 remains the default outside these invocations.
+This does not claim deterministic Spec-branch tooling or retire the exemption.
+
 **Retained during the exemptions.** The Template Upgrade Release Gate runs
 before any tag. Owner-only `main` promotion is unchanged.
 

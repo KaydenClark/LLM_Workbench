@@ -49,14 +49,15 @@ Contract change.
 | Correct a failed review | A verdict or owner finding failed and its findings return to the still-open Spec. | [dispatcher](workbench/skills/dispatcher/SKILL.md#assembled-review-and-corrective-return) |
 | Record owner Human QA and complete | The owner approves delivered work, or main containment must be proven before `complete`. | [director](workbench/skills/director/SKILL.md#owner-human-qa-and-main-before-complete); closure rules: [director](workbench/skills/director/SKILL.md#owner-closure-and-reconciliation) |
 | Capture, retire or recover a completed Spec | After `complete`: feature capture, retirement, discard or recovery. | [director](workbench/skills/director/SKILL.md#documentation-feature-capture-retirement-and-recovery) |
-| Allocate a visible identifier | You need a new Spec, Task, note or other visible identifier. | [workbench-runtime](workbench/skills/workbench-runtime/SKILL.md#visible-identifiers) |
+| Deliver a landmark through its lifecycle | You author, assign, nest a Spec or Task under, review, approve or retire a `LANDMARK.md`. | [Landmark Lifecycle](#landmark-lifecycle) |
+| Allocate a visible identifier | You need a new Spec, Task, landmark, note or other visible identifier. | [workbench-runtime](workbench/skills/workbench-runtime/SKILL.md#visible-identifiers) |
 | Use the Landmark Tracker | Concept understanding (DQCs, landmarks) changes, or the Tracker view is needed. | [notepad](workbench/skills/notepad/SKILL.md#landmark-tracker-accepted-design-and-available-operations) |
 | Keep a JSON notepad | Meaningful work needs a local note created, resumed, appended, trimmed or cleaned up. | [notepad](workbench/skills/notepad/SKILL.md#runtime-reference) |
 | Read frozen history or recovery receipts | A legacy checkpoint is cited, or a recovery receipt or backup is needed. | [checkpoint](workbench/skills/checkpoint/SKILL.md#frozen-history-and-operational-recovery) |
 | Transport sessions privately | Private session transport is configured and selected collections must sync. | [save](workbench/skills/save/SKILL.md#optional-private-session-transport) |
 | Save, promote or add a room-local skill | Authorized work must be saved to its owners, or the room adds its own skill. | [save](workbench/skills/save/SKILL.md#how-save-and-promote-compose); room-local skills: [workbench-runtime](workbench/skills/workbench-runtime/SKILL.md#room-local-skills) |
 | Promote claims to an owner | Selected supported claims must reach their durable owner. | [promote](workbench/skills/promote/SKILL.md#command-reference) |
-| Evaluate a harness change | You must show that a harness change is an improvement. | [Evaluation And Benchmarking](#evaluation-and-benchmarking) |
+| Evaluate a harness change | You must show that a harness change is an improvement. | [improve-harness](workbench/skills/improve-harness/SKILL.md#improve-harness); comparative claims and trials: [Evaluation And Benchmarking](#evaluation-and-benchmarking) |
 | Transfer work through a handoff | Work goes to another agent or chat as a job, investigation, report or update. | [handoff](workbench/skills/handoff/SKILL.md#transfer-procedure) |
 | Improve against a benchmark | Agent rules, control docs, evaluation criteria or process change and need a baseline first. | [implement](workbench/skills/implement/SKILL.md#benchmark-driven-improvement) |
 | Pick the claims to test | An evaluation must name the claim it tests. | [Claims To Test](#claims-to-test) |
@@ -124,7 +125,11 @@ assigning Director (project/integration), Dispatcher (one Spec/branch) or Worker
 (one Task). At flight launch, assign Spec Planner to plan small Tasks and safe
 parallel groups from current Actuality; planning Workers may assist. Assign
 Spec Manager to dispatch and monitor execution. Keep one writer for shared
-Spec/projection state and route cross-Spec dependencies to the Director.
+Spec/projection state. Coordinate cross-Spec dependencies with the Director
+when present; otherwise delegate only necessary directly connected prerequisite
+Tasks to Workers, preserving original ownership, claims and proof. Dispatchers
+orchestrate all implementation and corrections; missing Worker capabilities
+leave a recoverable blocker, never a Dispatcher implementation fallback.
 
 Use Reviewer or Auditor stance for the named verification job. Apply the
 existing independent-review eligibility rules to the actual agent/context;
@@ -266,6 +271,7 @@ tools lane:
 node workbench/tools/spec-workbench.mjs next --json
 node workbench/tools/spec-workbench.mjs show S-###
 node workbench/tools/spec-workbench.mjs claim S-### --agent NAME
+node workbench/tools/spec-workbench.mjs claim LMK-### --agent NAME
 node workbench/tools/spec-workbench.mjs close S-### --proof "..." --docs "..." --remaining-gap "..."
 node workbench/tools/spec-workbench.mjs render
 node workbench/tools/spec-workbench.mjs doctor
@@ -279,6 +285,9 @@ stay visible without blocking, follows the
 [`workbench-runtime` skill](workbench/skills/workbench-runtime/SKILL.md#diagnostics-and-blocking-effects),
 and validating the wiki lane follows its
 [Wiki Validation](workbench/skills/workbench-runtime/SKILL.md#wiki-validation) section.
+A Spec may nest in its landmark's `specs` folder under `workbench/landmarks/`,
+and a Task may sit directly under an assigned, active landmark; the
+[Landmark Lifecycle](#landmark-lifecycle) section names the landmark commands.
 Decision records live in `workbench/docs/adr/` and Destination Decision Records
 in `workbench/docs/ddr/`; writing, accepting, superseding, deprecating, reading
 and validating them follows the
@@ -324,6 +333,64 @@ recover a colliding Task identity, through the procedure in the
 Allocate and widen the visible identifiers of Specs, Tasks, decision records
 and notepads through the procedure in the
 [`workbench-runtime` skill](workbench/skills/workbench-runtime/SKILL.md#visible-identifiers).
+
+### Landmark Lifecycle
+
+A landmark is a `LANDMARK.md` artifact one size above a Spec
+(the room's landmark decision record, if it has one):
+its folder `workbench/landmarks/LMK-###-slug/` holds `LANDMARK.md`, its child
+Specs in its `specs` folder and its direct Tasks in `tasks/`, each with a
+`retired/` lifecycle folder. Copy `templates/LANDMARK.md`; `doctor` reports a broken
+artifact as `malformed-landmark` and a misnamed folder as `unstable-path`.
+Examples name LMK-001, S-001 and TK-001; substitute the actual IDs and quoted
+values. The room's Wiki article on landmarks, if it has one,
+explains the model.
+
+```bash
+node workbench/tools/spec-workbench.mjs next-id --prefix LMK --json
+node workbench/tools/spec-workbench.mjs move-spec S-001 --landmark LMK-001
+node workbench/tools/spec-workbench.mjs move-spec S-001 --landmark none
+node workbench/tools/spec-workbench.mjs claim LMK-001 --agent NAME
+node workbench/tools/spec-workbench.mjs show LMK-001
+node workbench/tools/spec-workbench.mjs receipt LMK-001 --task TK-001 --tests "..." --docs "..." --remaining-gap "..."
+node workbench/tools/spec-workbench.mjs close LMK-001 --proof "..." --docs "..." --remaining-gap "..."
+node workbench/tools/spec-workbench.mjs gate --task TK-001 --landmark LMK-001
+node workbench/tools/spec-workbench.mjs move-task LMK-001 --task TK-001 --to retired
+node workbench/tools/spec-workbench.mjs report LMK-001 --candidate SHA
+node workbench/tools/spec-workbench.mjs verify LMK-001
+node workbench/tools/spec-workbench.mjs verdict LMK-001 --candidate SHA --digest DIGEST --result pass|fail --findings "..." --reviewer "..."
+node workbench/tools/spec-workbench.mjs approve LMK-001 --candidate INTEGRATION_SHA --digest DIGEST --owner "..."
+node workbench/tools/spec-workbench.mjs retire-landmark LMK-001 --wiki workbench/wiki/design-concepts/landmark-[slug].md
+```
+
+- `move-spec --landmark LMK-###|none` moves an active-roster Spec into a
+  landmark, between landmarks or back to `workbench/specs/` through the
+  link-safe move: every live reference is rewritten, historical ones counted,
+  and the moved record's links to unmoved files recomputed. It never combines
+  with `--to`, and it does not edit the landmark's Child Specs list.
+- A Task directly under a landmark names `**Landmark ID:**` in place of
+  `**Spec ID:**`. `next` and `claim LMK-###` offer it only while the landmark is
+  `active` and its Owner is not `unassigned`; `close` appends to the landmark's
+  evidence log, and `gate --task --landmark` reports its Task PR under the same
+  exemption a Spec's Task PR uses.
+- `report`, `verify` and `verdict` on a landmark are the whole-landmark review:
+  `verify` refuses while a child Spec is neither complete nor retired or a
+  direct Task is not done; `verdict` refuses a reviewer who took part in the
+  landmark, including every agent a direct or child Task record lists under
+  `Claimed by` (each `claim` appends its agent there and refuses an agent name
+  with a comma or line break), answers a fail with corrective Tasks under the landmark without
+  touching a child Spec's gate, and sets the landmark `reached` on a pass with
+  every child closed and every reached check ticked.
+- `approve LMK-###` records only the owner's actual approval, bound to the
+  landmark's committed content; it records no owner finding.
+- `retire-landmark LMK-### --wiki PAGE` refuses by name until the landmark is
+  reached with no open child, a current pass verdict, a clean tree, the owner's
+  approval and a Landmark Wiki page in the Wiki lane whose `source_paths` names
+  the historical `LANDMARK.md` route; then it moves the whole folder to
+  `workbench/landmarks/retired/`, staged and uncommitted.
+
+A landmark-direct Task executes only under an assigned landmark until the
+Instruction Authority list in `AGENTS.md` names an assigned landmark.
 
 ### Landmark Tracker: accepted design and available operations
 
@@ -427,6 +494,10 @@ rule in `AGENTS.md`; it is not cleared by a green `validate`.
 
 Use this section to prove whether the workbench or project process is improving.
 The goal is evidence, not taste.
+Improving one harnessed job, from its baseline through a fresh rerun to a
+retain, revise or remove decision, follows the one loop in the
+[`improve-harness` skill](workbench/skills/improve-harness/SKILL.md#improve-harness);
+a comparative claim needs the claims, design and trials below.
 
 ### Handoff Transfer
 

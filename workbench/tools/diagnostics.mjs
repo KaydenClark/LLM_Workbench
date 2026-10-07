@@ -112,6 +112,12 @@ const registry = Object.freeze({
   // because a reference naming a record Git no longer has at that path is a
   // stronger, room-wide fact than one Spec's own broken link.
   'discarded-reference': entry('error', 'specs', 'selection', "a live reference names a path this room's own discards register says was discarded"),
+  // S-003Z TK-008D: a `LANDMARK.md` artifact (the record one size above a
+  // Spec, ADR-000U) that cannot be parsed or fails its header, status, blocker
+  // or section contract. Registered beside `malformed-spec` with the same
+  // effect: doctor names each malformed landmark and keeps reporting the rest
+  // of the room, and selection stops until the artifact is repaired.
+  'malformed-landmark': entry('error', 'specs', 'selection', 'a LANDMARK.md artifact cannot be parsed or fails its header, status, blocker or section contract'),
   // S-00I TK-01U (S-00J closure-capture contract T4): a Spec completed with
   // recorded main verification is captured into a features article at its
   // closure point. Capture is not a gate on `complete`, so a missing or failed

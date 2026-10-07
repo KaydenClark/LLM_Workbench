@@ -13,7 +13,7 @@ source_paths:
   - workbench/docs/adr/000V-captain-director-dispatcher-and-worker-scope-work-and-role-skills-own-each-job.md
 parent: none
 authorized_by: owner
-last_verified: 2026-10-02
+last_verified: 2026-10-06
 ---
 
 # Roles and stances
@@ -34,8 +34,12 @@ prior involvement.
 
 For example, two Specs may advance in parallel under the Director. Inside each,
 a Dispatcher plans two independent vertical slices and assigns their Workers.
-Conflicting writes are serialized under a named writer; cross-Spec dependencies
-return to the Director. Worker merge requests normally target their Spec branch;
+Conflicting writes are serialized under a named writer. Cross-Spec prerequisites
+are coordinated with the Director when present. Without one, the Dispatcher
+may delegate only necessary directly connected Tasks to Workers, preserving
+the original Spec, claims and proof. Dispatchers orchestrate all changes and
+corrections; missing Worker capabilities leave a blocker, never an implementation
+fallback. Worker merge requests normally target their Spec branch;
 the assembled Spec's reviewed merge request targets integration. The
 [release exception](../../specs/S-00O-workbench-v4-0-0-release/SPEC.md#bootstrap-exemptions)
 explains the current bootstrap route. The
@@ -95,10 +99,12 @@ establish these Spec-bound roles.
 - [AGENTS](../../../AGENTS.md): assignment, authority and integration review.
 - [Blueprint](../../../BLUEPRINT.md): coordinated delivery destination.
 - [Runbook](../../../RUNBOOK.md#role-and-stance-coordination): operating route.
-- [Destination ledger](../../sessions/grilling-destination-audit-ledger.json): ROLE-1 through ROLE-4 and the explicit SCR-4A supersession.
+- [Destination ledger](../../sessions/grilling-destination-audit-ledger.json): Role and stance separation (ROLE-1) through Integration-first continuity (ROLE-4) and the explicit Roles are not branches (SCR-4A) supersession.
 - [Release reconciliation](../../specs/S-00O-workbench-v4-0-0-release/INTEGRATION-RECONCILIATION.md): source inventory and delivery limits.
 
 ## History
+
+- 2026-10-06: Reconciled role and cross-Spec boundaries for the owner-confirmed implement-spec operation (S-002T); older scenario observations remain dated evidence.
 
 - 2026-09-27: Created on owner direction after confirmation of the combined concept. Reviewer changed from the initial role proposal to a stance; Dispatcher remains bounded by one Spec with parallel slices inside it.
 - 2026-10-02: Added the accepted Captain and landmark Director ladder and the move of role jobs into role skills, from the owner-confirmed grilling of 2026-10-02.

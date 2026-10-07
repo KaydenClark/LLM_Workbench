@@ -5,7 +5,7 @@ import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { doctor, nextWork } from '../workbench/tools/spec-workbench.mjs';
-import { validateManifest } from '../workbench/tools/workbench-layout.mjs';
+import { LEGIBILITY_ENTRIES, validateManifest } from '../workbench/tools/workbench-layout.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -46,5 +46,19 @@ const shown = spawnSync(process.execPath, ['workbench/tools/spec-workbench.mjs',
 assert.equal(shown.status, 0, shown.stderr);
 assert.match(shown.stdout, /^# S-021 - Portable Workbench v3/m,
   'cold recovery must resolve S-021 at its manifest-declared stable path');
+
+// S-004M TK-008T: the Workbench's own room is the first to declare how an
+// agent runs, operates, inspects, sees errors in, exercises and measures it.
+// Each entry is a command, a path or a short pointer; every path-like token
+// it names must exist here, or the declaration routes an agent nowhere.
+const legibility = validation.manifest.legibility;
+assert.ok(legibility && typeof legibility === 'object', 'the dogfood manifest must declare its legibility surface');
+assert.deepEqual(Object.keys(legibility).sort(), [...LEGIBILITY_ENTRIES].sort(), 'the Workbench declares exactly the six entries, confirmed (no pending marker)');
+for (const entry of LEGIBILITY_ENTRIES) {
+  assert.ok(typeof legibility[entry] === 'string' && legibility[entry].trim() && !/^\[.*\]$/.test(legibility[entry].trim()), `${entry} must be a filled entry, not a placeholder`);
+  const tokens = legibility[entry].split(/[\s;,]+/).map((token) => token.replace(/#.*$/, '').replace(/\/$/, '')).filter((token) => token && !token.startsWith('-') && (token.includes('/') || /\.(mjs|md|json|py)$/.test(token)));
+  assert.ok(tokens.length, `${entry} names at least one path or script in this room`);
+  for (const token of tokens) assert.ok(fs.existsSync(path.join(root, token)), `${entry} names ${token}, which must exist`);
+}
 
 console.log('ok - LLM Workbench dogfoods its manifest-declared v3 support root');

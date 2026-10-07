@@ -981,7 +981,8 @@ test('workflow checks reject substantive and literal-route mutations with accept
   missingOwner.records.get('000G').data = { ...missingOwner.records.get('000G').data, canonicalized_in: ['BLUEPRINT.md'] };
   assert.throws(() => assertWorkflowMeaning(missingOwner), undefined, 'missing operational owner with accepted lifecycle');
   for (const [label, file, before, after] of [
-    ['Context Map route', 'LEXICON.md', '(RUNBOOK.md)', '(MISSING-RUNBOOK.md)'],
+    // S-004C TK-005N routes the Lexicon's Runbook links through the operations index.
+    ['Context Map route', 'LEXICON.md', '(RUNBOOK.md#operations-index)', '(MISSING-RUNBOOK.md#operations-index)'],
     ['Context Map heading', 'LEXICON.md', '(#artifact-ownership-schema)', '(#missing-owner-heading)'],
     ['Packet regains a corrective Wiki claim', 'LEXICON.md', 'Spec acceptance lines it satisfies, the Task', 'Spec acceptance lines it satisfies or the reconciled Wiki claim for corrective work, the Task'],
     ['operational owner claim', 'AGENTS.md', 'Dispatcher owns whole-Spec QA', 'Worker owns whole-Spec QA']
@@ -1252,6 +1253,28 @@ test('supersede archives an accepted ADR and DDR under exactly one accepted succ
     assert.deepEqual(parseFrontmatter(fs.readFileSync(path.join(dir, 'workbench', 'docs', 'adr', '000B-replacement-architecture.md'), 'utf8')).data.supersedes, ['0001-older.md', '000A-current-architecture.md'], 'an existing supersedes list gains the record');
     assert.match(fs.readFileSync(path.join(dir, 'workbench', 'docs', 'adr', '000B-replacement-architecture.md'), 'utf8'), /\(archive\/000A-current-architecture\.md\)/, 'the successor\'s own link follows the archived record');
     assert.deepEqual(validateDecisionRecords(dir).filter((item) => item.severity === 'error' || item.code === 'stale-register'), []);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+// S-003Z TK-008E: a Spec nested in its landmark's folder, its Task record and
+// the landmark's own LANDMARK.md are live reference surfaces of a decision
+// move, read through the same Spec homes the Spec tools use.
+test('supersede repairs a live link in a Spec nested under a landmark, its Task record and the LANDMARK.md', () => {
+  const dir = lifecycleRoom();
+  try {
+    const landmark = path.join(dir, 'workbench', 'landmarks', 'LMK-0AA-direction');
+    const nested = path.join(landmark, 'specs', 'S-0AB-nested');
+    fs.mkdirSync(path.join(nested, 'tasks', 'TK-0AC'), { recursive: true });
+    fs.writeFileSync(path.join(landmark, 'LANDMARK.md'), '# LMK-0AA - Direction\n\n**Landmark ID:** LMK-0AA\n\n## Decision Records\n\n- [destination choice](../../docs/ddr/000A-destination-choice.md)\n');
+    fs.writeFileSync(path.join(nested, 'SPEC.md'), '# S-0AB - Nested\n\nLive link: [destination choice](../../../../docs/ddr/000A-destination-choice.md).\n');
+    fs.writeFileSync(path.join(nested, 'tasks', 'TK-0AC', 'TASK.md'), '# TK-0AC - Nested slice\n\nSee [destination choice](../../../../../../docs/ddr/000A-destination-choice.md).\n');
+    gitCommitAll(dir, 'Seed a nested Spec');
+    supersedeRecord(dir, 'DDR-000A', 'DDR-000B');
+    assert.match(fs.readFileSync(path.join(nested, 'SPEC.md'), 'utf8'), /\(\.\.\/\.\.\/\.\.\/\.\.\/docs\/ddr\/archive\/000A-destination-choice\.md\)/, 'the nested Spec link is repaired');
+    assert.match(fs.readFileSync(path.join(nested, 'tasks', 'TK-0AC', 'TASK.md'), 'utf8'), /\(\.\.\/\.\.\/\.\.\/\.\.\/\.\.\/\.\.\/docs\/ddr\/archive\/000A-destination-choice\.md\)/, 'the nested Task record link is repaired');
+    assert.match(fs.readFileSync(path.join(landmark, 'LANDMARK.md'), 'utf8'), /\(\.\.\/\.\.\/docs\/ddr\/archive\/000A-destination-choice\.md\)/, 'the landmark\'s Decision Records link is repaired');
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }
