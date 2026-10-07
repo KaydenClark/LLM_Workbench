@@ -498,6 +498,23 @@ export function legibilityState(manifest) {
   return { declared: true, present, undeclared: LEGIBILITY_ENTRIES.filter((entry) => !present.includes(entry)), pending: legibility.confirmation === LEGIBILITY_PENDING };
 }
 
+// A surface helps agents inspect a product; it does not grant permission or
+// make an otherwise valid room unusable. Shape errors stay with validation.
+export function legibilityFindings(project) {
+  const { manifest, failure } = readManifestFile(path.resolve(project));
+  if (failure || manifest?.schemaVersion !== SCHEMA_VERSION) return [];
+  const state = legibilityState(manifest);
+  if (state.malformed) return [];
+  const findings = [];
+  if (state.undeclared.length) {
+    findings.push(finding('legibility-undeclared', `workbench/manifest.json has no declared runtime surface for ${state.undeclared.join(', ')}; use workbench-layout.mjs declare-legibility to name commands, paths or pointers`, { entries: state.undeclared }));
+  }
+  if (state.pending) {
+    findings.push(finding('legibility-unconfirmed', 'workbench/manifest.json legibility is a draft awaiting grilling confirmation; confirm the surface, then use workbench-layout.mjs declare-legibility without --pending'));
+  }
+  return findings;
+}
+
 export function validateManifest(project) {
   const { manifest, failure } = readManifestFile(project);
   if (failure) return failure;
