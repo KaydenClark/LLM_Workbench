@@ -27,7 +27,7 @@ entry](../../GLOSSARY.md#workbench-room-and-artifacts).
 **Neighbouring words.** It is a property of the
 [Workbench](dictionary-workbench.md) as a repository. [Host
 portability](dictionary-host-portability.md) is one thing it depends on, and so
-is the support root, `workbench/`, which has its own glossary entry. The
+is the [support root](dictionary-support-root.md), `workbench/`, which has its own glossary entry. The
 [Environment](dictionary-environment.md) and
 [Filesystem](dictionary-filesystem.md) entries describe where a cloned room
 lives once it is checked out.

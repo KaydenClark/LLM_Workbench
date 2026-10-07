@@ -28,7 +28,7 @@ Template](dictionary-workbench-template.md) and a [Room](dictionary-room.md)
 made from it, not about the [Portable
 Workbench](dictionary-portable-workbench.md). The [Workbench self-drift
 check](dictionary-workbench-self-drift-check.md) is a different check, of this
-repository's own artifacts; control fidelity, with its own glossary entry,
+repository's own artifacts; [control fidelity](dictionary-control-fidelity.md), with its own glossary entry,
 reports a room's differences.
 
 **In use.** When an update reaches a room, a line the room changed on purpose is

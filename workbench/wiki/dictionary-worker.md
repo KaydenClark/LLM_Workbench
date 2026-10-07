@@ -26,8 +26,7 @@ entry](../../GLOSSARY.md#chats-and-roles).
 [Chat](dictionary-chat.md) for a [Dispatcher](dictionary-dispatcher.md), through
 the [Journey](dictionary-journey.md): it checks its own work at
 [QA](dictionary-qa.md) and hands back at [Submit](dictionary-submit.md),
-recording each run in the [Task receipt](dictionary-task-receipt.md). The
-Builder stance it usually takes has its own glossary entry.
+recording each run in the [Task receipt](dictionary-task-receipt.md). The [Builder](dictionary-builder.md) stance it usually takes has its own glossary entry.
 
 **In use.** The Worker for TK-009I wrote a failing check first, then these
 articles, ran the targeted tests and the full suite on its committed candidate,

@@ -25,7 +25,7 @@ definition is the [glossary entry](../../GLOSSARY.md#chats-and-roles).
 one [Spec](dictionary-spec.md), under a [Director](dictionary-director.md), and
 owns the whole-Spec QA of the [Assembled-Spec
 review](dictionary-assembled-spec-review.md). Its planning and dispatching
-stances, Spec Planner and Spec Manager, have their own glossary entries.
+stances, [Spec Planner](dictionary-spec-planner.md) and [Spec Manager](dictionary-spec-manager.md), have their own glossary entries.
 
 **In use.** S-004O's Dispatcher cut its Tasks, runs them two at a time with
 Workers on their own branches, merges their pull requests into the Spec's

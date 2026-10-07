@@ -992,8 +992,11 @@ test('TK-009D: each explained glossary entry lands its Distinction text in a rou
   const router = fs.readFileSync(path.join(root, 'workbench', 'wiki', 'MEMORY.md'), 'utf8');
   const explained = new Map();
   for (const entry of inventory.entries.filter((item) => item.explanationText !== undefined)) {
-    const term = entry.text.match(/^\| \*\*(.+?)\*\* \|/)?.[1];
-    assert.ok(term, `line ${entry.line} is a term row`);
+    // S-004O TK-009J: an AI coding row carries its dictionary link after the
+    // term and a boundary entry is a bullet, so the term is read from the
+    // glossary entry the line lands as.
+    const term = entry.landedText?.match(/^\*\*(.+?)\*\*:/)?.[1];
+    assert.ok(term, `line ${entry.line} lands a glossary term entry`);
     assert.equal(entry.homeKind, 'glossary', `${term} is a glossary entry`);
     const file = path.join(root, entry.explanationHome);
     assert.ok(fs.existsSync(file), `${term} explanation home ${entry.explanationHome} exists`);
@@ -1081,4 +1084,53 @@ test('TK-009K: each root Wiki-only inventory entry lands in a page routed from M
   }
   assert.doesNotMatch(router, /\]\(\.\.\/\.\.\/LEXICON\.md\)[^\n]*AI Coding|AI Coding Terms section\]\(/, 'MEMORY.md no longer routes the AI coding terms to the Lexicon');
   assert.deepEqual(validateWiki(root).filter((item) => item.severity === 'error'), [], 'the room Wiki validates with its reference pages');
+});
+
+// S-004O TK-009J: batch three of the root lexicon articles covers the
+// glossary's Support root and skills lane, Feedback disposition, Workbench
+// meanings of AI coding terms, Continuity terms, Stance terms, Governance core,
+// Project-specific terms and Continuity and evidence boundaries groups. Each
+// term's inventory entry names its article, which is routed from MEMORY.md
+// once, links the term's glossary group and declares the term; the five
+// disposition codes are explained together in the Feedback disposition article,
+// whose fuller text TK-009K landed. Every other term's Lexicon line carried
+// text beyond its glossary definition, so its entry records that text as
+// `explanationText`, which the TK-009D case above proves lands in the article.
+const BATCH_THREE_GROUPS = [
+  'Support root and skills lane', 'Feedback disposition', 'Workbench meanings of AI coding terms', 'Continuity terms',
+  'Stance terms', 'Governance core', 'Project-specific terms', 'Continuity and evidence boundaries'
+];
+test('TK-009J: each batch-three glossary term has a routed lexicon article that links its glossary group and declares the term', () => {
+  const inventory = JSON.parse(fs.readFileSync(path.join(root, ROOT_INVENTORY), 'utf8'));
+  const router = fs.readFileSync(path.join(root, 'workbench', 'wiki', 'MEMORY.md'), 'utf8');
+  const glossaryEntries = inventory.entries.filter((entry) => entry.homeKind === 'glossary');
+  const entryFor = (term) => glossaryEntries.find((entry) => entry.landedText?.startsWith(`**${term}**:`) || entry.text.startsWith(`- **${term.replace(/`/g, '')}** —`));
+  const problems = [];
+  let count = 0;
+  for (const group of BATCH_THREE_GROUPS) {
+    const terms = glossaryGroupTerms(group);
+    assert.ok(terms.length > 0, `GLOSSARY.md has the ${group} group`);
+    for (const term of terms) {
+      count += 1;
+      const entry = entryFor(term);
+      if (!entry?.explanationHome) { problems.push(`${term} (${group}): no inventory explanationHome`); continue; }
+      const file = path.join(root, entry.explanationHome);
+      if (!fs.existsSync(file)) { problems.push(`${term} (${group}): ${entry.explanationHome} is missing`); continue; }
+      const content = fs.readFileSync(file, 'utf8');
+      const declared = parseFrontmatter(content).data?.glossary_term;
+      const code = group === 'Feedback disposition' && term !== 'Feedback disposition';
+      if (code) {
+        if (declared !== 'Feedback disposition' || !content.includes(`**${term}**`)) problems.push(`${term}: not explained in the Feedback disposition article`);
+      } else {
+        if (declared !== term) problems.push(`${term}: ${entry.explanationHome} declares glossary_term ${declared}`);
+        if (term !== 'Feedback disposition' && entry.explanationText === undefined) problems.push(`${term}: the inventory records no explanationText`);
+      }
+      if (!content.includes(`(../../GLOSSARY.md#${glossaryAnchor(group)})`)) problems.push(`${term}: ${entry.explanationHome} does not link its ${group} glossary group`);
+      const name = path.relative(path.join(root, 'workbench', 'wiki'), file).split(path.sep).join('/');
+      if (router.split('\n').filter((line) => line.includes(`](${name})`)).length !== 1) problems.push(`${term}: MEMORY.md does not route ${name} once`);
+    }
+  }
+  assert.deepEqual(problems, [], 'every batch-three term has its routed lexicon article');
+  assert.equal(count, 49, 'batch three explains 49 terms');
+  assert.deepEqual(validateWiki(root).filter((item) => item.severity === 'error'), [], 'the room Wiki validates with the batch-three articles');
 });

@@ -28,8 +28,8 @@ it. It holds only lines that apply everywhere. The canonical definition is the
 **Neighbouring words.** A [Routing artifact](dictionary-routing-artifact.md) is
 reached by pointer instead, and a [Context
 pointer](dictionary-context-pointer.md) is how the Contract reaches it. The
-Workbench Contract, the binding claim set, is a different term with its own
-glossary entry. Neither is [Scaffolding](dictionary-scaffolding.md): both are
+[Workbench Contract](dictionary-workbench-contract.md), the binding claim set,
+is a different term with its own glossary entry. Neither is [Scaffolding](dictionary-scaffolding.md): both are
 durable.
 
 **In use.** This room's Contract artifact is `AGENTS.md`; `CLAUDE.md` is the
