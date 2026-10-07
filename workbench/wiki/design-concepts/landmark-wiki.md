@@ -11,7 +11,7 @@ source_paths:
   - workbench/docs/adr/000R-the-wiki-is-the-evolving-synthesis-every-agent-reads-and-updates.md
   - workbench/wiki/SCHEMA.md
 parent: none
-authorized_by: the Wiki Evolving-Synthesis Migration Spec (S-003W), Task TK-004 (landmark synthesis pages)
+authorized_by: the Wiki Evolving-Synthesis Migration Spec (S-003W), Task TK-004 (landmark synthesis pages); paired Core delivery under Writing-for-agents Skill Adoption (S-002P) and Retro Skill Adoption (S-002V), owner assignment 2026-10-07
 last_verified: 2026-10-04
 ---
 
@@ -133,4 +133,4 @@ The tools are the [Wiki validator](../../tools/wiki.mjs), the
 - 2026-10-04: corrected after the whole-Wiki lint of the Wiki Evolving-Synthesis Migration Spec (S-003W), Task TK-006P (Wiki wording): the features collection and the move of the per-Spec articles into it are delivered, so the closed item left the Open list. No card answer was changed.
 - 2026-10-07: corrected after the whole-Wiki lint at review of the pr skill adoption Spec (S-002U), Task TK-007V: the skills-reference item no longer states a skill count, because the Core bundle grew past the twenty-seven skills it named; the catalog owns the count. No card answer was changed.
 
-- 2026-10-07: Writing-for-agents Skill Adoption (S-002P) and Retro Skill Adoption (S-002V) dated the earlier skills coverage count and linked the current router; no card answer or prior PR Skill Adoption (S-002U) review verdict changed.
+- 2026-10-07: Writing-for-agents Skill Adoption (S-002P) and Retro Skill Adoption (S-002V) routed the skills reference to the current catalog and Wiki router; no card answer or prior PR Skill Adoption (S-002U) review verdict changed.

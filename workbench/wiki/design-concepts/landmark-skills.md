@@ -11,7 +11,7 @@ source_paths:
   - workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md
   - workbench/skills/README.md
 parent: none
-authorized_by: the Wiki Evolving-Synthesis Migration Spec (S-003W), Task TK-004 (landmark synthesis pages)
+authorized_by: the Wiki Evolving-Synthesis Migration Spec (S-003W), Task TK-004 (landmark synthesis pages); paired Core delivery under Writing-for-agents Skill Adoption (S-002P) and Retro Skill Adoption (S-002V), owner assignment 2026-10-07
 last_verified: 2026-10-04
 ---
 
