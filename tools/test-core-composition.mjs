@@ -131,6 +131,7 @@ test('public runtime supports separate decision-record, Map and Plan publication
     const original = '# Runbook\n\n## Reports\n\nNaming remains open.\n';
     write('RUNBOOK.md', original);
     write('BLUEPRINT.md', '# Reports\n\nGenerate reports with the confirmed name.\n');
+    write('TASKBOARD.md', '# Tasks\n\n<!-- hot-specs:start -->\n<!-- hot-specs:end -->\n');
     git(project, ['add', '-A']);
     git(project, ['commit', '-q', '-m', 'Fixture baseline']);
     git(project, ['push', '-q', 'origin', 'integration']);
