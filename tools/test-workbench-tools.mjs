@@ -544,7 +544,7 @@ test('growth rollback recovers the recorded legacy nine-backed-up eleven-to-twen
     assertRestoredGeneration(room);
   } finally {room.cleanup();}
 });
-for(const scenario of ['unrecorded','modified-introduced','mode-introduced','modified-restored','corrupt-backup','unsafe-backup','inconsistent-absence','missing-unchanged','unknown-legacy-source','pruned-legacy-current']) {
+for(const scenario of ['unrecorded','modified-introduced','mode-introduced','modified-restored','deleted-restored','deleted-introduced','corrupt-backup','unsafe-backup','inconsistent-absence','missing-unchanged','unknown-legacy-source','pruned-legacy-current']) {
   test(`growth rollback refuses ${scenario} before any lane writes`,()=>{
     const room=growthRoom();
     try {
@@ -556,6 +556,8 @@ for(const scenario of ['unrecorded','modified-introduced','mode-introduced','mod
       } else if(scenario==='modified-introduced') fs.appendFileSync(path.join(room.lane,room.introduced[0]),'\n// keep this local change\n');
       else if(scenario==='mode-introduced') fs.chmodSync(path.join(room.lane,room.introduced[0]),0o755);
       else if(scenario==='modified-restored') fs.appendFileSync(path.join(room.lane,entry.files[0]),'\n// keep this local change\n');
+      else if(scenario==='deleted-restored') fs.unlinkSync(path.join(room.lane,entry.files[0]));
+      else if(scenario==='deleted-introduced') fs.unlinkSync(path.join(room.lane,room.introduced[0]));
       else if(scenario==='corrupt-backup') fs.appendFileSync(path.join(backup,entry.files[0]),'\n// changed saved bytes\n');
       else if(scenario==='unsafe-backup') {
         const outside=path.join(room.home,'outside.txt');fs.writeFileSync(outside,'keep external bytes');
