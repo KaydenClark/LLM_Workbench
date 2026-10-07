@@ -6,8 +6,8 @@
 **Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
-**Destination:** spec-acceptance: The tracked and discovered maintainer skill coordinates one confirmed decision through delegated Record, Map, Plan and stage publication, within its endpoint.
-**Planned verification:** Red/green source contract; lane discovery and Core exclusion; public-runtime bare-remote scenario; direct promotion regression; full Runbook suite; Wiki validation and touched-page lint; before/after room checks; assembled review and integration read-back.
+**Destination:** spec-acceptance: The tracked maintainer skill is reachable through the declared lane adapters and coordinates one confirmed decision through delegated Record, Map, Plan and stage publication, within its endpoint.
+**Planned verification:** Red/green source contract; lane reachability and Core exclusion; public-runtime bare-remote scenario; direct promotion regression; full Runbook suite; Wiki validation and touched-page lint; before/after room checks; assembled review and integration read-back.
 **Claimed by:** codex-promote
 
 Deliver the confirmed thin `promote-decision` skill as a Workbench-only

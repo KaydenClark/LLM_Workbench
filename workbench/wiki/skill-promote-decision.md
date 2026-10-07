@@ -41,7 +41,7 @@ decision. Pending and stale answers remain outside that frontier.
 
 The core [Promote primitive](skill-promote.md) still reconciles selected claims
 and composes `save`. Promote Decision is declared as a maintainer skill beside
-`implement-spec`, discovered through the Workbench's lane adapters. It is not
+`implement-spec`, reachable through the Workbench's lane adapters. It is not
 installed into generated rooms or personal Core catalogs. Generic templates
 retain the shared verb meanings and core selected-claim route; this first
 delivery's orchestration route belongs to the LLM Workbench.
@@ -51,6 +51,8 @@ runtime fixture checks stage publication, a docs-only boundary, source
 corrections and pending preservation, unfinished-code isolation, and retry
 from fresh containment. Its merge authorization is simulated. Those checks
 establish neither live GitHub publication nor autonomous coordinator behavior.
+An agent trial supplied an explicit skill path; ordinary-prompt model discovery
+remains unproven by these source and route checks.
 The delivery gates and behavioral evidence belong to the
 [Promote Confirmed Decisions Spec (S-005C)](../specs/S-005C-promote-confirmed-decisions/SPEC.md).
 

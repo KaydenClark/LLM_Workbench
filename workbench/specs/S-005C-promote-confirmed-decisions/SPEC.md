@@ -79,7 +79,7 @@ Task records own the scoped delivery work; the generated board projects them.
 
 ## Acceptance Criteria
 
-- [ ] The tracked and discovered maintainer skill coordinates one confirmed decision through delegated Record, Map, Plan and stage publication, within its endpoint.
+- [ ] The tracked maintainer skill is reachable through the declared lane adapters and coordinates one confirmed decision through delegated Record, Map, Plan and stage publication, within its endpoint.
 - [ ] Its cold-start source contract and board/grill-me entry routes retain decision identity, confirmed revision, rationale, corrections, scope, pending state, dependency ordering and recovery from live owners/PRs/containment.
 - [ ] Existing selected-note reconciliation safeguards and caller scope remain available without recursive save/promote composition.
 - [ ] A disposable Git-remote scenario publishes docs, then a planned Spec, then unclaimed Task records; a separate clone reads every stage while unfinished code stays off integration. It exercises a docs-only endpoint and retry after an interrupted publication.
@@ -88,12 +88,14 @@ Task records own the scoped delivery work; the generated board projects them.
 
 ## Testing Seams
 
-Workbench lane discovery and Core exclusion; existing public session/Spec
+Workbench lane reachability and Core exclusion; existing public session/Spec
 runtime commands in a disposable room with a bare Git remote and independent
 reader. Source contract checks pin stage order and caller bounds; fixture
 publication proves Git and lifecycle mechanics with simulated merge authority,
 not autonomous agent reliability or live GitHub gates. A separate cold-start
 delegated scenario can assess coordinator behavior within its observed bounds.
+That scenario uses an explicit skill path; ordinary-prompt model discovery is
+not established by it or by the filesystem checks.
 
 ## Verification Procedure
 

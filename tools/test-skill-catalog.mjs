@@ -70,7 +70,7 @@ assert.ok(maintainerSkills.includes('promote-decision'), 'promote-decision must 
 assert.ok(!coreSkills.includes('promote-decision'), 'promote-decision must remain outside Core');
 for (const adapter of ['.agents/skills', '.claude/skills']) {
   assert.equal(fs.realpathSync(path.join(root, adapter, 'promote-decision')),
-    fs.realpathSync(path.join(skillsRoot, 'promote-decision')), 'lane adapters must discover the decision coordinator');
+    fs.realpathSync(path.join(skillsRoot, 'promote-decision')), 'lane adapters must resolve to the decision coordinator');
 }
 const promoteDecision = read('workbench/skills/promote-decision/SKILL.md');
 assert.match(promoteDecision, /name: promote-decision/);
