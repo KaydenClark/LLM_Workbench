@@ -37,7 +37,7 @@
       "hash": "3056025d2b05701ff2198dc7bd41f592dc1e783c54cc8feb10eebc46adcb3f96",
       "homeKind": "glossary",
       "homePath": "templates/GLOSSARY.md",
-      "landedText": "The canonical vocabulary for terms whose meaning is shared across the project; read it when a request, spec, test, or skill uses project language that could be ambiguous.",
+      "landedText": "This glossary is the canonical vocabulary for terms whose meaning is shared across the project; read it when a request, spec, test, or skill uses project language that could be ambiguous.",
       "reason": null
     },
     {
@@ -46,7 +46,7 @@
       "hash": "0815939e7f30ce1c05a6d837ad487f305b8eeec250e7c22af4867456275fc7f7",
       "homeKind": "glossary",
       "homePath": "templates/GLOSSARY.md",
-      "landedText": "The canonical vocabulary for terms whose meaning is shared across the project; read it when a request, spec, test, or skill uses project language that could be ambiguous.",
+      "landedText": "This glossary is the canonical vocabulary for terms whose meaning is shared across the project; read it when a request, spec, test, or skill uses project language that could be ambiguous.",
       "reason": null
     },
     {
@@ -55,7 +55,7 @@
       "hash": "07abf31dd9d22afb4c32b93ebc1bf49e8cb6fdce8922d428d0d43e98bbc98d66",
       "homeKind": "glossary",
       "homePath": "templates/GLOSSARY.md",
-      "landedText": "The canonical vocabulary for terms whose meaning is shared across the project; read it when a request, spec, test, or skill uses project language that could be ambiguous.",
+      "landedText": "This glossary is the canonical vocabulary for terms whose meaning is shared across the project; read it when a request, spec, test, or skill uses project language that could be ambiguous.",
       "reason": null
     },
     {
@@ -971,7 +971,7 @@
       "hash": "15f41ae04b0fca83a4fb1f9b779c9bd08081d476fc381975c4d1df893975f123",
       "homeKind": "glossary",
       "homePath": "templates/GLOSSARY.md",
-      "landedText": "**Map**: The direction to a destination, at two scales: a landmark and a Spec are each a map, and Tasks are the steps taken on it. A low-resolution view around a destination shows decisions so far, Fog and out-of-scope work.",
+      "landedText": "**Map**: The direction to a destination, at two scales: a landmark and a Spec are each a map, and Tasks are the steps taken on it; a low-resolution view around a destination shows decisions so far, Fog and out-of-scope work. As a workflow verb, Map is writing the direction to a destination: landmarks, Specs and decision records.",
       "reason": null,
       "explanationHome": "templates/wiki/dictionary-map.md"
     },
