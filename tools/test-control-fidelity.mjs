@@ -14,6 +14,7 @@ import test from 'node:test';
 import { describe, registeredCodes } from '../workbench/tools/diagnostics.mjs';
 import { templatePlaceholders } from '../workbench/tools/template-placeholders.mjs';
 import { classifyLines, reportFidelity, summarizeMarkdown } from './control-fidelity.mjs';
+import { normalizeText } from './check-carrier-landing.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const tool = path.join(root, 'tools', 'control-fidelity.mjs');
@@ -1196,4 +1197,137 @@ test('TK-005N: both Lexicons and the README describe the delivered carrier shape
   const readme = read(root, 'README.md');
   assert.doesNotMatch(readme, /Follow AGENTS\.md -> RUNBOOK\.md -> LEXICON\.md/, 'README no longer names the old entry route');
   assert.match(readme, /AGENTS\.md -> the RUNBOOK\.md operations index -> LEXICON\.md/, 'README names the entry route through the Runbook index');
+});
+
+// S-004O TK-009C: root GLOSSARY.md and its generic templates/GLOSSARY.md own
+// concise canonical project vocabulary in Matt's pinned glossary format
+// (skills d81f3a1, engineering/domain-modeling/GLOSSARY-FORMAT.md): a context
+// heading, a one or two sentence context description, a `Language` section
+// whose optional `###` groupings hold entries, each a bolded term line, a one
+// or two sentence definition and optional `_Avoid_:` alias lines. A grouping
+// may open with one short note. General AI and programming concepts stay
+// Wiki-only, so context window and cache tokens have no entry; the fuller
+// Distinction text lives in the Wiki lexicon articles.
+const GLOSSARIES = [
+  ['root', 'GLOSSARY.md', 'workbench/specs/S-004O-lexicon-retirement-and-architecture-md/proof/lexicon-landing-inventory.json'],
+  ['template', 'templates/GLOSSARY.md', 'workbench/specs/S-004O-lexicon-retirement-and-architecture-md/proof/template-lexicon-landing-inventory.json'],
+];
+const GLOSSARY_REQUIRED_TERMS = ['Spec', 'Task', 'Landmark', 'Review'];
+const GLOSSARY_ABSENT_TERMS = ['Context window', 'Cache tokens'];
+const sentenceCount = (text) => (text.match(/[.!?][)\]"'`*]*(?=\s|$)/g) ?? []).length || 1;
+
+function parseGlossary(content, label) {
+  const lines = content.replace(/\r\n/g, '\n').replace(/\n+$/, '').split('\n');
+  let index = 0;
+  const next = () => lines[index] ?? '';
+  const skipBlank = () => { while (index < lines.length && next().trim() === '') index += 1; };
+  const heading = next().match(/^# (\S.*)$/);
+  assert.ok(heading, `${label}: opens with a context heading`);
+  index += 1;
+  skipBlank();
+  // A generated Template carries its release stamp before the description.
+  while (next().startsWith('> ')) { index += 1; skipBlank(); }
+  const description = [];
+  while (index < lines.length && next().trim() !== '' && !next().startsWith('#')) description.push(lines[index++]);
+  assert.ok(description.length, `${label}: has a context description under the heading`);
+  assert.ok(sentenceCount(description.join(' ')) <= 2, `${label}: the context description is one or two sentences`);
+  skipBlank();
+  assert.equal(next(), '## Language', `${label}: the context description is followed by the Language section`);
+  index += 1;
+  const entries = [];
+  let group = null;
+  let groupStarted = false;
+  while (index < lines.length) {
+    skipBlank();
+    if (index >= lines.length) break;
+    const line = next();
+    const groupHeading = line.match(/^### (\S.*)$/);
+    if (groupHeading) { group = groupHeading[1]; groupStarted = false; index += 1; continue; }
+    assert.doesNotMatch(line, /^#{1,2} /, `${label}: no section other than Language (${line})`);
+    const term = line.match(/^\*\*([^*].*?)\*\*:$/);
+    if (!term) {
+      // One short note may open a grouping before its first entry.
+      assert.ok(group && !groupStarted && !line.startsWith('_Avoid_') && !line.startsWith('**') && sentenceCount(line) <= 2 && (lines[index + 1] ?? '').trim() === '',
+        `${label}: unexpected line in Language: ${line}`);
+      groupStarted = true;
+      index += 1;
+      continue;
+    }
+    groupStarted = true;
+    index += 1;
+    const definition = next();
+    assert.ok(definition.trim() && !/^(\*\*|_Avoid_|#)/.test(definition), `${label}: ${term[1]} has a definition line under its term`);
+    assert.ok(sentenceCount(definition) <= 2, `${label}: ${term[1]} is defined in at most two sentences`);
+    index += 1;
+    const avoid = [];
+    while (index < lines.length && next().trim() !== '') {
+      const alias = next().match(/^_Avoid_: ([^,\s][^,]*(?:, [^,\s][^,]*)*)$/);
+      assert.ok(alias, `${label}: ${term[1]} is followed only by well-formed _Avoid_ lines, found: ${next()}`);
+      avoid.push(...alias[1].split(', '));
+      index += 1;
+    }
+    entries.push({ term: term[1], definition, avoid, group });
+  }
+  const seen = new Map();
+  for (const entry of entries) {
+    const key = entry.term.toLowerCase();
+    assert.ok(!seen.has(key), `${label}: ${entry.term} is defined once`);
+    seen.set(key, entry);
+  }
+  return { context: heading[1], description: description.join(' '), entries, entry: (name) => seen.get(name.toLowerCase()) };
+}
+
+function glossaryScope(glossary, label) {
+  for (const term of GLOSSARY_REQUIRED_TERMS) assert.ok(glossary.entry(term), `${label}: defines ${term}`);
+  for (const term of GLOSSARY_ABSENT_TERMS) assert.equal(glossary.entry(term), undefined, `${label}: ${term} is a general concept and stays Wiki-only`);
+}
+
+test('TK-009C: root and Template glossaries follow the pinned format and carry project vocabulary only', () => {
+  for (const [label, relative] of GLOSSARIES) {
+    const glossary = parseGlossary(read(root, relative), relative);
+    glossaryScope(glossary, relative);
+    assert.match(glossary.entry('Review').definition, /Journey/, `${label}: Review carries the Workbench meaning`);
+  }
+  const template = read(root, 'templates/GLOSSARY.md');
+  assert.doesNotMatch(template, /ADR-0|S-0[0-9A-Z]{2}\b|TK-0|workbench\/specs\/|workbench\/docs\/(adr|ddr)\/0|KaydenClark|\/Users\//, 'the Template glossary stays generic');
+  assert.equal(parseGlossary(template, 'templates/GLOSSARY.md').entry('Workbench Template'), undefined, 'the Template glossary carries no producer-only Workbench Template entry');
+  const leftovers = template.match(/(?<!\[)\[(?!\[|[ xX]\])[^\]\n]+\](?!\()/g) ?? [];
+  for (const token of leftovers) assert.ok(templatePlaceholders.includes(token), `templates/GLOSSARY.md: recognized placeholder ${token}`);
+});
+
+test('TK-009C: the glossary format check rejects long definitions, duplicates, bad aliases, extra sections and general terms', () => {
+  const base = '# Ctx\n\nOne context. Two sentences.\n\n## Language\n\n### Group\n\nA note.\n\n**Spec**:\nA scoped objective.\n_Avoid_: brief, order\n\n**Task**:\nOne slice.\n\n**Landmark**:\nA direction.\n\n**Review**:\nA judgement after the Journey.\n';
+  glossaryScope(parseGlossary(base, 'fixture'), 'fixture');
+  for (const [claim, mutate] of [
+    ['three-sentence definition', (text) => text.replace('A scoped objective.', 'One. Two. Three.')],
+    ['three-sentence description', (text) => text.replace('One context. Two sentences.', 'One. Two. Three.')],
+    ['duplicate term', (text) => `${text}\n**task**:\nAgain.\n`],
+    ['empty alias', (text) => text.replace('_Avoid_: brief, order', '_Avoid_:')],
+    ['alias without the marker', (text) => text.replace('_Avoid_: brief, order', 'Avoid: brief')],
+    ['missing Language section', (text) => text.replace('## Language', '## Terms')],
+    ['extra section', (text) => `${text}\n## Routes\n\nA route.\n`],
+    ['missing definition', (text) => text.replace('A scoped objective.\n', '')],
+    ['missing description', (text) => text.replace('One context. Two sentences.\n\n', '')],
+  ]) {
+    assert.throws(() => parseGlossary(mutate(base), claim), { name: 'AssertionError' }, claim);
+  }
+  for (const [claim, mutate] of [
+    ['missing required term', (text) => text.replace('**Landmark**:\nA direction.\n\n', '')],
+    ['general context window term', (text) => `${text}\n**Context window**:\nEverything the model sees.\n`],
+    ['general cache tokens term', (text) => `${text}\n**Cache tokens**:\nReused input.\n`],
+  ]) {
+    assert.throws(() => glossaryScope(parseGlossary(mutate(base), claim), claim), { name: 'AssertionError' }, claim);
+  }
+});
+
+test('TK-009C: every glossary entry of both Lexicon landing inventories lands in its glossary', () => {
+  for (const [label, relative, inventory] of GLOSSARIES) {
+    const home = normalizeText(read(root, relative));
+    const entries = JSON.parse(read(root, inventory)).entries.filter((entry) => entry.homeKind === 'glossary');
+    assert.ok(entries.length > 0, `${label} inventory has glossary entries`);
+    for (const entry of entries) {
+      assert.equal(entry.homePath, relative, `${label} line ${entry.line} homes in ${relative}`);
+      assert.ok(home.includes(normalizeText(entry.landedText)), `${relative} holds the landed text of Lexicon line ${entry.line}: ${entry.landedText}`);
+    }
+  }
 });
