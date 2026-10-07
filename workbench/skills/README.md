@@ -192,7 +192,6 @@ candidates the review checked and found unreferenced.
 <!-- referenced-skills:start -->
 | Skill | Reference | Requirement | Disposition | Reason |
 |---|---|---|---|---|
-| `domain-modeling` | `workbench/skills/grilling/SKILL.md` | optional | optional mention | Grilling says it "may challenge a concept" within the caller's authorization; the interview completes without it. |
 | `wayfinder` | `workbench/skills/grilling/SKILL.md`, `BLUEPRINT.md` | optional | optional mention | Grilling says it "may" narrow an oversized inquiry and the Blueprint says wayfinding "can open Align"; neither makes it a step. |
 | `tdd` | `workbench/skills/tracer-bullet/SKILL.md` | optional | optional mention | Cited as an example of verifying at a public seam. The required red/green practice is stated in AGENTS.md Engineering And Verification and carried by the lane's `implement` and `builder`, so the practice needs no separate skill. |
 | `brainstorm` | `workbench/wiki/design-concepts/idea-to-delivery-workflow.md` | optional | optional mention | Brainstorming "can open Align" (the Blueprint carried this line until the four-part short page replaced it; the workflow page carries it now); the stated session entry is `grill-me`, which ships in the lane. |
