@@ -3,11 +3,12 @@
 **Task ID:** TK-009A
 **Spec ID:** S-004O
 **Slice:** Census every Lexicon line and extend the landing check to the Lexicon
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: A census maps every Lexicon line to a home and the landing check passes at the candidate with `LEXICON.md` removed.
 **Planned verification:** Red: a `tools/test-carrier-landing.mjs` case that checks a Lexicon carrier with `glossary` and `architecture` home kinds fails first. Green: that test, `check-carrier-landing.mjs scaffold` inventories for `LEXICON.md` and `templates/LEXICON.md` at the assembly base with every entry classified, a census of every Lexicon consumer, then the full suite on the committed candidate.
+**Claimed by:** claude-s004o-worker-a
 
 ## Scope
 
