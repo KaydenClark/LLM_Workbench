@@ -1,0 +1,33 @@
+✖ growth rollback refuses pruned-legacy-current before any lane writes (586.72925ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 678.303459
+
+✖ failing tests:
+
+test at tools/test-workbench-tools.mjs:548:3
+✖ growth rollback refuses pruned-legacy-current before any lane writes (586.72925ms)
+  AssertionError [ERR_ASSERTION]: {"status":"rolled-back","lane":"workbench/tools","backup":"/var/folders/h2/4pvfvm191m7gnfm51mvsf9m40000gn/T/runtime-growth-home-hfPCU0/.workbench-tools-backup-fG27sb","restored":["adr.mjs","diagnostics.mjs","sessions.mjs","spec-packet.mjs","spec-workbench.mjs","template-placeholders.mjs","wiki.mjs","workbench-layout.mjs","workbench-paths.mjs"],"removed":["github-coordination.mjs","host-floor.mjs","landmark-artifact.mjs","landmark-tracker.mjs","landmark-wiki.mjs","notepads.mjs","optional-capabilities.mjs","project-evidence.mjs","self-drift.mjs","session-transport.mjs","spec-report.mjs","task-packet.mjs","task-receipt.mjs","task-record.mjs","taskboard.mjs","visible-ids.mjs","skill-inspection.mjs"]}
+  
+  + actual - expected
+  
+  + 'rolled-back'
+  - 'blocked'
+  
+      at TestContext.<anonymous> (file://<producer-checkout>/tools/test-workbench-tools.mjs:574:14)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'rolled-back',
+    expected: 'blocked',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

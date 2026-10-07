@@ -49,10 +49,10 @@ One public CLI tracer bullet covers metadata, rollback, refusals, proof and docu
 
 ## Acceptance Criteria
 
-- [ ] New and recorded legacy11-to29 growth backups restore all original11 hashes/file set, remove18 introduced tools and preserve previous receipt/backups.
-- [ ] Corrupt/unrecorded/unsafe backup and local introduced-file modification regressions refuse without changing any lane byte or receipt.
-- [ ] Historical native verification passes; current coverage still rejects older generation; payload, Core and version bytes unchanged.
-- [ ] Focused red/green, all current Runbook checks, before/after room checks and scoped docs recorded without private target data or unrun claims.
+- [x] New and recorded legacy11-to29 growth backups restore all original11 hashes/file set, remove18 introduced tools and preserve previous receipt/backups.
+- [x] Corrupt/unrecorded/unsafe backup and local introduced-file modification regressions refuse without changing any lane byte or receipt.
+- [x] Historical native verification passes; current coverage still rejects older generation; payload, Core and version bytes unchanged.
+- [x] Focused red/green, all current Runbook checks, before/after room checks and scoped docs recorded without private target data or unrun claims.
 
 ## Testing Seams
 
@@ -73,10 +73,11 @@ This owner and existing managed-runtime feature explanation. Generic controls/te
 | 2026-10-07 | planning | Narrow prerequisite assigned | Source/controller and ownership inspected read-only | New owner linked to delivered managed runtime and retained limitations | Regression, implementation, checks, review and delivery pending |
 | 2026-10-07 | setup | Initial Task claim refused | Native activation succeeded. Claim refused before mutation because the new Spec/Task own paths were uncommitted; its stated recovery is commit first. | Draft records and failed attempt preserved; no lifecycle-tool change | Checkpoint the assigned records, then native claim |
 | 2026-10-07 | TK-007J | Public growth rollback regression and correction | Original controller817661a4 returns rolled-back while retaining18 introduced files, accepts an unrecorded backup and overwrites post-update changes. Committed REDb69fd5ec; corrected controller9e85b668 focused11/11 and installer30/30 GREEN. Corrected fixture compares all original files including the existing lane placeholder; replay against unchanged original controller remains RED. | Controller now records absence and saved hashes, preflights recorded backup/integrity/local edits and restores exact previous receipt. Legacy ancestry guard corrected from historical main9378 to its controller-identical integration parent8e9; unknown sources still refuse. Feature explanation updated; no payload/Core/version/private target delta. | Added historical-source preservation and mode-edit checks, final full current suite, immutable assembled review and integration remain pending. Initial fixture expectation and legacy-guard failures retained locally; no first-pass-clean claim. |
+| 2026-10-07 | TK-007J | Deterministic producer Check passed | Full54/54 on clean cb380955; installer32/32. Legacy saved9/previous11/current29 restores exact original bytes, file set, backups and source9378; historical native valid, current29 honestly needs update. Original controller RED replay retained. Pruned-current legacy case failed RED then guarded GREEN. | Initial red, setup refusal, fixture/generation failures and final checks retained under proof/. Scoped feature explanation and legacy limits recorded. Guardrails73/100 unchanged; known21 findings retained; no runtime/Core/version/private target delta. | Native close, one immutable assembled review and integration delivery follow; installed-root repeat is not performed here |
 
 ## Completion Result
 
-Pending. Owner Human QA/main remain separate.
+Implemented and deterministically checked: exact prior-generation recovery and safe refusals pass; all54 current Runbook commands pass on cb380955. Runtime/Core/version bytes are unchanged. Binding assembled review and integration containment follow. The dependent installed-root operation, existing drift and Owner Human QA/main remain separate.
 
 ## Supersession
 

@@ -1,0 +1,564 @@
+✖ growth rollback records original absence and restores the historical eleven-file generation (668.838291ms)
+✖ growth rollback recovers the recorded legacy nine-backed-up eleven-to-twenty-nine shape (559.129708ms)
+✖ growth rollback refuses unrecorded before any lane writes (560.085875ms)
+✖ growth rollback refuses modified-introduced before any lane writes (559.337916ms)
+✖ growth rollback refuses modified-restored before any lane writes (564.680584ms)
+✖ growth rollback refuses corrupt-backup before any lane writes (547.037625ms)
+✔ growth rollback refuses unsafe-backup before any lane writes (566.876ms)
+✖ growth rollback refuses inconsistent-absence before any lane writes (569.587208ms)
+✖ growth rollback refuses missing-unchanged before any lane writes (572.782125ms)
+✖ growth rollback refuses unknown-legacy-source before any lane writes (572.592209ms)
+✖ growth rollback restores an originally present unreceipted managed name instead of deleting it (578.579334ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 1
+ℹ fail 10
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6411.314083
+
+✖ failing tests:
+
+test at tools/test-workbench-tools.mjs:522:1
+✖ growth rollback records original absence and restores the historical eleven-file generation (668.838291ms)
+  AssertionError [ERR_ASSERTION]: update records original absence before installing new names
+      at TestContext.<anonymous> (file://<original-controller-replay>/tools/test-workbench-tools.mjs:527:12)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at tools/test-workbench-tools.mjs:535:1
+✖ growth rollback recovers the recorded legacy nine-backed-up eleven-to-twenty-nine shape (559.129708ms)
+  AssertionError [ERR_ASSERTION]: every original file, including the lane placeholder, is preserved
+  + actual - expected
+  ... Skipped lines
+  
+    [
+      [
+        '.gitkeep',
+        'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
+        420
+  ...
+      [
+  +     'claim-coordination.mjs',
+  +     '7f4755d3f0b2f42510aff122ab65aed812c4e2c73cb1988bb50a777cfa373560',
+  +     420
+  +   ],
+  +   [
+        'diagnostics.mjs',
+        'bf9e0f47f4b0242fa496d37e4a0535ec674fd045dee19356814a8ed97426e0a2',
+        420
+      ],
+      [
+  +     'github-coordination.mjs',
+  +     '1d4c120ab8442e12c0a0186e7cdb0bfd7e6d8079682c96fc49b8025febf5a720',
+  +     420
+  +   ],
+  +   [
+  +     'host-floor.mjs',
+  +     'db5bfeb569af46f0df464d5e614bd5fd25e9297f1aaf7a4a3dc7eecda6c7a193',
+  +     420
+  +   ],
+  +   [
+  +     'landmark-artifact.mjs',
+  +     '2c3b46907d16097ca4d45c1ead05f8f6d11ddb9753210065c7b2e5ec5bcb1c11',
+  +     420
+  +   ],
+  +   [
+  +     'landmark-tracker.mjs',
+  +     'f196b51e693d0cffc75928abeed2e99765624ec16ad436e020f59dff27a7e0cd',
+  +     420
+  +   ],
+  +   [
+  +     'landmark-wiki.mjs',
+  +     'dd5eee302f9cb8afb1db7949461554bc7471a575425cc920aa0b04a6b1322d52',
+  +     420
+  +   ],
+  +   [
+        'markdown-table.mjs',
+        'acca5cb04cecb0044c74aaa38f42d6f0e4e6addb26b45a744d14ca0b74487e6b',
+        420
+      ],
+      [
+  +     'notepads.mjs',
+  +     '157bb7c93f0b7914414ba2a2b9b47c631cfbf3b85d48f8efc79d572934febc4b',
+  +     420
+  +   ],
+  +   [
+  +     'optional-capabilities.mjs',
+  +     '430df9d08ba18e4af2a389019b3b591f23ad9ae390801b2a39273878d05490be',
+  +     420
+  +   ],
+  +   [
+        'privacy.mjs',
+        '8731047bc626b7b7a539b04c674aac2ac19452e7103cebd53ccf336c32a3ad8b',
+        420
+      ],
+      [
+  +     'project-evidence.mjs',
+  +     '5fdfdce8f57b749b3be995a1f31ff9bf69ce4b6c6cf8690df9719661813eeca3',
+  +     420
+  +   ],
+  +   [
+  +     'self-drift.mjs',
+  +     '65b0480c6cdd0f0d372f6f38c0f8b3d665597d03dc74f770d6a53aaaf4e986d2',
+  +     420
+  +   ],
+  +   [
+  +     'session-transport.mjs',
+  +     '17172dcb489a2fa571551a605f3130fd20d6bc2a17d8cba8811ef39a8c2c5416',
+  +     420
+  +   ],
+  +   [
+        'sessions.mjs',
+        '26df16acbff46166c79eef17d09d35ba63888d2da4ba5c466e234a93d442e9d7',
+        420
+      ],
+      [
+  +     'skill-inspection.mjs',
+  +     '1ff024d82308113ee6de3d76c39c3d9cd05476e04f04db023a4d13d689af83b1',
+  +     420
+  +   ],
+  +   [
+        'spec-packet.mjs',
+        '8dbe28d865a3bbeab8e01548b85ed2e01286c83fcd7c403fd85f636cc4c7f7e6',
+        420
+      ],
+      [
+  +     'spec-report.mjs',
+  +     'a68464776bc5b46ef5339d5133c63ba301f30a1c66768212e67611509dd6312e',
+  +     420
+  +   ],
+  +   [
+        'spec-workbench.mjs',
+        '5de7b261a0b26b8f97c426082862954356758197ed0f6742161ab1d482b0dd44',
+        420
+      ],
+      [
+  +     'task-packet.mjs',
+  +     '688e46ff537561dec55f557bfc3a408f82c8bacbbd456729883fcbf042329c5a',
+  +     420
+  +   ],
+  +   [
+  +     'task-receipt.mjs',
+  +     'aaefb6321bdd4568f1e850f885b0b8aaf56a2e4c383f8786c3df79b3a0ebb7c5',
+  +     420
+  +   ],
+  +   [
+  +     'task-record.mjs',
+  +     '2d2950169c4a8906f155b1e0e673975acdf0d1ede01a3a1da38fcb9074b5a7e0',
+  +     420
+  +   ],
+  +   [
+  +     'taskboard.mjs',
+  +     'b374163bfe8c29b8f07a82d1df8fc71bc62bdccd28f82bd417648f99ea71c567',
+  +     420
+  +   ],
+  +   [
+        'template-placeholders.mjs',
+        '3e99032e2ded860f43d76cd3526c5223107f04fb6421f247283b2d02a32b7f65',
+        420
+      ],
+      [
+  +     'visible-ids.mjs',
+  +     '587b737001ec95a5bbee2f4f9b3920bacdb5b7e540f01da87ea8fe0b0ee4796f',
+  +     420
+  +   ],
+  +   [
+        'wiki.mjs',
+        'd33640f7d818899e5e2aa806dfcf96485f614e0ba1ec18f1897abc5cdcd0d3f3',
+        420
+      ],
+      [
+  
+      at assertRestoredGeneration (file://<original-controller-replay>/tools/test-workbench-tools.mjs:512:10)
+      at TestContext.<anonymous> (file://<original-controller-replay>/tools/test-workbench-tools.mjs:543:5)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [ [ '.gitkeep', 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855', 420 ], [ 'adr.mjs', 'aa1bb3847360609ecb539e48b57c7aa2d9252b51a547f5c24803e62e4b686062', 420 ], [ 'claim-coordination.mjs', '7f4755d3f0b2f42510aff122ab65aed812c4e2c73cb1988bb50a777cfa373560', 420 ], [ 'diagnostics.mjs', 'bf9e0f47f4b0242fa496d37e4a0535ec674fd045dee19356814a8ed97426e0a2', 420 ], [ 'github-coordination.mjs', '1d4c120ab8442e12c0a0186e7cdb0bfd7e6d8079682c96fc49b8025febf5a720', 420 ], [ 'host-floor.mjs', 'db5bfeb569af46f0df464d5e614bd5fd25e9297f1aaf7a4a3dc7eecda6c7a193', 420 ], [ 'landmark-artifact.mjs', '2c3b46907d16097ca4d45c1ead05f8f6d11ddb9753210065c7b2e5ec5bcb1c11', 420 ], [ 'landmark-tracker.mjs', 'f196b51e693d0cffc75928abeed2e99765624ec16ad436e020f59dff27a7e0cd', 420 ], [ 'landmark-wiki.mjs', 'dd5eee302f9cb8afb1db7949461554bc7471a575425cc920aa0b04a6b1322d52', 420 ], [ 'markdown-table.mjs', 'acca5cb04cecb0044c74aaa38f42d6f0e4e6addb26b45a744d14ca0b74487e6b', 420 ], [ 'notepads.mjs', '157bb7c93f0b7914414ba2a2b9b47c631cfbf3b85d48f8efc79d572934febc4b', 420 ], [ 'optional-capabilities.mjs', '430df9d08ba18e4af2a389019b3b591f23ad9ae390801b2a39273878d05490be', 420 ], [ 'privacy.mjs', '8731047bc626b7b7a539b04c674aac2ac19452e7103cebd53ccf336c32a3ad8b', 420 ], [ 'project-evidence.mjs', '5fdfdce8f57b749b3be995a1f31ff9bf69ce4b6c6cf8690df9719661813eeca3', 420 ], [ 'self-drift.mjs', '65b0480c6cdd0f0d372f6f38c0f8b3d665597d03dc74f770d6a53aaaf4e986d2', 420 ], [ 'session-transport.mjs', '17172dcb489a2fa571551a605f3130fd20d6bc2a17d8cba8811ef39a8c2c5416', 420 ], [ 'sessions.mjs', '26df16acbff46166c79eef17d09d35ba63888d2da4ba5c466e234a93d442e9d7', 420 ], [ 'skill-inspection.mjs', '1ff024d82308113ee6de3d76c39c3d9cd05476e04f04db023a4d13d689af83b1', 420 ], [ 'spec-packet.mjs', '8dbe28d865a3bbeab8e01548b85ed2e01286c83fcd7c403fd85f636cc4c7f7e6', 420 ], [ 'spec-report.mjs', 'a68464776bc5b46ef5339d5133c63ba301f30a1c66768212e67611509dd6312e', 420 ], [ 'spec-workbench.mjs', '5de7b261a0b26b8f97c426082862954356758197ed0f6742161ab1d482b0dd44', 420 ], [ 'task-packet.mjs', '688e46ff537561dec55f557bfc3a408f82c8bacbbd456729883fcbf042329c5a', 420 ], [ 'task-receipt.mjs', 'aaefb6321bdd4568f1e850f885b0b8aaf56a2e4c383f8786c3df79b3a0ebb7c5', 420 ], [ 'task-record.mjs', '2d2950169c4a8906f155b1e0e673975acdf0d1ede01a3a1da38fcb9074b5a7e0', 420 ], [ 'taskboard.mjs', 'b374163bfe8c29b8f07a82d1df8fc71bc62bdccd28f82bd417648f99ea71c567', 420 ], [ 'template-placeholders.mjs', '3e99032e2ded860f43d76cd3526c5223107f04fb6421f247283b2d02a32b7f65', 420 ], [ 'visible-ids.mjs', '587b737001ec95a5bbee2f4f9b3920bacdb5b7e540f01da87ea8fe0b0ee4796f', 420 ], [ 'wiki.mjs', 'd33640f7d818899e5e2aa806dfcf96485f614e0ba1ec18f1897abc5cdcd0d3f3', 420 ], [ 'workbench-layout.mjs', '4ac96740ab97fa5e0493e092fac7fef069732c2b46c70bd55ff933f993d9404a', 420 ], [ 'workbench-paths.mjs', '514b06293efabf9a9a57ccd174b17ed024bfce698f075d6b33d0de584c4bdb82', 420 ] ],
+    expected: [ [ '.gitkeep', 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855', 420 ], [ 'adr.mjs', 'aa1bb3847360609ecb539e48b57c7aa2d9252b51a547f5c24803e62e4b686062', 420 ], [ 'diagnostics.mjs', 'bf9e0f47f4b0242fa496d37e4a0535ec674fd045dee19356814a8ed97426e0a2', 420 ], [ 'markdown-table.mjs', 'acca5cb04cecb0044c74aaa38f42d6f0e4e6addb26b45a744d14ca0b74487e6b', 420 ], [ 'privacy.mjs', '8731047bc626b7b7a539b04c674aac2ac19452e7103cebd53ccf336c32a3ad8b', 420 ], [ 'sessions.mjs', '26df16acbff46166c79eef17d09d35ba63888d2da4ba5c466e234a93d442e9d7', 420 ], [ 'spec-packet.mjs', '8dbe28d865a3bbeab8e01548b85ed2e01286c83fcd7c403fd85f636cc4c7f7e6', 420 ], [ 'spec-workbench.mjs', '5de7b261a0b26b8f97c426082862954356758197ed0f6742161ab1d482b0dd44', 420 ], [ 'template-placeholders.mjs', '3e99032e2ded860f43d76cd3526c5223107f04fb6421f247283b2d02a32b7f65', 420 ], [ 'wiki.mjs', 'd33640f7d818899e5e2aa806dfcf96485f614e0ba1ec18f1897abc5cdcd0d3f3', 420 ], [ 'workbench-layout.mjs', '4ac96740ab97fa5e0493e092fac7fef069732c2b46c70bd55ff933f993d9404a', 420 ], [ 'workbench-paths.mjs', '514b06293efabf9a9a57ccd174b17ed024bfce698f075d6b33d0de584c4bdb82', 420 ] ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tools/test-workbench-tools.mjs:547:3
+✖ growth rollback refuses unrecorded before any lane writes (560.085875ms)
+  AssertionError [ERR_ASSERTION]: {"status":"rolled-back","lane":"workbench/tools","backup":"/var/folders/h2/4pvfvm191m7gnfm51mvsf9m40000gn/T/runtime-growth-home-R5uJ0r/unrecorded-KklpKu","restored":["adr.mjs","diagnostics.mjs","sessions.mjs","spec-packet.mjs","spec-workbench.mjs","template-placeholders.mjs","wiki.mjs","workbench-layout.mjs","workbench-paths.mjs"]}
+  
+  + actual - expected
+  
+  + 'rolled-back'
+  - 'blocked'
+  
+      at TestContext.<anonymous> (file://<original-controller-replay>/tools/test-workbench-tools.mjs:569:14)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'rolled-back',
+    expected: 'blocked',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tools/test-workbench-tools.mjs:547:3
+✖ growth rollback refuses modified-introduced before any lane writes (559.337916ms)
+  AssertionError [ERR_ASSERTION]: {"status":"rolled-back","lane":"workbench/tools","backup":"/var/folders/h2/4pvfvm191m7gnfm51mvsf9m40000gn/T/runtime-growth-home-GSu7Uc/.workbench-tools-backup-UxuSEc","restored":["adr.mjs","diagnostics.mjs","sessions.mjs","spec-packet.mjs","spec-workbench.mjs","template-placeholders.mjs","wiki.mjs","workbench-layout.mjs","workbench-paths.mjs"]}
+  
+  + actual - expected
+  
+  + 'rolled-back'
+  - 'blocked'
+  
+      at TestContext.<anonymous> (file://<original-controller-replay>/tools/test-workbench-tools.mjs:569:14)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'rolled-back',
+    expected: 'blocked',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tools/test-workbench-tools.mjs:547:3
+✖ growth rollback refuses modified-restored before any lane writes (564.680584ms)
+  AssertionError [ERR_ASSERTION]: {"status":"rolled-back","lane":"workbench/tools","backup":"/var/folders/h2/4pvfvm191m7gnfm51mvsf9m40000gn/T/runtime-growth-home-VxmTi2/.workbench-tools-backup-JvZOI5","restored":["adr.mjs","diagnostics.mjs","sessions.mjs","spec-packet.mjs","spec-workbench.mjs","template-placeholders.mjs","wiki.mjs","workbench-layout.mjs","workbench-paths.mjs"]}
+  
+  + actual - expected
+  
+  + 'rolled-back'
+  - 'blocked'
+  
+      at TestContext.<anonymous> (file://<original-controller-replay>/tools/test-workbench-tools.mjs:569:14)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'rolled-back',
+    expected: 'blocked',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tools/test-workbench-tools.mjs:547:3
+✖ growth rollback refuses corrupt-backup before any lane writes (547.037625ms)
+  AssertionError [ERR_ASSERTION]: {"status":"rolled-back","lane":"workbench/tools","backup":"/var/folders/h2/4pvfvm191m7gnfm51mvsf9m40000gn/T/runtime-growth-home-sW5HjY/.workbench-tools-backup-4pTLgI","restored":["adr.mjs","diagnostics.mjs","sessions.mjs","spec-packet.mjs","spec-workbench.mjs","template-placeholders.mjs","wiki.mjs","workbench-layout.mjs","workbench-paths.mjs"]}
+  
+  + actual - expected
+  
+  + 'rolled-back'
+  - 'blocked'
+  
+      at TestContext.<anonymous> (file://<original-controller-replay>/tools/test-workbench-tools.mjs:569:14)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'rolled-back',
+    expected: 'blocked',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tools/test-workbench-tools.mjs:547:3
+✖ growth rollback refuses inconsistent-absence before any lane writes (569.587208ms)
+  AssertionError [ERR_ASSERTION]: {"status":"rolled-back","lane":"workbench/tools","backup":"/var/folders/h2/4pvfvm191m7gnfm51mvsf9m40000gn/T/runtime-growth-home-CScDyc/.workbench-tools-backup-syqLi9","restored":["adr.mjs","diagnostics.mjs","sessions.mjs","spec-packet.mjs","spec-workbench.mjs","template-placeholders.mjs","wiki.mjs","workbench-layout.mjs","workbench-paths.mjs"]}
+  
+  + actual - expected
+  
+  + 'rolled-back'
+  - 'blocked'
+  
+      at TestContext.<anonymous> (file://<original-controller-replay>/tools/test-workbench-tools.mjs:569:14)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'rolled-back',
+    expected: 'blocked',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tools/test-workbench-tools.mjs:547:3
+✖ growth rollback refuses missing-unchanged before any lane writes (572.782125ms)
+  AssertionError [ERR_ASSERTION]: {"status":"rolled-back","lane":"workbench/tools","backup":"/var/folders/h2/4pvfvm191m7gnfm51mvsf9m40000gn/T/runtime-growth-home-QtterA/.workbench-tools-backup-3walAr","restored":["adr.mjs","diagnostics.mjs","sessions.mjs","spec-packet.mjs","spec-workbench.mjs","template-placeholders.mjs","wiki.mjs","workbench-layout.mjs","workbench-paths.mjs"]}
+  
+  + actual - expected
+  
+  + 'rolled-back'
+  - 'blocked'
+  
+      at TestContext.<anonymous> (file://<original-controller-replay>/tools/test-workbench-tools.mjs:569:14)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'rolled-back',
+    expected: 'blocked',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tools/test-workbench-tools.mjs:547:3
+✖ growth rollback refuses unknown-legacy-source before any lane writes (572.592209ms)
+  AssertionError [ERR_ASSERTION]: {"status":"rolled-back","lane":"workbench/tools","backup":"/var/folders/h2/4pvfvm191m7gnfm51mvsf9m40000gn/T/runtime-growth-home-WdMZ0X/.workbench-tools-backup-h6VbKS","restored":["adr.mjs","diagnostics.mjs","sessions.mjs","spec-packet.mjs","spec-workbench.mjs","template-placeholders.mjs","wiki.mjs","workbench-layout.mjs","workbench-paths.mjs"]}
+  
+  + actual - expected
+  
+  + 'rolled-back'
+  - 'blocked'
+  
+      at TestContext.<anonymous> (file://<original-controller-replay>/tools/test-workbench-tools.mjs:569:14)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'rolled-back',
+    expected: 'blocked',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tools/test-workbench-tools.mjs:574:1
+✖ growth rollback restores an originally present unreceipted managed name instead of deleting it (578.579334ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + '#!/usr/bin/env node\n' +
+  +   '// S-00V TK-01L (ADR-000O): claims are visible across instances.\n' +
+  +   '//\n' +
+  +   '// `claim` commits the claim on its task branch and pushes it; `next` and\n' +
+  +   '// `claim` fetch origin, read the declared integration branch as the base and\n' +
+  +   '// overlay Task state from every other remote tip, so a Task claimed on any tip\n' +
+  +   '// is taken. A room this cannot coordinate - no Git work tree, no `origin`, no\n' +
+  +   '// declared integration branch, no `origin/<integration>` to read as the base,\n' +
+  +   "// or an explicit `--local` - keeps today's local behavior and reports why.\n" +
+  +   '//\n' +
+  +   '// The overlay follows `occupiedIdentities` in spec-workbench.mjs (read the\n' +
+  +   '// specs lane at every `refs/remotes` tip, and - S-003Z TK-008G - the landmarks\n' +
+  +   '// collection, whose direct Tasks are claimed the same way under\n' +
+  +   '// `LMK-###/TK-###`); branch, upstream and dirty state\n' +
+  +   '// come from `readRepositoryState` (workbench-layout.mjs), never a second\n' +
+  +   '// reader.\n' +
+  +   "import fs from 'node:fs';\n" +
+  +   "import path from 'node:path';\n" +
+  +   "import { spawnSync } from 'node:child_process';\n" +
+  +   "import { readRepositoryState } from './workbench-layout.mjs';\n" +
+  +   "import { declaredGit } from './workbench-paths.mjs';\n" +
+  +   "import { parseMarkdownTableRow } from './markdown-table.mjs';\n" +
+  +   "import { TASK_STATUSES } from './task-record.mjs';\n" +
+  +   '\n' +
+  +   "export const COORDINATION_REMOTE = 'origin';\n" +
+  +   '\n' +
+  +   '// A tip that moved a Task to one of these, away from the base, has claimed it:\n' +
+  +   '// in-progress is the claim itself, done is a claim closed and awaiting review.\n' +
+  +   "// Only a tip at the Task's current run counts (see `claimsFromTips`).\n" +
+  +   "const TAKEN = new Set(['in-progress', 'done']);\n" +
+  +   '\n' +
+  +   '// Never let a credential prompt hang a claim: a fetch or push that needs one\n' +
+  +   '// fails, and the failure is reported.\n' +
+  +   "const GIT_ENV = { ...process.env, GIT_TERMINAL_PROMPT: '0' };\n" +
+  +   '\n' +
+  +   'function git(root, args, timeout) {\n' +
+  +   "  return spawnSync('git', ['-C', root, ...args], { encoding: 'utf8', env: GIT_ENV, maxBuffer: 64 * 1024 * 1024, ...(timeout ? { timeout } : {}) });\n" +
+  +   '}\n' +
+  +   '\n' +
+  +   'function gitOk(root, args, message) {\n' +
+  +   '  const result = git(root, args);\n' +
+  +   '  if (result.status !== 0) throw new Error(`${message}: ${(result.stderr || result.error?.message || `git exited ${result.status}`).trim()}`);\n' +
+  +   '  return result.stdout.trim();\n' +
+  +   '}\n' +
+  +   '\n' +
+  +   'function failure(result) {\n' +
+  +   "  return (result.stderr || result.error?.message || `git exited ${result.status}`).trim().replace(/\\s+/g, ' ');\n" +
+  +   '}\n' +
+  +   '\n' +
+  +   '// Resolve how this session coordinates. `requireFetch` (claim) refuses when a\n' +
+  +   '// remote exists but cannot be fetched: a claim that cannot read the remote\n' +
+  +   '// cannot be made visible to it either. `next` answers from the last fetched\n' +
+  +   '// refs instead and reports the failure.\n' +
+  +   'export function coordinationContext(root, { specsPrefix, landmarksPrefix = null, local = false, fetch = true, requireFetch = false } = {}) {\n' +
+  +   "  if (local) return { mode: 'local', reason: 'requested with --local' };\n" +
+  +   '  const state = readRepositoryState(root);\n' +
+  +   "  if (!state.known) return { mode: 'local', reason: `not a Git work tree (${state.reason})` };\n" +
+  +   "  if (!state.remotes.includes(COORDINATION_REMOTE)) return { mode: 'local', reason: `no remote named ${COORDINATION_REMOTE}` };\n" +
+  +   '  const declared = declaredGit(root);\n' +
+  +   "  if (!declared) return { mode: 'local', reason: 'no integration branch declared in workbench/manifest.json' };\n" +
+  +   '  let fetched = false;\n' +
+  +   '  let fetchError = null;\n' +
+  +   '  if (fetch) {\n' +
+  +   "    const result = git(root, ['fetch', '--prune', '--quiet', COORDINATION_REMOTE], 120000);\n" +
+  +   '    if (result.status === 0) fetched = true;\n' +
+  +   '    else fetchError = failure(result);\n' +
+  +   '    if (fetchError && requireFetch) {\n' +
+  +   '      throw new Error(`claim refused: cannot fetch from ${COORDINATION_REMOTE} (${fetchError}); a claim that cannot read the remote cannot be made visible to other instances`);\n' +
+  +   '    }\n' +
+  +   '  }\n' +
+  +   '  const base = `${COORDINATION_REMOTE}/${declared.integrationBranch}`;\n' +
+  +   '  const baseRef = `refs/remotes/${base}`;\n' +
+  +   "  if (git(root, ['rev-parse', '--verify', '--quiet', baseRef]).status !== 0) {\n" +
+  +   "    return { mode: 'local', reason: `${base} does not exist, so there is no shared base to coordinate against` };\n" +
+  +   '  }\n' +
+  +   "  // The session's own branch is not a competing claim: its upstream and its\n" +
+  +   "  // same-named remote branch are where this instance's own claim lives.\n" +
+  +   '  const own = new Set();\n' +
+  +   '  if (state.head.branch) own.add(`refs/remotes/${COORDINATION_REMOTE}/${state.head.branch}`);\n' +
+  +   '  if (state.upstream?.name) own.add(`refs/remotes/${state.upstream.name}`);\n' +
+  +   '  // Neither shared branch is a claim surface: the integration branch is the\n' +
+  +   '  // base itself, and the default branch carries its own (older) Task state,\n' +
+  +   '  // which is never a competing claim (S-00V TK-002M).\n' +
+  +   '  const shared = new Set([baseRef]);\n' +
+  +   '  if (declared.defaultBranch) shared.add(`refs/remotes/${COORDINATION_REMOTE}/${declared.defaultBranch}`);\n' +
+  +   "  const listed = gitOk(root, ['for-each-ref', '--format=%(refname)%00%(symref)', `refs/remotes/${COORDINATION_REMOTE}`], 'cannot list remote refs');\n" +
+  +   "  const tips = listed.split('\\n').filter(Boolean).map((line) => line.split('\\0'))\n" +
+  +   '    .filter(([ref, symref]) => !symref && !shared.has(ref) && !own.has(ref)).map(([ref]) => ref);\n' +
+  +   '  const states = readTaskStatesAt(root, [baseRef, ...tips], specsPrefix, landmarksPrefix);\n' +
+  +   '  const localStates = readLocalTaskStates(root, specsPrefix, landmarksPrefix);\n' +
+  +   '  const claims = claimsFromTips(states, baseRef, tips, localStates);\n' +
+  +   "  return { mode: 'remote', remote: COORDINATION_REMOTE, base, baseRef, integrationBranch: declared.integrationBranch, defaultBranch: declared.defaultBranch, fetched, fetchError, state, claims };\n" +
+  +   '}\n' +
+  +   '\n' +
+  +   '// A tip claims a Task when it moved the Task to a TAKEN status away from the\n' +
+  +   "// base, at the Task's current run or a later one. The current run is the later\n" +
+  +   "// of the base's and the local record's Continuation run count: a fail verdict\n" +
+  +   '// that continues a done Task (`verdict --result fail` with `continue TK-###`)\n' +
+  +   '// returns it to ready under a new run, and every tip cut before that still\n' +
+  +   "// shows the old run's `done` (or a stale `in-progress`) without claiming the\n" +
+  +   "// new run. Returns a Map of `PARENT/TK` to the claiming tips' short names.\n" +
+  +   'function claimsFromTips(states, baseRef, tips, local = new Map()) {\n' +
+  +   '  const baseStates = states.get(baseRef) ?? new Map();\n' +
+  +   '  const claims = new Map();\n' +
+  +   '  for (const tip of tips) {\n' +
+  +   '    for (const [key, { status, run }] of states.get(tip) ?? []) {\n' +
+  +   '      if (!TAKEN.has(status)) continue;\n' +
+  +   '      const base = baseStates.get(key);\n' +
+  +   '      if (base && base.status === status && base.run === run) continue;\n' +
+  +   '      if (run < Math.max(base?.run ?? 0, local.get(key)?.run ?? 0)) continue;\n' +
+  +   '      if (!claims.has(key)) claims.set(key, []);\n' +
+  +   "      claims.get(key).push(tip.slice('refs/remotes/'.length));\n" +
+  +   '    }\n' +
+  +   '  }\n' +
+  +   '  return claims;\n' +
+  +   '}\n' +
+  +   '\n' +
+  +   '// Task status per `SPEC-ID/TK-ID` at each ref, from Task records and the\n' +
+  +   '// slice rows of table-backed Specs, read across every ref at once.\n' +
+  +   '// S-003Z TK-008G: with `landmarksPrefix`, a landmark-direct Task record keys\n' +
+  +   '// as `LMK-ID/TK-ID` from its `**Landmark ID:**` field.\n' +
+  +   'export function readTaskStatusesAt(root, refs, specsPrefix, landmarksPrefix = null) {\n' +
+  +   '  const statuses = new Map();\n' +
+  +   '  for (const [ref, map] of readTaskStatesAt(root, refs, specsPrefix, landmarksPrefix)) {\n' +
+  +   '    statuses.set(ref, new Map([...map].map(([key, state]) => [key, state.status])));\n' +
+  +   '  }\n' +
+  +   '  return statuses;\n' +
+  +   '}\n' +
+  +   '\n' +
+  +   '// As `readTaskStatusesAt`, but each Task maps to `{ status, run }`, where `run`\n' +
+  +   "// counts the rows of a Task record's `## Continuation` section (task-record.mjs\n" +
+  +   '// `readContinuations`); a slice-table row has no continuation and reads run 0.\n' +
+  +   'export function readTaskStatesAt(root, refs, specsPrefix, landmarksPrefix = null) {\n' +
+  +   '  if (refs.length === 0) return new Map();\n' +
+  +   '  const byLength = [...refs].sort((a, b) => b.length - a.length);\n' +
+  +   '  const locate = (line) => {\n' +
+  +   '    const ref = byLength.find((candidate) => line.startsWith(`${candidate}:`));\n' +
+  +   '    return ref ? { ref, rest: line.slice(ref.length + 1) } : null;\n' +
+  +   '  };\n' +
+  +   "  const read = (pattern, pathspecs) => grepLines(root, ['-I', '-E', pattern, ...refs, '--', ...pathspecs], locate, 'Cannot read remote claims');\n" +
+  +   '  return taskStates(read(STATUS_PATTERN, lanes(specsPrefix, landmarksPrefix)), read(RUN_PATTERN, taskRecords(specsPrefix, landmarksPrefix)));\n' +
+  +   '}\n' +
+  +   '\n' +
+  +   "// The working tree's own Task states, tracked and untracked records alike:\n" +
+  +   '// the local record is the run a remote tip must reach to claim the Task.\n' +
+  +   'function readLocalTaskStates(root, specsPrefix, landmarksPrefix) {\n' +
+  +   "  const locate = (line) => ({ ref: '', rest: line });\n" +
+  +   "  const read = (pattern, pathspecs) => grepLines(root, ['--untracked', '-I', '-E', pattern, '--', ...pathspecs], locate, 'Cannot read local Task records');\n" +
+  +   "  return taskStates(read(STATUS_PATTERN, lanes(specsPrefix, landmarksPrefix)), read(RUN_PATTERN, taskRecords(specsPrefix, landmarksPrefix))).get('') ?? new Map();\n" +
+  +   '}\n' +
+  +   '\n' +
+  +   "const STATUS_PATTERN = '^\\\\*\\\\*(Spec ID|Landmark ID|Task ID|Status):\\\\*\\\\*|^\\\\|[[:space:]]*TK-';\n" +
+  +   '// Section headings and `| Run | Date |`-shaped rows of Task records only: the\n' +
+  +   '// headings bound the Continuation section, and a Receipt row (`| Run | Branch |`)\n' +
+  +   "// never matches. Kept apart from STATUS_PATTERN so every Spec's headings and\n" +
+  +   '// tables are never read across every remote tip.\n' +
+  +   "const RUN_PATTERN = '^## |^\\\\|[[:space:]]*[0-9]+[[:space:]]*\\\\|[[:space:]]*[0-9]{4}-[0-9]{2}-[0-9]{2}[[:space:]]*\\\\|';\n" +
+  +   '\n' +
+  +   'function lanes(specsPrefix, landmarksPrefix) {\n' +
+  +   '  return [specsPrefix, ...(landmarksPrefix ? [landmarksPrefix] : [])];\n' +
+  +   '}\n' +
+  +   '\n' +
+  +   'function taskRecords(specsPrefix, landmarksPrefix) {\n' +
+  +   '  return lanes(specsPrefix, landmarksPrefix).map((prefix) => `:(glob)${prefix}/**/TASK.md`);\n' +
+  +   '}\n' +
+  +   '\n' +
+  +   '// One `git grep`, split into `{ ref, file, text }` in output order, which is\n' +
+  +   '// file order within each file.\n' +
+  +   'function grepLines(root, args, locate, message) {\n' +
+  +   "  const result = git(root, ['grep', ...args]);\n" +
+  +   '  if (![0, 1].includes(result.status)) throw new Error(`${message}: ${failure(result)}`);\n' +
+  +   '  const lines = [];\n' +
+  +   "  for (const line of result.stdout.split('\\n')) {\n" +
+  +   '    if (!line) continue;\n' +
+  +   '    const located = locate(line);\n' +
+  +   '    if (!located) continue;\n' +
+  +   "    const cut = located.rest.indexOf(':"... 9234 more characters
+  - '// original unreceipted bytes\n'
+  
+      at TestContext.<anonymous> (file://<original-controller-replay>/tools/test-workbench-tools.mjs:584:12)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: "#!/usr/bin/env node\n// S-00V TK-01L (ADR-000O): claims are visible across instances.\n//\n// `claim` commits the claim on its task branch and pushes it; `next` and\n// `claim` fetch origin, read the declared integration branch as the base and\n// overlay Task state from every other remote tip, so a Task claimed on any tip\n// is taken. A room this cannot coordinate - no Git work tree, no `origin`, no\n// declared integration branch, no `origin/<integration>` to read as the base,\n// or an explicit `--local` - keeps today's local behavior and reports why.\n//\n// The overlay follows `occupiedIdentities` in spec-workbench.mjs (read the\n// specs lane at every `refs/remotes` tip, and - S-003Z TK-008G - the landmarks\n// collection, whose direct Tasks are claimed the same way under\n// `LMK-###/TK-###`); branch, upstream and dirty state\n// come from `readRepositoryState` (workbench-layout.mjs), never a second\n// reader.\nimport fs from 'node:fs';\nimport path from 'node:path';\nimport { spawnSync } from 'node:child_process';\nimport { readRepositoryState } from './workbench-layout.mjs';\nimport { declaredGit } from './workbench-paths.mjs';\nimport { parseMarkdownTableRow } from './markdown-table.mjs';\nimport { TASK_STATUSES } from './task-record.mjs';\n\nexport const COORDINATION_REMOTE = 'origin';\n\n// A tip that moved a Task to one of these, away from the base, has claimed it:\n// in-progress is the claim itself, done is a claim closed and awaiting review.\n// Only a tip at the Task's current run counts (see `claimsFromTips`).\nconst TAKEN = new Set(['in-progress', 'done']);\n\n// Never let a credential prompt hang a claim: a fetch or push that needs one\n// fails, and the failure is reported.\nconst GIT_ENV = { ...process.env, GIT_TERMINAL_PROMPT: '0' };\n\nfunction git(root, args, timeout) {\n  return spawnSync('git', ['-C', root, ...args], { encoding: 'utf8', env: GIT_ENV, maxBuffer: 64 * 1024 * 1024, ...(timeout ? { timeout } : {}) });\n}\n\nfunction gitOk(root, args, message) {\n  const result = git(root, args);\n  if (result.status !== 0) throw new Error(`${message}: ${(result.stderr || result.error?.message || `git exited ${result.status}`).trim()}`);\n  return result.stdout.trim();\n}\n\nfunction failure(result) {\n  return (result.stderr || result.error?.message || `git exited ${result.status}`).trim().replace(/\\s+/g, ' ');\n}\n\n// Resolve how this session coordinates. `requireFetch` (claim) refuses when a\n// remote exists but cannot be fetched: a claim that cannot read the remote\n// cannot be made visible to it either. `next` answers from the last fetched\n// refs instead and reports the failure.\nexport function coordinationContext(root, { specsPrefix, landmarksPrefix = null, local = false, fetch = true, requireFetch = false } = {}) {\n  if (local) return { mode: 'local', reason: 'requested with --local' };\n  const state = readRepositoryState(root);\n  if (!state.known) return { mode: 'local', reason: `not a Git work tree (${state.reason})` };\n  if (!state.remotes.includes(COORDINATION_REMOTE)) return { mode: 'local', reason: `no remote named ${COORDINATION_REMOTE}` };\n  const declared = declaredGit(root);\n  if (!declared) return { mode: 'local', reason: 'no integration branch declared in workbench/manifest.json' };\n  let fetched = false;\n  let fetchError = null;\n  if (fetch) {\n    const result = git(root, ['fetch', '--prune', '--quiet', COORDINATION_REMOTE], 120000);\n    if (result.status === 0) fetched = true;\n    else fetchError = failure(result);\n    if (fetchError && requireFetch) {\n      throw new Error(`claim refused: cannot fetch from ${COORDINATION_REMOTE} (${fetchError}); a claim that cannot read the remote cannot be made visible to other instances`);\n    }\n  }\n  const base = `${COORDINATION_REMOTE}/${declared.integrationBranch}`;\n  const baseRef = `refs/remotes/${base}`;\n  if (git(root, ['rev-parse', '--verify', '--quiet', baseRef]).status !== 0) {\n    return { mode: 'local', reason: `${base} does not exist, so there is no shared base to coordinate against` };\n  }\n  // The session's own branch is not a competing claim: its upstream and its\n  // same-named remote branch are where this instance's own claim lives.\n  const own = new Set();\n  if (state.head.branch) own.add(`refs/remotes/${COORDINATION_REMOTE}/${state.head.branch}`);\n  if (state.upstream?.name) own.add(`refs/remotes/${state.upstream.name}`);\n  // Neither shared branch is a claim surface: the integration branch is the\n  // base itself, and the default branch carries its own (older) Task state,\n  // which is never a competing claim (S-00V TK-002M).\n  const shared = new Set([baseRef]);\n  if (declared.defaultBranch) shared.add(`refs/remotes/${COORDINATION_REMOTE}/${declared.defaultBranch}`);\n  const listed = gitOk(root, ['for-each-ref', '--format=%(refname)%00%(symref)', `refs/remotes/${COORDINATION_REMOTE}`], 'cannot list remote refs');\n  const tips = listed.split('\\n').filter(Boolean).map((line) => line.split('\\0'))\n    .filter(([ref, symref]) => !symref && !shared.has(ref) && !own.has(ref)).map(([ref]) => ref);\n  const states = readTaskStatesAt(root, [baseRef, ...tips], specsPrefix, landmarksPrefix);\n  const localStates = readLocalTaskStates(root, specsPrefix, landmarksPrefix);\n  const claims = claimsFromTips(states, baseRef, tips, localStates);\n  return { mode: 'remote', remote: COORDINATION_REMOTE, base, baseRef, integrationBranch: declared.integrationBranch, defaultBranch: declared.defaultBranch, fetched, fetchError, state, claims };\n}\n\n// A tip claims a Task when it moved the Task to a TAKEN status away from the\n// base, at the Task's current run or a later one. The current run is the later\n// of the base's and the local record's Continuation run count: a fail verdict\n// that continues a done Task (`verdict --result fail` with `continue TK-###`)\n// returns it to ready under a new run, and every tip cut before that still\n// shows the old run's `done` (or a stale `in-progress`) without claiming the\n// new run. Returns a Map of `PARENT/TK` to the claiming tips' short names.\nfunction claimsFromTips(states, baseRef, tips, local = new Map()) {\n  const baseStates = states.get(baseRef) ?? new Map();\n  const claims = new Map();\n  for (const tip of tips) {\n    for (const [key, { status, run }] of states.get(tip) ?? []) {\n      if (!TAKEN.has(status)) continue;\n      const base = baseStates.get(key);\n      if (base && base.status === status && base.run === run) continue;\n      if (run < Math.max(base?.run ?? 0, local.get(key)?.run ?? 0)) continue;\n      if (!claims.has(key)) claims.set(key, []);\n      claims.get(key).push(tip.slice('refs/remotes/'.length));\n    }\n  }\n  return claims;\n}\n\n// Task status per `SPEC-ID/TK-ID` at each ref, from Task records and the\n// slice rows of table-backed Specs, read across every ref at once.\n// S-003Z TK-008G: with `landmarksPrefix`, a landmark-direct Task record keys\n// as `LMK-ID/TK-ID` from its `**Landmark ID:**` field.\nexport function readTaskStatusesAt(root, refs, specsPrefix, landmarksPrefix = null) {\n  const statuses = new Map();\n  for (const [ref, map] of readTaskStatesAt(root, refs, specsPrefix, landmarksPrefix)) {\n    statuses.set(ref, new Map([...map].map(([key, state]) => [key, state.status])));\n  }\n  return statuses;\n}\n\n// As `readTaskStatusesAt`, but each Task maps to `{ status, run }`, where `run`\n// counts the rows of a Task record's `## Continuation` section (task-record.mjs\n// `readContinuations`); a slice-table row has no continuation and reads run 0.\nexport function readTaskStatesAt(root, refs, specsPrefix, landmarksPrefix = null) {\n  if (refs.length === 0) return new Map();\n  const byLength = [...refs].sort((a, b) => b.length - a.length);\n  const locate = (line) => {\n    const ref = byLength.find((candidate) => line.startsWith(`${candidate}:`));\n    return ref ? { ref, rest: line.slice(ref.length + 1) } : null;\n  };\n  const read = (pattern, pathspecs) => grepLines(root, ['-I', '-E', pattern, ...refs, '--', ...pathspecs], locate, 'Cannot read remote claims');\n  return taskStates(read(STATUS_PATTERN, lanes(specsPrefix, landmarksPrefix)), read(RUN_PATTERN, taskRecords(specsPrefix, landmarksPrefix)));\n}\n\n// The working tree's own Task states, tracked and untracked records alike:\n// the local record is the run a remote tip must reach to claim the Task.\nfunction readLocalTaskStates(root, specsPrefix, landmarksPrefix) {\n  const locate = (line) => ({ ref: '', rest: line });\n  const read = (pattern, pathspecs) => grepLines(root, ['--untracked', '-I', '-E', pattern, '--', ...pathspecs], locate, 'Cannot read local Task records');\n  return taskStates(read(STATUS_PATTERN, lanes(specsPrefix, landmarksPrefix)), read(RUN_PATTERN, taskRecords(specsPrefix, landmarksPrefix))).get('') ?? new Map();\n}\n\nconst STATUS_PATTERN = '^\\\\*\\\\*(Spec ID|Landmark ID|Task ID|Status):\\\\*\\\\*|^\\\\|[[:space:]]*TK-';\n// Section headings and `| Run | Date |`-shaped rows of Task records only: the\n// headings bound the Continuation section, and a Receipt row (`| Run | Branch |`)\n// never matches. Kept apart from STATUS_PATTERN so every Spec's headings and\n// tables are never read across every remote tip.\nconst RUN_PATTERN = '^## |^\\\\|[[:space:]]*[0-9]+[[:space:]]*\\\\|[[:space:]]*[0-9]{4}-[0-9]{2}-[0-9]{2}[[:space:]]*\\\\|';\n\nfunction lanes(specsPrefix, landmarksPrefix) {\n  return [specsPrefix, ...(landmarksPrefix ? [landmarksPrefix] : [])];\n}\n\nfunction taskRecords(specsPrefix, landmarksPrefix) {\n  return lanes(specsPrefix, landmarksPrefix).map((prefix) => `:(glob)${prefix}/**/TASK.md`);\n}\n\n// One `git grep`, split into `{ ref, file, text }` in output order, which is\n// file order within each file.\nfunction grepLines(root, args, locate, message) {\n  const result = git(root, ['grep', ...args]);\n  if (![0, 1].includes(result.status)) throw new Error(`${message}: ${failure(result)}`);\n  const lines = [];\n  for (const line of result.stdout.split('\\n')) {\n    if (!line) continue;\n    const located = locate(line);\n    if (!located) continue;\n    const cut = located.rest.indexOf(':"... 9234 more characters,
+    expected: '// original unreceipted bytes\n',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
