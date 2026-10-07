@@ -1,0 +1,56 @@
+{
+  "candidate": "4c05ff691d751ad3e862f63ced23f4c5273fea10",
+  "commands": [
+    {
+      "command": "node tools/test-spec-assembly-selection.mjs",
+      "exitCode": 0,
+      "seconds": 2.51
+    },
+    {
+      "command": "node tools/test-skill-catalog.mjs",
+      "exitCode": 0,
+      "seconds": 0.43
+    },
+    {
+      "command": "node tools/test-skill-inspection.mjs",
+      "exitCode": 0,
+      "seconds": 0.12
+    },
+    {
+      "command": "node tools/test-skills-lane.mjs",
+      "exitCode": 1,
+      "seconds": 9.73
+    },
+    {
+      "command": "node tools/test-domain-modeling-skill.mjs",
+      "exitCode": 1,
+      "seconds": 0.1
+    },
+    {
+      "command": "node tools/test-core-composition.mjs",
+      "exitCode": 0,
+      "seconds": 2.67
+    },
+    {
+      "command": "node tools/test-project-evidence.mjs",
+      "exitCode": 0,
+      "seconds": 1.29
+    },
+    {
+      "command": "node tools/test-genesis-from-decisions.mjs",
+      "exitCode": 0,
+      "seconds": 30.88
+    },
+    {
+      "command": "node tools/test-blueprint-contract.mjs",
+      "exitCode": 0,
+      "seconds": 0.14
+    }
+  ],
+  "started": 1791362621.164813,
+  "execution": "Three independent fixture-based checks at a time; clean shared source",
+  "status": "Interrupted; these first nine results preceded the catalog correction. Later obsolete-run results are excluded because the tracked source changed. This is not a full clean-source result.",
+  "observedFailures": [
+    "Skills-lane and domain-modeling checks rejected an obsolete optional disposition row while domain-modeling was required. Removed that row; domain10/10 and focused lane1/1 then passed."
+  ]
+}

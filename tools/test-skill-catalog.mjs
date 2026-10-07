@@ -14,7 +14,7 @@ const coreSkills = [...runtimeCoreSkills].sort();
 const read = (relative) => fs.readFileSync(path.join(root, relative), 'utf8');
 // S-002U TK-007V: the owner made `pr` required in every Workbench on
 // 2026-10-06, so it must ship in the runtime Core list and the manifest policy.
-for (const name of ['pr']) {
+for (const name of ['pr', 'writing-for-agents', 'retro']) {
   assert.ok(coreSkills.includes(name), `${name} must ship in the required Core bundle`);
   assert.ok(JSON.parse(read('workbench/manifest.json')).skillPolicy.required.includes(name),
     `${name} must be declared in workbench/manifest.json skillPolicy.required`);
@@ -23,6 +23,9 @@ for (const name of ['pr']) {
 // pinned upstream text with checkout line endings and the final newline
 // ignored, so any instruction drift fails here.
 const importedSourceHashes = {
+  'writing-for-agents/SKILL.md': '482e371e48efc2dbb401aef7d124467f523c52b2bf9c486dedf60e2f48a7ce98',
+  'writing-for-agents/SKILL-MECHANICS.md': 'eec74bac6af1f45dee949ef6f08fcfd620f72f8de826753b4362de5e4de2e3b1',
+  'retro/SKILL.md': 'cae07b01608af94484df262dd9abdd87a144ec721392c30c051c999d814ee24d',
   // mattpocock/skills skills/engineering/pr/SKILL.md @ d81f3a183412e71a5b1e84ca21bc1a35eea03a60
   'pr/SKILL.md': 'bb2f9427da7c83ec95abf1207380c19d726d6d8c933f6d0314cb14e84c3e998b',
 };
@@ -130,7 +133,7 @@ const bundleSize = coreSkills.length;
 const stanceCount = 4;
 const words = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine',
   'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen',
-  'nineteen', 'twenty', 'twenty-one', 'twenty-two'];
+  'nineteen', 'twenty', 'twenty-one', 'twenty-two', 'twenty-three', 'twenty-four'];
 const workflowWord = words[bundleSize - stanceCount - coordinationSkills.length];
 assert.ok(workflowWord, `extend the words table to spell ${bundleSize - stanceCount - coordinationSkills.length} workflow skills`);
 for (const [relative, expected] of [

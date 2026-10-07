@@ -1,0 +1,30 @@
+✖ the exact historical v3.2.1 transition cohorts validate and migrate unchanged (1091.949291ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1193.166583
+
+✖ failing tests:
+
+test at tools/test-workbench-layout.mjs:2840:1
+✖ the exact historical v3.2.1 transition cohorts validate and migrate unchanged (1091.949291ms)
+  AssertionError [ERR_ASSERTION]: the exact 30-skill cohort remains readable before update
+  
+  'invalid' !== 'valid'
+  
+      at TestContext.<anonymous> (file:///Users/kayden/.codex/worktrees/deliver-retro-writing/LLM_Workbench/tools/test-workbench-layout.mjs:2857:14)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'invalid',
+    expected: 'valid',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

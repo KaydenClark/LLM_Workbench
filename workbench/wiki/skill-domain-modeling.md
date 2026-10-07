@@ -33,7 +33,7 @@ last_verified: 2026-10-07
 
 Domain modeling is the active practice of noticing when a word hides two meanings, a missing boundary or a contradiction with the product. The agent challenges it while the choice is still cheap, tries a concrete edge case, checks the relevant source and shows what the choice would touch before it settles. Looking up an established definition is ordinary orientation; it does not require a modeling session.
 
-`domain-modeling` ships in every room's skills lane as one of the 30 skills in the closed core bundle, at [workbench/skills/domain-modeling](../skills/domain-modeling/SKILL.md), and a fresh clone discovers it through the tracked `.agents/skills` and `.claude/skills` adapters. The [RUNBOOK operations index](../../RUNBOOK.md#operations-index) points to it for tracing a name, boundary or relationship before it settles. The skill source owns the procedure; this page explains where the method came from, what the Workbench changed and why, and what has been observed.
+`domain-modeling` ships in every room's skills lane as one of the required skills in the closed core bundle, at [workbench/skills/domain-modeling](../skills/domain-modeling/SKILL.md), and a fresh clone discovers it through the tracked `.agents/skills` and `.claude/skills` adapters. The [RUNBOOK operations index](../../RUNBOOK.md#operations-index) points to it for tracing a name, boundary or relationship before it settles. The skill source owns the procedure; this page explains where the method came from, what the Workbench changed and why, and what has been observed.
 
 ## Why a compact glossary and a richer dictionary coexist
 

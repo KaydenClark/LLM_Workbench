@@ -112,3 +112,12 @@ not a clean-update, owner Human QA or release-readiness verdict.
 ## 2026-10-01 Handoff role-authority promotion
 
 Guardrail audit measured **78/100 before** at `574df962fcfdd8045ec4dd405ba7f548216f7d4a` and **78/100 after** on `f98f0ea183e2507231ca494c9166472cd9f963f2`, with unchanged criteria (static20, drift25, discipline25, outcome8). Remaining recommendations are repeated real outcome trials, controls/prior/candidate comparison, recent real evidence and uncertainty estimates. All 48 required AGENTS commands passed on that immutable candidate. Pre/post self-drift retain seven existing findings and `cleanUpdate: false`. This is promotion and documentation proof; role-based handoff implementation and new behavioral trials remain open in S-01A. No agent-outcome improvement, owner Human QA or clean-update result is claimed.
+
+
+## 2026-10-07 Required retro and agent-writing delivery
+
+Writing-for-agents Skill Adoption (S-002P) and Retro Skill Adoption (S-002V) source-stage guardrail audits stayed **73/100 before and after**, at `1c44487ad4b17845c63fdfe0333626f32d24994b` and `20b5874c23fe4a868560acc7bf3743871ad48223`, with unchanged criteria. `node tools/audit-guardrails.mjs --path .` reports and command/candidate provenance are retained in [paired delivery proof](../workbench/specs/S-002P-writing-for-agents-skill-adoption/proof/delivery-room-checks.json). The combined source `711fc04b41b6be5741098952658e5bb5f8951dab` passed all 53 Runbook commands; exact29/30 transition coverage went red then green.
+
+The five recommendations remain: repeated real outcome trials; no-template/generic/prior/candidate comparison; fresh dated verification and Spec evidence; recent real evidence; repeated-trial effects and uncertainty. No criteria were weakened and no agent-outcome improvement is claimed. Existing room findings remain with `cleanUpdate: false`; direct-path synthetic scenarios do not establish native invocation, reliability, owner Human QA or main closure.
+
+Current32 rebase Check: clean source `d2e12abef7f1b76e63dce8ed9cb001bd60f1680b` passed all54 Runbook commands. Current-source guardrail audit remains73/100; [rebased room proof](../workbench/specs/S-002P-writing-for-agents-skill-adoption/proof/rebase-room-checks.json) preserves the command/source identity and all recommendations. No outcome improvement claim.

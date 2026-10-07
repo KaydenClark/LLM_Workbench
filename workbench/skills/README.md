@@ -1,7 +1,7 @@
 # Workbench Core Skills
 
 This directory is the self-contained, versioned LLM Workbench skill source. It
-is a closed 30-skill bundle (twenty-two workflow skills, four coordination skills
+is a closed 32-skill bundle (twenty-four workflow skills, four coordination skills
 and four portable stances), counted from the manifest and catalog below, for a
 brand-new installation, not a general catalog or a project-local discovery tree.
 The checked-out LLM Workbench release owns the exact source versions.
@@ -22,15 +22,17 @@ The checked-out LLM Workbench release owns the exact source versions.
 | `tracer-bullet` | Cut a capability into vertically testable slices. |
 | `update-harness` | Reconcile an adopted project with the current Workbench contract. |
 | `carry` | Own an assigned spec or task to its already-authorized endpoint and record what the owner still had to supply. |
+| `notepad` | Keep one objective's local JSON working context: save it as it appears, retrieve a topic with its corrections, trim only what is reconciled. |
 | `save` | Persist authorized work and verify its actual local or remote recovery boundary. |
 | `promote` | Reconcile selected supported claims directly into their existing durable owners. |
 | `handoff` | Author readable, scope-preserving Markdown continuation for the requested destination. |
 | `grill-me` | Start a saved design inquiry: compose grilling with objective-scoped notepad continuity, keeping pending answers pending. |
-| `notepad` | Keep one objective's local JSON working context: save it as it appears, retrieve a topic with its corrections, trim only what is reconciled. |
 | `workbench-runtime` | Operate the room's installed runtime tools: read a finding and what it blocks, validate the Wiki, repair installed state, allocate visible identifiers, keep the connection identity, check a configured host and add a room-local skill. |
 | `improve-harness` | Improve one harnessed job through one loop: baseline, earliest gap, smallest owning intervention, native verification, fresh rerun, then retain, revise or remove, with a result record in the feedback lane. |
 | `domain-modeling` | Sharpen the domain model while choices are upstream: challenge and split terms, probe edge cases, check claims against source and trace a name or boundary to the owners it would reach, capturing pending meaning for promotion. |
 | `pr` | Write a PR body: a small visual summary, actual before/after evidence and merge danger as door reversibility and blast radius; opening, merging and cleanup stay with `implement`. |
+| `writing-for-agents` | Write predictable agent instructions, useful pointers and checkable completion criteria within existing authority. |
+| `retro` | On explicit request, review a session and propose severity-ranked environment improvements with evidence, owners and verification paths. |
 | `director` | Coordinate the whole project across Spec-bound Dispatchers and integrate independently reviewed results. |
 | `dispatcher` | Operate as the assigned Dispatcher for one Spec and its branch: plan its Tasks, dispatch and monitor Workers, own assembled verification and hand the candidate to the Director. |
 | `spec-planner` | Plan small Tasks and parallel vertical slices for one assigned Spec from current Actuality at flight launch, then hand the plan to Spec Manager. |
@@ -152,7 +154,7 @@ consumer/reference review, preserved notices and a pinned recovery commit.
 | `skills-archive/optional-active-2026-09-01/brainstorm` | No operational consumer established by this bounded repository review. Recover the complete directory from the pinned provenance commit. | `bcfa55d4d33b3a815e899eeb9e60c7629d462d82`; [THIRD_PARTY_NOTICES.md](../../THIRD_PARTY_NOTICES.md) | 2026-09-19 | owner decision required: preserve this brainstorm source pending retention or recoverable removal choice. |
 | `skills-archive/optional-active-2026-09-01/grill-me` | Archived `ask-workbench/SKILL.md` routes here. Recover the complete directory from the pinned provenance commit. | `bcfa55d4d33b3a815e899eeb9e60c7629d462d82`; [THIRD_PARTY_NOTICES.md](../../THIRD_PARTY_NOTICES.md) | 2026-09-19 | owner decision required: preserve this grill-me source pending retention or recoverable removal choice. |
 | `skills-archive/optional-active-2026-09-01/sitrep` | Archived `ask-workbench/SKILL.md` routes here. Recover the complete directory from the pinned provenance commit. | `bcfa55d4d33b3a815e899eeb9e60c7629d462d82`; [THIRD_PARTY_NOTICES.md](../../THIRD_PARTY_NOTICES.md) | 2026-09-19 | owner decision required: preserve this sitrep source pending retention or recoverable removal choice. |
-| `skills-archive/optional-active-2026-09-01/writing-great-skills` | Archived `ask-workbench/SKILL.md` routes here. Recover the complete directory from the pinned provenance commit. | `bcfa55d4d33b3a815e899eeb9e60c7629d462d82`; [THIRD_PARTY_NOTICES.md](../../THIRD_PARTY_NOTICES.md) | 2026-09-19 | owner decision required: preserve this writing-great-skills source pending retention or recoverable removal choice. |
+| `skills-archive/optional-active-2026-09-01/writing-great-skills` | Archived `ask-workbench/SKILL.md` routes here. Recover the complete directory from the pinned provenance commit. | `bcfa55d4d33b3a815e899eeb9e60c7629d462d82`; [THIRD_PARTY_NOTICES.md](../../THIRD_PARTY_NOTICES.md) | 2026-10-06 | retained: historical source superseded for live Workbench authoring by writing-for-agents per the owner's 2026-09-30 decision, reaffirmed 2026-10-06; personal-install retirement remains the owner's action; removal is unapproved. |
 | `skills-pending/codebase-design` | Pending `improve-codebase-architecture` and `setup-ts-deep-modules` name this skill. Recover the complete directory from the pinned provenance commit. | `bcfa55d4d33b3a815e899eeb9e60c7629d462d82`; [THIRD_PARTY_NOTICES.md](../../THIRD_PARTY_NOTICES.md) | 2026-09-19 | owner decision required: preserve this codebase-design source pending retention or recoverable removal choice. |
 | `skills-pending/design-an-interface` | No operational consumer established by this bounded repository review. Recover the complete directory from the pinned provenance commit. | `bcfa55d4d33b3a815e899eeb9e60c7629d462d82`; [THIRD_PARTY_NOTICES.md](../../THIRD_PARTY_NOTICES.md) | 2026-09-19 | owner decision required: preserve this design-an-interface source pending retention or recoverable removal choice. |
 | `skills-pending/diagnosing-bugs` | No operational consumer established by this bounded repository review. Recover the complete directory from the pinned provenance commit. | `bcfa55d4d33b3a815e899eeb9e60c7629d462d82`; [THIRD_PARTY_NOTICES.md](../../THIRD_PARTY_NOTICES.md) | 2026-09-19 | owner decision required: preserve this diagnosing-bugs source pending retention or recoverable removal choice. |
