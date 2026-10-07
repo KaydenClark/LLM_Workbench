@@ -2742,3 +2742,100 @@ test('declare-legibility writes the six entries into an existing manifest and ch
     assert.deepEqual(JSON.parse(fs.readFileSync(manifestPath, 'utf8')).legibility, { ...LEGIBILITY, confirmation: 'pending' }, 'a refused declaration writes nothing');
   } finally { fs.rmSync(project, { recursive: true, force: true }); }
 });
+
+// S-004O TK-009L: the Template Wiki explains the Template glossary in one
+// grouped article per glossary grouping, plus one general AI coding reference
+// article, and a room receives them. Every Template landing-inventory `wiki`
+// entry lands its text in its Template Wiki home, and every glossary entry's
+// Distinction text (`explanationText`) lands in its `explanationHome` article,
+// under a section headed by the entry's term, beside a link to `GLOSSARY.md`
+// as it sits at the room root. The articles carry no producer-only content.
+const TEMPLATE_INVENTORY = 'workbench/specs/S-004O-lexicon-retirement-and-architecture-md/proof/template-lexicon-landing-inventory.json';
+const flatText = (text) => String(text).replace(/\s+/g, ' ').trim();
+
+function templateGlossaryGroups() {
+  const groups = new Map();
+  let group = null;
+  for (const line of fs.readFileSync(path.join(root, 'templates', 'GLOSSARY.md'), 'utf8').split('\n')) {
+    const heading = line.match(/^### (.+)$/);
+    if (heading) group = heading[1];
+    const term = line.match(/^\*\*(.+?)\*\*:\s*$/);
+    if (term) groups.set(term[1], group);
+  }
+  return groups;
+}
+
+function templateVocabularyHomes() {
+  const inventory = JSON.parse(fs.readFileSync(path.join(root, TEMPLATE_INVENTORY), 'utf8'));
+  const wiki = inventory.entries.filter((entry) => entry.homeKind === 'wiki');
+  const explained = inventory.entries.filter((entry) => entry.homeKind === 'glossary' && entry.explanationHome !== undefined);
+  return { wiki, explained, homes: [...new Set([...wiki.map((entry) => entry.homePath), ...explained.map((entry) => entry.explanationHome)])].sort() };
+}
+
+test('TK-009L: the Template Wiki lands every vocabulary explanation and Wiki-only entry in grouped articles routed from its memory', () => {
+  const { wiki, explained, homes } = templateVocabularyHomes();
+  assert.ok(wiki.length > 0 && explained.length > 0, 'the Template inventory routes entries to the Template Wiki');
+  for (const entry of wiki) {
+    const file = path.join(root, entry.homePath);
+    assert.ok(entry.homePath.startsWith('templates/wiki/') && fs.existsSync(file), `line ${entry.line} home ${entry.homePath} exists in the Template Wiki`);
+    assert.ok(flatText(fs.readFileSync(file, 'utf8')).includes(flatText(entry.landedText)), `${entry.homePath} carries line ${entry.line}: ${entry.landedText}`);
+  }
+  const groups = templateGlossaryGroups();
+  const articleOfGroup = new Map();
+  for (const entry of explained) {
+    const term = entry.aliasOf ?? entry.landedText.match(/^\*\*(.+?)\*\*:/)?.[1];
+    assert.ok(groups.has(term), `line ${entry.line} names Template glossary entry ${term}`);
+    assert.equal(typeof entry.explanationText, 'string', `line ${entry.line} (${term}) records its Distinction text as explanationText`);
+    assert.ok(entry.explanationText.trim().length > 0, `line ${entry.line} (${term}) explanationText is not empty`);
+    const file = path.join(root, entry.explanationHome);
+    assert.ok(entry.explanationHome.startsWith('templates/wiki/') && fs.existsSync(file), `${term} explanation home ${entry.explanationHome} exists in the Template Wiki`);
+    const content = fs.readFileSync(file, 'utf8');
+    const section = content.split(new RegExp(`^## ${term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'm'))[1]?.split(/^## /m)[0];
+    assert.ok(section !== undefined, `${entry.explanationHome} has a section headed ## ${term}`);
+    assert.ok(flatText(section).includes(flatText(entry.explanationText)), `${entry.explanationHome} ## ${term} carries its Distinction text`);
+    assert.match(section, /\]\(\.\.\/\.\.\/GLOSSARY\.md(#[a-z0-9-]+)?\)/, `${entry.explanationHome} ## ${term} links GLOSSARY.md at the room root`);
+    const group = groups.get(term);
+    assert.equal(articleOfGroup.get(group) ?? entry.explanationHome, entry.explanationHome, `the ${group} grouping is explained in one article`);
+    articleOfGroup.set(group, entry.explanationHome);
+  }
+  assert.equal(new Set(articleOfGroup.values()).size, articleOfGroup.size, 'each grouping has its own article');
+  for (const memory of ['MEMORY.project.md', 'MEMORY.root.md']) {
+    const router = fs.readFileSync(path.join(root, 'templates', 'wiki', memory), 'utf8');
+    for (const home of homes.filter((home) => !/\/MEMORY\.[a-z]+\.md$/.test(home))) {
+      const name = path.relative(path.join(root, 'templates', 'wiki'), path.join(root, home)).split(path.sep).join('/');
+      assert.equal(router.split('\n').filter((line) => line.includes(`](${name})`)).length, 1, `templates/wiki/${memory} routes ${name} once`);
+    }
+  }
+  for (const home of homes) {
+    const content = fs.readFileSync(path.join(root, home), 'utf8');
+    assert.doesNotMatch(content, /\b(?:S|TK|ADR|DDR|LMK)-(?!#)[0-9A-Z]{3,5}\b/, `${home} names no producer record identifier`);
+    assert.doesNotMatch(content, /workbench\/specs\/|\btools\/[a-z-]+\.mjs|\/Users\/|\/home\//, `${home} names no producer path`);
+    assert.doesNotMatch(content, /\bLexicon\b/, `${home} explains the glossary, not the retiring Lexicon`);
+  }
+  const schema = fs.readFileSync(path.join(root, 'templates', 'wiki', 'SCHEMA.md'), 'utf8');
+  assert.doesNotMatch(schema, /Lexicon row/, 'the Template Wiki schema names the glossary entry, not a Lexicon row');
+  assert.match(schema, /GLOSSARY\.md/, 'the Template Wiki schema routes term pages to the glossary');
+});
+
+test('TK-009L: a freshly initialized room receives the Template Wiki vocabulary articles, filled and valid', () => {
+  const { wiki, explained, homes } = templateVocabularyHomes();
+  const articles = homes.filter((home) => !/\/MEMORY\.[a-z]+\.md$/.test(home));
+  assert.ok(articles.length > 0, 'the Template Wiki has vocabulary articles');
+  const project = fixture();
+  try {
+    const initialized = run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION, '--name', 'Puffer Pond', '--date', '2026-09-04');
+    assert.equal(initialized.status, 0, initialized.stdout);
+    for (const home of articles) {
+      const relative = path.relative(path.join(root, 'templates', 'wiki'), path.join(root, home)).split(path.sep).join('/');
+      const installed = path.join(project, 'workbench', 'wiki', relative);
+      assert.ok(fs.existsSync(installed), `init seeds workbench/wiki/${relative}`);
+      const content = fs.readFileSync(installed, 'utf8');
+      const tokens = [...content.matchAll(/(?<!\[)\[(?!\[|[ xX]\])[^\]\n]+\](?!\()/g)].map((match) => match[0]).filter((token) => templatePlaceholders.includes(token));
+      assert.deepEqual(tokens, [], `workbench/wiki/${relative} is seeded without placeholders`);
+      assert.match(content, /last_verified: 2026-09-04/, `workbench/wiki/${relative} carries the seeding date`);
+      for (const entry of wiki.filter((item) => item.homePath === home)) assert.ok(flatText(content).includes(flatText(entry.landedText)), `the room's ${relative} carries line ${entry.line}`);
+      for (const entry of explained.filter((item) => item.explanationHome === home)) assert.ok(flatText(content).includes(flatText(entry.explanationText)), `the room's ${relative} carries line ${entry.line}'s Distinction text`);
+    }
+    assert.equal(run('validate', '--project', project).report.status, 'valid');
+  } finally { fs.rmSync(project, { recursive: true, force: true }); }
+});
