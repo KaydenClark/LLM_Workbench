@@ -180,7 +180,7 @@ Attribution: [AI Coding Dictionary, Smart zone](https://www.aihero.dev/ai-coding
 
 The fixed amount of influence each token spreads over everything else in the context, so every token added dilutes the others.
 
-**In the Workbench.** Not used as a term elsewhere in the Workbench; it is the reason behind the Progressive disclosure entry's rule that every loaded token costs attention.
+**In the Workbench.** Not used as a term elsewhere in the Workbench; it is the reason behind progressive disclosure's rule that every loaded token costs attention.
 
 Attribution: [AI Coding Dictionary, Attention budget](https://www.aihero.dev/ai-coding-dictionary/attention-budget).
 

@@ -337,8 +337,9 @@ channel lives in the feedback lane, never at the root, so the root keeps
 exactly seven controls.
 
 Then seed the room brain: `init` already seeded `workbench/wiki/SCHEMA.md`,
-`workbench/wiki/AGENTS.md`, and `workbench/wiki/design-concepts/README.md`;
-copy `templates/wiki/MEMORY.project.md` to `workbench/wiki/MEMORY.md`, fill
+`workbench/wiki/AGENTS.md`, `workbench/wiki/design-concepts/README.md`,
+`workbench/wiki/features/README.md` and the vocabulary articles that explain
+the glossary; copy `templates/wiki/MEMORY.project.md` to `workbench/wiki/MEMORY.md`, fill
 its placeholders, and link it to the live controls just created. If this room
 lives inside a larger deployment, set the up-link to the deployment wiki's
 note for this room. See `templates/wiki/README.md` for the link conventions.
