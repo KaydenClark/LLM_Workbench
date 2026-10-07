@@ -90,7 +90,7 @@ belong to their individual Specs as they are authored.
 
 ## Planned And Optional Skill References
 
-- [Domain Modeling](skill-domain-modeling.md) - sharpen the Workbench's language as decisions form: the method and the proposed Workbench adaptation
+- [Domain Modeling](skill-domain-modeling.md) - active language challenges and consequence tracing; explains the compact glossary and richer Wiki distinction, with delivery and capture boundaries linked to their owners
 - [Required Domain Modeling Skill (S-004J)](../specs/S-004J-required-domain-modeling-skill/SPEC.md) - maps the skill into every room's skills lane as a required skill, replacing the superseded Domain Modeling Skill for the Workbench Spec (S-002H); until it is delivered, no room's skills lane carries it
 
 ## Release And Distribution Routing
