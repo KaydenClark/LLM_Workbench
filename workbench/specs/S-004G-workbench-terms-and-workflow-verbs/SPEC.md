@@ -3,13 +3,13 @@
 **Spec ID:** S-004G
 **Status:** active
 **Priority:** 2
-**Owner:** claude-lane-g
+**Owner:** claude-s004g-corrections
 **Stance:** Builder
-**Updated:** 2026-10-06
+**Updated:** 2026-10-07
 **Catalog description:** Put the owner's Workbench terms and one row per workflow verb into the Lexicon, repair the rows that contradict the Blueprint teardown's locked answers, and record the changed Journey point of the workflow-verbs decision in a decision record.
 **Blockers:** none. The Lexicon rows take one writer at a time, so this Spec's first Task waits on the last Task of the AI Coding Dictionary Terms Spec. The `ddr` collection and the commands that write, accept and supersede a decision record are installed.
-**Latest event:** 2026-10-06: assembled at integration `42431879`; Completion Result written and the verification line checked.
-**Next gate:** Separate-context review of the assembled candidate, then the owner's Human QA approval (declared in chat on 2026-10-06) is recorded on the reviewed content. The release proof decision's verb list still needs a visible correction by its owner, and the controls wording outside the Lexicon waits for the Contract carrier rewrite.
+**Latest event:** TK-006D claimed by claude-s004g-corrections.
+**Next gate:** Close TK-006D with verification and documentation proof.
 
 > **Citation anchors.** pre=`5cfa987bacb0f6a9273d93e8d989e34000d75ad9` post=`5cfa987bacb0f6a9273d93e8d989e34000d75ad9`.
 
