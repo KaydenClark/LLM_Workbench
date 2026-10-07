@@ -3,11 +3,12 @@
 **Task ID:** TK-009G
 **Spec ID:** S-004O
 **Slice:** Rooms receive GLOSSARY.md and ARCHITECTURE.md and the update route retires a landed Lexicon
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** TK-009B, TK-009C, TK-009F
 **Destination:** spec-acceptance: Updating a room retires its Lexicon only after its lines land, and a room without one is unchanged; named verification and remaining limitations are recorded without claiming owner approval.
 **Planned verification:** Red: an upgrade test that updates a fixture room holding a Lexicon with a project-specific row not yet in its glossary and expects the Lexicon kept fails first, with a companion case that removes a fully landed Lexicon and one that leaves a room without a Lexicon unchanged. Green: those cases, the layout, adoption, Genesis, round-trip, control-fidelity, template-placeholder and self-drift tests, then the full suite.
+**Claimed by:** claude-s004o-worker-g
 
 ## Scope
 
