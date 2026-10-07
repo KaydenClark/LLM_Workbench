@@ -9,14 +9,12 @@ Actively build and sharpen the project's domain model as you design. This is
 the *active* discipline: challenging terms, inventing edge-case scenarios,
 tracing what a choice will touch while it is still cheap to change, and
 capturing what crystallises so it can be promoted. (Merely *reading* the
-vocabulary is not this skill: that is a one-line habit any skill can do. This
-skill is for when you are changing the model, not just consuming it.)
+vocabulary is not this skill: that's a one-line habit any skill can do. This
+skill is for when you're changing the model, not just consuming it.)
 
 It is a companion, not a dependency. The owner or a caller invokes it, often
 beside [grilling](../grilling/SKILL.md) when something is being reworked;
-grilling and the destination question-card flow complete without it. It
-supplies a method, never authority: the current request and `AGENTS.md` set
-the scope.
+grilling and the destination question-card flow complete without it.
 
 ## Where vocabulary lives
 
@@ -59,8 +57,7 @@ different things."
 
 When domain relationships are being discussed, stress-test them with specific
 scenarios. Invent scenarios that probe edge cases and force the user to be
-precise about the boundaries between concepts. A scenario tests understanding;
-it is not evidence that a feature exists.
+precise about the boundaries between concepts.
 
 ### Cross-reference with code
 
@@ -94,9 +91,10 @@ owners the choice reaches, not an audit of the whole room.
 
 Matt's source updates the glossary inline the moment a term resolves; here
 there is no inline write. While the concept is being aligned, intent, pending
-interpretations, corrections and proposed vocabulary stay in the objective's
+interpretations, corrections and proposed vocabulary go into the objective's
 note through the [`notepad` skill](../notepad/SKILL.md), with the owners each
-would reach. Saving is not settling: only the owner's explicit confirmation
+would reach. Don't batch these up: capture them as they happen. Saving is not
+settling: only the owner's explicit confirmation
 settles a meaning, and an unresolved contradiction stays recorded as
 unresolved.
 
@@ -108,22 +106,21 @@ their Spec; richer explanation to the Wiki. No inline glossary, Lexicon, Spec,
 control or decision-record write happens while aligning, so the tracked room
 diff stays empty until promotion.
 
-The glossary should be totally devoid of implementation details. Do not treat
-it as a spec, a scratch pad, or a repository for implementation decisions. It
-is a glossary and nothing else.
+`GLOSSARY.md` should be totally devoid of implementation details. Do not treat
+`GLOSSARY.md` as a spec, a scratch pad, or a repository for implementation
+decisions. It is a glossary and nothing else.
 
 ### Offer decision records sparingly
 
 Only offer a decision record when all three are true:
 
-1. **Hard to reverse**: the cost of changing your mind later is meaningful.
+1. **Hard to reverse**: the cost of changing your mind later is meaningful
 2. **Surprising without context**: a future reader will wonder "why did they
    do it this way?"
 3. **The result of a real trade-off**: there were genuine alternatives and you
-   picked one for specific reasons.
+   picked one for specific reasons
 
 If any of the three is missing, skip the record and say which test failed.
-Most modeling outcomes are a sharper sentence, a vocabulary entry or nothing.
 
 Choose the kind by the scope test: would the choice still hold if the
 architecture were rebuilt differently? Yes selects a DDR, a destination choice
@@ -138,24 +135,51 @@ choice. Offering is not writing. An accepted offer is written at Map through
 
 Each change from the upstream source, and why:
 
-- **Upstream consequence trace** added, because the owner's use of this skill
-  is to see the downstream impact of a name or boundary while still upstream.
-- **Capture in the notepad and promotion** replace the inline glossary update,
-  because a Workbench answer does not enter Canon inline: confirmation settles
-  meaning and promotion writes the owner.
-- **Vocabulary owner routing** reads `GLOSSARY.md` when present and the current
-  `LEXICON.md` otherwise, because the glossary migration reaches rooms
-  separately and a missing glossary must not be invented.
+- **Description and trigger** rewritten around changing the model beside
+  grilling, dropping upstream's "writing or editing a GLOSSARY.md, or recording
+  or editing an ADR" trigger, because this skill never writes the glossary or a
+  decision record itself.
+- **Upstream consequence trace** added, in the opening and its own section,
+  because the owner's use of this skill is to see the downstream impact of a
+  name or boundary while still upstream.
+- **Capture in the notepad and promotion** replace the inline glossary update
+  and the opening's "writing the glossary and decisions down the moment they
+  crystallise", because a Workbench answer does not enter Canon inline:
+  confirmation settles meaning and promotion writes the owner. Upstream's
+  timing is kept: items are captured as they happen, never batched.
+- **Vocabulary owner routing** replaces upstream's file-structure trees: it
+  reads `GLOSSARY.md` when present and the current `LEXICON.md` otherwise, and
+  names the Spec, Wiki and decision-record owners, because the glossary
+  migration reaches rooms separately and a missing glossary must not be
+  invented. For the same reason the opening reads "the vocabulary" and the
+  glossary challenge reads "the vocabulary owner" where upstream names
+  `GLOSSARY.md`, and the link to the glossary format moves into this section.
+- **No lazy file creation**: upstream's rule to create a glossary or ADR
+  directory when first needed is dropped, because promotion creates or updates
+  an owner and this skill writes none.
+- **One question at a time inside grilling's rhythm** added, because stacked
+  challenges break the question and pending-readback rhythm the owner answers
+  in.
+- **Quoting the definition and its file** when challenging a term, and naming
+  the file behind a code contradiction, because the owner checks a challenge
+  against its source rather than a paraphrase.
+- **Reading tests as well as code** in the cross-check, because tests state
+  behavior too, and a contradiction there is as real as one in source.
+- **State Resolution classes** name the code cross-check results, because the
+  room already classifies source-versus-Canon disagreements that way.
 - **ADR or DDR by the scope test, through `to-docs` and the manifest
-  collections**, replaces upstream ADR files and their format, because the room
+  collections**, replaces upstream ADR files and their format (so "Offer ADRs
+  sparingly" becomes "Offer decision records sparingly"), because the room
   keeps two decision-record kinds in declared collections with one writing
   procedure.
+- **Saying which test failed** when a record is skipped, because the owner can
+  then see why a choice did not earn a record and challenge that judgement.
 - **A companion, not a dependency**, because grilling and the question-card flow
   must complete without it.
 - **One vocabulary owner**: no second glossary, inferred context map or local
   decision-record tree, because a parallel store splits the room's meaning.
-- **State Resolution classes** name the code cross-check results, because the
-  room already classifies source-versus-Canon disagreements that way.
+- **Form**: lines are rewrapped, and this section and Source and credit are
+  added; the remaining wording is upstream's.
 
 ## Source and credit
 
@@ -164,5 +188,5 @@ Adapted from Matt Pocock's `domain-modeling` skill in `mattpocock/skills`
 (`skills/engineering/domain-modeling/SKILL.md` and `GLOSSARY-FORMAT.md`). The
 glossary format is kept verbatim in [GLOSSARY-FORMAT.md](GLOSSARY-FORMAT.md);
 the upstream decision-record format is not carried because `to-docs` owns it.
-The LLM Workbench source repository's `THIRD_PARTY_NOTICES.md` carries the
-upstream license notice.
+[NOTICE.md](NOTICE.md) in this directory carries the upstream copyright and
+MIT permission notice, and travels with the skill into every room.
