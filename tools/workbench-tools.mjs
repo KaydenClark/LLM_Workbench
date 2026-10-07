@@ -337,7 +337,7 @@ export function rollback(project, options = {}) {
   for (const name of [...entry.files, ...absent]) {
     const file = path.join(lane, name);
     const info = lstatOrNull(file);
-    if (info && (sha256(file) !== current.files[name] || (info.mode & 0o777) !== 0o644)) {
+    if (!info || sha256(file) !== current.files[name] || (info.mode & 0o777) !== 0o644) {
       return fail('rollback-conflict', 'Preserve the post-update local change before rollback.', { tool: name });
     }
   }
