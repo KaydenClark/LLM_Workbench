@@ -51,8 +51,9 @@ owner-confirmed.
 - **A skills reference.** The owner wants one readable Wiki entry per skill, in the
   shape of a public skills reference
   (card [DQC-001D: "How should the Wiki explain each available skill?"](../../landmark-tracker/destination-questions/DQC-001D.json), revision 6).
-  Pages named `skill-<name>.md` sit beside the router for twenty-seven of the
-  thirty skills in the lane.
+  Pages named `skill-<name>.md` sit beside the router for most of the skills in
+  the lane; the [Core skills catalog](../../skills/README.md) holds the current
+  bundle and its count.
 - **Feature articles.** A Wiki collection named features, not capabilities and not a
   widening of design concepts, is designed to hold one article per completed Spec. It is written
   at the Spec's closure point, which follows separate-context review and the owner's
@@ -132,3 +133,4 @@ The tools are the [Wiki validator](../../tools/wiki.mjs), the
 - 2026-10-07: skills-reference count corrected for the Required Domain Modeling Skill Spec (S-004J), Task TK-00JC (Wiki reconciliation): the lane now holds twenty-nine skills and twenty-seven of them have a `skill-<name>.md` page, checked against the manifest's required list. No card answer was changed.
 
 - 2026-10-07: PR #415 integration conflict repair reconciled the combined `domain-modeling` and `pr` bundle count to thirty; prior dated count observations remain history.
+- 2026-10-07: corrected after the whole-Wiki lint at review of the pr skill adoption Spec (S-002U), Task TK-007V: the skills-reference item no longer states a skill count, because the Core bundle grew past the twenty-seven skills it named; the catalog owns the count. No card answer was changed.

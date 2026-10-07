@@ -8,8 +8,8 @@
 **Updated:** 2026-10-07
 **Catalog description:** Ship domain modeling in every room's skills lane as the Align companion that shows the downstream consequences of an upstream name, boundary or relationship before it settles, and hands settled meaning to promotion instead of writing Canon inline.
 **Blockers:** none
-**Latest event:** All three Tasks closed and assembled at `345e8754` with integration `621524d9`; acceptance checked against Task proof and a fresh clone.
-**Next gate:** Building-side assembled code review and its correction pass, then the PR moves to integration review.
+**Latest event:** PR #415 conflict repair combines the required domain-modeling and pr skills, preserves concurrent assembly evidence, and incorporates reviewed PR #418.
+**Next gate:** Final committed verification and fresh independent integration review, then authorized integration merge; owner Human QA and release remain separate.
 
 > **Citation anchors.** pre=`46ad978956a74a3ee1bda22c36eb16207dcd98fd` post=`46ad978956a74a3ee1bda22c36eb16207dcd98fd`.
 

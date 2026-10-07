@@ -43,7 +43,8 @@
       "criterion": "Door and blast radius accurate",
       "verdict": "pass-with-imprecision",
       "observed": "Door: two-way, because the commit adds files and one test block and a revert removes it. Blast radius: branch-local, because it targets the assembly branch and cuts no release so no Room receives pr; it names the real cost that the branch suite stays red (7 checks) until the follow-up Task.",
-      "assessment": "Accurate for this commit in isolation. It does not mention that once pr is declared and released, every room's Skills lane carries it; the input placed that in a follow-up Task and release, so omitting it is defensible. Imprecision: Merge Danger says the commit 'adds five files and one test block' and the Summary says 'adds files only'; the commit adds four files and edits one existing test file."
+      "assessment": "Accurate for this commit in isolation. It does not mention that once pr is declared and released, every room's Skills lane carries it; the input placed that in a follow-up Task and release, so omitting it is defensible. Imprecision: Merge Danger says the commit 'adds five files and one test block' and the Summary says 'adds files only'; the commit adds four files and edits one existing test file.",
+      "inputLimit": "scenario-input/CHANGE.md stated the door and blast-radius facts outright ('The commit only adds files and one test block; it deletes and rewrites nothing', no manifest or Core-list edit, no release cut) beside a five-file diff stat. The verdict therefore shows faithful restatement of supplied merge-danger facts, not independent derivation from the diff, and that framing partly seeded the five-files miscount. Added after the S-002U assembled review at 24d47f06; the recorded input and body are unchanged and the scenario was not rerun."
     },
     {
       "criterion": "Supplied glossary terms used",
@@ -62,6 +63,7 @@
   ],
   "limits": [
     "Single run; no repeat-run variance or comparative quality claim",
+    "Merge-danger facts (door, blast radius, add-only shape) were supplied in the input, so independent derivation of Merge Danger from the diff is unobserved",
     "Glossary was a scenario fixture; the canonical GLOSSARY.md is undelivered (S-004O)",
     "Fresh context means no conversation history; the subagent ran in the same host (Claude Code, macOS) and model (Opus 5.5) as the Worker and may have loaded the host's project instructions and memory",
     "Direct skill-path invocation, not ordinary-prompt discovery through the .agents/skills or .claude/skills adapters; pr is not yet declared in the Core skill bundle on this base",
