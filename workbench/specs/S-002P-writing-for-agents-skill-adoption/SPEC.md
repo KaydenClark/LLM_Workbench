@@ -1,21 +1,21 @@
 # S-002P - writing-for-agents skill adoption
 
 **Spec ID:** S-002P
-**Status:** planned
+**Status:** active
 **Priority:** 2
 **Owner:** unassigned
 **Stance:** Builder
-**Updated:** 2026-09-30
+**Updated:** 2026-10-06
 **Catalog description:** Write and edit skills so an agent takes the same process every run, adopted from Matt Pocock's writing-for-agents and replacing writing-great-skills.
-**Blockers:** S-002L Skills draft wiki collection must deliver the draft-wiki location and article template before steps 2-5; S-002O (sitrep) must finish its bundle step 6 before this Spec's step 6, because the four Core-bound Specs edit one shared bundle one writer at a time.
-**Latest event:** Authored from the owner's 2026-09-30 draft-skills-wiki direction.
-**Next gate:** Deliver S-002L, then activate this Spec and cut Tasks from live Actuality with `/to-tasks`.
+**Blockers:** none. The delivered draft collection is available; the current owner request authorizes Core source adoption.
+**Latest event:** Owner directed required Core adoption of retro and reiterated writing-for-agents; one isolated writer prepares both sources and their draft comparisons.
+**Next gate:** Verify the assembled candidate, then independent review; integration delivery, owner Human QA and main closure remain separate.
 
 > **Citation anchors.** pre=`07edccc57b8f75613ad1d09203a3e414d867b90c` post=`07edccc57b8f75613ad1d09203a3e414d867b90c`.
 
 ## Outcome
 
-Matt Pocock's `productivity/writing-for-agents` is adopted as a new Workbench skill, `workbench/skills/writing-for-agents/`, and becomes the fourth and last skill to join the Core bundle, which ends at 30. It replaces `writing-great-skills`. The draft-wiki article, the comparison with Matt's skill and the skill source describe one behavior. This Spec also carries the retirement note for `writing-great-skills`: how it folds in, and that it leaves the owner's personal install only by his hand.
+Matt Pocock's `productivity/writing-for-agents` is adopted as a new Workbench skill, `workbench/skills/writing-for-agents/`, and joins retro in the owner-requested Core adoption, taking the currently verified bundle from 28 to 30. It replaces `writing-great-skills`. The draft-wiki article, the comparison with Matt's skill and the skill source describe one behavior. This Spec also carries the retirement note for `writing-great-skills`: how it folds in, and that it leaves the owner's personal install only by his hand.
 
 ## Why It Matters
 
@@ -42,6 +42,15 @@ The owner wants the skills prototyped as a draft wiki before more is built on th
 
 ## Decisions And Contracts
 
+### Current execution amendment, 2026-10-06
+
+The owner explicitly requested `retro` as required in every Workbench and reiterated the already-requested `writing-for-agents`. Both sources go into `workbench/skills` and the required Core bundle. This supersedes the earlier Pending default and step-6 lane gate for retro, and the earlier arbitrary ask-workbench/brainstorm/sitrep ordering for writing-for-agents for this paired delivery. One writer changes the shared bundle from its verified 28 entries to 30; unrelated skill adoption and archived-source disposition stay with their owners.
+
+S-002L has delivered the draft collection and Template 2 on integration, although its owner Human QA and main closure are still open. Those release gates do not prevent this requested draft work. The six investigation/draft/comparison/alignment/source steps are covered by one Task per skill from current Actuality. Existing Current Verified State bullets below remain dated pre-anchor observations, not current installation claims.
+
+`retro` is explicitly invoked and proposes severity-ranked environment improvements without applying them. It loads the shipped writing reference, cites primary session evidence, checks existing guardrails and routes accepted interventions to `improve-harness`. `writing-for-agents` is a reusable authoring reference available to models and users. Its portable mechanics preserve Workbench skill composition and existing permission boundaries. The archived writing-great-skills source and personal installations stay intact; the new reference supersedes it for live Workbench authoring.
+
+
 - Owner decision 2026-09-30: `writing-for-agents` replaces `writing-great-skills` and becomes Core. This Spec records that decision; it does not reopen it.
 - Fold-in is a finding, not a presumption. Step 1 reads `writing-great-skills` as "ours" (read-only) and records what it contains. Step 4 compares it and Matt's skill and logs, per idea or term, whether it survives into `writing-for-agents`, is already covered by Matt's text, or is dropped. Whether `GLOSSARY.md` or any of its vocabulary (predictability, leading word, context pointer, premature completion, sediment and the others) survives is decided there, not now.
 - Retirement of `writing-great-skills`:
@@ -62,10 +71,10 @@ The owner wants the skills prototyped as a draft wiki before more is built on th
 
 ## Dependencies And Blockers
 
-- **S-002L Skills draft wiki collection** must deliver the draft-wiki location and article template before steps 2-5. Its collection location is tentative until it decides.
-- **S-002O (sitrep) must finish its bundle step 6 first.** This is the fourth of four Core-bound Specs, in the order `ask-workbench`, `brainstorm`, `sitrep`, `writing-for-agents`. The order is arbitrary; the point is one writer at a time on the shared bundle files. Steps 1-5 of this Spec do not touch those files and need not wait for S-002O.
-- **S-00R** has a live Codex lane. This Spec reads its table and coordinates the `writing-great-skills` disposition entry with that lane. It does not amend S-00R.
-- No other skill rebuild is a blanket prerequisite. A new architecture, safety or public-contract choice is an owner gate; do not invent its answer.
+- The S-002L draft location and template are delivered on integration and were read live for this work.
+- Core lane authorization and shared-writer ordering are resolved by the current execution amendment above.
+- The writing reference and retrospective ship together. Neither source relies on an absent skill or private installation.
+- S-00R retains ownership of archived/pending-source disposition; this candidate changes neither archive nor personal copies.
 
 ## Vertical Implementation Slices
 
@@ -110,6 +119,8 @@ For step 6, run the targeted catalog and skills-lane tests, then `node workbench
 | Date | Task | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-09-30 | planning | Authored from the owner's draft-skills-wiki direction; the owner's decision that writing-for-agents replaces writing-great-skills and becomes Core is carried here | Planning only; writing-great-skills and the catalog test inspected read-only at the pre anchor; Matt's skill not read | This Spec authored; no article or skill authored | Delivery of S-002L, S-002O step 6, all six steps and independent review remain open |
+
+| 2026-10-06 | planning | Owner explicitly selected required Core for retro and reiterated prior writing-for-agents request; paired delivery activated, earlier arbitrary ordering and Pending lane gate superseded | Fresh origin/integration 42431879; S-002L collection and Template 2 present; catalog red observed: writing-for-agents absent from required Core | Current execution amendment and one native Task per skill | Implementation, green checks, fresh-context scenarios, review and delivery pending |
 
 ## Completion Result
 

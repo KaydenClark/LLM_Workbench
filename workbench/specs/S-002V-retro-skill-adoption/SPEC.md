@@ -1,15 +1,15 @@
 # S-002V - retro skill adoption
 
 **Spec ID:** S-002V
-**Status:** planned
+**Status:** active
 **Priority:** 2
 **Owner:** unassigned
 **Stance:** Builder
-**Updated:** 2026-09-30
+**Updated:** 2026-10-06
 **Catalog description:** Look back over finished work and turn what went wrong or right into a few named lessons, each routed to the owner that should act on it.
-**Blockers:** S-002L Skills draft wiki collection must deliver the draft-wiki location and article template before steps 2-5. Step 6 also waits on the pending-lane authorization named under Dependencies And Blockers.
-**Latest event:** Authored from the owner's 2026-09-30 draft-skills-wiki direction.
-**Next gate:** Deliver S-002L, then activate this Spec and cut Tasks from live Actuality with `/to-tasks`.
+**Blockers:** none. The delivered draft collection is available; the current owner request authorizes Core source adoption.
+**Latest event:** Owner directed required Core adoption of retro and reiterated writing-for-agents; one isolated writer prepares both sources and their draft comparisons.
+**Next gate:** Verify the assembled candidate, then independent review; integration delivery, owner Human QA and main closure remain separate.
 
 > **Citation anchors.** pre=`07edccc57b8f75613ad1d09203a3e414d867b90c` post=`07edccc57b8f75613ad1d09203a3e414d867b90c`.
 
@@ -42,26 +42,37 @@ At the pre anchor:
 
 ## Decisions And Contracts
 
+### Current execution amendment, 2026-10-06
+
+The owner explicitly requested `retro` as required in every Workbench and reiterated the already-requested `writing-for-agents`. Both sources go into `workbench/skills` and the required Core bundle. This supersedes the earlier Pending default and step-6 lane gate for retro, and the earlier arbitrary ask-workbench/brainstorm/sitrep ordering for writing-for-agents for this paired delivery. One writer changes the shared bundle from its verified 28 entries to 30; unrelated skill adoption and archived-source disposition stay with their owners.
+
+S-002L has delivered the draft collection and Template 2 on integration, although its owner Human QA and main closure are still open. Those release gates do not prevent this requested draft work. The six investigation/draft/comparison/alignment/source steps are covered by one Task per skill from current Actuality. Existing Current Verified State bullets below remain dated pre-anchor observations, not current installation claims.
+
+`retro` is explicitly invoked and proposes severity-ranked environment improvements without applying them. It loads the shipped writing reference, cites primary session evidence, checks existing guardrails and routes accepted interventions to `improve-harness`. `writing-for-agents` is a reusable authoring reference available to models and users. Its portable mechanics preserve Workbench skill composition and existing permission boundaries. The archived writing-great-skills source and personal installations stay intact; the new reference supersedes it for live Workbench authoring.
+
+
 - This Spec owns `retro` alone. The feedback review family, the Reconciler stance and the feedback tooling keep their own owners; this Spec may only log findings that name them.
-- `retro` is adopted into the draft wiki now. Whether the skill source is created, and in which lane, is decided by steps 1-5 and the step 6 authorization below. Default lane is Pending; this Spec does not make it Core.
+- `retro` is adopted into the draft wiki now. Whether the skill source is created, and in which lane, is decided by steps 1-5 and the step 6 authorization below. The current execution amendment supersedes this historical Pending default with required Core adoption.
 - Matt's site and skill are outside evidence, not Workbench Canon. The comparison summarizes and cites; it does not reproduce his file. His skill files are MIT-licensed (notice in `THIRD_PARTY_NOTICES.md`).
 - Steps 1-5 touch only the draft wiki. Step 6 is the only step that touches a skill lane.
 
 ## Non-Goals
 
 - Editing the feedback review family, the feedback tools or tests, the Reconciler skill, or the Foundry skills.
-- Making `retro` Core, changing the closed Core bundle, or editing the manifest `skillPolicy`.
+- Adopting other skills beyond the owner-requested retro and writing-for-agents pair.
 - Reading or quoting Matt's files before step 3, and answering the wayfinder storage question (Q2A, deferred by the owner).
-- Cutting Tasks or claiming this Spec before S-002L is delivered.
+- Treating S-002L delivery as owner Human QA or main closure.
 
 ## Dependencies And Blockers
 
-- **S-002L Skills draft wiki collection** must deliver the draft-wiki location and article template before steps 2-5.
-- **Pending-lane authorization (step 6 only).** `skills-pending/` is outside `AGENTS.md` Edit Scope, and S-00R requires a per-item owner decision for relocation. Step 6 may proceed only when the owner states, in this Spec's evidence log, that `retro` goes to `skills-pending/retro/`; or when step 1-5 findings point to `workbench/skills` and the owner approves a Core or other lane. The live S-00R lane must be checked first so the two do not collide. An agent does not infer this authorization.
+- The S-002L draft location and template are delivered on integration and were read live for this work.
+- Core lane authorization and shared-writer ordering are resolved by the current execution amendment above.
+- The writing reference and retrospective ship together. Neither source relies on an absent skill or private installation.
+- S-00R retains ownership of archived/pending-source disposition; this candidate changes neither archive nor personal copies.
 
 ## Vertical Implementation Slices
 
-No Task is cut yet. Tasks are cut at activation from live Actuality with `/to-tasks`. The intended slice direction, in order:
+The current owner request activates this Spec; its record-backed Task covers the following six steps from live Actuality. The intended slice direction, in order:
 
 1. **Investigate ours.** Record, at a named commit, the nearest behavior to a retro: the `harness-feedback-review` family (read-only in `~/.agents/skills`), the feedback tooling and tests named above, the Reconciler stance, and `promote` and `notepad`. For each, record inputs, outputs, writes and composition. Expect `overlap` findings.
 2. **Draft the article.** Fill Template 2 (owned by S-002L) at `workbench/wiki/skills-draft/main-workflow/retro.md`, tentative until S-002L decides, from step 1.
@@ -95,6 +106,8 @@ The draft article `workbench/wiki/skills-draft/main-workflow/retro.md` (tentativ
 | Date | Task | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-09-30 | planning | Spec authored from the owner's draft-skills-wiki direction; planning only | Nearest behavior located at the pre anchor by reading the harness-feedback-review root skill, the feedback tooling files and the Reconciler skill; Matt's skill not read; no implementation evidence | This Spec authored; no article, skill or control written | S-002L, activation, Tasks, pending-lane authorization and all six steps remain open |
+
+| 2026-10-06 | planning | Owner explicitly selected required Core for retro and reiterated prior writing-for-agents request; paired delivery activated, earlier arbitrary ordering and Pending lane gate superseded | Fresh origin/integration 42431879; S-002L collection and Template 2 present; catalog red observed: writing-for-agents absent from required Core | Current execution amendment and one native Task per skill | Implementation, green checks, fresh-context scenarios, review and delivery pending |
 
 ## Completion Result
 
