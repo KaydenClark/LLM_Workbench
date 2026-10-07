@@ -155,4 +155,4 @@ the core bundle, normal setup and explicit skill update live in
 
 - 2026-10-04: created by the Wiki Evolving-Synthesis Migration Spec (S-003W), Task TK-004 (landmark synthesis pages), seeded from the cards' current answers.
 
-- 2026-10-07: Writing for agents and retro adoption (S-002P and S-002V) reconciled the bundle count with the current catalog and dated the earlier Wiki coverage observation; card answers are unchanged.
+- 2026-10-07: Writing-for-agents Skill Adoption (S-002P) and Retro Skill Adoption (S-002V) reconciled the bundle count with the current catalog and dated the earlier Wiki coverage observation; card answers are unchanged.

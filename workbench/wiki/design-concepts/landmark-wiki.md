@@ -132,4 +132,4 @@ The tools are the [Wiki validator](../../tools/wiki.mjs), the
 - 2026-10-04: created by the Wiki Evolving-Synthesis Migration Spec (S-003W), Task TK-004 (landmark synthesis pages), seeded from the cards' current answers.
 - 2026-10-04: corrected after the whole-Wiki lint of the Wiki Evolving-Synthesis Migration Spec (S-003W), Task TK-006P (Wiki wording): the features collection and the move of the per-Spec articles into it are delivered, so the closed item left the Open list. No card answer was changed.
 
-- 2026-10-07: Writing for agents and retro adoption (S-002P and S-002V) dated the earlier skills coverage count and linked the current router; no card answer or prior S-002U review verdict changed.
+- 2026-10-07: Writing-for-agents Skill Adoption (S-002P) and Retro Skill Adoption (S-002V) dated the earlier skills coverage count and linked the current router; no card answer or prior PR Skill Adoption (S-002U) review verdict changed.

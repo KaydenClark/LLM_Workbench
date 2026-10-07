@@ -15,7 +15,7 @@
 
 ## Outcome
 
-Matt Pocock's `productivity/writing-for-agents` is adopted as a new Workbench skill, `workbench/skills/writing-for-agents/`, and joins retro in the owner-requested Core adoption, taking the currently verified bundle from 28 to 30. It replaces `writing-great-skills`. The draft-wiki article, the comparison with Matt's skill and the skill source describe one behavior. This Spec also carries the retirement note for `writing-great-skills`: how it folds in, and that it leaves the owner's personal install only by his hand.
+Matt Pocock's `productivity/writing-for-agents` is adopted as a new Workbench skill, `workbench/skills/writing-for-agents/`, and joins retro in the owner-requested Core adoption, bringing the combined required bundle to 31 while preserving the independently delivered pr skill. It replaces `writing-great-skills`. The draft-wiki article, the comparison with Matt's skill and the skill source describe one behavior. This Spec also carries the retirement note for `writing-great-skills`: how it folds in, and that it leaves the owner's personal install only by his hand.
 
 ## Why It Matters
 
@@ -48,9 +48,9 @@ The following bullets are historical investigation observations at the pre ancho
 
 The owner now requests retro and writing-for-agents in their proper home. Deliver this existing pair into the tracked Core lane through integration under current gates. The pr package independently landed at 6101c237 during verification; preserve it and combine the required bundle at 31. Its unresolved review findings remain with S-002U. Current31, exact prior28, pr-only29, pair-only30 and frozen legacy21 policies are checked at the shared compatibility seam. This continuation grants no owner Human QA or main-promotion approval and changes no personal installation.
 
-### Current execution amendment, 2026-10-06
+### Historical paired-source amendment, 2026-10-06
 
-The owner explicitly requested `retro` as required in every Workbench and reiterated the already-requested `writing-for-agents`. Both sources go into `workbench/skills` and the required Core bundle. This supersedes the earlier Pending default and step-6 lane gate for retro, and the earlier arbitrary ask-workbench/brainstorm/sitrep ordering for writing-for-agents for this paired delivery. One writer changes the shared bundle from its verified 28 entries to 30; unrelated skill adoption and archived-source disposition stay with their owners.
+The owner explicitly requested `retro` as required in every Workbench and reiterated the already-requested `writing-for-agents`. Both sources go into `workbench/skills` and the required Core bundle. This supersedes the earlier Pending default and step-6 lane gate for retro, and the earlier arbitrary ask-workbench/brainstorm/sitrep ordering for writing-for-agents for this paired delivery. At the isolated 2026-10-06 checkpoint, the paired sources expanded the bundle from 28 to 30; the current combined target is 31 as stated above; unrelated skill adoption and archived-source disposition stay with their owners.
 
 S-002L has delivered the draft collection and Template 2 on integration, although its owner Human QA and main closure are still open. Those release gates do not prevent this requested draft work. The six investigation/draft/comparison/alignment/source steps are covered by one Task per skill from current Actuality. Existing Current Verified State bullets below remain dated pre-anchor observations, not current installation claims.
 
@@ -84,7 +84,7 @@ S-002L has delivered the draft collection and Template 2 on integration, althoug
 
 ## Vertical Implementation Slices
 
-TK-006Y is the record-backed Task covering these six steps. The following is the retained investigation and implementation sequence:
+TK-006Y is the record-backed Task covering these six steps. The following is the retained 2026-10-06 investigation and implementation sequence, including its historical 30-skill checkpoint:
 
 1. **Investigate ours.** Read `writing-great-skills` (`SKILL.md`, `GLOSSARY.md`) and any tests or callers at a named commit; record its inputs, outputs, writes and composition. `writing-for-agents` has no source of ours, so its "ours" is this skill. Record the true origin of `writing-great-skills`, its invocation mode and every in-repo consumer.
 2. **Draft the article.** Fill the Template 2 draft article from step 1, at the tentative location `workbench/wiki/skills-draft/primitives/writing-for-agents.md` (tentative until S-002L decides), with `skill_source: new`, `supersedes` naming the retired reference and the pin `d81f3a1` in provenance.
@@ -101,9 +101,11 @@ Steps 1-5 touch only the draft wiki. Step 6 is the only step that touches a skil
 - [x] The comparison with Matt's skill at `d81f3a183412e71a5b1e84ca21bc1a35eea03a60` records a verdict (same, close, divergent or missing) and the behavior and clarity differences.
 - [x] The fold-in of `writing-great-skills` is recorded per idea or term (survives, covered, dropped with reason), and the retirement note states that the personal-install copy retires only by the owner's hand.
 - [x] `workbench/skills/writing-for-agents/SKILL.md` exists, matches the article, and `THIRD_PARTY_NOTICES.md` keeps the upstream MIT notice.
-- [x] Every closed-bundle touchpoint reads 30 consistently (README, Lexicon row, `skillPolicy.required`, catalog tests, the five-archive-directory requirement), and the owner's 2026-09-30 decision is recorded as the S-00R disposition for `writing-great-skills`.
+- [x] Every closed-bundle touchpoint reads 31 consistently (README, Lexicon row, `skillPolicy.required`, catalog tests, the five-archive-directory requirement), and the owner's 2026-09-30 decision is recorded as the S-00R disposition for `writing-great-skills`.
 - [x] A fresh-context scenario shows an agent using the skill to write or edit a skill with the process the skill describes.
-- [ ] The full suite from `AGENTS.md`, `node workbench/tools/wiki.mjs validate`, `render`, `doctor`, the Workbench self-drift pre/post receipts and a separate-context review of the immutable candidate are recorded at their proper gates; no unrun check is reported as passing.
+- [ ] The full suite from `AGENTS.md`, `node workbench/tools/wiki.mjs validate`, `render`, `doctor`, the Workbench self-drift pre/post receipts are recorded at their proper gates; no unrun check is reported as passing.
+
+The separate-context review remains mandatory at the immutable assembled Verify gate, after deterministic acceptance and Task closure. It is not its own self-referential acceptance checkbox.
 
 ## Testing Seams
 
@@ -138,7 +140,7 @@ For step 6, run the targeted catalog and skills-lane tests, then `node workbench
 
 ## Completion Result
 
-The paired Core implementation is complete and reverified against integration 621524d980f7990bad978c5b69910dd69b88b31d at source candidate 1c44487ad4b17845c63fdfe0333626f32d24994b: 53/53 Runbook commands passed. Catalog/fidelity, exact previous-28 compatibility, scrubbed-clone discovery adapters and Wiki validation passed. Existing direct-path scenario evidence remains applicable because the skill files are unchanged. The combined source preserves pr at the latest integration target and carries 31 Core skills; combined-cohort RED/GREEN and the final suite are recorded in the delivery evidence. Lifecycle headers and native evidence track review and integration delivery; owner Human QA and main closure remain open. Native configured-host invocation and reliability are unverified. The existing room self-drift remains visible; no clean-update claim is made.
+The paired source and draft are implemented in the required 31-skill Core alongside pr, preserving all three pinned imports. The earlier clean source 1c44487a passed 53/53 Runbook commands; the new exact 29/30-cohort regression failed at 689cd598 and passed after the frozen transition policies were added. Latest native receipts and proof identify achieved verification, Task closure and review at their actual candidates. Integration containment is recorded after delivery. Native configured-host invocation and reliability, owner Human QA and main closure remain unverified. Existing self-drift is preserved; no clean-update claim is made.
 
 ## Supersession
 

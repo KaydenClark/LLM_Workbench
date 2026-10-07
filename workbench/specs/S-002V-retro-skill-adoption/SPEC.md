@@ -37,7 +37,7 @@ At the pre anchor:
 
 ## Desired Behavior
 
-1. The draft article for `retro` at the tentative location `workbench/wiki/skills-draft/main-workflow/retro.md` (the delivered S-002L location) fills every Template 2 section, with `origin` and `skill_source: new` recorded from step 1.
+1. The draft article for `retro` at the tentative location `workbench/wiki/skills-draft/main-workflow/retro.md` (the delivered S-002L location) fills every Template 2 section, with `origin: matt` from investigation and `skill_source: core` after the owner-authorized adoption.
 2. Each "needs" and "reads and writes" item resolves to something real or becomes a finding. Overlap with the feedback review family, the feedback tooling and the Reconciler stance is stated as a finding, not hidden.
 3. The article records a verdict against Matt's skill (same, close, divergent or missing) with behavior and clarity differences.
 4. The skill source, once step 6 is authorized, matches the article and says where each lesson is recorded without creating a new store or a universal handoff.
@@ -48,9 +48,9 @@ At the pre anchor:
 
 The owner now requests retro and writing-for-agents in their proper home. Deliver this existing pair into the tracked Core lane through integration under current gates. The pr package independently landed at 6101c237 during verification; preserve it and combine the required bundle at 31. Its unresolved review findings remain with S-002U. Current31, exact prior28, pr-only29, pair-only30 and frozen legacy21 policies are checked at the shared compatibility seam. This continuation grants no owner Human QA or main-promotion approval and changes no personal installation.
 
-### Current execution amendment, 2026-10-06
+### Historical paired-source amendment, 2026-10-06
 
-The owner explicitly requested `retro` as required in every Workbench and reiterated the already-requested `writing-for-agents`. Both sources go into `workbench/skills` and the required Core bundle. This supersedes the earlier Pending default and step-6 lane gate for retro, and the earlier arbitrary ask-workbench/brainstorm/sitrep ordering for writing-for-agents for this paired delivery. One writer changes the shared bundle from its verified 28 entries to 30; unrelated skill adoption and archived-source disposition stay with their owners.
+The owner explicitly requested `retro` as required in every Workbench and reiterated the already-requested `writing-for-agents`. Both sources go into `workbench/skills` and the required Core bundle. This supersedes the earlier Pending default and step-6 lane gate for retro, and the earlier arbitrary ask-workbench/brainstorm/sitrep ordering for writing-for-agents for this paired delivery. At the isolated 2026-10-06 checkpoint, the paired sources expanded the bundle from 28 to 30; the current combined target is 31 as stated above; unrelated skill adoption and archived-source disposition stay with their owners.
 
 S-002L has delivered the draft collection and Template 2 on integration, although its owner Human QA and main closure are still open. Those release gates do not prevent this requested draft work. The six investigation/draft/comparison/alignment/source steps are covered by one Task per skill from current Actuality. Existing Current Verified State bullets below remain dated pre-anchor observations, not current installation claims.
 
@@ -78,7 +78,7 @@ S-002L has delivered the draft collection and Template 2 on integration, althoug
 
 ## Vertical Implementation Slices
 
-The current owner request activates this Spec; its record-backed Task covers the following six steps from live Actuality. The intended slice direction, in order:
+The current owner request activates this Spec; its record-backed Task covers the following six steps from live Actuality. The following is the retained 2026-10-06 slice sequence; the current Core lane and delivery amendment above supersede its historical Pending default:
 
 1. **Investigate ours.** Record, at a named commit, the nearest behavior to a retro: the `harness-feedback-review` family (read-only in `~/.agents/skills`), the feedback tooling and tests named above, the Reconciler stance, and `promote` and `notepad`. For each, record inputs, outputs, writes and composition. Expect `overlap` findings.
 2. **Draft the article.** Fill Template 2 (owned by S-002L) at `workbench/wiki/skills-draft/main-workflow/retro.md`, tentative until S-002L decides, from step 1.
@@ -93,7 +93,7 @@ The current owner request activates this Spec; its record-backed Task covers the
 - [x] Every "needs" and "reads and writes" item resolves to something real or is recorded as a finding; overlap with the feedback review family, feedback tooling and the Reconciler stance is a finding with a named owner.
 - [x] "Compared with Matt's" holds a verdict (same, close, divergent or missing) from a read of `engineering/retro` at the pinned revision.
 - [x] The step 6 lane authorization is recorded before any skill source is added, and the skill source matches the article.
-- [x] Targeted catalog tests, Wiki validation and the full suite in `AGENTS.md` are green for step 6, and a fresh-context scenario is observed; no unrun check is reported as passing.
+- [ ] Targeted catalog tests, Wiki validation and the full suite in `AGENTS.md` are green for the combined 31-skill delivery, and a fresh-context scenario is observed; no unrun check is reported as passing.
 
 ## Testing Seams
 
@@ -125,7 +125,7 @@ The draft article `workbench/wiki/skills-draft/main-workflow/retro.md` (the deli
 
 ## Completion Result
 
-The paired Core implementation is complete and reverified against integration 621524d980f7990bad978c5b69910dd69b88b31d at source candidate 1c44487ad4b17845c63fdfe0333626f32d24994b: 53/53 Runbook commands passed. Catalog/fidelity, exact previous-28 compatibility, scrubbed-clone discovery adapters and Wiki validation passed. Existing direct-path scenario evidence remains applicable because the skill files are unchanged. The combined source preserves pr at the latest integration target and carries 31 Core skills; combined-cohort RED/GREEN and the final suite are recorded in the delivery evidence. Lifecycle headers and native evidence track review and integration delivery; owner Human QA and main closure remain open. Native configured-host invocation and reliability are unverified. The existing room self-drift remains visible; no clean-update claim is made.
+The paired source and draft are implemented in the required 31-skill Core alongside pr, preserving all three pinned imports. The earlier clean source 1c44487a passed 53/53 Runbook commands; the new exact 29/30-cohort regression failed at 689cd598 and passed after the frozen transition policies were added. Latest native receipts and proof identify achieved verification, Task closure and review at their actual candidates. Integration containment is recorded after delivery. Native configured-host invocation and reliability, owner Human QA and main closure remain unverified. Existing self-drift is preserved; no clean-update claim is made.
 
 ## Supersession
 
