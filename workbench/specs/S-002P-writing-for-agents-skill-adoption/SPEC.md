@@ -8,8 +8,8 @@
 **Updated:** 2026-10-07
 **Catalog description:** Write and edit skills so an agent takes the same process every run, adopted from Matt Pocock's writing-for-agents and replacing writing-great-skills.
 **Blockers:** none. The delivered draft collection is available; the current owner request authorizes Core source adoption.
-**Latest event:** Rebased Core32 Check passed; assembled review pending.
-**Next gate:** Record assembled review, then deliver the reviewed package to integration.
+**Latest event:** Current32 assembled review passed at f58a6cf7; integration delivery follows.
+**Next gate:** Publish and merge the reviewed package to integration, then Owner Human QA.
 
 > **Citation anchors.** pre=`07edccc57b8f75613ad1d09203a3e414d867b90c` post=`07edccc57b8f75613ad1d09203a3e414d867b90c`.
 
@@ -146,6 +146,7 @@ For step 6, run the targeted catalog and skills-lane tests, then `node workbench
 | 2026-10-07 | TK-006Y | Task closed | Full Runbook suite 53/53 on clean source 711fc04b41b6be5741098952658e5bb5f8951dab; current source, controls, templates and runtime files unchanged since that candidate. Combined31 catalog/fidelity and exact28/29/30/legacy21 coverage pass. Focused Wiki and native render checks pass; retained scenario identity recovered. Source plus receipts remotely verified at 763f8a4b. | Paired source/draft, current31 acceptance, delivery verification and room/guardrail receipts; benchmark result; generic routes and shared Core owners aligned. | Separate assembled review and integration delivery next; native-host invocation/reliability, existing drift, owner Human QA/main remain separate. |
 
 | 2026-10-07 | paired-rebase | Current32 rebased Check | Full54/54 Runbook commands pass on clean d2e12abef7f1b76e63dce8ed9cb001bd60f1680b. Exact six historical policies failed RED at377ffcef then passed at4c05ff69; domain catalog conflict failed then passed after2ff2852a. Wiki validates; all paired/pr/domain skill bodies unchanged from their pins. | Required32 catalog, manifest, templates and generic routes align; current and historical proof distinguished. Self-drift21 known findings retained, cleanUpdate false; guardrail73/100 unchanged. New evidence under proof/rebase-verification.json and proof/rebase-room-checks.json. | Binding assembled review and authorized integration publication follow. Native invocation/reliability, Owner Human QA/main and existing drift remain separate. |
+| 2026-10-07 | review | Review verdict: pass at f58a6cf779cc6c9ae95496d111cfb6e1250110f1 [23204202b34d] #1 | none | OpenAI gpt-6.1-sol high; Codex Desktop0.160.1; fresh paired_skill_review context; BASEc80cb282; local immutable assembled review | none |
 
 ## Completion Result
 
