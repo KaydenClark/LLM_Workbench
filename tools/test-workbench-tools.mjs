@@ -527,7 +527,8 @@ test('growth rollback records original absence and restores the historical eleve
     assert.ok(Array.isArray(entry.absent),'update records original absence before installing new names');
     assert.deepEqual(entry.absent.sort(),room.introduced);
     assert.deepEqual(Object.keys(entry.hashes).sort(),entry.files.slice().sort());
-    assert.equal(run(installer,'rollback','--project',room.dir,'--backup',backup).report.status,'rolled-back');
+    const rolled=run(installer,'rollback','--project',room.dir,'--backup',backup);
+    assert.equal(rolled.report.status,'rolled-back',rolled.stdout);
     assertRestoredGeneration(room);
   } finally {room.cleanup();}
 });
@@ -537,7 +538,8 @@ test('growth rollback recovers the recorded legacy nine-backed-up eleven-to-twen
     const {backup,receipt}=grow(room);
     const entry=receipt.backups.at(-1);delete entry.absent;delete entry.hashes;
     fs.writeFileSync(room.receiptFile,JSON.stringify(receipt));
-    assert.equal(run(installer,'rollback','--project',room.dir,'--backup',backup).report.status,'rolled-back');
+    const rolled=run(installer,'rollback','--project',room.dir,'--backup',backup);
+    assert.equal(rolled.report.status,'rolled-back',rolled.stdout);
     assertRestoredGeneration(room);
   } finally {room.cleanup();}
 });

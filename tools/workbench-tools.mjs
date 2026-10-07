@@ -301,11 +301,13 @@ export function rollback(project, options = {}) {
     absent = entry.absent;
   } else {
     // This known producer generation always marks receipt-missing names as
-    // changed and saves every present changed file. Older/unknown histories
+    // changed and saves every present changed file. This integration anchor has
+    // the same controller as historical main9378eada; main merge ancestry
+    // is not required. Older/unknown histories
     // cannot establish absence safely from the legacy file list alone.
     const commit = current.source?.commit;
     if (!/^[0-9a-f]{40}$/.test(commit ?? '') || gitStatus(['merge-base', '--is-ancestor',
-      '9378eada35b30199a53f6b921215950d0fa7ff38', commit]).status !== 0) {
+      '8e9c06f6f98825925e7da6cce59fb68768b589d7', commit]).status !== 0) {
       return fail('invalid-backup', 'Legacy original absence requires verified producer history; use recorded absence or whole-room recovery.');
     }
     absent = currentNames.filter(name => !Object.hasOwn(previous.files, name) && !saved.has(name));
