@@ -12,3 +12,5 @@
 ## Scope
 
 Delete `LEXICON.md` and `templates/LEXICON.md` after re-scaffolding the inventories against the current base so Lexicon edits that landed after the census are classified, and run the landing check for both. Remove the remaining tests' Lexicon reads. Record the inventories and the landing-check output under this Spec's `proof/`.
+
+Also refresh `proof/lexicon-consumer-census.md` to the delivered homes (the Template Wiki homes are the grouped `templates/wiki/vocabulary-*.md` articles and `ai-coding-reference.md`, not per-term pages).

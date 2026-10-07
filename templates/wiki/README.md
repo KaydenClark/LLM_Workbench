@@ -18,6 +18,13 @@
   deployment. One deployment has exactly one, at its own
   `workbench/wiki/MEMORY.md`, with flat `[OWNER]/`, `Projects/`, and `Machine/`
   pointer collections beside it.
+- `vocabulary-*.md` (one grouped article per glossary grouping, each term a
+  section linking its `GLOSSARY.md` definition) and `ai-coding-reference.md`
+  (general AI coding words) explain the room's vocabulary.
+  `MEMORY.project.md` and `MEMORY.root.md` route them under Vocabulary. Copy
+  them flat into `workbench/wiki/` with the router, filling the
+  `last_verified` date, once the room's root `GLOSSARY.md` exists: every
+  section links it.
 - `guidebooks/` and `archive/` are declared collections that ship empty;
   `design-concepts/` must exist in every Workbench even when empty.
 
@@ -27,7 +34,7 @@
    and the seeded contract files, and records the profile in the manifest.
 2. Copy the router variant matching the profile to `workbench/wiki/MEMORY.md`
    and fill every `[BRACKETED]` placeholder; delete routing rows that have no
-   note to route to.
+   note to route to. Copy the vocabulary articles beside it.
 3. Run `node workbench/tools/wiki.mjs validate`; the Genesis readiness gate
    also requires the filled router and contract files.
 
