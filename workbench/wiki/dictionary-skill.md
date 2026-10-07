@@ -28,7 +28,7 @@ entry](../../GLOSSARY.md#workbench-room-and-artifacts).
 pointer](dictionary-context-pointer.md) from the [Contract
 artifact](dictionary-contract-artifact.md) is what makes a lane skill bind for
 its operation. A [Control](dictionary-control.md) is called; a skill is read.
-The core skill bundle, the skills lane and the stances are glossary entries of
+The [core skill bundle](dictionary-core-skill-bundle.md), the [skills lane](dictionary-skills-lane.md) and the [stances](dictionary-stance.md) are glossary entries of
 their own.
 
 **In use.** The [`implement` skill](../skills/implement/SKILL.md) is a folder in

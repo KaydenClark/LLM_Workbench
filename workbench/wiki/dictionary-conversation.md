@@ -25,7 +25,7 @@ definition is the [glossary entry](../../GLOSSARY.md#chats-and-roles).
 to be written to its owner.
 
 **In use.** An owner answer given in conversation is read back, confirmed and
-then written to its owner, such as a decision record, the glossary or a Spec,
+then written to its owner, such as a [decision record](dictionary-decision-record.md), the glossary or a Spec,
 before a later session relies on it ([the confirmation
 decision](../docs/ddr/000C-confirming-a-concept-authorizes-the-agents-to-carry-it-to-its-endpoint.md));
 the conversation itself is not where the Workbench keeps it.

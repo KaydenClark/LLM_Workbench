@@ -15,7 +15,7 @@ last_verified: 2026-10-07
 
 # Destination Packet: everything an agent needs to find and reach its destination
 
-A Destination Packet is everything an agent needs to determine the destination and direction for its current objective, execute in that direction and verify it reached the destination: links on the DQC or TASK, typically reaching the Blueprint, the landmark, the Spec acceptance lines it satisfies, the Task, a handoff and perhaps a notepad, the Contract and the cited source and tests. The canonical definition is the [glossary entry](../../GLOSSARY.md#specs-and-tasks).
+A Destination Packet is everything an agent needs to determine the destination and direction for its current objective, execute in that direction and verify it reached the destination: links on the DQC or TASK, typically reaching the Blueprint, the landmark, the Spec acceptance lines it satisfies, the Task, a handoff and perhaps a [notepad](dictionary-notepad.md), the Contract and the cited source and tests. The canonical definition is the [glossary entry](../../GLOSSARY.md#specs-and-tasks).
 
 **What it means here.** A term for what we give the agent, so we can tell whether it got the full packet; nothing is copied into it and no second record tells the agent the destination. Optional local untracked context neither authorizes work nor proves claims. The Wiki is evidence for a Spec's direction and plan, never the destination a packet carries ([ADR-000H](../docs/adr/000H-a-task-is-a-standalone-artifact-and-task-replaces-ticket-as-the-execution-slice-term.md), [ADR-000U](../docs/adr/000U-landmarks-are-landmark-md-artifacts-one-size-above-specs.md)). Avoid "landmark packet"; bare "Packet" is the retired name.
 

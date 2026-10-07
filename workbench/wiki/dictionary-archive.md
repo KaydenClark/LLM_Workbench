@@ -25,7 +25,7 @@ entry](../../GLOSSARY.md#specs-and-tasks).
 
 **Neighbouring words.** It is not [Retired](dictionary-retired.md), which is
 transient and holds Specs and Tasks, and [Clean Up](dictionary-clean-up.md)
-never clears it. The ADR, DDR and Decision Record terms it serves have their own
+never clears it. The [ADR](dictionary-adr.md), [DDR](dictionary-ddr.md) and [Decision Record](dictionary-decision-record.md) terms it serves have their own
 glossary entries.
 
 **In use.** `workbench/docs/adr/archive/` keeps superseded ADRs such as

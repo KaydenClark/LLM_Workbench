@@ -28,8 +28,8 @@ entry](../../GLOSSARY.md#workbench-room-and-artifacts).
 **Neighbouring words.** The files once called root controls are the [Contract
 artifact](dictionary-contract-artifact.md) and the [Routing
 artifacts](dictionary-routing-artifact.md). A [Skill](dictionary-skill.md) is
-read, not called; a control is called. Most of this room's controls are managed
-runtime tools in `workbench/tools/`, which have their own glossary entry.
+read, not called; a control is called. Most of this room's controls are [managed
+runtime tools](dictionary-managed-runtime-tool.md) in `workbench/tools/`, which have their own glossary entry.
 
 **In use.** `node workbench/tools/wiki.mjs validate` is a control: one action
 that checks the Wiki and reports its findings. A Worker reaches a Task's state

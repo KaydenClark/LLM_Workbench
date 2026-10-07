@@ -24,13 +24,11 @@ canonical definition is the [glossary entry](../../GLOSSARY.md#chats-and-roles).
 **Neighbouring words.** The four roles are [Captain](dictionary-captain.md),
 [Director](dictionary-director.md), [Dispatcher](dictionary-dispatcher.md) and
 [Worker](dictionary-worker.md); the [Owner](dictionary-owner.md) is above them.
-A role scopes an [Agent](dictionary-agent.md); a stance, with its own glossary
-entry, supplies the method. The [Destination
+A role scopes an [Agent](dictionary-agent.md); a [stance](dictionary-stance.md), with its own glossary entry, supplies the method. The [Destination
 Packet](dictionary-destination-packet.md) links the role skill.
 
 **In use.** On S-004O one agent holds the Dispatcher role for the Spec and its
-assembly branch, and each Task's agent holds the Worker role with the Builder
-stance. The role sets what each coordinates, the stance how each works, and
+assembly branch, and each Task's agent holds the Worker role with the [Builder](dictionary-builder.md) stance. The role sets what each coordinates, the stance how each works, and
 neither grants a permission the request and `AGENTS.md` have not given.
 
 ## Sources
