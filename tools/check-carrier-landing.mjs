@@ -1,10 +1,12 @@
 #!/usr/bin/env node
-// Contract carrier line-landing check (Spec S-004C, Task TK-005C).
+// Contract carrier line-landing check (Spec S-004C, Task TK-005C), extended to
+// the Lexicon carriers (Spec S-004O, Task TK-009A).
 //
 // A maintainer verification tool, run at rewrite review; it is not a managed
 // room runtime tool and is not installed into rooms. It makes "no carrier line
 // is removed before its new home exists" a command: given a base commit, a
-// candidate ref and an inventory for one carrier (`AGENTS.md` or `RUNBOOK.md`),
+// candidate ref and an inventory for one carrier (`AGENTS.md`, `RUNBOOK.md`,
+// `LEXICON.md` or `templates/LEXICON.md`; any repository-relative file works),
 // it lists every normalized line the candidate removed from the carrier and
 // refuses unless each has an inventory entry whose home holds its landed text
 // at the candidate. It never decides which home is right; it only checks that
@@ -41,9 +43,11 @@
 //     }]
 //   }
 // Home kinds: stays (the line remains in the carrier), skill, pointer,
-// lexicon, wiki, restates-owner (homePath names the owner that already holds
-// the claim) and retired-with-reason (no home; `reason` records why). Every
-// kind except stays and retired-with-reason needs homePath and landedText.
+// lexicon, wiki, glossary (`GLOSSARY.md` or its Template mirror), architecture
+// (`ARCHITECTURE.md` or its Template mirror), restates-owner (homePath names the
+// owner that already holds the claim) and retired-with-reason (no home; `reason`
+// records why). Every kind except stays and retired-with-reason needs homePath
+// and landedText.
 //
 // Usage:
 //   node tools/check-carrier-landing.mjs check --base SHA --inventory PATH
@@ -58,8 +62,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { isMainModule } from '../workbench/tools/workbench-paths.mjs';
 
-export const HOME_KINDS = ['stays', 'skill', 'pointer', 'lexicon', 'wiki', 'restates-owner', 'retired-with-reason'];
-const HOMED_KINDS = new Set(['skill', 'pointer', 'lexicon', 'wiki', 'restates-owner']);
+export const HOME_KINDS = ['stays', 'skill', 'pointer', 'lexicon', 'wiki', 'glossary', 'architecture', 'restates-owner', 'retired-with-reason'];
+const HOMED_KINDS = new Set(['skill', 'pointer', 'lexicon', 'wiki', 'glossary', 'architecture', 'restates-owner']);
 export const NORMALIZATION = 'trim; collapse whitespace runs to one space';
 
 export function normalizeText(text) {
