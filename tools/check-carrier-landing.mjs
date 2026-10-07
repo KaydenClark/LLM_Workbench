@@ -1,10 +1,12 @@
 #!/usr/bin/env node
-// Contract carrier line-landing check (Spec S-004C, Task TK-005C).
+// Contract carrier line-landing check (Spec S-004C, Task TK-005C), extended to
+// the Lexicon carriers (Spec S-004O, Task TK-009A).
 //
 // A maintainer verification tool, run at rewrite review; it is not a managed
 // room runtime tool and is not installed into rooms. It makes "no carrier line
 // is removed before its new home exists" a command: given a base commit, a
-// candidate ref and an inventory for one carrier (`AGENTS.md` or `RUNBOOK.md`),
+// candidate ref and an inventory for one carrier (`AGENTS.md`, `RUNBOOK.md`,
+// `LEXICON.md` or `templates/LEXICON.md`; any repository-relative file works),
 // it lists every normalized line the candidate removed from the carrier and
 // refuses unless each has an inventory entry whose home holds its landed text
 // at the candidate. It never decides which home is right; it only checks that
@@ -21,7 +23,9 @@
 // heading that moves keeps its anchor, which the anchor check owns.
 //
 // A line is removed when the candidate carrier holds fewer copies of its
-// normalized text than the base does. A line that stays (even reordered or
+// normalized text than the base does. A carrier deleted at the candidate (as
+// the Lexicon retirement deletes `LEXICON.md`) has removed every line; the
+// carrier must still exist at the base. A line that stays (even reordered or
 // rewrapped) is not removed, so its entry may stay unclassified.
 //
 // Inventory JSON (one file per carrier):
@@ -41,9 +45,11 @@
 //     }]
 //   }
 // Home kinds: stays (the line remains in the carrier), skill, pointer,
-// lexicon, wiki, restates-owner (homePath names the owner that already holds
-// the claim) and retired-with-reason (no home; `reason` records why). Every
-// kind except stays and retired-with-reason needs homePath and landedText.
+// lexicon, wiki, glossary (`GLOSSARY.md` or its Template mirror), architecture
+// (`ARCHITECTURE.md` or its Template mirror), restates-owner (homePath names the
+// owner that already holds the claim) and retired-with-reason (no home; `reason`
+// records why). Every kind except stays and retired-with-reason needs homePath
+// and landedText.
 //
 // Usage:
 //   node tools/check-carrier-landing.mjs check --base SHA --inventory PATH
@@ -58,8 +64,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { isMainModule } from '../workbench/tools/workbench-paths.mjs';
 
-export const HOME_KINDS = ['stays', 'skill', 'pointer', 'lexicon', 'wiki', 'restates-owner', 'retired-with-reason'];
-const HOMED_KINDS = new Set(['skill', 'pointer', 'lexicon', 'wiki', 'restates-owner']);
+export const HOME_KINDS = ['stays', 'skill', 'pointer', 'lexicon', 'wiki', 'glossary', 'architecture', 'restates-owner', 'retired-with-reason'];
+const HOMED_KINDS = new Set(['skill', 'pointer', 'lexicon', 'wiki', 'glossary', 'architecture', 'restates-owner']);
 export const NORMALIZATION = 'trim; collapse whitespace runs to one space';
 
 export function normalizeText(text) {
@@ -105,9 +111,12 @@ function readAt(repo, commit, file) {
   return result.stdout;
 }
 
-function carrierLines(repo, commit, carrier, label) {
+function carrierLines(repo, commit, carrier, label, { allowMissing = false } = {}) {
   const text = readAt(repo, commit, carrier);
-  if (text === null) throw new UsageError(`carrier ${carrier} does not exist at ${label} ${commit}`);
+  if (text === null) {
+    if (allowMissing) return null;
+    throw new UsageError(`carrier ${carrier} does not exist at ${label} ${commit}`);
+  }
   return text.split('\n');
 }
 
@@ -199,7 +208,9 @@ export function checkCarrierLanding({ repo = process.cwd(), base, candidate = 'H
   if (inventoryBase !== baseSha) throw new UsageError(`base ${baseSha} differs from the inventory baseSha ${inventoryBase}`);
 
   const baseLines = carrierLines(repo, baseSha, data.carrier, 'base');
-  const candidateLines = carrierLines(repo, candidateSha, data.carrier, 'candidate');
+  // A carrier deleted at the candidate (the Lexicon retirement) removed every line.
+  const candidateCarrier = carrierLines(repo, candidateSha, data.carrier, 'candidate', { allowMissing: true });
+  const candidateLines = candidateCarrier ?? [];
   const inventoryErrors = validateInventory(data, baseLines);
   const entries = Array.isArray(data.entries) ? data.entries.filter((entry) => entry && typeof entry === 'object') : [];
 
@@ -244,6 +255,7 @@ export function checkCarrierLanding({ repo = process.cwd(), base, candidate = 'H
     schemaVersion: 1,
     operation: 'carrier-landing-check',
     carrier: data.carrier,
+    carrierRemoved: candidateCarrier === null,
     base: baseSha,
     candidate: candidateSha,
     normalization: NORMALIZATION,
@@ -286,7 +298,7 @@ function parseArgs(argv) {
 }
 
 function printReport(report) {
-  console.log(`${report.carrier}: base ${report.base} -> candidate ${report.candidate}`);
+  console.log(`${report.carrier}: base ${report.base} -> candidate ${report.candidate}${report.carrierRemoved ? ' (carrier removed)' : ''}`);
   console.log(`removed lines: ${report.removedLines}; landed: ${report.landed}; inventory entries: ${report.entries} (${report.classifiedEntries} classified)`);
   for (const error of report.inventoryErrors) console.log(`inventory-error ${error.code}: ${error.message}`);
   for (const finding of report.unlanded) console.log(`unlanded ${finding.code}: ${finding.message}`);

@@ -397,7 +397,7 @@ The Workbench self-drift pre and post receipts and the bounded semantic check: a
 
 ### Carrier line-landing check
 
-The carrier line-landing check for a rewrite of `AGENTS.md` or `RUNBOOK.md`: a maintainer procedure of this repository, in the
+The carrier line-landing check for a rewrite of `AGENTS.md` or `RUNBOOK.md`, or the Lexicon retirement (`LEXICON.md` and `templates/LEXICON.md`, with `glossary` and `architecture` homes): a maintainer procedure of this repository, in the
 [`workbench-room-checks` skill](workbench/skills/workbench-room-checks/SKILL.md#carrier-line-landing-check).
 
 ### Spec Lifecycle And Retrieval
