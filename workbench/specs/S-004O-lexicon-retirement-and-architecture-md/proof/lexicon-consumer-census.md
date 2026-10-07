@@ -187,14 +187,14 @@ Every tracked file that reads or links the Lexicon at `1f4e2d676221ae2fd6b156073
 | `tools/test-carrier-landing.mjs` | Fixture `LEXICON.md` as a `restates-owner` home and the new Lexicon-carrier cases. | TK-009A (this Task) | Stays: fixture data. |
 | `tools/control-fidelity.mjs` | `templatedControls` includes `LEXICON.md`. | TK-009G | GLOSSARY.md and ARCHITECTURE.md. |
 | `tools/cross-provider-resume.mjs` | Fixture room writes a `LEXICON.md` with a Terms table. | TK-009G | Fixture writes GLOSSARY.md (and ARCHITECTURE.md if the installed set requires it). |
-| `tools/grill-board.mjs` | Artifact group `lexicon` titled LEXICON on the shared Grill Board. | TK-009F | Groups for GLOSSARY.md and ARCHITECTURE.md; the board is shared with the owner's Codex lane, so coordinate before changing groups. |
+| `tools/grill-board.mjs` | Artifact group `lexicon` titled LEXICON on the shared Grill Board. | Not re-pointed: planned for TK-009F, held for the owner's uncommitted board edits ([Grill Board gap](#grill-board-gap)) | Groups for GLOSSARY.md and ARCHITECTURE.md; the board is shared with the owner's Codex lane, so coordinate before changing groups. |
 | `tools/test-adr.mjs` | Reads `LEXICON.md` among controls and pins the Lexicon bold-term table rows for decision vocabulary. | TK-009C (term rows); TK-009F (controls map) | GLOSSARY.md entries; ARCHITECTURE.md routes. |
 | `tools/test-blueprint-contract.mjs` | Pins the Template Blueprint note "Its terms mean what the Lexicon says they mean." | TK-009F | The new Blueprint first line naming GLOSSARY.md. |
 | `tools/test-control-fidelity.mjs` | Controls list, Lexicon fixture rows, root/Template Lexicon parity, and the Instruction Authority assertion naming `LEXICON.md` as a Contract carrier. | TK-009G; TK-009F for the Instruction Authority assertion | GLOSSARY.md and ARCHITECTURE.md in the control set; Instruction Authority without the Lexicon. |
 | `tools/test-controls-vocabulary-sweep.mjs` | Allows the retired word in the Lexicon's Ticket row and its ADR link. | TK-009C | The GLOSSARY.md Task entry's `_Avoid_: ticket` line. |
 | `tools/test-genesis-from-decisions.mjs` | Genesis fixture writes and checks `LEXICON.md`; asserts the Instruction Authority item naming it. | TK-009G; TK-009F for the Instruction Authority assertion | GLOSSARY.md and ARCHITECTURE.md. |
 | `tools/test-governance-core.mjs` | Root and Template Lexicons carry a `## Governance Core` section with the core term rows and the owner definition of design concept. | TK-009C | GLOSSARY.md and templates/GLOSSARY.md Governance core grouping and entries. |
-| `tools/test-grill-board.mjs` | Fixture `LEXICON.md` and the expected `lexicon` group. | TK-009F | Follows tools/grill-board.mjs. |
+| `tools/test-grill-board.mjs` | Fixture `LEXICON.md` and the expected `lexicon` group. | Not re-pointed: planned for TK-009F, held for the owner's uncommitted board edits ([Grill Board gap](#grill-board-gap)) | Follows tools/grill-board.mjs. |
 | `tools/test-portability-matrix.mjs` | `ACTIVE_SURFACES` includes `LEXICON.md`. | TK-009G | GLOSSARY.md and ARCHITECTURE.md. |
 | `tools/test-runbook-index.mjs` | Entry-route regex through `LEXICON.md`, the `LEXICON.md#artifact-ownership-schema` link, the read-words sentence and comments about Lexicon rows. | TK-009F | ARCHITECTURE.md routes; GLOSSARY.md for read words. |
 | `tools/test-self-drift.mjs` | Fixture control list includes `LEXICON.md`. | TK-009F | Follows workbench/tools/self-drift.mjs. |
@@ -231,8 +231,8 @@ Every tracked file that reads or links the Lexicon at `1f4e2d676221ae2fd6b156073
 
 | File | What it reads | Re-pointed by | Reads instead |
 |---|---|---|---|
-| `workbench/grill-board/README.md` | Names a Lexicon row as a Confirm destination and LEXICON among the artifact groups. | TK-009F | GLOSSARY.md entry (through promotion) and the ARCHITECTURE.md group. |
-| `workbench/grill-board/index.html` | The `lexicon` artifact group in the page selector. | TK-009F | Follows `tools/grill-board.mjs`. |
+| `workbench/grill-board/README.md` | Names a Lexicon row as a Confirm destination and LEXICON among the artifact groups. | Not re-pointed: planned for TK-009F, held for the owner's uncommitted board edits ([Grill Board gap](#grill-board-gap)) | GLOSSARY.md entry (through promotion) and the ARCHITECTURE.md group. |
+| `workbench/grill-board/index.html` | The `lexicon` artifact group in the page selector. | Not re-pointed: planned for TK-009F, held for the owner's uncommitted board edits ([Grill Board gap](#grill-board-gap)) | Follows `tools/grill-board.mjs`. |
 
 ### Wiki lexicon articles (`workbench/wiki/dictionary-*.md`)
 
@@ -633,7 +633,7 @@ Checkpoints and the grilling destination audit ledger are retained history.
 
 #### Grill Board data (`workbench/grill-board/items.json`): 1 file
 
-Owner question and answer records keep their wording; its artifact catalog entry follows `tools/grill-board.mjs` (TK-009F) when the board regenerates it through its tool.
+Owner question and answer records keep their wording. Its artifact catalog entry would follow `tools/grill-board.mjs` when the board regenerates it through its tool; that tool was not re-pointed ([Grill Board gap](#grill-board-gap)).
 
 - `workbench/grill-board/items.json`
 
@@ -724,6 +724,19 @@ A fresh `git grep -a -l LEXICON` over the files the TK-009F live-link check trea
 | `workbench/wiki/design-concepts/landmark-context-map.md`, `workbench/wiki/skill-make-it-so.md`, `workbench/wiki/skills-draft/main-workflow/pr.md` | History: a quoted card revision, a recorded scenario, and a draft owned by S-002U that says not to substitute the Lexicon. |
 
 Spec records stay history under the live-link check; `doctor` reports four of them as attention-only `broken-link` findings once `LEXICON.md` is gone (S-002H, S-01A, S-01T and S-01U link `../../../LEXICON.md`, S-01A to a heading), which their owners re-point or keep.
+
+Corrected by TK-009M [correct the whole-Spec code-review findings](../tasks/TK-009M/TASK.md): the live-link check now scans the bodies of active, planned and blocked Specs and landmarks (without their append-only evidence logs) and of accepted ADRs and DDRs (without the frontmatter `canonicalized_in` history), and a link pinned to a commit counts as history. S-01A now routes artifact meanings to `ARCHITECTURE.md#ownership`, S-01T routes shared definitions to `GLOSSARY.md`, ADR-0042's body routes to `ARCHITECTURE.md#routes` (one link edit; the decision-record reference repair rewrites only moved records), and the historical claims in S-01U and superseded S-002H link the Lexicon at pre-removal commit `0059669f1e1b81c8048dfea9714d0ce7a9e1d914`. `doctor` reports no Lexicon `broken-link` finding.
+
+### Grill Board gap
+
+The census rows above planned TK-009F to re-point the Grill Board; neither TK-009F nor a later Task did, because the owner holds uncommitted edits on exactly these lines. At the TK-009M candidate, for the board's owner:
+
+- `artifactCatalog` in `tools/grill-board.mjs` still builds the reader groups `agents`, `runbook`, `blueprint`, `lexicon`, and the first four become root artifacts at `${title}.md`, so the reader offers `LEXICON.md`, which no longer exists, and offers neither `GLOSSARY.md` nor `ARCHITECTURE.md`.
+- `readArtifact(root, 'LEXICON.md')` therefore fails with `missing-file` ("LEXICON.md is not a file"), and `readArtifact(root, 'GLOSSARY.md')` fails with `missing-file` ("This path is not a reader artifact").
+- `workbench/grill-board/index.html` keeps the `lexicon` option in its page selector and in the root-artifact list; `workbench/grill-board/README.md` names LEXICON among the reader groups and a Lexicon row as a Confirm destination; `tools/test-grill-board.mjs` pins the `lexicon` group with a fixture `LEXICON.md`, so it still passes.
+- Ten open items in `workbench/grill-board/items.json` cite `LEXICON.md` as a source: GB-0001, GB-0002, GB-0003, GB-0005, GB-0012, GB-0014, GB-0081, GB-0090, GB-0093 and GB-0164. Their source links now resolve to no file in this checkout; the Lexicon text they cited is at commit `0059669f`.
+
+The correction is a `glossary` group for `GLOSSARY.md` and an `architecture` group for `ARCHITECTURE.md` in place of `lexicon`, with the page selector, README and test following, and the ten items' sources re-pointed through the board tool to the glossary entry or `ARCHITECTURE.md` section that now holds each cited line. It waits on the owner's board edits; the Dispatcher records it in the Spec.
 
 ## Totals
 
