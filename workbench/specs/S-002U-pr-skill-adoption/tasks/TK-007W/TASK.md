@@ -3,11 +3,12 @@
 **Task ID:** TK-007W
 **Spec ID:** S-002U
 **Slice:** Exercise pr body authoring in a fresh context
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** TK-007U
 **Destination:** spec-acceptance: A fresh-context scenario produces a useful brief visual summary, actual before/after evidence and accurate door/blast-radius discussion, using supplied canonical glossary terms.
 **Planned verification:** Fresh-context run of the installed skill on a known change with real failing/passing evidence and a supplied glossary fixture; observed artifact and environment diff recorded (no Git state change, no PR opened or merged); evidence linked from the Spec.
+**Claimed by:** claude-s002u-worker-w
 
 ## Scope
 
