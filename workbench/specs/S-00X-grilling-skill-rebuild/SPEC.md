@@ -5,11 +5,11 @@
 **Priority:** 2
 **Owner:** claude-opus-5-5
 **Stance:** Builder
-**Updated:** 2026-09-24
+**Updated:** 2026-10-06
 **Catalog description:** Settle a shared design concept through one consequential question at a time.
 **Blockers:** none.
-**Latest event:** TK-00O closed with proof.
-**Next gate:** Owner Human QA of conversational fidelity on `integration`, then `complete S-00X`.
+**Latest event:** 2026-10-06: owner Human QA approved at integration `42431879` (the owner, in chat: "Human QA passes. I declare it here.").
+**Next gate:** Owner promotion of the approved content to `main`, then `complete S-00X` on observed `origin/main`.
 
 > **Citation anchors.** pre=`4940233e74a93a8390f73f8ac6ba39ef53131798` post=`4940233e74a93a8390f73f8ac6ba39ef53131798`.
 
@@ -109,6 +109,7 @@ steps 1-5 touch only the draft wiki and step 6 only this skill's lane.
 | 2026-09-24 | TK-00O | Task closed | Red/green tools/test-skill-catalog.mjs (red 85858f1, green 00c88f0); full AGENTS suite 48/48 at 00c88f0; fresh-context six-turn scenario matched the interaction contract; wiki validate ok | workbench/skills/grilling/SKILL.md and workbench/wiki/skill-grilling.md; RUNBOOK, BLUEPRINT, templates and skills README checked with no update needed because their grilling wording stays accurate | Separate-context candidate review; owner Human QA of conversational fidelity; installed personal skill copies not updated; S-00W shared-journey check after S-00Y and S-00Z |
 | 2026-09-24 | TK-00O review | Separate-context review of immutable candidate `18f62503107a5f15b7d07020f2f63c980d4be7ce` against base `6ae38b9`: PASS, no High/Medium/Low findings | Codex CLI `codex exec -s read-only -m gpt-5.5`; reviewer ran `wiki.mjs validate` and `git diff --check` (both pass) and checked by source review the project-evidence open-question path, genesis `open|tentative|locked` statuses, notepad `source_record`/`decision` separation, the catalog assertions and the append-only rows. A first attempt with `codex review --base` reviewed nothing because the CLI refuses a prompt together with `--base` | None | Reviewer could not re-run fixture tests in its sandbox (`EPERM` on `mkdtemp`); it compared against the implementing agent's summary of the pinned upstream text rather than fetching it. Owner Human QA remains |
 | 2026-09-26 | review | Review verdict: pass at eec12cf74ee3f649fa199cfe618c67f4df697938 [2048ddcfb307] #1 | none; final-content review of the Spec at eec12cf (checked acceptance lines supported by recorded evidence, Completion Result accurate against source, header and Wiki route consistent); refreshes the digest after the boxes and Completion Result were written post-verdict; fixture tests not run in the reviewer sandbox | Codex CLI codex exec -s read-only -m gpt-5.5, separate context (Lane E log E-gate-review-1.log) | 4 |
+| 2026-10-07 | owner-qa | Owner QA: approve at 42431879fab3057db9e26ae661b4e92512c281f0 [0d17c5e731ad] #1 | none | Kayden (owner, in chat 2026-10-06: "Human QA passes. I declare it here.") | none |
 
 ## Completion Result
 

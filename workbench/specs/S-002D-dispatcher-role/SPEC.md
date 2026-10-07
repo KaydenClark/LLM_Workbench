@@ -5,11 +5,11 @@
 **Priority:** 2
 **Owner:** claude-lane-D
 **Stance:** Builder
-**Updated:** 2026-09-30
+**Updated:** 2026-10-06
 **Catalog description:** Coordinate planning, parallel Task delivery and assembled verification within one assigned Spec and its branch.
 **Blockers:** none
-**Latest event:** Reviewed integration delivery: PR #214 merged as `3a24d892`, containing the reviewed candidate `06d49c11`.
-**Next gate:** Owner Human QA on integration, then complete S-002D
+**Latest event:** 2026-10-06: owner Human QA approved at integration `42431879` (the owner, in chat: "Human QA passes. I declare it here.").
+**Next gate:** Owner promotion of the approved content to `main`, then `complete S-002D` on observed `origin/main`.
 
 > **Citation anchors.** pre=`b00a2e338436ef7b281b0cc53e74f891af32f18c` post=`0f80049ce1570c04460a3315374d5e558241c71e`.
 
@@ -109,6 +109,7 @@ steps 1-5 touch only the draft wiki and step 6 only this skill's lane. When ther
 | 2026-09-30 | review | Review verdict: pass at 2e2509cc6424706abd9615dbefd4ad3be92c85a1 [2629b57fc7c1] #1 | No High, Medium or Low findings against base 0f80049c. The reviewer ran git diff --stat, git diff, git diff --check (clean), wiki.mjs validate (ok) and doctor (no blocking finding, only pre-existing attention findings), and checked the manifest and layout order by hand. It confirmed the skill contract sections, the authority and no-spawn sentences, Spec-bound scope, single writer, Worker proof hand-back, no self-approval, the containment route with the bootstrap exception, no GPT_OS import, the four stances last, unchanged frozen rows, evidence-backed boxes, and no owner-approval or outcome claim. It also confirmed that the correction for the first review's FAIL at e76ea5c4 holds. The reviewer sandbox could not run test-skill-catalog or test-workbench-layout (EPERM on mkdtemp) and reported them as not run. The Dispatcher's suite passed 48/48 at 2e2509cc | Codex CLI codex exec -s read-only -m gpt-5.5, separate context from the builders and the Dispatcher, fresh clone of 2e2509cc (log D-review-2e2509c.log in the Dispatcher scratchpad, outside the repository) | 1 |
 | 2026-09-30 | assembly | Reviewed integration delivery recorded | PR #214 merged into `integration` as `3a24d8929037681f26b9408ada9eb303ab03051a`. The reviewed candidate `06d49c119ae6734a2008c50792307a8bbd81a542` (review verdict pass at `2e2509cc` plus its verdict row) is proven an ancestor of `origin/integration` with `git merge-base --is-ancestor`. The Spec branch `claude/s-002d-dispatcher-role-renumbered` was deleted locally with `git branch -d` and remotely with the expected-tip lease. The Worker branches `claude/s-002d-tk-002x-entry` and `claude/s-002d-tk-002y-article` are kept: their Worker commits are patch-contained, but the superseded TK-002X/TK-002Y plan commits they carry are not contained, so deleting them is the owner's call | Latest event updated; Next gate unchanged | Owner Human QA on integration, then complete S-002D |
 | 2026-09-30 | review | Review verdict: pass at 00388411c55f96ffc0ac1048ad64675b755d3956 [794fda924340] #2 | No High, Medium or Low findings against base 3a24d892 (PR #214 merge). Records-only follow-up: only the S-002D Spec and TASKBOARD.md change, the Next gate is unchanged, and the new row is appended with a distinct Event. The reviewer verified BASE's parents (0f80049c, 06d49c1), that 06d49c11 is an ancestor of BASE, and that 06d49c11 differs from 2e2509cc only by the verdict row. git diff --check was clean, doctor reported no blocking finding, and the TASKBOARD row matches the header. The reviewer's DNS was blocked, so it could not check remote branch state; the Dispatcher checked it with git ls-remote. The Dispatcher's suite passed 48/48 at 00388411 | Codex CLI codex exec -s read-only -m gpt-5.5, separate context, fresh clone of 00388411 (log D-review-0038841.log in the Dispatcher scratchpad, outside the repository) | 2 |
+| 2026-10-07 | owner-qa | Owner QA: approve at 42431879fab3057db9e26ae661b4e92512c281f0 [b30e49ba468a] #1 | none | Kayden (owner, in chat 2026-10-06: "Human QA passes. I declare it here.") | none |
 
 ## Completion Result
 

@@ -5,11 +5,11 @@
 **Priority:** 2
 **Owner:** claude-s00m-carry
 **Stance:** Builder
-**Updated:** 2026-10-02
+**Updated:** 2026-10-06
 **Catalog description:** Make a completion claim unable to hide uncommitted or unpushed work, by surfacing Git state in `doctor` and refusing `close` unless the Receipt records the state and a reason.
 **Blockers:** none
-**Latest event:** Reviewed integration delivery: PR #271 merged into `integration` as `cdea242`, containing the reviewed candidate `7d13499` (review pass #4) and its verdict row (`6840285`).
-**Next gate:** Owner Human QA on `integration`, then owner promotion to `main` and `complete S-00M`.
+**Latest event:** 2026-10-06: owner Human QA approved at integration `42431879` (the owner, in chat: "Human QA passes. I declare it here.").
+**Next gate:** Owner promotion of the approved content to `main`, then `complete S-00M` on observed `origin/main`.
 
 > **Citation anchors.** pre=`87c1d45cd6c32ceea12e05590eae966c0d6d4ecf` post=`6154167f48a4ed2474713d043a9cac18833d6a2a`.
 
@@ -221,6 +221,7 @@ back to a ready Task.
 | 2026-10-02 | review | Review verdict: pass at 7d13499a6bc063aa470343bc160a35511ba7ac95 [26c0a71e4a6c] #4 | No High, Medium or Low findings against base 5adcbaa. The reviewer ran git diff --stat, git diff and git diff --check against BASE, doctor (no blocking finding), report S-00M at the candidate (content matches, gaps 0), the completion-claim tests 3/3, wiki.mjs validate and check-append-only.py (clean), and confirmed the candidate is a fast-forward of integration; it judged the templates generic and the new tests non-vacuous. 12 older fixture tests in test-control-fidelity failed in its sandbox with EPERM on mkdtemp; builder full suite 48/48 at 6ffbcaa. | Codex gpt-5.5, codex exec -s read-only, separate context from the builder, on a detached checkout of the candidate | 3 |
 | 2026-10-02 | cdea242 | Reviewed integration delivery recorded, with the carry run's hand-back tally | PR #271 merged into `integration` as `cdea2427a7262834a6b8ced82df8b84dc2cd8dec` (parents `5adcbaa`, `6840285`) with `gh pr merge --merge --match-head-commit 68402859f0a3b93e701f1fc14dae94a1657b0b0a`. After `git fetch origin`, `git merge-base --is-ancestor` proved the reviewed candidate `7d13499a6bc063aa470343bc160a35511ba7ac95` and the verdict-row commit `68402859` ancestors of `origin/integration`; `gate --spec S-00M --candidate 7d13499` and `gate --task TK-004 --spec S-00M` were not refused before the merge. This follow-up rewrites the Completion Result, which the review digest binds, because it still named the review and merge as open, so it carries its own separate-context review | Header Latest event and Next gate now name the merged delivery and the owner gates that remain; the Completion Result names PR #271. Carry run tally: one coordination hand-back (the row naming TK-004's invisible hold); none arose during review, gating or merge. Docs: workbench/wiki/lifecycle-tool-behaviors.md gains the digest-bound Completion Result trap this follow-up hit |
 | 2026-10-02 | review | Review verdict: pass at 9c23bbe3bf2a422bf8cae84184df6104fd209eb8 [2ffe974f42dc] #5 | No High, Medium or Low findings against base cdea242 (PR #271 merge). Records-only follow-up: the header names no owner approval, main promotion or completion; the new evidence row's merge parents and the ancestry of 7d13499 and 68402859 match Git; the Completion Result now leaves only the owner gates open; the new Wiki verdict section matches computeSpecDigest's exclusions. The reviewer ran git diff/--check against BASE, git log/show and merge-base checks, doctor, report S-00M at the candidate, check-append-only.py and wiki.mjs validate. Builder full suite 48/48 at 9c23bbe. | Codex gpt-5.5, codex exec -s read-only, separate context from the builder, on a detached checkout of the candidate | 4 |
+| 2026-10-07 | owner-qa | Owner QA: approve at 42431879fab3057db9e26ae661b4e92512c281f0 [2ffe974f42dc] #1 | none | Kayden (owner, in chat 2026-10-06: "Human QA passes. I declare it here.") | none |
 
 ## Completion Result
 

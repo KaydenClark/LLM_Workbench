@@ -5,11 +5,11 @@
 **Priority:** 2
 **Owner:** claude-lane-G-worker
 **Stance:** Builder
-**Updated:** 2026-09-26
+**Updated:** 2026-10-06
 **Catalog description:** Compose approved work through the exact endpoint the owner authorized.
 **Blockers:** none.
-**Latest event:** TK-00Z closed with proof.
-**Next gate:** Owner Human QA of conversational fidelity on `integration`, then `complete S-01I`.
+**Latest event:** 2026-10-06: owner Human QA approved at integration `42431879` (the owner, in chat: "Human QA passes. I declare it here.").
+**Next gate:** Owner promotion of the approved content to `main`, then `complete S-01I` on observed `origin/main`.
 
 > **Citation anchors.** pre=`4940233e74a93a8390f73f8ac6ba39ef53131798` post=`4940233e74a93a8390f73f8ac6ba39ef53131798`.
 
@@ -107,6 +107,7 @@ steps 1-5 touch only the draft wiki and step 6 only this skill's lane. When ther
 | 2026-09-26 | review | Review verdict: pass at fdc62b8ea2db918c4d2883efc85dfbad38640e6b [13f293a15e1a] #1 | No High/Medium/Low findings against base ebb01dc. Reviewer ran wiki.mjs validate, git diff --check and doctor (pass; only known nonblocking attention findings) and confirmed by source review: the README catalog row now matches the Spec catalog description and SKILL.md endpoint bound; leaving SKILL.md unchanged is supported by the green spec-only scenario; catalog red/green plausible (be350c3 red, 4fd24dc green); article routed, links rather than restates composed review and recovery rules, and states no supported upstream counterpart; diff one skill wide with no control or template edit. Landing agent reran test-skill-catalog, test-skill-inspection, test-core-skill-installer and test-delivery-skills green on the candidate; full suite 48/48 at the candidate (logs G-s01i-fdc62b8) | Codex CLI codex exec -s read-only -m gpt-5.5, separate context from the builder; sandbox could not run fixture tests (EPERM on mkdtemp) | 7 |
 | 2026-09-26 | TK-00Z landing | Rebase delta review of `dc08c03df29d79c095fd099ec3b2990f1031f42b` (the reviewed `fdc62b8` rebased onto `889d856`, plus the verdict commit): PASS, no findings | Codex CLI `codex exec -s read-only -m gpt-5.5`, separate context; log `G-review-dc08c03-delta.log` in the Lane G scratchpad (local, not durable). Only the `workbench/wiki/MEMORY.md` resolution differs (integration intro and every bullet kept); both catalog blocks intact; `wiki.mjs validate` and `git diff --check` pass. Full suite 48/48 at `dc08c03`. Merged as PR #167 (`00b67f0`); Lane E later verified the landed contribution matches `dc08c03` line for line | None | None |
 | 2026-09-26 | review | Review verdict: pass at eec12cf74ee3f649fa199cfe618c67f4df697938 [431b7d3d0daf] #2 | none; final-content review of the Spec at eec12cf (checked acceptance lines supported by recorded evidence, Completion Result accurate against source, header and Wiki route consistent); refreshes the digest after the boxes and Completion Result were written post-verdict; fixture tests not run in the reviewer sandbox | Codex CLI codex exec -s read-only -m gpt-5.5, separate context (Lane E log E-gate-review-2.log) | 4 |
+| 2026-10-07 | owner-qa | Owner QA: approve at 42431879fab3057db9e26ae661b4e92512c281f0 [cf6a46fb8cc1] #1 | none | Kayden (owner, in chat 2026-10-06: "Human QA passes. I declare it here.") | none |
 
 ## Completion Result
 

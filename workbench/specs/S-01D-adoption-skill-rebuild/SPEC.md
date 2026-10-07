@@ -5,11 +5,11 @@
 **Priority:** 2
 **Owner:** claude-lane-C-worker
 **Stance:** Builder
-**Updated:** 2026-09-26
+**Updated:** 2026-10-06
 **Catalog description:** Bring an existing project into the Workbench once while preserving room truth.
 **Blockers:** none.
-**Latest event:** TK-00U closed with proof.
-**Next gate:** Owner Human QA of conversational fidelity on `integration`, then `complete S-01D`.
+**Latest event:** 2026-10-06: owner Human QA approved at integration `42431879` (the owner, in chat: "Human QA passes. I declare it here.").
+**Next gate:** Owner promotion of the approved content to `main`, then `complete S-01D` on observed `origin/main`.
 
 > **Citation anchors.** pre=`4940233e74a93a8390f73f8ac6ba39ef53131798` post=`4940233e74a93a8390f73f8ac6ba39ef53131798`.
 
@@ -105,6 +105,7 @@ steps 1-5 touch only the draft wiki and step 6 only this skill's lane. When ther
 | 2026-09-26 | TK-00U | Task closed | Audit found adoption ran migrate before recovery/provenance and still named a provider home; red 1989081 then green 1c96eac reorder the skill to classify, baseline, record provenance and verify the recovery point before migrate; test-workbench-adoption characterizes second-adoption refusal (support-root-exists, provenance and recovery record unchanged); full AGENTS suite 48/48 at 542a15f; fresh-context scenario adopted a scratch project, declined re-adoption and resumed from a fresh remote clone with code and rules intact; wiki validate ok | workbench/skills/adoption/SKILL.md; workbench/wiki/skill-adoption.md and its MEMORY.md router entry; RUNBOOK, BLUEPRINT, LEXICON, templates and skills README checked with no update needed because they already state classify-first, provenance-before-change and release-laid skills | Separate-context candidate review; owner Human QA; protocol/helper gaps recorded not changed (git-ignored recovery record, defaultBranch fallback without origin/HEAD, no pre-migration owning-Spec location, stamp and Spec-ID rules only in tool code); installed personal skill copies not updated |
 | 2026-09-26 | review | Review verdict: pass at c9fbb8d434e2f4991f1a3f4145e6834c50cfe881 [5743c18bb51f] #1 | none. Separate-context review of immutable c9fbb8d (base f0584b0): no High/Medium/Low; reviewer ran wiki.mjs validate, git diff --check and doctor --json (only the recorded non-blocking attention findings), confirmed the diff stays in the S-01D skill/test/spec/wiki/projection lane with no AGENTS/RUNBOOK/LEXICON/BLUEPRINT/templates edit, the red/green trail (1989081 red, 1c96eac green) is plausible, and the no-upstream claim matches the supplied pinned text. Landing rebase onto b4ab9b0 as a2e33a4 changed only generated TASKBOARD/CATALOG and MEMORY.md router context; a fresh delta review of the landing head is recorded in the PR | Codex CLI codex exec -s read-only -m gpt-5.5, separate context from the implementing worker and the dispatcher; read-only sandbox could not run fixture tests (EPERM on mkdtemp) | 3 |
 | 2026-09-26 | review | Review verdict: pass at eec12cf74ee3f649fa199cfe618c67f4df697938 [45156b8a974d] #2 | none. Digest refresh: verdict #1 bound to c9fbb8d content, but the landing agent then ticked the review acceptance box and edited the Completion Result, so gate refused on integration. Fresh separate-context review of the current S-01D content at eec12cf: the only non-evidence changes since c9fbb8d are that box, the Completion Result and Next gate, all supported by the recorded suite, self-drift, wiki and review rows; skill source, tests and article unchanged from c9fbb8d | Codex CLI codex exec -s read-only -m gpt-5.5, separate context from the implementing worker and the dispatcher | 2 |
+| 2026-10-07 | owner-qa | Owner QA: approve at 42431879fab3057db9e26ae661b4e92512c281f0 [50925ac45001] #1 | none | Kayden (owner, in chat 2026-10-06: "Human QA passes. I declare it here.") | none |
 
 ## Completion Result
 
