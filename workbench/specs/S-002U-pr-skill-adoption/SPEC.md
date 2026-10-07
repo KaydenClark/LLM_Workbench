@@ -1,15 +1,15 @@
 # S-002U - pr skill adoption
 
 **Spec ID:** S-002U
-**Status:** planned
+**Status:** active
 **Priority:** 2
-**Owner:** unassigned
+**Owner:** claude-s002u-dispatcher
 **Stance:** Builder
 **Updated:** 2026-10-06
 **Catalog description:** Ship Matt's PR body-authoring skill as required Core in every Workbench, preserving its visual summary, before/after evidence, merge danger and GLOSSARY.md vocabulary reference.
 **Blockers:** none for specification. Delivery coordinates the required-skill package writer and the glossary migration; no pending-lane permission gate remains.
-**Latest event:** Reconciled the owner's required-Core approval, pinned PR body-authoring source and confirmed glossary destination; remains planned with no Task cut.
-**Next gate:** Under an implementation assignment, recover the required-skill package checkpoint, verify live target and source, then activate and cut Tasks with `/to-tasks`.
+**Latest event:** Owner invoked implement-spec on 2026-10-06; activated with Tasks TK-007U (source and article), TK-007V (required Core and compatibility) and TK-007W (fresh-context scenario) on assembly branch `claude/s002u-pr-skill-assembly`.
+**Next gate:** Workers deliver TK-007U, then TK-007V and TK-007W, into the assembly; one assembled code-review and correction pass; PR into integration marked ready for review.
 
 > **Citation anchors.** pre=`42431879fab3057db9e26ae661b4e92512c281f0` post=`42431879fab3057db9e26ae661b4e92512c281f0`.
 
@@ -62,7 +62,7 @@ The separate local required-skill package checkpoint `005bc9c4d18c2d51a52023bb54
 
 ## Vertical Implementation Slices
 
-No Tasks cut. At activation, `/to-tasks` cuts from live Actuality: source and draft fidelity; required bundle/discovery with compatibility regressions red then green; fresh-context body-authoring evidence; combined-package verification and review. Preserve existing package Tasks under their owners.
+Tasks cut at activation on 2026-10-06 as TK-007U, TK-007V and TK-007W; combined verification and review run at the assembly boundary. Original plan: at activation, `/to-tasks` cuts from live Actuality: source and draft fidelity; required bundle/discovery with compatibility regressions red then green; fresh-context body-authoring evidence; combined-package verification and review. Preserve existing package Tasks under their owners.
 
 ## Acceptance Criteria
 
