@@ -3,12 +3,13 @@
 **Task ID:** TK-006Z
 **Spec ID:** S-002V
 **Slice:** Adopt the session retrospective, draft comparison and portable Core source
-**Status:** in-progress
+**Status:** done
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: The step 6 lane authorization is recorded before any skill source is added, and the skill source matches the article.
 **Planned verification:** Red catalog membership check; green catalog, installed lane and frozen policy checks; Wiki validation, full Runbook suite and fresh-context scenario.
 **Claimed by:** codex-retro
+**Proof:** Full Runbook suite 53/53 on clean source 711fc04b41b6be5741098952658e5bb5f8951dab; source, controls, templates and runtime unchanged since that candidate. Combined31 catalog/fidelity, exact28/29/30/legacy21 coverage and explicit-only retro metadata pass; original synthetic direct-path scenario and execution context retained. Final Wiki/native checks pass.
 
 ## Superseded rewrite implementation evidence
 
@@ -38,3 +39,4 @@ The owner requests delivery of the implemented pair separately from pr adoption.
 |---|---|---|---|---|---|---|---|---|
 | 1 | codex/retro-skill | 9a63801b5abf1ad7b0d3265abe4cac96a7a74544 | ahead 4 behind 0 | 16 | Full Runbook suite 53/53 on clean 9a63801b; source-fidelity and compatibility red/green; Wiki, Ruby YAML and independent direct-path scenario pass | Upstream-faithful skills, draft comparisons, Core owners and evidence under proof/ | Owner-requested handoff: await glossary inquiry and assigned continuation; final binding review, Task close, pr adoption and integration pending; native host and main unverified | 3e25787e40332f8196419a38451be5d450f6ca7e8785f2ed4255054f3c4fd052 |
 | 2 | codex/deliver-retro-writing | 689cd59899db7a3215f837ab9b2c440524a68802 | ahead 27 behind 0 | 7 | Full Runbook suite 53/53 on clean 1c44487a; source fidelity and exact previous-28 migration coverage, scrubbed-clone adapters, Wiki validation, source-lane verify passed; historical direct-path scenario retained with unchanged source. | Current paired delivery amendment, Completion Result and Task hand-back; delivery-verification.json; generic routes/catalog already aligned. | Final assembled review and integration delivery pending; existing self-drift, native host invocation, owner Human QA and main remain separate. | 00934091208d80c903a3aeced7f219184378e41a7978aef44b5bf9739f805870 |
+| 3 | codex/deliver-retro-writing | dda7796aa49eb8772651c5d02d10d4278cfd35c8 | ahead 0 behind 0 | 0 | Full Runbook suite 53/53 on clean source 711fc04b41b6be5741098952658e5bb5f8951dab; source, controls, templates and runtime unchanged since that candidate. Combined31 catalog/fidelity, exact28/29/30/legacy21 coverage and explicit-only retro metadata pass; original synthetic direct-path scenario and execution context retained. Final Wiki/native checks pass. | Paired source/draft, current delivery acceptance and proof, room/guardrail receipts, benchmark result and shared Core routes aligned. | Separate assembled review and integration delivery next; native-host invocation/reliability, existing drift, owner Human QA/main remain separate. | e5820f027370e39e2e3710e917977a314ab17c3c5c11524752fc579d5def1146 |
