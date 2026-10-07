@@ -30,6 +30,10 @@ export const BOARD_DIR = 'workbench/grill-board';
 export const ITEMS_FILE = 'items.json';
 export const ANSWERS_FILE = 'answers.json';
 export const PAGE_FILE = 'index.html';
+export const CDR_FILE = 'cdr.json';
+export const CDR_SCHEMA = 'grill-board/cdr@1';
+export const CDR_SCOPES = Object.freeze(['blueprint', 'landmark', 'spec', 'task']);
+export const CDR_STATUSES = Object.freeze(['open', 'answered', 'settled', 'agent-closes', 'for-the-record']);
 export const KINDS = Object.freeze(['approve-spec', 'owner-decision', 'confirm-dqc', 'confirm-ddr', 'confirm-text', 'choice']);
 export const STATUSES = Object.freeze(['pending', 'stale', 'answered', 'applied', 'withdrawn']);
 export const DEFAULT_OPTIONS = Object.freeze({
@@ -71,7 +75,7 @@ export function findRoot(start = process.cwd()) {
 
 export function boardPaths(root) {
   const dir = path.join(root, BOARD_DIR);
-  return { dir, items: path.join(dir, ITEMS_FILE), answers: path.join(dir, ANSWERS_FILE), page: path.join(dir, PAGE_FILE) };
+  return { dir, items: path.join(dir, ITEMS_FILE), answers: path.join(dir, ANSWERS_FILE), page: path.join(dir, PAGE_FILE), cdr: path.join(dir, CDR_FILE) };
 }
 
 function readJson(file, fallback) {
@@ -117,6 +121,53 @@ export function readAnswers(root) {
 
 function isString(value) {
   return typeof value === 'string';
+}
+
+// The Consequential Decision Record is the owner-facing layer over the items:
+// one decision bundles the items it answers with what they are about, what
+// each choice changes, what the owner already decided and a labeled
+// recommendation. It is optional (a board without it renders raw items) and
+// it never carries an answer; saving still goes item by item into answers.json
+// through verdictMap, so the agent protocol around items.json is unchanged.
+export function readCdr(root, board = readItems(root)) {
+  const file = boardPaths(root).cdr;
+  if (!fs.existsSync(file)) return null;
+  const cdr = readJson(file);
+  validateCdr(cdr, board);
+  return cdr;
+}
+
+export function validateCdr(cdr, board) {
+  if (!cdr || cdr.schema !== CDR_SCHEMA) throw new BoardError('invalid-schema', `cdr.json schema must be ${CDR_SCHEMA}`);
+  if (!Array.isArray(cdr.decisions)) throw new BoardError('invalid-cdr', 'cdr.json needs decisions[]');
+  const items = new Map(board.items.map((item) => [item.id, item]));
+  const seen = new Set();
+  const placed = new Set();
+  for (const decision of cdr.decisions) {
+    const where = decision && decision.id ? decision.id : '(decision without id)';
+    if (!decision || !isString(decision.id) || !isString(decision.title) || !isString(decision.question)) throw new BoardError('invalid-cdr', `${where}: id, title and question required`);
+    if (seen.has(decision.id)) throw new BoardError('invalid-cdr', `${where}: duplicate decision id`);
+    seen.add(decision.id);
+    if (!CDR_SCOPES.includes(decision.scope)) throw new BoardError('invalid-cdr', `${where}: scope must be one of ${CDR_SCOPES.join(', ')}`);
+    if (!CDR_STATUSES.includes(decision.status)) throw new BoardError('invalid-cdr', `${where}: status must be one of ${CDR_STATUSES.join(', ')}`);
+    if (!Array.isArray(decision.items)) throw new BoardError('invalid-cdr', `${where}: items[] required`);
+    for (const id of decision.items) {
+      if (!items.has(id)) throw new BoardError('invalid-cdr', `${where}: ${id} is not on the board`);
+      placed.add(id);
+    }
+    if (!Array.isArray(decision.options)) throw new BoardError('invalid-cdr', `${where}: options[] required`);
+    const slugs = new Set(decision.options.map((option) => option && option.value));
+    const map = decision.verdictMap ?? {};
+    for (const [id, mapping] of Object.entries(map)) {
+      if (!decision.items.includes(id)) throw new BoardError('invalid-cdr', `${where}: verdictMap names ${id}, which the decision does not answer`);
+      const accepted = new Set(optionsFor(items.get(id)).map((option) => option.value));
+      for (const [slug, verdict] of Object.entries(mapping)) {
+        if (!slugs.has(slug)) throw new BoardError('invalid-cdr', `${where}: verdictMap[${id}] maps unknown option ${slug}`);
+        if (!accepted.has(verdict)) throw new BoardError('invalid-cdr', `${where}: ${verdict} is not an option of ${id}`);
+      }
+    }
+  }
+  return { decisions: cdr.decisions.length, placed: placed.size, unplaced: board.items.filter((item) => !placed.has(item.id)).map((item) => item.id) };
 }
 
 export function validateItem(item, seen = new Set()) {
@@ -201,6 +252,7 @@ export function mergeBoard(root) {
   const board = readItems(root);
   const answers = readAnswers(root);
   const paths = boardPaths(root);
+  const cdr = readCdr(root, board);
   const items = board.items.map((item) => {
     const answer = answers.answers[item.id] ?? null;
     return {
@@ -223,7 +275,8 @@ export function mergeBoard(root) {
     itemsMtime: fs.statSync(paths.items).mtimeMs,
     groups: board.groups,
     counts,
-    items
+    items,
+    cdr
   };
 }
 
@@ -555,7 +608,9 @@ export async function main(argv) {
       const ids = new Set(board.items.map((item) => item.id));
       const orphan = Object.keys(answers.answers).filter((answerId) => !ids.has(answerId));
       if (orphan.length) throw new BoardError('orphan-answers', `answers for unknown items: ${orphan.join(', ')}`);
-      out(flags, { status: 'ok', items: board.items.length, answers: Object.keys(answers.answers).length }, `ok: ${board.items.length} items, ${Object.keys(answers.answers).length} answers`);
+      const cdr = readCdr(root, board);
+      const record = cdr ? validateCdr(cdr, board) : null;
+      out(flags, { status: 'ok', items: board.items.length, answers: Object.keys(answers.answers).length, record }, `ok: ${board.items.length} items, ${Object.keys(answers.answers).length} answers${record ? `, record: ${record.decisions} decisions covering ${record.placed} items (${record.unplaced.length} unplaced)` : ', no record'}`);
       return;
     }
     default:

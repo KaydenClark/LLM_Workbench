@@ -3,144 +3,241 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Grill Board</title>
+<title>Consequential Decision Record</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Public+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
-  :root {
-    --bg: #f6f5f1; --panel: #ffffff; --ink: #1d1c19; --muted: #6b675e; --line: #e2dfd6;
-    --accent: #3b5bdb; --accent-ink: #ffffff; --soft: #eef0fb;
-    --ok: #2f8f5b; --ok-soft: #e6f4ec; --warn: #b7791f; --warn-soft: #fbf1dc; --bad: #c0392b; --bad-soft: #fbe7e4;
-    --stale: #8e5bd6; --stale-soft: #f0e8fb; --applied: #2f6f8f; --applied-soft: #e3eff5;
-    --mono: ui-monospace, SFMono-Regular, Menlo, monospace;
-    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --bg: #15161a; --panel: #1e2026; --ink: #ecebe6; --muted: #a39f94; --line: #2f323b;
-      --accent: #7f97ff; --accent-ink: #0f1120; --soft: #232a44;
-      --ok: #5cc48a; --ok-soft: #1d3328; --warn: #e0a84a; --warn-soft: #3a2e17; --bad: #ef7466; --bad-soft: #3d1f1b;
-      --stale: #b793f2; --stale-soft: #2c2340; --applied: #7fb6d6; --applied-soft: #1b2c36;
-    }
-  }
-  :root[data-theme="dark"] {
-    --bg: #15161a; --panel: #1e2026; --ink: #ecebe6; --muted: #a39f94; --line: #2f323b;
-    --accent: #7f97ff; --accent-ink: #0f1120; --soft: #232a44;
-    --ok: #5cc48a; --ok-soft: #1d3328; --warn: #e0a84a; --warn-soft: #3a2e17; --bad: #ef7466; --bad-soft: #3d1f1b;
-    --stale: #b793f2; --stale-soft: #2c2340; --applied: #7fb6d6; --applied-soft: #1b2c36;
-  }
-  * { box-sizing: border-box; }
-  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 var(--sans); }
-  a { color: var(--accent); }
-  button { font: inherit; cursor: pointer; }
-  .shell { display: grid; grid-template-columns: 280px minmax(0, 1fr); min-height: 100vh; }
-  nav { position: sticky; top: 0; height: 100vh; overflow: auto; border-right: 1px solid var(--line); background: var(--panel); padding: 16px; }
-  nav h1 { font-size: 17px; margin: 0 0 4px; }
-  nav .meta { color: var(--muted); font-size: 12px; margin-bottom: 14px; }
-  .progress { height: 8px; border-radius: 4px; background: var(--line); overflow: hidden; display: flex; margin: 8px 0 14px; }
-  .progress span { display: block; height: 100%; }
-  .filters { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
-  .chip { border: 1px solid var(--line); background: transparent; color: var(--ink); border-radius: 999px; padding: 3px 10px; font-size: 12px; }
-  .chip[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
-  nav input[type=search] { width: 100%; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); margin-bottom: 14px; }
-  .groups a { display: flex; justify-content: space-between; gap: 8px; padding: 7px 8px; border-radius: 8px; color: var(--ink); text-decoration: none; font-size: 13px; }
-  .groups a:hover { background: var(--soft); }
-  .groups a small { color: var(--muted); white-space: nowrap; }
-  main { padding: 20px 28px 80px; max-width: 1100px; }
-  .banner { position: sticky; top: 0; z-index: 5; background: var(--warn-soft); color: var(--ink); border: 1px solid var(--warn); border-radius: 10px; padding: 10px 14px; margin-bottom: 16px; display: none; align-items: center; justify-content: space-between; gap: 12px; }
-  .banner.show { display: flex; }
-  .notice { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 18px; margin-bottom: 24px; color: var(--muted); font-size: 14px; }
-  .notice strong { color: var(--ink); }
-  section.group { margin: 0 0 36px; }
-  section.group > header { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 6px; }
-  section.group h2 { font-size: 20px; margin: 0; }
-  section.group .intro { color: var(--muted); margin: 0 0 14px; font-size: 14px; }
-  .bulk { font-size: 12px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 8px; padding: 4px 10px; }
-  article.item { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; margin-bottom: 14px; }
-  article.item[data-status="applied"] { border-color: var(--applied); }
-  article.item[data-status="answered"] { border-color: var(--ok); }
-  article.item[data-status="stale"] { border-color: var(--stale); }
-  article.item[data-status="withdrawn"] { opacity: .6; }
-  .item-head { display: flex; gap: 10px; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; }
-  .item-head h3 { margin: 0; font-size: 16px; line-height: 1.35; }
-  .item-head .id { font-family: var(--mono); font-size: 12px; color: var(--muted); margin-right: 8px; }
-  .badge { display: inline-block; font-size: 11px; font-weight: 600; letter-spacing: .02em; text-transform: uppercase; border-radius: 6px; padding: 2px 8px; }
-  .badge.pending { background: var(--soft); color: var(--accent); }
-  .badge.answered { background: var(--ok-soft); color: var(--ok); }
-  .badge.applied { background: var(--applied-soft); color: var(--applied); }
-  .badge.stale { background: var(--stale-soft); color: var(--stale); }
-  .badge.withdrawn { background: var(--line); color: var(--muted); }
-  .kind { font-size: 12px; color: var(--muted); margin-left: 6px; }
-  .q { font-weight: 600; margin: 10px 0 12px; }
-  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  @media (max-width: 900px) { .cols { grid-template-columns: 1fr; } .shell { grid-template-columns: 1fr; } nav { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--line); } main { padding: 16px; } }
-  .block { background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; font-size: 14px; }
-  .block h4 { margin: 0 0 6px; font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
-  .block p { margin: 0 0 8px; } .block p:last-child { margin-bottom: 0; }
-  .block ul, .block ol { margin: 0 0 8px; padding-left: 20px; }
-  .block pre { white-space: pre-wrap; word-break: break-word; font-family: var(--mono); font-size: 12.5px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; margin: 0 0 8px; }
-  .block code { font-family: var(--mono); font-size: 12.5px; background: var(--panel); border: 1px solid var(--line); border-radius: 4px; padding: 0 4px; }
-  .block blockquote { margin: 0 0 8px; padding-left: 10px; border-left: 3px solid var(--line); color: var(--muted); }
-  .block h1, .block h2, .block h3 { font-size: 14px; margin: 10px 0 4px; }
-  details.draft { margin-top: 12px; }
-  details.draft summary { cursor: pointer; font-weight: 600; color: var(--accent); }
-  details.draft .block { margin-top: 8px; max-height: 70vh; overflow: auto; }
-  .sources { margin: 12px 0 0; font-size: 12.5px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 6px 14px; }
-  .sources a, .sources button { color: var(--accent); background: none; border: 0; padding: 0; font-size: 12.5px; text-decoration: underline; }
-  .answer { margin-top: 14px; border-top: 1px dashed var(--line); padding-top: 12px; }
-  .options { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
-  .opt { border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 10px; padding: 6px 12px; font-size: 13.5px; }
-  .opt:hover { border-color: var(--accent); }
-  .opt[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
-  .opt[data-value="decline"][aria-pressed="true"], .opt[data-value="drop"][aria-pressed="true"] { background: var(--bad); border-color: var(--bad); color: #fff; }
-  .opt[data-value="correct"][aria-pressed="true"], .opt[data-value="finding"][aria-pressed="true"] { background: var(--warn); border-color: var(--warn); color: #fff; }
-  .hint { font-size: 12px; color: var(--muted); min-height: 18px; margin-bottom: 8px; }
-  textarea { width: 100%; min-height: 72px; resize: vertical; padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink); font: inherit; }
-  textarea.needs-note { border-color: var(--warn); }
-  .save { font-size: 12px; color: var(--muted); margin-top: 6px; display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
-  .save .err { color: var(--bad); }
-  .applied-box { margin-top: 10px; background: var(--applied-soft); border: 1px solid var(--applied); border-radius: 10px; padding: 8px 12px; font-size: 13px; }
-  .stale-box { margin-top: 10px; background: var(--stale-soft); border: 1px solid var(--stale); border-radius: 10px; padding: 8px 12px; font-size: 13px; }
-  .empty { color: var(--muted); padding: 30px 0; text-align: center; }
-  dialog { width: min(1000px, 92vw); max-height: 88vh; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); color: var(--ink); padding: 0; }
-  dialog header { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--line); font-family: var(--mono); font-size: 12.5px; }
-  dialog pre { margin: 0; padding: 16px; white-space: pre-wrap; word-break: break-word; font-family: var(--mono); font-size: 12.5px; max-height: 76vh; overflow: auto; }
-  dialog::backdrop { background: rgba(0,0,0,.45); }
-  .theme { font-size: 12px; border: 1px solid var(--line); background: transparent; color: var(--muted); border-radius: 8px; padding: 2px 8px; margin-top: 12px; }
+/* One reading column. Each decision is a card: what it is about, the question,
+   what changes, what the owner already decided, the choices, a labeled
+   recommendation, then the verdict strip. The Grill Board's items.json stays
+   the record of items; this page bundles them into decisions (cdr.json). */
+:root {
+  --paper: #f5f6f4; --sheet: #ffffff; --ink: #1d2428; --muted: #5d676d; --rule: #d9dedd; --rule-2: #c3cac9;
+  --accent: #1f5c6b; --accent-soft: #e3eef0;
+  --ok: #2f7a4a; --ok-soft: #e4f2e8; --warn: #9a6512; --warn-soft: #f8eedb; --drop: #8a4141; --drop-soft: #f5e5e4;
+  --info: #4a5fb5; --info-soft: #e6e9f8;
+  --quote: #f0f2f1; --call: #fff6e0; --call-edge: #c98a1c;
+  --f-display: "Newsreader", Georgia, "Times New Roman", serif;
+  --f-body: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --paper: #121618; --sheet: #1a2023; --ink: #e4e9ea; --muted: #9aa6ab; --rule: #2e373b; --rule-2: #3d484d;
+  --accent: #7fbccb; --accent-soft: #1d3138;
+  --ok: #7cc797; --ok-soft: #1a3022; --warn: #e2b061; --warn-soft: #362a14; --drop: #e29a95; --drop-soft: #3a2121;
+  --info: #9fb0f0; --info-soft: #232a45;
+  --quote: #222a2d; --call: #2f2614; --call-edge: #e2b061; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --paper: #121618; --sheet: #1a2023; --ink: #e4e9ea; --muted: #9aa6ab; --rule: #2e373b; --rule-2: #3d484d;
+  --accent: #7fbccb; --accent-soft: #1d3138;
+  --ok: #7cc797; --ok-soft: #1a3022; --warn: #e2b061; --warn-soft: #362a14; --drop: #e29a95; --drop-soft: #3a2121;
+  --info: #9fb0f0; --info-soft: #232a45;
+  --quote: #222a2d; --call: #2f2614; --call-edge: #e2b061; color-scheme: dark }
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--f-body); font-size: 15px; line-height: 1.55; padding-inline: 16px; padding-block: 0 72px; }
+.wrap { max-width: 920px; margin: 0 auto; display: flex; flex-direction: column; gap: 40px; }
+h1, h2, h3, h4 { font-family: var(--f-display); font-weight: 500; text-wrap: balance; margin: 0; }
+p { margin: 0; }
+a { color: var(--accent); }
+button { font: inherit; cursor: pointer; }
+.mono { font-family: var(--f-mono); font-size: 12px; }
+.label { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.titleblock { margin-top: 24px; background: var(--sheet); border: 1px solid var(--ink); display: grid; grid-template-columns: 1fr auto; }
+.tb-main { padding: 22px 24px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.tb-main h1 { font-size: clamp(28px, 5vw, 40px); line-height: 1.1; }
+.tb-main p { color: var(--muted); max-width: 64ch; }
+.tb-side { border-left: 1px solid var(--ink); display: grid; grid-auto-rows: min-content; min-width: 190px; }
+.tb-cell { padding: 10px 14px; border-bottom: 1px solid var(--rule); display: flex; flex-direction: column; gap: 2px; }
+.tb-cell:last-child { border-bottom: 0; }
+.tb-cell b { font-family: var(--f-mono); font-weight: 500; font-size: 13px; }
+@media (max-width: 640px) { .titleblock { grid-template-columns: 1fr; } .tb-side { border-left: 0; border-top: 1px solid var(--ink); grid-template-columns: 1fr 1fr; } }
+
+.bar { position: sticky; top: 0; z-index: 5; background: var(--paper); border-bottom: 1px solid var(--rule); padding-block: 10px; display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; justify-content: space-between; }
+.bar nav { display: flex; flex-wrap: wrap; gap: 4px 14px; }
+.bar nav a { text-decoration: none; font-weight: 600; font-size: 13px; }
+.bar nav a:hover, .bar nav a:focus-visible { text-decoration: underline; }
+.bar nav a small { color: var(--muted); font-weight: 500; margin-left: 4px; }
+.tally { display: flex; gap: 8px; flex-wrap: wrap; font-variant-numeric: tabular-nums; align-items: center; }
+.chip { font-size: 12px; font-weight: 600; padding: 2px 9px; border-radius: 999px; border: 1px solid var(--rule); background: var(--sheet); color: var(--ink); }
+.chip.ok { color: var(--ok); background: var(--ok-soft); border-color: transparent; }
+.chip.warn { color: var(--warn); background: var(--warn-soft); border-color: transparent; }
+.chip.info { color: var(--info); background: var(--info-soft); border-color: transparent; }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--sheet); border-color: var(--ink); }
+.banner { background: var(--warn-soft); color: var(--warn); padding: 10px 14px; font-size: 13px; font-weight: 500; display: none; justify-content: space-between; gap: 12px; align-items: center; }
+.banner.show { display: flex; }
+.search { font: inherit; font-size: 13px; padding: 5px 10px; border: 1px solid var(--rule); border-radius: 999px; background: var(--sheet); color: var(--ink); width: 200px; }
+
+section > header { display: flex; flex-direction: column; gap: 6px; margin-bottom: 18px; }
+section > header h2 { font-size: 28px; }
+section > header p { color: var(--muted); max-width: 70ch; }
+.notice { background: var(--sheet); border: 1px solid var(--rule); padding: 14px 18px; color: var(--muted); font-size: 14px; max-width: 76ch; }
+.notice strong { color: var(--ink); }
+
+.calls { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.calls li { background: var(--call); border-left: 3px solid var(--call-edge); padding: 10px 14px; display: flex; flex-direction: column; gap: 4px; }
+.calls li a { font-weight: 600; text-decoration: none; }
+.calls li a:hover, .calls li a:focus-visible { text-decoration: underline; }
+.calls .rec-line { font-size: 13.5px; color: var(--muted); }
+
+.group { display: flex; flex-direction: column; gap: 14px; margin-bottom: 30px; }
+.group-head { display: flex; flex-direction: column; gap: 4px; padding-bottom: 8px; border-bottom: 2px solid var(--ink); }
+.group-head h3 { font-size: 21px; }
+.group-head p { color: var(--muted); font-size: 14px; max-width: 70ch; }
+.group-head .tools { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 6px; }
+
+.rec { background: var(--sheet); border: 1px solid var(--rule); display: flex; flex-direction: column; scroll-margin-top: 72px; }
+.rec[data-state="answered"] { border-color: var(--ok); }
+.rec[data-state="mixed"] { border-color: var(--warn); }
+.rec[data-state="stale"] { border-color: var(--info); }
+.rec[data-state="applied"] { border-color: var(--rule-2); }
+.rec-head { padding: 16px 18px 0; display: flex; gap: 12px; align-items: baseline; justify-content: space-between; flex-wrap: wrap; }
+.rec-head h4 { font-size: 20px; line-height: 1.25; flex: 1 1 320px; min-width: 0; }
+.rec-id { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.st { font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; padding: 1px 7px; border: 1px solid currentColor; white-space: nowrap; }
+.st.open { color: var(--warn); }
+.st.answered { color: var(--ok); }
+.st.settled { color: var(--ok); }
+.st.agent { color: var(--muted); }
+.st.record { color: var(--accent); }
+.st.stale { color: var(--info); }
+.st.applied { color: var(--muted); }
+.st.mixed { color: var(--warn); }
+.st.scope { color: var(--accent); }
+.st.lm { color: var(--muted); border-style: dashed; }
+.rec-body { padding: 12px 18px 16px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.about { display: flex; flex-direction: column; gap: 8px; max-width: 74ch; }
+.about p { font-size: 15px; }
+.decision { font-family: var(--f-display); font-size: 18px; line-height: 1.45; border-left: 3px solid var(--accent); padding-left: 14px; max-width: 72ch; }
+.facet { display: flex; flex-direction: column; gap: 6px; }
+.facet > .label { margin-bottom: 2px; }
+.stakes { max-width: 74ch; font-size: 14.5px; }
+.words { display: flex; flex-direction: column; gap: 8px; }
+.word { background: var(--quote); padding: 8px 12px; font-size: 14px; border-left: 3px solid var(--rule-2); }
+.word.owner { border-left-color: var(--ok); }
+.word .src { display: block; font-size: 11.5px; font-weight: 600; color: var(--muted); margin-bottom: 2px; }
+.word q { quotes: "\201C" "\201D"; font-style: italic; }
+.options { display: flex; flex-direction: column; gap: 6px; }
+.option { display: grid; grid-template-columns: 150px 1fr; gap: 4px 14px; padding: 8px 12px; border: 1px solid var(--rule); background: var(--paper); font-size: 14px; }
+.option.rec { border-color: var(--call-edge); }
+.option b { font-weight: 600; }
+.option .means { color: var(--ink); }
+.option .impact { color: var(--muted); font-size: 13.5px; grid-column: 2; }
+@media (max-width: 560px) { .option { grid-template-columns: 1fr; } .option .impact { grid-column: 1; } }
+.callbox { background: var(--call); border-left: 3px solid var(--call-edge); padding: 10px 14px; display: flex; flex-direction: column; gap: 4px; font-size: 14px; max-width: 74ch; }
+.callbox b { font-weight: 600; }
+details.fold { font-size: 13.5px; border-top: 1px dashed var(--rule); padding-top: 10px; }
+details.fold > summary { cursor: pointer; color: var(--muted); font-weight: 600; }
+details.fold .inner { margin-top: 10px; display: flex; flex-direction: column; gap: 10px; }
+.sources { font-size: 12.5px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 6px 14px; }
+.sources button, .sources a { color: var(--accent); background: none; border: 0; padding: 0; font-size: 12.5px; text-decoration: underline; cursor: pointer; }
+.ids { font-family: var(--f-mono); font-size: 11.5px; color: var(--muted); }
+
+.members { border: 1px solid var(--rule); display: flex; flex-direction: column; }
+.member { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 14px; padding: 10px 12px; border-bottom: 1px solid var(--rule); font-size: 13.5px; align-items: start; }
+.member:last-child { border-bottom: 0; }
+.member .m-title { font-weight: 600; }
+.member .m-text { color: var(--ink); }
+.member .m-caveat { color: var(--warn); font-size: 13px; }
+.member .m-caveat b { font-weight: 600; }
+.member .m-detail { color: var(--muted); font-size: 12.5px; }
+.member .m-strip { display: flex; flex-direction: column; gap: 4px; align-items: flex-end; min-width: 170px; }
+.member select, .member input { font: inherit; font-size: 12.5px; padding: 3px 6px; border: 1px solid var(--rule); background: var(--sheet); color: var(--ink); max-width: 220px; }
+.member .m-saved { font-size: 11px; color: var(--muted); }
+.member[data-state="answered"] { background: var(--ok-soft); }
+@media (max-width: 640px) { .member { grid-template-columns: 1fr; } .member .m-strip { align-items: flex-start; } }
+
+.verdict { border-top: 1px solid var(--rule); padding: 12px 18px; display: flex; flex-direction: column; gap: 10px; background: var(--paper); }
+.vbtns { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.vbtn { font-size: 13px; font-weight: 600; padding: 6px 14px; border: 1px solid var(--rule); background: var(--sheet); color: var(--ink); }
+.vbtn:hover { border-color: var(--ink); }
+.vbtn[aria-pressed="true"] { background: var(--ok); border-color: var(--ok); color: var(--sheet); }
+.vbtn[aria-pressed="true"].tone-warn { background: var(--warn); border-color: var(--warn); }
+.vbtn[aria-pressed="true"].tone-drop { background: var(--drop); border-color: var(--drop); }
+.vbtn[aria-pressed="true"].tone-muted { background: var(--muted); border-color: var(--muted); }
+.vbtn.small { font-size: 12px; padding: 4px 10px; }
+.status { font-size: 12px; color: var(--muted); margin-left: auto; }
+.status.err { color: var(--drop); }
+textarea { font: inherit; font-size: 14px; width: 100%; min-height: 60px; padding: 8px 10px; border: 1px solid var(--rule); background: var(--sheet); color: var(--ink); resize: vertical; }
+textarea.needs-note { border-color: var(--warn); }
+.hint { font-size: 12.5px; color: var(--muted); }
+.statebox { padding: 8px 12px; font-size: 13px; }
+.statebox.stale { background: var(--info-soft); color: var(--info); }
+.statebox.applied { background: var(--quote); color: var(--muted); }
+
+.compact { background: var(--sheet); border: 1px solid var(--rule); scroll-margin-top: 72px; }
+.compact[data-state="answered"] { border-color: var(--ok); }
+.compact > summary { list-style: none; cursor: pointer; display: grid; grid-template-columns: 1fr auto; gap: 6px 12px; padding: 10px 14px; align-items: center; }
+.compact > summary::-webkit-details-marker { display: none; }
+.compact > summary .c-title { font-family: var(--f-display); font-size: 17px; }
+.compact > summary .c-sub { font-size: 12.5px; color: var(--muted); grid-column: 1; }
+.compact .c-body { padding: 4px 14px 14px; border-top: 1px solid var(--rule); display: flex; flex-direction: column; gap: 12px; font-size: 14px; }
+.compact .c-body .fulltext { background: var(--quote); padding: 10px 12px; font-size: 13.5px; max-height: 60vh; overflow: auto; }
+.fulltext p, .fulltext ul, .fulltext ol { margin: 0 0 8px; } .fulltext h1, .fulltext h2, .fulltext h3 { font-size: 15px; margin: 8px 0 4px; } .fulltext pre { white-space: pre-wrap; font-family: var(--f-mono); font-size: 12px; }
+.compact .verdict { padding: 10px 0 0; border-top: 1px dashed var(--rule); background: transparent; }
+
+.raw { background: var(--sheet); border: 1px solid var(--rule); padding: 14px 18px; display: flex; flex-direction: column; gap: 10px; scroll-margin-top: 72px; }
+.raw h4 { font-size: 17px; }
+.raw .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 13.5px; }
+@media (max-width: 760px) { .raw .cols { grid-template-columns: 1fr; } }
+.raw .block { background: var(--paper); border: 1px solid var(--rule); padding: 8px 12px; }
+.raw .block h5 { margin: 0 0 4px; font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-family: var(--f-body); }
+.raw .block p { margin: 0 0 6px; } .raw .block pre { white-space: pre-wrap; font-family: var(--f-mono); font-size: 12px; }
+.empty { color: var(--muted); padding: 20px 0; }
+dialog { width: min(1000px, 92vw); max-height: 88vh; border: 1px solid var(--rule); background: var(--sheet); color: var(--ink); padding: 0; }
+dialog header { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--rule); font-family: var(--f-mono); font-size: 12.5px; }
+dialog pre { margin: 0; padding: 16px; white-space: pre-wrap; word-break: break-word; font-family: var(--f-mono); font-size: 12.5px; max-height: 76vh; overflow: auto; }
+dialog::backdrop { background: rgba(0,0,0,.45); }
+footer { font-size: 13px; color: var(--muted); max-width: 76ch; display: flex; flex-direction: column; gap: 8px; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
 </style>
 </head>
 <body>
-<div class="shell">
-  <nav>
-    <h1 id="title">Grill Board</h1>
-    <div class="meta" id="meta">loading…</div>
-    <div class="progress" id="progress" title="pending / re-answer / answered / applied"></div>
-    <div class="filters" id="filters"></div>
-    <input type="search" id="search" placeholder="Search titles, questions, text…" aria-label="Search items">
-    <div class="groups" id="groups"></div>
-    <button class="theme" id="theme">Toggle theme</button>
-  </nav>
-  <main>
-    <div class="banner" id="banner"><span>An agent updated the board since you loaded it. Your saved answers are safe.</span><button class="bulk" onclick="location.reload()">Reload</button></div>
-    <div class="notice" id="notice"></div>
-    <div id="content"><div class="empty">Loading the board…</div></div>
-  </main>
+<div class="wrap">
+  <div class="titleblock">
+    <div class="tb-main">
+      <span class="label" id="eyebrow">LLM Workbench</span>
+      <h1 id="title">Consequential Decision Record</h1>
+      <p id="subtitle">Every decision that waits on you, with what it is about, what you are choosing between, what each choice changes, what you already decided, and a recommendation. Pick a verdict on each; it saves as you go.</p>
+    </div>
+    <div class="tb-side" id="tb-side"></div>
+  </div>
+
+  <div class="bar" id="bar">
+    <nav aria-label="Sections" id="nav"></nav>
+    <div class="tally" id="tally" aria-live="polite"></div>
+  </div>
+  <div class="banner" id="banner"><span>An agent updated the record since you loaded it. Your saved answers are safe.</span><button class="vbtn small" onclick="location.reload()">Reload</button></div>
+
+  <div id="content"><div class="empty">Loading the record…</div></div>
+
+  <footer id="foot"></footer>
 </div>
-<dialog id="viewer"><header><span id="viewer-path"></span><button class="bulk" onclick="document.getElementById('viewer').close()">Close</button></header><pre id="viewer-text"></pre></dialog>
+<dialog id="viewer"><header><span id="viewer-path"></span><button class="vbtn small" onclick="document.getElementById('viewer').close()">Close</button></header><pre id="viewer-text"></pre></dialog>
 <script>
 (() => {
-  const STATUS_LABEL = { pending: 'Pending', stale: 'Re-answer', answered: 'Answered', applied: 'Applied', withdrawn: 'Withdrawn' };
-  const STATUS_ORDER = ['pending', 'stale', 'answered', 'applied', 'withdrawn'];
-  const state = { board: null, filter: 'open', query: '', timers: new Map() };
-  try { state.filter = localStorage.getItem('grill-board-filter') || 'open'; } catch {}
+  const SCOPES = [
+    ['blueprint', 'Blueprint', 'Decisions that shape what the product is: its direction, identity and the records that state it.'],
+    ['landmark', 'Landmarks', 'Decisions about one landmark’s direction or membership, or about the set of landmarks itself. A landmark is a direction one size above a Spec.'],
+    ['spec', 'Specs', 'Decisions about one capability: approving what a Spec delivered, where it goes next, or a design choice inside it.'],
+    ['task', 'Tasks', 'One bounded action each.']
+  ];
+  const STATE_LABEL = { open: 'Open', answered: 'Answered', settled: 'Settled', 'agent-closes': 'No decision needed', 'for-the-record': 'For the record', stale: 'Re-answer', applied: 'Applied', mixed: 'Mixed answers' };
+  const STATE_CLASS = { open: 'open', answered: 'answered', settled: 'settled', 'agent-closes': 'agent', 'for-the-record': 'record', stale: 'stale', applied: 'applied', mixed: 'mixed' };
+  const TONE = { correct: 'tone-warn', finding: 'tone-warn', send_back: 'tone-warn', destination_change: 'tone-warn', decline: 'tone-drop', drop: 'tone-drop', object: 'tone-warn', defer: 'tone-muted', not_now: 'tone-muted', hold: 'tone-muted' };
+  const NOTE_NEEDED = new Set(['correct', 'finding', 'send_back', 'destination_change', 'answer', 'answer_now', 'object']);
+  const state = { board: null, query: '', filter: 'all', timers: new Map() };
 
   const esc = (text) => String(text ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const when = (iso) => { try { return new Date(iso).toLocaleString(); } catch { return iso; } };
 
-  // A deliberately small Markdown renderer: paragraphs, headings, lists,
-  // quotes, fenced code, inline code, bold and links. Everything else is text.
+  // Small Markdown: paragraphs, headings, lists, quotes, fences, inline code, bold, links.
   function inline(text) {
-    return esc(text)
-      .replace(/`([^`]+)`/g, '<code>$1</code>')
-      .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
-      .replace(/\[([^\]]+)\]\((https?:[^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+    return esc(text).replace(/`([^`]+)`/g, '<code>$1</code>').replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>').replace(/\[([^\]]+)\]\((https?:[^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
   }
   function markdown(text) {
     const lines = String(text ?? '').replace(/\r\n/g, '\n').split('\n');
@@ -148,48 +245,17 @@
     let i = 0;
     while (i < lines.length) {
       const line = lines[i];
-      if (/^```/.test(line)) {
-        const buf = [];
-        i += 1;
-        while (i < lines.length && !/^```/.test(lines[i])) { buf.push(lines[i]); i += 1; }
-        i += 1;
-        out.push(`<pre>${esc(buf.join('\n'))}</pre>`);
-        continue;
-      }
-      if (/^---\s*$/.test(line) && i === 0) {
-        const buf = [];
-        i += 1;
-        while (i < lines.length && !/^---\s*$/.test(lines[i])) { buf.push(lines[i]); i += 1; }
-        i += 1;
-        out.push(`<pre>${esc(buf.join('\n'))}</pre>`);
-        continue;
-      }
-      if (/^\|/.test(line)) {
-        const buf = [];
-        while (i < lines.length && /^\|/.test(lines[i])) { buf.push(lines[i]); i += 1; }
-        out.push(`<pre>${esc(buf.join('\n'))}</pre>`);
-        continue;
-      }
+      if (/^```/.test(line)) { const buf = []; i += 1; while (i < lines.length && !/^```/.test(lines[i])) { buf.push(lines[i]); i += 1; } i += 1; out.push(`<pre>${esc(buf.join('\n'))}</pre>`); continue; }
+      if (/^---\s*$/.test(line) && i === 0) { const buf = []; i += 1; while (i < lines.length && !/^---\s*$/.test(lines[i])) { buf.push(lines[i]); i += 1; } i += 1; out.push(`<pre>${esc(buf.join('\n'))}</pre>`); continue; }
+      if (/^\|/.test(line)) { const buf = []; while (i < lines.length && /^\|/.test(lines[i])) { buf.push(lines[i]); i += 1; } out.push(`<pre>${esc(buf.join('\n'))}</pre>`); continue; }
       const heading = line.match(/^(#{1,6})\s+(.*)$/);
-      if (heading) { out.push(`<h${Math.min(3, heading[1].length)}>${inline(heading[2])}</h${Math.min(3, heading[1].length)}>`); i += 1; continue; }
+      if (heading) { const level = Math.min(3, heading[1].length); out.push(`<h${level}>${inline(heading[2])}</h${level}>`); i += 1; continue; }
       if (/^\s*([-*]|\d+\.)\s+/.test(line)) {
-        const ordered = /^\s*\d+\./.test(line);
-        const buf = [];
-        while (i < lines.length && /^\s*([-*]|\d+\.)\s+/.test(lines[i])) {
-          let item = lines[i].replace(/^\s*([-*]|\d+\.)\s+/, '');
-          i += 1;
-          while (i < lines.length && /^\s{2,}\S/.test(lines[i]) && !/^\s*([-*]|\d+\.)\s+/.test(lines[i])) { item += ' ' + lines[i].trim(); i += 1; }
-          buf.push(`<li>${inline(item)}</li>`);
-        }
-        out.push(`<${ordered ? 'ol' : 'ul'}>${buf.join('')}</${ordered ? 'ol' : 'ul'}>`);
-        continue;
+        const ordered = /^\s*\d+\./.test(line); const buf = [];
+        while (i < lines.length && /^\s*([-*]|\d+\.)\s+/.test(lines[i])) { let item = lines[i].replace(/^\s*([-*]|\d+\.)\s+/, ''); i += 1; while (i < lines.length && /^\s{2,}\S/.test(lines[i]) && !/^\s*([-*]|\d+\.)\s+/.test(lines[i])) { item += ' ' + lines[i].trim(); i += 1; } buf.push(`<li>${inline(item)}</li>`); }
+        out.push(`<${ordered ? 'ol' : 'ul'}>${buf.join('')}</${ordered ? 'ol' : 'ul'}>`); continue;
       }
-      if (/^>/.test(line)) {
-        const buf = [];
-        while (i < lines.length && /^>/.test(lines[i])) { buf.push(lines[i].replace(/^>\s?/, '')); i += 1; }
-        out.push(`<blockquote>${markdown(buf.join('\n'))}</blockquote>`);
-        continue;
-      }
+      if (/^>/.test(line)) { const buf = []; while (i < lines.length && /^>/.test(lines[i])) { buf.push(lines[i].replace(/^>\s?/, '')); i += 1; } out.push(`<blockquote>${markdown(buf.join('\n'))}</blockquote>`); continue; }
       if (!line.trim()) { i += 1; continue; }
       const buf = [];
       while (i < lines.length && lines[i].trim() && !/^(```|#{1,6}\s|>|\s*([-*]|\d+\.)\s+|\|)/.test(lines[i])) { buf.push(lines[i]); i += 1; }
@@ -202,161 +268,340 @@
     const response = await fetch('/api/board', { cache: 'no-store' });
     if (!response.ok) throw new Error(`board ${response.status}`);
     state.board = await response.json();
+    state.items = new Map(state.board.items.map((item) => [item.id, item]));
     render();
   }
 
-  function visible(item) {
-    const status = item.derivedStatus;
-    if (state.filter === 'open' && !(status === 'pending' || status === 'stale')) return false;
-    if (state.filter !== 'open' && state.filter !== 'all' && status !== state.filter) return false;
+  // ---- decision state, derived from the items it answers ----
+  function itemsOf(decision) { return decision.items.map((id) => state.items.get(id)).filter(Boolean); }
+  function slugFor(decision, item) {
+    const verdict = item.answer?.verdict ?? '';
+    const map = decision.verdictMap?.[item.id] ?? {};
+    for (const [slug, value] of Object.entries(map)) if (value === verdict && verdict) return slug;
+    if (!verdict && item.answer?.note) { const m = item.answer.note.match(/^\[record: ([a-z0-9_-]+)\]/); if (m) return m[1]; }
+    return null;
+  }
+  function decisionState(decision) {
+    const items = itemsOf(decision).filter((item) => item.derivedStatus !== 'withdrawn');
+    if (!items.length) return { state: decision.status === 'answered' ? 'answered' : decision.status, slug: null, note: '', at: null };
+    if (items.some((item) => item.derivedStatus === 'stale')) return { state: 'stale', slug: null, note: '', at: null };
+    const answered = items.filter((item) => item.derivedStatus === 'answered' || item.derivedStatus === 'applied');
+    if (!answered.length) return { state: decision.status === 'answered' ? 'open' : decision.status, slug: null, note: '', at: null };
+    const slugs = new Set(answered.map((item) => slugFor(decision, item) ?? `~${item.answer.verdict}`));
+    const allApplied = answered.length === items.length && answered.every((item) => item.derivedStatus === 'applied');
+    const first = answered[0];
+    if (slugs.size > 1 || answered.length < items.length) return { state: 'mixed', slug: null, note: first.answer.note, at: first.answer.at, partial: `${answered.length} of ${items.length}` };
+    return { state: allApplied ? 'applied' : 'answered', slug: [...slugs][0], note: first.answer.note.replace(/^\[record: [a-z0-9_-]+\]\s*/, ''), at: first.answer.at };
+  }
+
+  // ---- rendering ----
+  function render() {
+    const board = state.board;
+    const cdr = board.cdr;
+    const side = [['Read at', `integration ${esc((cdr?.integration ?? board.integration) || '')}`], ['Built', when(cdr?.generatedAt ?? board.generatedAt)], ['Items behind it', `${board.items.length}`]];
+    document.getElementById('tb-side').innerHTML = side.map(([k, v]) => `<div class="tb-cell"><span class="label">${k}</span><b>${v}</b></div>`).join('');
+    if (cdr) {
+      document.getElementById('title').textContent = cdr.title || 'Consequential Decision Record';
+      if (cdr.subtitle) document.getElementById('subtitle').textContent = cdr.subtitle;
+      if (cdr.eyebrow) document.getElementById('eyebrow').textContent = cdr.eyebrow;
+    } else {
+      document.getElementById('title').textContent = board.title || 'Grill Board';
+      document.getElementById('subtitle').textContent = 'No record file (cdr.json) is present, so the raw items are shown.';
+    }
+    const content = [];
+    const nav = [];
+    if (cdr) {
+      const decisions = cdr.decisions.filter((d) => !['for-the-record', 'agent-closes', 'settled'].includes(d.status) || d.section === 'main');
+      const record = cdr.decisions.filter((d) => ['for-the-record', 'agent-closes', 'settled'].includes(d.status) && d.section !== 'main');
+      if (cdr.notice) content.push(`<div class="notice">${markdown(cdr.notice)}</div>`);
+      const start = decisions.filter((d) => d.startHere);
+      if (start.length) {
+        content.push(`<section id="start"><header><span class="label">Where to start</span><h2>The decisions with the widest reach</h2><p>Answer these first; several others follow from them.</p></header><ul class="calls">${start.map((d) => `<li><a href="#${esc(d.id)}">${esc(d.title)}</a><span class="rec-line">${esc(recLine(d))}</span></li>`).join('')}</ul></section>`);
+        nav.push(['#start', 'Start here', '']);
+      }
+      for (const [scope, label, intro] of SCOPES) {
+        const mine = decisions.filter((d) => d.scope === scope && visible(d));
+        const all = decisions.filter((d) => d.scope === scope);
+        const left = all.filter((d) => ['open', 'stale', 'mixed'].includes(decisionState(d).state)).length;
+        nav.push([`#scope-${scope}`, label, `${left} left`]);
+        if (!mine.length) continue;
+        content.push(`<section id="scope-${scope}"><header><span class="label">${all.length} decisions · ${left} to answer</span><h2>${label}</h2><p>${esc(intro)}</p></header>${groupByLandmark(mine, cdr).map(renderGroup).join('')}</section>`);
+      }
+      if (record.length) {
+        const kinds = [
+          ['for-the-record', 'Written from your words', 'Decision records and pages that already carry your locked answers. Nothing here asks you to decide again: read the ones you want, correct any that say something you did not, and confirm the rest with one button.'],
+          ['settled', 'Already answered elsewhere', 'Questions another lane raised that your later locked answers already settle. Confirm the closures or reopen one.'],
+          ['agent-closes', 'Nothing for you to decide', 'Mechanical closures an agent performs (deriving a card’s assessment from rows you already confirmed). Listed so you can see them; object to one if it is wrong.']
+        ];
+        const left = record.filter((d) => ['open', 'stale', 'mixed'].includes(decisionState(d).state)).length;
+        nav.push(['#record', 'For the record', `${left} left`]);
+        const parts = [];
+        for (const [kind, title, intro] of kinds) {
+          const mine = record.filter((d) => d.status === kind && visible(d));
+          if (!mine.length) continue;
+          parts.push(`<div class="group" id="record-${kind}"><div class="group-head"><h3>${title}</h3><p>${intro}</p><div class="tools"><button class="vbtn small" data-bulk="record-${kind}">Confirm every unanswered one here</button><span class="hint" data-bulk-status="record-${kind}"></span></div></div>${groupByLandmark(mine, cdr).map((g) => g.decisions.map(renderCompact).join('') ? `<div class="group"><div class="group-head" style="border-bottom-width:1px"><h3 style="font-size:17px">${esc(g.name)}</h3></div>${g.decisions.map(renderCompact).join('')}</div>` : '').join('')}</div>`);
+        }
+        content.push(`<section id="record"><header><span class="label">${record.length} entries · ${left} unconfirmed</span><h2>For the record</h2><p>What is already decided, written down where you can check it. Read as much or as little as you like.</p></header>${parts.join('')}</section>`);
+      }
+      const placed = new Set(cdr.decisions.flatMap((d) => d.items));
+      const unplaced = board.items.filter((item) => !placed.has(item.id) && item.derivedStatus !== 'withdrawn' && rawVisible(item));
+      if (unplaced.length) {
+        nav.push(['#unplaced', 'Raw items', `${unplaced.length}`]);
+        content.push(`<section id="unplaced"><header><span class="label">${unplaced.length} items</span><h2>Items not yet written up</h2><p>Board items an agent added that no decision on this record bundles yet. They show as the agent wrote them.</p></header><div class="group">${unplaced.map(renderRaw).join('')}</div></section>`);
+      }
+    } else {
+      const groups = board.groups.slice().sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+      for (const group of groups) {
+        const items = board.items.filter((item) => item.group === group.id && item.derivedStatus !== 'withdrawn' && rawVisible(item));
+        nav.push([`#g-${group.id}`, group.title, `${items.length}`]);
+        if (items.length) content.push(`<section id="g-${esc(group.id)}"><header><h2>${esc(group.title)}</h2><p>${inline(group.intro || '')}</p></header><div class="group">${items.map(renderRaw).join('')}</div></section>`);
+      }
+    }
+    document.getElementById('nav').innerHTML = nav.map(([href, label, small]) => `<a href="${href}">${esc(label)}${small ? `<small>${esc(small)}</small>` : ''}</a>`).join('');
+    document.getElementById('content').innerHTML = content.join('') || '<div class="empty">Nothing matches.</div>';
+    document.getElementById('foot').innerHTML = `<p>Saving writes your verdict and note into <span class="mono">workbench/grill-board/answers.json</span>, one entry per board item behind the decision; agents read that file and never write it. The raw items stay in <span class="mono">items.json</span>, where an agent marks each one Applied once your answer has been carried into its owner. The protocol is in <span class="mono">workbench/grill-board/README.md</span>.</p><p><button class="vbtn small" id="theme">Toggle theme</button></p>`;
+    renderTally();
+    wire();
+  }
+
+  function visible(decision) {
+    const st = decisionState(decision).state;
+    if (state.filter === 'left' && !['open', 'stale', 'mixed'].includes(st)) return false;
+    if (state.filter === 'done' && ['open', 'stale', 'mixed'].includes(st)) return false;
     if (state.query) {
-      const hay = `${item.id} ${item.title} ${item.question} ${item.current} ${item.proposal} ${item.draft ?? ''} ${(item.tags || []).join(' ')}`.toLowerCase();
+      const hay = [decision.id, decision.title, decision.question, decision.landmark, ...(decision.about || []), decision.stakes, ...(decision.items || []), ...(decision.history || []).map((h) => h.text), ...(decision.options || []).map((o) => `${o.label} ${o.means}`), ...(decision.members || []).map((m) => `${m.id} ${m.title}`)].join(' ').toLowerCase();
       if (!hay.includes(state.query)) return false;
     }
     return true;
   }
-
-  function render() {
-    const board = state.board;
-    document.getElementById('title').textContent = board.title || 'Grill Board';
-    document.getElementById('meta').textContent = `integration ${board.integration} · built ${new Date(board.generatedAt).toLocaleString()} · ${board.items.length} items`;
-    document.getElementById('notice').innerHTML = markdown(board.notice || '');
-    const c = board.counts;
-    const total = Math.max(1, board.items.length);
-    document.getElementById('progress').innerHTML = [['pending', 'var(--line)'], ['stale', 'var(--stale)'], ['answered', 'var(--ok)'], ['applied', 'var(--applied)']]
-      .map(([k, color]) => `<span style="width:${(100 * c[k]) / total}%;background:${color}" title="${STATUS_LABEL[k]} ${c[k]}"></span>`).join('');
-    const filters = [['open', `To answer (${c.pending + c.stale})`], ['answered', `Answered (${c.answered})`], ['applied', `Applied (${c.applied})`], ['withdrawn', `Withdrawn (${c.withdrawn})`], ['all', `All (${board.items.length})`]];
-    document.getElementById('filters').innerHTML = filters.map(([value, label]) => `<button class="chip" data-filter="${value}" aria-pressed="${state.filter === value}">${label}</button>`).join('');
-    for (const chip of document.querySelectorAll('.chip')) chip.onclick = () => { state.filter = chip.dataset.filter; try { localStorage.setItem('grill-board-filter', state.filter); } catch {} render(); };
-
-    const groups = board.groups.slice().sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
-    const content = [];
-    const navLinks = [];
-    for (const group of groups) {
-      const all = board.items.filter((item) => item.group === group.id);
-      const shown = all.filter(visible);
-      const open = all.filter((item) => item.derivedStatus === 'pending' || item.derivedStatus === 'stale').length;
-      navLinks.push(`<a href="#g-${esc(group.id)}"><span>${esc(group.title)}</span><small>${open} open / ${all.length}</small></a>`);
-      if (!shown.length) continue;
-      const bulk = shown.some((item) => item.derivedStatus === 'pending' && item.options.some((o) => o.value === 'confirm'))
-        ? `<button class="bulk" data-bulk="${esc(group.id)}">Confirm every unanswered item in this group</button>` : '';
-      content.push(`<section class="group" id="g-${esc(group.id)}"><header><h2>${esc(group.title)}</h2>${bulk}</header><p class="intro">${inline(group.intro || '')}</p>${shown.map(card).join('')}</section>`);
-    }
-    document.getElementById('groups').innerHTML = navLinks.join('');
-    document.getElementById('content').innerHTML = content.length ? content.join('') : '<div class="empty">Nothing matches this filter.</div>';
-    wire();
+  function rawVisible(item) {
+    const open = item.derivedStatus === 'pending' || item.derivedStatus === 'stale';
+    if (state.filter === 'left' && !open) return false;
+    if (state.filter === 'done' && open) return false;
+    if (state.query && !`${item.id} ${item.title} ${item.question} ${item.current} ${item.proposal}`.toLowerCase().includes(state.query)) return false;
+    return true;
   }
 
-  function card(item) {
-    const status = item.derivedStatus;
-    const answer = item.answer || { verdict: '', note: '' };
-    const needsNote = ['correct', 'finding', 'destination_change', 'answer', 'return_reworded'].includes(answer.verdict) && !answer.note.trim();
-    const options = item.options.map((o) => `<button class="opt" data-value="${esc(o.value)}" data-hint="${esc(o.hint || '')}" aria-pressed="${answer.verdict === o.value}">${esc(o.label)}</button>`).join('');
-    const sources = (item.links || []).map((s) => {
-      const view = s.path && !s.path.startsWith('/') ? `<button data-view="${esc(s.path)}">${esc(s.label)}</button>` : `<span>${esc(s.label)}</span>`;
-      const gh = s.url ? ` <a href="${esc(s.url)}" target="_blank" rel="noopener" title="open on GitHub at ${esc(s.ref)}">↗</a>` : '';
-      return `<span>${view}${gh}</span>`;
-    }).join('');
-    const applied = item.applied ? `<div class="applied-box"><strong>Applied</strong> by ${esc(item.applied.by)} on ${new Date(item.applied.at).toLocaleString()}: ${esc(item.applied.where)}${item.applied.agentNote ? ` — ${esc(item.applied.agentNote)}` : ''}<br><small>Your answer then: ${esc(item.applied.verdict || '(note only)')}${item.applied.note ? ` — "${esc(item.applied.note)}"` : ''}</small></div>` : '';
-    const stale = status === 'stale' ? `<div class="stale-box">This item changed after you answered (now revision ${item.revision}; you answered revision ${answer.itemRevision}). Your earlier answer was <strong>${esc(answer.verdict || '(note only)')}</strong>${answer.note ? `: "${esc(answer.note)}"` : ''}. Please answer again.</div>` : '';
-    const history = (item.history || []).filter((h) => h.revision > 1 || /^applied|^withdrawn/.test(h.reason || '')).map((h) => `${new Date(h.at).toLocaleDateString()} · ${esc(h.by)}: ${esc(h.reason)}`);
-    return `<article class="item" id="${item.id}" data-id="${item.id}" data-status="${status}" data-revision="${item.revision}">
-      <div class="item-head"><h3><span class="id">${item.id}</span>${esc(item.title)}</h3><span><span class="badge ${status}">${STATUS_LABEL[status]}</span><span class="kind">${esc(item.kind)}</span></span></div>
-      <p class="q">${esc(item.question)}</p>
-      <div class="cols">
-        <div class="block"><h4>Now</h4>${markdown(item.current)}</div>
-        <div class="block"><h4>Proposed</h4>${markdown(item.proposal)}</div>
+  function groupByLandmark(decisions, cdr) {
+    const order = (cdr.landmarks || []).map((l) => l.name);
+    const groups = new Map();
+    for (const d of decisions) {
+      const name = d.landmark || 'Across landmarks';
+      if (!groups.has(name)) groups.set(name, { name, intro: (cdr.landmarks || []).find((l) => l.name === name)?.summary || '', decisions: [] });
+      groups.get(name).decisions.push(d);
+    }
+    return [...groups.values()].sort((a, b) => { const ia = order.indexOf(a.name), ib = order.indexOf(b.name); return (ia < 0 ? 99 : ia) - (ib < 0 ? 99 : ib) || a.name.localeCompare(b.name); });
+  }
+  function renderGroup(group) {
+    return `<div class="group"><div class="group-head"><h3>${esc(group.name)}</h3>${group.intro ? `<p>${esc(group.intro)}</p>` : ''}</div>${group.decisions.map(renderDecision).join('')}</div>`;
+  }
+  function recLine(d) {
+    const opt = (d.options || []).find((o) => o.value === d.recommendation?.value);
+    return opt ? `Recommended: ${opt.label}. ${d.recommendation.why || ''}` : (d.recommendation?.why || '');
+  }
+  function pills(d, ds) {
+    const lm = d.landmark ? `<span class="st lm">${esc(d.landmark)}</span>` : '';
+    const st = `<span class="st ${STATE_CLASS[ds.state] || 'open'}">${esc(STATE_LABEL[ds.state] || ds.state)}${ds.partial ? ` ${esc(ds.partial)}` : ''}</span>`;
+    return `<span class="rec-id"><span class="st scope">${esc(d.scope)}</span>${lm}${st}</span>`;
+  }
+  function historyBlock(d) {
+    if (!d.history?.length) return '';
+    return `<div class="facet"><span class="label">What you already decided</span><div class="words">${d.history.map((h) => `<div class="word ${h.who === 'owner' ? 'owner' : ''}"><span class="src">${esc(h.when || '')}${h.where ? ` · ${esc(h.where)}` : ''}${h.who === 'owner' ? ' · your words' : h.who === 'agent' ? ' · agent' : ''}</span>${h.who === 'owner' ? `<q>${esc(h.text)}</q>` : esc(h.text)}</div>`).join('')}</div></div>`;
+  }
+  function sourcesBlock(d) {
+    const srcs = (d.sources || []).map((s) => {
+      const rel = s.path && !s.path.startsWith('/');
+      const item = itemsOf(d).flatMap((it) => it.links || []).find((l) => l.path === s.path);
+      const gh = item?.url ? ` <a href="${esc(item.url)}" target="_blank" rel="noopener" title="open on GitHub at ${esc(item.ref)}">↗</a>` : '';
+      return `<span>${rel ? `<button data-view="${esc(s.path)}">${esc(s.label)}</button>` : esc(s.label)}${gh}</span>`;
+    });
+    return `<div class="sources"><span>Sources:</span>${srcs.join('')}<span class="ids">Board items ${d.items.join(', ')}</span></div>`;
+  }
+  function membersBlock(d) {
+    if (!d.members?.length) return '';
+    const rows = d.members.map((m) => {
+      const item = state.items.get(m.item);
+      if (!item) return '';
+      const answer = item.answer || { verdict: '', note: '' };
+      const opts = item.options.map((o) => `<option value="${esc(o.value)}" ${answer.verdict === o.value ? 'selected' : ''}>${esc(o.label)}</option>`).join('');
+      return `<div class="member" data-item="${item.id}" data-revision="${item.revision}" data-state="${item.derivedStatus}">
+        <div><div class="m-title">${esc(m.title)} <span class="ids">${esc(m.id || '')}</span></div>${m.summary ? `<div class="m-text">${esc(m.summary)}</div>` : ''}${m.caveat ? `<div class="m-caveat"><b>Caveat:</b> ${esc(m.caveat)}</div>` : ''}${m.detail ? `<div class="m-detail">${esc(m.detail)}</div>` : ''}</div>
+        <div class="m-strip"><select aria-label="Verdict for ${esc(m.title)}"><option value="">(use the decision above)</option>${opts}</select><input type="text" placeholder="note for this one" value="${esc(answer.note)}" aria-label="Note for ${esc(m.title)}"><span class="m-saved">${answer.at ? `Saved ${when(answer.at)}` : ''}</span></div>
+      </div>`;
+    });
+    return `<div class="facet"><span class="label">${esc(d.membersLabel || 'Each one, and how to override it')}</span><div class="members">${rows.join('')}</div></div>`;
+  }
+  function verdictStrip(d, ds, compact) {
+    const items = itemsOf(d).filter((it) => it.derivedStatus !== 'withdrawn');
+    if (!items.length) return `<div class="verdict"><span class="hint">No open board item behind this; nothing to answer.</span></div>`;
+    const btns = (d.options || []).map((o) => `<button class="vbtn ${compact ? 'small' : ''} ${TONE[o.value] || ''}" data-slug="${esc(o.value)}" aria-pressed="${ds.slug === o.value}" title="${esc(o.means || '')}">${esc(o.label)}</button>`).join('');
+    const needs = NOTE_NEEDED.has(ds.slug) && !ds.note;
+    const stale = ds.state === 'stale' ? `<div class="statebox stale">An agent changed something behind this decision after you answered; please answer again.</div>` : '';
+    const applied = ds.state === 'applied' ? `<div class="statebox applied">Carried: ${esc(items.map((it) => it.applied?.where).filter(Boolean).join(' · '))}</div>` : '';
+    return `${stale}${applied}<div class="verdict"><div class="vbtns">${btns}<span class="status">${ds.at ? `Saved ${when(ds.at)}` : ds.state === 'mixed' ? 'Answered item by item below' : 'Not answered yet'}</span></div>${compact ? '' : `<span class="hint">${esc(d.options?.find((o) => o.value === ds.slug)?.means || 'Pick one; add a note if you want your own words used.')}</span>`}<textarea class="${needs ? 'needs-note' : ''}" placeholder="${compact ? 'Your words, if any' : 'Notes, corrections, the words you want used…'}">${esc(ds.note || '')}</textarea></div>`;
+  }
+  function renderDecision(d) {
+    const ds = decisionState(d);
+    const opts = (d.options || []).map((o) => `<div class="option ${o.value === d.recommendation?.value ? 'rec' : ''}"><b>${esc(o.label)}</b><span class="means">${esc(o.means || '')}</span>${o.impact ? `<span class="impact">${esc(o.impact)}</span>` : ''}</div>`).join('');
+    const rec = d.recommendation ? `<div class="callbox"><span class="label" style="color:var(--call-edge)">Agent proposal</span><b>${esc(d.options?.find((o) => o.value === d.recommendation.value)?.label || d.recommendation.value || '')}</b><span>${esc(d.recommendation.why || '')}</span></div>` : '';
+    const settled = d.status === 'settled' && d.settledBy ? `<div class="callbox" style="background:var(--ok-soft);border-left-color:var(--ok)"><span class="label" style="color:var(--ok)">Already settled</span><span>${esc(d.settledBy)}</span></div>` : '';
+    const fold = d.detail ? `<details class="fold"><summary>More detail</summary><div class="inner">${markdown(d.detail)}</div></details>` : '';
+    return `<article class="rec" id="${esc(d.id)}" data-id="${esc(d.id)}" data-state="${esc(ds.state)}">
+      <div class="rec-head"><h4>${esc(d.title)}</h4>${pills(d, ds)}</div>
+      <div class="rec-body">
+        ${d.about?.length ? `<div class="facet"><span class="label">What this is about</span><div class="about">${d.about.map((p) => `<p>${inline(p)}</p>`).join('')}</div></div>` : ''}
+        <p class="decision">${esc(d.question)}</p>
+        ${d.stakes ? `<div class="facet"><span class="label">What changes with your answer</span><p class="stakes">${inline(d.stakes)}</p></div>` : ''}
+        ${historyBlock(d)}
+        ${settled}
+        ${opts ? `<div class="facet"><span class="label">Your choices</span><div class="options">${opts}</div></div>` : ''}
+        ${rec}
+        ${membersBlock(d)}
+        ${fold}
+        ${sourcesBlock(d)}
       </div>
-      ${item.draft ? `<details class="draft"><summary>Read the full draft text</summary><div class="block">${markdown(item.draft)}</div></details>` : ''}
-      ${sources ? `<div class="sources"><span>Sources:</span>${sources}</div>` : ''}
-      ${history.length ? `<div class="sources"><span>History:</span>${history.map((h) => `<span>${h}</span>`).join('')}</div>` : ''}
-      ${stale}${applied}
-      <div class="answer">
-        <div class="options">${options}</div>
-        <div class="hint">${esc(item.options.find((o) => o.value === answer.verdict)?.hint || 'Pick a verdict, then add any notes. Saves as you type.')}</div>
-        <textarea class="${needsNote ? 'needs-note' : ''}" placeholder="Notes, corrections, the words you want used…">${esc(answer.note)}</textarea>
-        <div class="save"><span class="status">${answer.at ? `Saved ${new Date(answer.at).toLocaleString()}` : 'Not answered yet'}</span><span class="err"></span></div>
-      </div>
+      ${verdictStrip(d, ds, false)}
     </article>`;
   }
+  function renderCompact(d) {
+    const ds = decisionState(d);
+    const sub = [d.scope, d.landmark, d.summary].filter(Boolean).join(' · ');
+    const rec = d.recommendation?.why ? `<div class="callbox"><span class="label" style="color:var(--call-edge)">Agent proposal</span><span>${esc(d.recommendation.why)}</span></div>` : '';
+    const settled = d.settledBy ? `<div class="callbox" style="background:var(--ok-soft);border-left-color:var(--ok)"><span class="label" style="color:var(--ok)">What settles it</span><span>${esc(d.settledBy)}</span></div>` : '';
+    return `<details class="compact" id="${esc(d.id)}" data-id="${esc(d.id)}" data-state="${esc(ds.state)}"><summary><span class="c-title">${esc(d.title)}</span>${pills(d, ds)}<span class="c-sub">${esc(sub)}</span></summary><div class="c-body">
+      ${d.about?.length ? `<div class="about">${d.about.map((p) => `<p>${inline(p)}</p>`).join('')}</div>` : ''}
+      <p class="decision" style="font-size:16px">${esc(d.question)}</p>
+      ${historyBlock(d)}${settled}${rec}
+      ${d.fullText ? `<details class="fold"><summary>Read the full text</summary><div class="inner fulltext">${markdown(d.fullText)}</div></details>` : ''}
+      ${sourcesBlock(d)}
+      ${verdictStrip(d, ds, true)}
+    </div></details>`;
+  }
+  function renderRaw(item) {
+    const answer = item.answer || { verdict: '', note: '' };
+    const opts = item.options.map((o) => `<button class="vbtn small ${TONE[o.value] || ''}" data-raw-value="${esc(o.value)}" aria-pressed="${answer.verdict === o.value}" title="${esc(o.hint || '')}">${esc(o.label)}</button>`).join('');
+    return `<article class="raw" id="${item.id}" data-item="${item.id}" data-revision="${item.revision}"><h4>${esc(item.title)} <span class="ids">${item.id} · ${esc(item.kind)}</span></h4><p>${esc(item.question)}</p><div class="cols"><div class="block"><h5>Now</h5>${markdown(item.current)}</div><div class="block"><h5>Proposed</h5>${markdown(item.proposal)}</div></div>${item.draft ? `<details class="fold"><summary>Read the full draft text</summary><div class="inner fulltext">${markdown(item.draft)}</div></details>` : ''}<div class="verdict" style="padding:10px 0 0;background:transparent"><div class="vbtns">${opts}<span class="status">${answer.at ? `Saved ${when(answer.at)}` : 'Not answered yet'}</span></div><textarea placeholder="Notes…">${esc(answer.note)}</textarea></div></article>`;
+  }
+
+  function renderTally() {
+    const cdr = state.board.cdr;
+    const el = document.getElementById('tally');
+    if (!cdr) { el.innerHTML = ''; return; }
+    const main = cdr.decisions.filter((d) => !['for-the-record', 'agent-closes', 'settled'].includes(d.status) || d.section === 'main');
+    const states = main.map((d) => decisionState(d).state);
+    const done = states.filter((s) => ['answered', 'applied', 'settled'].includes(s)).length;
+    const left = states.filter((s) => ['open', 'stale', 'mixed'].includes(s)).length;
+    el.innerHTML = `<span class="chip ok">${done} decided</span><span class="chip warn">${left} to answer</span><button class="chip" data-filter="all" aria-pressed="${state.filter === 'all'}">All</button><button class="chip" data-filter="left" aria-pressed="${state.filter === 'left'}">Only what is left</button><button class="chip" data-filter="done" aria-pressed="${state.filter === 'done'}">Only decided</button><input class="search" type="search" placeholder="Search" aria-label="Search the record" value="${esc(state.query)}">`;
+    for (const chip of el.querySelectorAll('[data-filter]')) chip.onclick = () => { state.filter = chip.dataset.filter; render(); };
+    const search = el.querySelector('.search');
+    search.oninput = () => { state.query = search.value.trim().toLowerCase(); render(); const again = document.querySelector('#tally .search'); if (again) { again.focus(); again.setSelectionRange(again.value.length, again.value.length); } };
+  }
+
+  // ---- saving: one PUT per board item behind the decision ----
+  async function putAnswer(id, verdict, note, revision) {
+    const response = await fetch(`/api/answers/${id}`, { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ verdict, note, itemRevision: Number(revision) }) });
+    const body = await response.json();
+    if (!response.ok) throw new Error(body.error?.message || response.status);
+    const item = state.items.get(id);
+    if (item) { item.answer = body; item.derivedStatus = body.derivedStatus; }
+    return body;
+  }
+  function decisionById(id) { return state.board.cdr?.decisions.find((d) => d.id === id); }
+  async function saveDecision(card, slug, note) {
+    const d = decisionById(card.dataset.id);
+    const statusEl = card.querySelector('.verdict .status');
+    statusEl.textContent = 'Saving…'; statusEl.classList.remove('err');
+    try {
+      const items = itemsOf(d).filter((it) => it.derivedStatus !== 'withdrawn');
+      const overridden = new Set([...card.querySelectorAll('.member select')].filter((s) => s.value).map((s) => s.closest('.member').dataset.item));
+      let at = null;
+      for (const item of items) {
+        if (overridden.has(item.id)) continue;
+        const mapped = slug ? d.verdictMap?.[item.id]?.[slug] : '';
+        const verdict = mapped ?? '';
+        const text = slug && !mapped ? `[record: ${slug}] ${note}`.trim() : note;
+        const body = await putAnswer(item.id, verdict, text, item.revision);
+        at = body.at;
+      }
+      statusEl.textContent = at ? `Saved ${when(at)}` : 'Nothing to save';
+      const ds = decisionState(d);
+      card.dataset.state = ds.state;
+      const pill = card.querySelector('.rec-head .st:last-child, summary .st:last-child');
+      if (pill) { pill.className = `st ${STATE_CLASS[ds.state] || 'open'}`; pill.textContent = STATE_LABEL[ds.state] || ds.state; }
+      const ta = card.querySelector('.verdict textarea');
+      if (ta) ta.classList.toggle('needs-note', NOTE_NEEDED.has(slug) && !note.trim());
+      renderTally();
+    } catch (error) {
+      statusEl.textContent = `Not saved: ${error.message}. Is the server still running?`; statusEl.classList.add('err');
+    }
+  }
+  async function saveMember(row) {
+    const id = row.dataset.item;
+    const verdict = row.querySelector('select').value;
+    const note = row.querySelector('input').value;
+    const saved = row.querySelector('.m-saved');
+    saved.textContent = 'Saving…';
+    try {
+      const body = await putAnswer(id, verdict, note, row.dataset.revision);
+      saved.textContent = `Saved ${when(body.at)}`;
+      row.dataset.state = body.derivedStatus;
+      const card = row.closest('.rec');
+      const d = decisionById(card.dataset.id);
+      const ds = decisionState(d);
+      card.dataset.state = ds.state;
+      renderTally();
+    } catch (error) {
+      saved.textContent = `Not saved: ${error.message}`;
+    }
+  }
+  function debounce(key, fn, delay) { clearTimeout(state.timers.get(key)); state.timers.set(key, setTimeout(fn, delay)); }
 
   function wire() {
-    for (const article of document.querySelectorAll('article.item')) {
-      const id = article.dataset.id;
-      for (const opt of article.querySelectorAll('.opt')) {
-        opt.onclick = () => {
-          const pressed = opt.getAttribute('aria-pressed') === 'true';
-          for (const other of article.querySelectorAll('.opt')) other.setAttribute('aria-pressed', 'false');
-          if (!pressed) opt.setAttribute('aria-pressed', 'true');
-          article.querySelector('.hint').textContent = pressed ? 'Pick a verdict, then add any notes. Saves as you type.' : (opt.dataset.hint || '');
-          save(article, 0);
+    for (const card of document.querySelectorAll('.rec[data-id], .compact[data-id]')) {
+      const strip = card.querySelector(':scope > .verdict, :scope > .c-body > .verdict');
+      if (!strip) continue;
+      const ta = strip.querySelector('textarea');
+      const current = () => strip.querySelector('.vbtn[aria-pressed="true"]')?.dataset.slug ?? '';
+      for (const btn of strip.querySelectorAll('.vbtn[data-slug]')) {
+        btn.onclick = () => {
+          const pressed = btn.getAttribute('aria-pressed') === 'true';
+          for (const other of strip.querySelectorAll('.vbtn[data-slug]')) other.setAttribute('aria-pressed', 'false');
+          if (!pressed) btn.setAttribute('aria-pressed', 'true');
+          const hint = strip.querySelector('.hint');
+          if (hint) hint.textContent = pressed ? 'Pick one; add a note if you want your own words used.' : (btn.title || '');
+          saveDecision(card, current(), ta.value);
         };
       }
-      article.querySelector('textarea').oninput = () => save(article, 700);
-      for (const button of article.querySelectorAll('[data-view]')) button.onclick = () => viewFile(button.dataset.view);
+      ta.oninput = () => debounce(card.dataset.id, () => saveDecision(card, current(), ta.value), 700);
+      for (const row of card.querySelectorAll('.member')) {
+        row.querySelector('select').onchange = () => saveMember(row);
+        row.querySelector('input').oninput = () => debounce(row.dataset.item, () => saveMember(row), 700);
+      }
+      for (const button of card.querySelectorAll('[data-view]')) button.onclick = () => viewFile(button.dataset.view);
+    }
+    for (const art of document.querySelectorAll('article.raw[data-item]')) {
+      const id = art.dataset.item; const ta = art.querySelector('textarea');
+      const current = () => art.querySelector('.vbtn[aria-pressed="true"]')?.dataset.rawValue ?? '';
+      const run = async () => { const s = art.querySelector('.status'); s.textContent = 'Saving…'; try { const body = await putAnswer(id, current(), ta.value, art.dataset.revision); s.textContent = `Saved ${when(body.at)}`; } catch (e) { s.textContent = `Not saved: ${e.message}`; } };
+      for (const btn of art.querySelectorAll('.vbtn[data-raw-value]')) btn.onclick = () => { const pressed = btn.getAttribute('aria-pressed') === 'true'; for (const o of art.querySelectorAll('.vbtn[data-raw-value]')) o.setAttribute('aria-pressed', 'false'); if (!pressed) btn.setAttribute('aria-pressed', 'true'); run(); };
+      ta.oninput = () => debounce(id, run, 700);
     }
     for (const button of document.querySelectorAll('[data-bulk]')) {
       button.onclick = async () => {
-        const group = button.dataset.bulk;
-        const targets = [...document.querySelectorAll(`#g-${CSS.escape(group)} article.item[data-status="pending"]`)].filter((a) => a.querySelector('.opt[data-value="confirm"]'));
-        if (!targets.length) return;
-        if (!confirm(`Mark ${targets.length} unanswered item(s) in this group as Confirm? Items you already answered are untouched.`)) return;
-        for (const article of targets) {
-          for (const other of article.querySelectorAll('.opt')) other.setAttribute('aria-pressed', other.dataset.value === 'confirm' ? 'true' : 'false');
-          await save(article, 0, true);
-        }
-        await load();
+        const groupEl = document.getElementById(button.dataset.bulk);
+        const status = document.querySelector(`[data-bulk-status="${button.dataset.bulk}"]`);
+        const cards = [...groupEl.querySelectorAll('.compact[data-id]')].filter((c) => ['open', 'for-the-record', 'settled', 'agent-closes'].includes(c.dataset.state));
+        const targets = cards.filter((c) => { const d = decisionById(c.dataset.id); return d && d.defaultOption && (d.options || []).some((o) => o.value === d.defaultOption); });
+        if (!targets.length) { status.textContent = 'Nothing unanswered here.'; return; }
+        if (!confirm(`Confirm ${targets.length} unanswered entr${targets.length === 1 ? 'y' : 'ies'} with the default verdict? Ones you already answered are untouched.`)) return;
+        let n = 0;
+        for (const c of targets) { const d = decisionById(c.dataset.id); await saveDecision(c, d.defaultOption, ''); n += 1; status.textContent = `${n} of ${targets.length} saved…`; }
+        status.textContent = `${n} confirmed.`;
+        render();
       };
     }
-  }
-
-  function save(article, delay, immediate) {
-    const id = article.dataset.id;
-    clearTimeout(state.timers.get(id));
-    const run = async () => {
-      const verdict = article.querySelector('.opt[aria-pressed="true"]')?.dataset.value ?? '';
-      const note = article.querySelector('textarea').value;
-      const statusEl = article.querySelector('.save .status');
-      const errEl = article.querySelector('.save .err');
-      statusEl.textContent = 'Saving…';
-      try {
-        const response = await fetch(`/api/answers/${id}`, { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ verdict, note, itemRevision: Number(article.dataset.revision) }) });
-        const body = await response.json();
-        if (!response.ok) throw new Error(body.error?.message || response.status);
-        statusEl.textContent = `Saved ${new Date(body.at).toLocaleTimeString()}`;
-        errEl.textContent = '';
-        const item = state.board.items.find((candidate) => candidate.id === id);
-        if (item) { item.answer = body; item.derivedStatus = body.derivedStatus; }
-        article.dataset.status = body.derivedStatus;
-        article.querySelector('.badge').className = `badge ${body.derivedStatus}`;
-        article.querySelector('.badge').textContent = STATUS_LABEL[body.derivedStatus];
-        const needsNote = ['correct', 'finding', 'destination_change', 'answer', 'return_reworded'].includes(verdict) && !note.trim();
-        article.querySelector('textarea').classList.toggle('needs-note', needsNote);
-        refreshCounts();
-      } catch (error) {
-        statusEl.textContent = 'Not saved';
-        errEl.textContent = `Save failed: ${error.message}. Is the server still running?`;
-      }
-    };
-    if (immediate) return run();
-    state.timers.set(id, setTimeout(run, delay));
-  }
-
-  function refreshCounts() {
-    const counts = { pending: 0, stale: 0, answered: 0, applied: 0, withdrawn: 0 };
-    for (const item of state.board.items) counts[item.derivedStatus] += 1;
-    state.board.counts = counts;
-    const total = Math.max(1, state.board.items.length);
-    document.getElementById('progress').innerHTML = [['pending', 'var(--line)'], ['stale', 'var(--stale)'], ['answered', 'var(--ok)'], ['applied', 'var(--applied)']]
-      .map(([k, color]) => `<span style="width:${(100 * counts[k]) / total}%;background:${color}"></span>`).join('');
-    const labels = { open: `To answer (${counts.pending + counts.stale})`, answered: `Answered (${counts.answered})`, applied: `Applied (${counts.applied})`, withdrawn: `Withdrawn (${counts.withdrawn})`, all: `All (${state.board.items.length})` };
-    for (const chip of document.querySelectorAll('.chip')) chip.textContent = labels[chip.dataset.filter];
-    for (const link of document.querySelectorAll('.groups a')) {
-      const gid = link.getAttribute('href').slice(3);
-      const all = state.board.items.filter((item) => item.group === gid);
-      const open = all.filter((item) => item.derivedStatus === 'pending' || item.derivedStatus === 'stale').length;
-      link.querySelector('small').textContent = `${open} open / ${all.length}`;
-    }
+    const theme = document.getElementById('theme');
+    if (theme) theme.onclick = () => { const root = document.documentElement; const current = root.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'); root.dataset.theme = current === 'dark' ? 'light' : 'dark'; try { localStorage.setItem('grill-board-theme', root.dataset.theme); } catch {} };
   }
 
   async function viewFile(relPath) {
@@ -368,33 +613,15 @@
       const response = await fetch(`/api/file?path=${encodeURIComponent(relPath)}`);
       const body = await response.json();
       document.getElementById('viewer-text').textContent = response.ok ? body.text : `Could not read: ${body.error?.message}`;
-    } catch (error) {
-      document.getElementById('viewer-text').textContent = `Could not read: ${error.message}`;
-    }
+    } catch (error) { document.getElementById('viewer-text').textContent = `Could not read: ${error.message}`; }
   }
 
-  document.getElementById('search').oninput = (event) => { state.query = event.target.value.trim().toLowerCase(); render(); };
-  document.getElementById('theme').onclick = () => {
-    const root = document.documentElement;
-    const current = root.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-    root.dataset.theme = current === 'dark' ? 'light' : 'dark';
-    try { localStorage.setItem('grill-board-theme', root.dataset.theme); } catch {}
-  };
   try { const saved = localStorage.getItem('grill-board-theme'); if (saved) document.documentElement.dataset.theme = saved; } catch {}
-
-  // Agents may add, revise or apply items while the page is open. Poll the
-  // items file's modification time and offer a reload rather than redrawing
-  // under the owner's hands.
   setInterval(async () => {
     if (!state.board) return;
-    try {
-      const response = await fetch('/api/status', { cache: 'no-store' });
-      const status = await response.json();
-      if (status.itemsMtime !== state.board.itemsMtime) document.getElementById('banner').classList.add('show');
-    } catch {}
+    try { const status = await (await fetch('/api/status', { cache: 'no-store' })).json(); if (status.itemsMtime !== state.board.itemsMtime) document.getElementById('banner').classList.add('show'); } catch {}
   }, 15000);
-
-  load().catch((error) => { document.getElementById('content').innerHTML = `<div class="empty">Could not load the board: ${esc(error.message)}</div>`; });
+  load().catch((error) => { document.getElementById('content').innerHTML = `<div class="empty">Could not load: ${esc(error.message)}</div>`; });
 })();
 </script>
 </body>
