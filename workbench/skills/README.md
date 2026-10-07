@@ -1,7 +1,7 @@
 # Workbench Core Skills
 
 This directory is the self-contained, versioned LLM Workbench skill source. It
-is a closed 29-skill bundle (twenty-one workflow skills, four coordination skills
+is a closed 30-skill bundle (twenty-two workflow skills, four coordination skills
 and four portable stances), counted from the manifest and catalog below, for a
 brand-new installation, not a general catalog or a project-local discovery tree.
 The checked-out LLM Workbench release owns the exact source versions.
@@ -30,6 +30,7 @@ The checked-out LLM Workbench release owns the exact source versions.
 | `workbench-runtime` | Operate the room's installed runtime tools: read a finding and what it blocks, validate the Wiki, repair installed state, allocate visible identifiers, keep the connection identity, check a configured host and add a room-local skill. |
 | `improve-harness` | Improve one harnessed job through one loop: baseline, earliest gap, smallest owning intervention, native verification, fresh rerun, then retain, revise or remove, with a result record in the feedback lane. |
 | `domain-modeling` | Sharpen the domain model while choices are upstream: challenge and split terms, probe edge cases, check claims against source and trace a name or boundary to the owners it would reach, capturing pending meaning for promotion. |
+| `pr` | Write a PR body: a small visual summary, actual before/after evidence and merge danger as door reversibility and blast radius; opening, merging and cleanup stay with `implement`. |
 | `director` | Coordinate the whole project across Spec-bound Dispatchers and integrate independently reviewed results. |
 | `dispatcher` | Operate as the assigned Dispatcher for one Spec and its branch: plan its Tasks, dispatch and monitor Workers, own assembled verification and hand the candidate to the Director. |
 | `spec-planner` | Plan small Tasks and parallel vertical slices for one assigned Spec from current Actuality at flight launch, then hand the plan to Spec Manager. |

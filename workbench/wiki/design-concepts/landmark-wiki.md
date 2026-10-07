@@ -52,7 +52,7 @@ owner-confirmed.
   shape of a public skills reference
   (card [DQC-001D: "How should the Wiki explain each available skill?"](../../landmark-tracker/destination-questions/DQC-001D.json), revision 6).
   Pages named `skill-<name>.md` sit beside the router for twenty-seven of the
-  twenty-nine skills in the lane.
+  thirty skills in the lane.
 - **Feature articles.** A Wiki collection named features, not capabilities and not a
   widening of design concepts, is designed to hold one article per completed Spec. It is written
   at the Spec's closure point, which follows separate-context review and the owner's

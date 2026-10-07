@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -11,6 +12,27 @@ import { coordinationSkills, coreSkills as runtimeCoreSkills } from '../workbenc
 import { readMaintainerSkills } from './maintainer-skills.mjs';
 const coreSkills = [...runtimeCoreSkills].sort();
 const read = (relative) => fs.readFileSync(path.join(root, relative), 'utf8');
+// S-002U TK-007V: the owner made `pr` required in every Workbench on
+// 2026-10-06, so it must ship in the runtime Core list and the manifest policy.
+for (const name of ['pr']) {
+  assert.ok(coreSkills.includes(name), `${name} must ship in the required Core bundle`);
+  assert.ok(JSON.parse(read('workbench/manifest.json')).skillPolicy.required.includes(name),
+    `${name} must be declared in workbench/manifest.json skillPolicy.required`);
+}
+// S-002U TK-007U: pinned upstream imports, not rewrites. Each hash is the
+// pinned upstream text with checkout line endings and the final newline
+// ignored, so any instruction drift fails here.
+const importedSourceHashes = {
+  // mattpocock/skills skills/engineering/pr/SKILL.md @ d81f3a183412e71a5b1e84ca21bc1a35eea03a60
+  'pr/SKILL.md': 'bb2f9427da7c83ec95abf1207380c19d726d6d8c933f6d0314cb14e84c3e998b',
+};
+for (const [name, expectedHash] of Object.entries(importedSourceHashes)) {
+  const relative = `workbench/skills/${name}`;
+  assert.ok(fs.existsSync(path.join(root, relative)), `${relative} must carry the pinned upstream source`);
+  const source = read(relative).replaceAll('\r\n', '\n').replace(/\n+$/, '');
+  assert.equal(createHash('sha256').update(source).digest('hex'), expectedHash,
+    `${name} must preserve the pinned upstream text with only the declared adapter`);
+}
 const assertIncludesAll = (content, requiredTerms, label) => {
   for (const term of requiredTerms) {
     assert.ok(content.includes(term), `${label} must use ${term}`);
@@ -110,6 +132,7 @@ const words = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'e
   'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen',
   'nineteen', 'twenty', 'twenty-one'];
 const workflowWord = words[bundleSize - stanceCount - coordinationSkills.length];
+assert.ok(workflowWord, `extend the words table to spell ${bundleSize - stanceCount - coordinationSkills.length} workflow skills`);
 for (const [relative, expected] of [
   ['workbench/skills/README.md', [`closed ${bundleSize}-skill bundle`, `${workflowWord} workflow skills`,
     `${words[coordinationSkills.length]} coordination skills`, 'four portable stances']],

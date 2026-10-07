@@ -87,7 +87,7 @@ belong to their individual Specs as they are authored.
 - [Genesis](skill-genesis.md) - start a new room from a founding prompt
 - [Improve harness](skill-improve-harness.md) - improve one harnessed job through one loop and keep only what earns its cost; the fifteen-skill harness-review family it replaces is its history
 - [Domain Modeling](skill-domain-modeling.md) - challenge terms and trace a name or boundary to the owners it would reach before it settles; separates Matt Pocock's upstream method, the Workbench adapters and the verified behavior and limits
-- [Skills draft wiki](skills-draft/README.md) - the prototype collection, article template and implement-spec draft describing each skill's connections and evidence limits
+- [Skills draft wiki](skills-draft/README.md) - the prototype collection, article template and implement-spec and pr drafts describing each skill's connections and evidence limits
 
 ## Planned And Optional Skill References
 

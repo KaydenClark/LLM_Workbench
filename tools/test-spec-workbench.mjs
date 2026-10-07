@@ -39,7 +39,7 @@ import {
 import { assembleSpecReport, computeSpecDigest, createCorrectiveTasks, recordOwnerApproval, recordReviewVerdict } from '../workbench/tools/spec-report.mjs';
 import { parseSpecPacket } from '../workbench/tools/spec-packet.mjs';
 import { validateAdrs, writeRegister } from '../workbench/tools/adr.mjs';
-import { TASK_STATUSES, listRetiredTaskRecords, listTaskRecords, readTaskRecord, taskStatus, unmetBlockers } from '../workbench/tools/task-record.mjs';
+import { TASK_STATUSES, appendContinuationToContent, listRetiredTaskRecords, listTaskRecords, readTaskRecord, taskStatus, unmetBlockers } from '../workbench/tools/task-record.mjs';
 import { assembleTaskPacket } from '../workbench/tools/task-packet.mjs';
 import { appendReceiptRowToContent, readReceiptFromFile } from '../workbench/tools/task-receipt.mjs';
 import { parseMarkdownTableRow } from '../workbench/tools/markdown-table.mjs';
@@ -7762,6 +7762,94 @@ function parseTaskRecordForTest(content) {
     console.log('ok - with no remote, claim and next keep today\'s local behavior and say so');
   } finally {
     fs.rmSync(localRoot, { recursive: true, force: true });
+  }
+}
+
+// A remote tip claims a Task only from the Task's current run. A failed
+// assembled review (`verdict --result fail` with `continue TK-###`) returns a
+// done Task to ready under a new Continuation run; every branch cut before
+// that still shows the old run's `done`, and none of them is a live claim.
+// The baseline run is the later of the integration base and the local record.
+{
+  const gitIn = (dir, ...args) => execFileSync('git', ['-C', dir, ...args], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
+  const continuationBase = fs.mkdtempSync(path.join(os.tmpdir(), 'claim-continuation-'));
+  const origin = path.join(continuationBase, 'origin.git');
+  const clone = (name) => {
+    const dir = path.join(continuationBase, name);
+    execFileSync('git', ['clone', '--quiet', origin, dir], { stdio: 'ignore' });
+    gitIn(dir, 'config', 'user.email', `${name}@example.com`);
+    gitIn(dir, 'config', 'user.name', name);
+    gitIn(dir, 'switch', '--quiet', 'integration');
+    return dir;
+  };
+  const specDir = 'workbench/specs/S-803-continuation';
+  const recordPath = (taskId) => `${specDir}/tasks/${taskId}/TASK.md`;
+  const writeTask = (dir, taskId, status) => writeAt(dir, recordPath(taskId), taskRecordFixture({
+    id: taskId, specId: 'S-803', slice: `Continued slice ${taskId}`, status, blockers: 'none', destination: 'spec-acceptance: S-803 Acceptance Criteria'
+  }));
+  // Return a done Task to ready under Continuation run 1, as a fail verdict does.
+  const continueTask = (dir, taskId) => {
+    const file = path.join(dir, recordPath(taskId));
+    const ready = fs.readFileSync(file, 'utf8').replace('**Status:** done', '**Status:** ready');
+    fs.writeFileSync(file, appendContinuationToContent(ready, { date: TODAY, answers: 'evidence row 9 (fail verdict)', handoff: 'Close the open acceptance line' }, taskId));
+  };
+  const commitAll = (dir, message) => { render(dir); gitIn(dir, 'add', '-A'); gitIn(dir, 'commit', '--quiet', '-m', message); };
+  try {
+    execFileSync('git', ['init', '--quiet', '--bare', '-b', 'main', origin]);
+    const seed = path.join(continuationBase, 'seed');
+    execFileSync('git', ['init', '--quiet', '-b', 'main', seed]);
+    gitIn(seed, 'config', 'user.email', 'seed@example.com');
+    gitIn(seed, 'config', 'user.name', 'seed');
+    initLifecycleFixture(seed);
+    writeAt(seed, `${specDir}/SPEC.md`, recordBackedSpec('S-803').replace('**Updated:** 2026-07-12', `**Updated:** ${TODAY}`));
+    writeTask(seed, 'TK-004', 'done');
+    writeTask(seed, 'TK-005', 'ready');
+    commitAll(seed, 'seed room: TK-004 done in run 0, TK-005 ready');
+    gitIn(seed, 'remote', 'add', 'origin', origin);
+    gitIn(seed, 'branch', 'integration');
+    gitIn(seed, 'push', '--quiet', 'origin', 'main', 'integration');
+    // Stale tips cut while TK-004 was done in run 0.
+    gitIn(seed, 'push', '--quiet', 'origin', 'integration:refs/heads/codex/old-lane', 'integration:refs/heads/backup/old-lane');
+    // A tip that closed TK-005 in run 0 and is not merged yet: a live claim.
+    gitIn(seed, 'switch', '--quiet', '-c', 'codex/closed-lane', 'integration');
+    writeTask(seed, 'TK-005', 'done');
+    commitAll(seed, 'close TK-005 run 0');
+    gitIn(seed, 'push', '--quiet', 'origin', 'codex/closed-lane');
+    // The fail verdict lands on integration: TK-004 is ready again in run 1.
+    gitIn(seed, 'switch', '--quiet', 'integration');
+    continueTask(seed, 'TK-004');
+    commitAll(seed, 'fail verdict continues TK-004');
+    gitIn(seed, 'push', '--quiet', 'origin', 'integration');
+
+    // (1) Every older-run tip shows TK-004 done, yet none claims run 1.
+    const alpha = clone('alpha');
+    const beta = clone('beta');
+    const nextA = nextWork(alpha);
+    assert.equal(nextA.taskId, 'TK-004', '(1) a continued Task is offered although older-run tips show it done');
+    assert.deepEqual(nextA.coordination.remoteClaimed, [{ specId: 'S-803', taskId: 'TK-005', refs: ['origin/codex/closed-lane'] }], '(1) only the same-run close is reported as a claim');
+    const claimedA = claimWork(alpha, 'S-803', { agent: 'alpha', task: 'TK-004', date: TODAY });
+    assert.equal(claimedA.coordination?.mode, 'remote', '(1) the continued Task is claimed through remote coordination, without --local');
+    assert.equal(claimedA.coordination.branch, 'alpha/s803-tk004');
+    assert.equal(readTaskRecord(path.join(alpha, recordPath('TK-004')), alpha).status, 'in-progress');
+
+    // (2) A claim made in the current run still takes the Task.
+    assert.equal(nextWork(beta), null, '(2) with TK-004 claimed in run 1 and TK-005 closed on a tip, nothing is offered');
+    assert.throws(() => claimWork(beta, 'S-803', { agent: 'beta', task: 'TK-004', date: TODAY }), /claimed on a remote tip: TK-004 \(origin\/alpha\/s803-tk004\)/, '(2) the run-1 claim is reported, the older-run tips are not');
+
+    // (3) A local record newer than every tip: the continuation exists only
+    // on this lane (not yet on integration), so the run-0 close of TK-005 on
+    // codex/closed-lane is an older run than the local record.
+    const gamma = clone('gamma');
+    gitIn(gamma, 'switch', '--quiet', '-c', 'claude/gamma-lane');
+    writeTask(gamma, 'TK-005', 'done');
+    continueTask(gamma, 'TK-005');
+    commitAll(gamma, 'fail verdict continues TK-005 on the lane');
+    const claimedG = claimWork(gamma, 'S-803', { agent: 'gamma', task: 'TK-005', date: TODAY });
+    assert.equal(claimedG.coordination.branch, 'claude/gamma-lane', '(3) a Task whose local record is a newer run than the tip is claimable');
+    assert.equal(readTaskRecord(path.join(gamma, recordPath('TK-005')), gamma).status, 'in-progress');
+    console.log('ok - remote coordination counts a Task claimed only on a tip at its current run, so a continued Task is claimable without --local while a same-run claim still takes it');
+  } finally {
+    fs.rmSync(continuationBase, { recursive: true, force: true });
   }
 }
 // ---- S-00V TK-01L: push-on-claim and fetch-before-select (end) ----
