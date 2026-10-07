@@ -1,9 +1,9 @@
 # LLM Workbench - Agent Operating System
 
 This always-loaded file owns how agents work. Ordinary entry follows
-`AGENTS.md` -> the [`RUNBOOK.md` operations index](RUNBOOK.md#operations-index) -> `LEXICON.md`.
+`AGENTS.md` -> the [`RUNBOOK.md` operations index](RUNBOOK.md#operations-index) -> `ARCHITECTURE.md`.
 Every session reads that index at entry, then the Runbook's entry procedure
-and the Lexicon's routing section, then only the owners relevant to the assigned
+and the [`ARCHITECTURE.md` routes](ARCHITECTURE.md#routes), then only the owners relevant to the assigned
 task. The assigned `SPEC.md` is mandatory after selection. `BLUEPRINT.md` loads
 for architecture or cross-cutting product direction, not default orientation.
 
@@ -20,8 +20,9 @@ What an agent may do comes only from these sources, in this order:
    acceptance, and verification apply to that capability only after selection
    or explicit assignment. It cannot enlarge the request, platform safety, or
    this file's scope. An unassigned spec is evidence, not instruction.
-4. `RUNBOOK.md` and `LEXICON.md` as the other Contract carriers: use their
-   relevant procedures, routes, and accepted meanings. `BLUEPRINT.md` is the
+4. `RUNBOOK.md` as the other Contract carrier: use its relevant procedures and
+   routes. `GLOSSARY.md` defines accepted meanings and `ARCHITECTURE.md` routes
+   ownership; neither is a Contract carrier. `BLUEPRINT.md` is the
    routed product destination and cross-cutting architecture owner;
    `TASKBOARD.md` is the current generated projection and `README.md` is
    orientation. The accepted root destination replaces that projection with
@@ -53,7 +54,7 @@ unclear ordering is an ambiguity to investigate and surface. Neither "code
 always wins" nor "documentation proves implementation".
 
 Governance Planes classify claims and their use in one operation, never whole
-files (`LEXICON.md` -> Governance Core). Ordinary owner-directed work needs
+files ([`GLOSSARY.md` -> Governance core](GLOSSARY.md#governance-core)). Ordinary owner-directed work needs
 nothing beyond this contract and its verification: no coordination system,
 order form, flight, scheduler, or external repository may be required, and a
 tool reports without manufacturing authority. Diagnostics block only by their
@@ -63,7 +64,7 @@ findings stay visible without blocking.
 
 Accepted active ADR decision claims are architectural Canon, without enlarging
 instruction authority. Rationale and historical alternatives remain evidence.
-Follow active decisions through the Lexicon; superseded/deprecated records stay
+Follow active decisions through the [`ARCHITECTURE.md` routes](ARCHITECTURE.md#routes); superseded/deprecated records stay
 reachable as history. The Blueprint describes the desired finished product;
 it carries no current status, release chronology or generated capability catalog.
 
@@ -71,7 +72,7 @@ it carries no current status, release chronology or generated capability catalog
 
 Start from the ordinary entry route and follow the smallest relevant links to
 the owning controls, assigned spec, Wiki context, and referenced source or
-tests. Use the Lexicon's Context Map routes; do not begin ordinary orientation
+tests. Use the `ARCHITECTURE.md` Context Map routes; do not begin ordinary orientation
 with a broad repository or history search. This reduces rediscovery and keeps
 the source owner visible.
 The Runbook operations index names each operation, when following it is worth
@@ -217,8 +218,8 @@ session:
   resolved decision allows that blocker to be removed.
 
 Do not load the full Blueprint, Taskboard, completed specs, or proof archive for
-normal task selection. Read Blueprint for cross-cutting architecture; read the
-Lexicon when a shared term is unclear or a selected skill depends on project
+normal task selection. Read Blueprint for cross-cutting architecture; read
+`GLOSSARY.md` when a shared term is unclear or a selected skill depends on project
 vocabulary; read the Taskboard for an owner dashboard or collision review.
 
 ### Assembled Review And Corrective Return
@@ -292,11 +293,11 @@ room updates. Main promotion remains owner-only in both repositories.
 ## Documentation Ownership And Proof
 
 Documentation is part of done; the implementing agent is its documentation
-owner. Route each truth once, to the owner the Lexicon ownership schema names
+owner. Route each truth once, to the owner the `ARCHITECTURE.md` ownership map names
 for its job; durable explanations go to the Wiki (`workbench/wiki/`).
 
 This authoring summary assigns documentation maintenance. The
-[Lexicon ownership schema](LEXICON.md#artifact-ownership-schema) defines the
+[`ARCHITECTURE.md` ownership map](ARCHITECTURE.md#ownership) defines the
 jobs and provides the question-to-owner routes and artifact boundaries. Keep
 those routes consistent with these assignments when ownership changes.
 

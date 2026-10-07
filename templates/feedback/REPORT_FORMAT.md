@@ -29,7 +29,7 @@ action. Explain why the harness causes the friction when making that causal
 claim. Report no findings when that is what the evidence supports; do not
 invent work or label every limitation a defect.
 
-**Disposition (required):** exactly one of `diagnostic`, `test`, `repaired`, `declined`, or `accepted-open`, using the Lexicon's definitions.
+**Disposition (required):** exactly one of `diagnostic`, `test`, `repaired`, `declined`, or `accepted-open`, using the `GLOSSARY.md` Feedback disposition definitions.
 Record it in the owning Spec and link the report finding to that owner and its
 evidence. Name the registered code or test for those outcomes, the implementing
 commit for `repaired`, the reason for `declined`, or the accepted owning Spec

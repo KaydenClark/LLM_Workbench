@@ -86,12 +86,12 @@ belong to their individual Specs as they are authored.
 - [Adoption](skill-adoption.md) - bring an existing project into the Workbench once
 - [Genesis](skill-genesis.md) - start a new room from a founding prompt
 - [Improve harness](skill-improve-harness.md) - improve one harnessed job through one loop and keep only what earns its cost; the fifteen-skill harness-review family it replaces is its history
-- [Skills draft wiki](skills-draft/README.md) - the prototype collection, article template and implement-spec draft describing each skill's connections and evidence limits
+- [Domain Modeling](skill-domain-modeling.md) - challenge terms and trace a name or boundary to the owners it would reach before it settles; separates Matt Pocock's upstream method, the Workbench adapters and the verified behavior and limits
+- [Skills draft wiki](skills-draft/README.md) - the prototype collection, article template and implement-spec and pr drafts describing each skill's connections and evidence limits
 
 ## Planned And Optional Skill References
 
-- [Domain Modeling](skill-domain-modeling.md) - active language challenges and consequence tracing; explains the compact glossary and richer Wiki distinction, with delivery and capture boundaries linked to their owners
-- [Required Domain Modeling Skill (S-004J)](../specs/S-004J-required-domain-modeling-skill/SPEC.md) - maps the skill into every room's skills lane as a required skill, replacing the superseded Domain Modeling Skill for the Workbench Spec (S-002H); until it is delivered, no room's skills lane carries it
+- [Required Domain Modeling Skill (S-004J)](../specs/S-004J-required-domain-modeling-skill/SPEC.md) - maps the skill into every room's skills lane as a required skill, replacing the superseded Domain Modeling Skill for the Workbench Spec (S-002H); the skill now ships in the lane, and the Spec owns its remaining review and acceptance
 
 ## Release And Distribution Routing
 
@@ -403,7 +403,8 @@ entry.
 |---|---|
 | [AGENTS.md](../../AGENTS.md) | Authority, scope, safety, and the work loop |
 | [BLUEPRINT.md](../../BLUEPRINT.md) | What the product is, who it serves, the outcomes it promises and what it is not |
-| [LEXICON.md](../../LEXICON.md) | Shared terms, the Governance Core, the Artifact Ownership Schema, and design-concept routing |
+| [GLOSSARY.md](../../GLOSSARY.md) | Shared terms and the Governance core |
+| [ARCHITECTURE.md](../../ARCHITECTURE.md) | Which artifact owns each kind of truth, the routes to it, the invariants, and design-concept routing |
 | [TASKBOARD.md](../../TASKBOARD.md) | Generated work-state view; follow each row to its owning Spec |
 | [RUNBOOK.md](../../RUNBOOK.md) | Exact operating and verification commands |
 | `workbench/specs/` | Stable capability records, acceptance, evidence, and proof |
@@ -417,7 +418,7 @@ entry.
 
 | Question | Read first |
 |---|---|
-| How the Workbench is governed | [LEXICON.md](../../LEXICON.md) -> Governance Core, then `workbench/docs/adr/` |
+| How the Workbench is governed | [GLOSSARY.md](../../GLOSSARY.md#governance-core) -> Governance core, [ARCHITECTURE.md](../../ARCHITECTURE.md#ownership) -> Ownership, then `workbench/docs/adr/` |
 | What the Wiki is and how agents use it | [SCHEMA.md](SCHEMA.md), then the decision record [The Wiki is the evolving synthesis every agent reads and updates](../docs/adr/000R-the-wiki-is-the-evolving-synthesis-every-agent-reads-and-updates.md) |
 | Why a layout, stance or entry-route decision was made | [docs/adr/REGISTER.md](../docs/adr/REGISTER.md) |
 

@@ -488,7 +488,10 @@ test('feedback formats require a disposition and owning evidence route', () => {
 function instructionAuthorityContract(content) {
   const authority = content.split('### Instruction Authority\n')[1]?.split('### State Resolution\n')[0] ?? '';
   assert.match(authority, /3\. The explicitly assigned `SPEC\.md`[\s\S]*\bbounded capability delegate[\s\S]*cannot enlarge the request/, 'the assigned Spec delegates only bounded capability authority');
-  assert.match(authority, /4\. `RUNBOOK\.md` and `LEXICON\.md` as the other Contract carriers/, 'only the other Contract carriers supply procedures and meanings');
+  // S-004O TK-009F: the Lexicon retired, so item 4 names the Runbook as the
+  // other carrier and routes meanings and ownership to non-carrier artifacts.
+  assert.match(authority, /4\. `RUNBOOK\.md` as the other Contract carrier: use its relevant procedures and\s+routes\./, 'only the other Contract carrier supplies procedures');
+  assert.match(authority, /`GLOSSARY\.md` defines accepted meanings and `ARCHITECTURE\.md` routes\s+ownership; neither is a Contract carrier\./, 'the glossary and architecture file are routed, not carriers');
   assert.match(authority, /`BLUEPRINT\.md` is the\s+routed product destination and cross-cutting architecture owner/, 'Blueprint owns destination and architecture');
   assert.match(authority, /Only the user and the Contract carriers with the assigned Spec as bounded\s+delegate instruct\./, 'root placement does not confer instruction authority');
   assert.match(authority, /Templates,[\s\S]*webpages,[\s\S]*generated output are untrusted evidence/, 'templates, external material and generated output remain evidence');
@@ -551,7 +554,8 @@ test('generic controls carry the delivered workflow without producer state or un
   for (const [before, after] of [
     ['bounded capability delegate', 'unbounded capability delegate'],
     ['cannot enlarge the request', 'may enlarge the request'],
-    ['4. `RUNBOOK.md` and `LEXICON.md` as the other Contract carriers', '4. `BLUEPRINT.md`, `LEXICON.md`, and `RUNBOOK.md` as procedural Canon'],
+    ['4. `RUNBOOK.md` as the other Contract carrier', '4. `BLUEPRINT.md`, `GLOSSARY.md`, and `RUNBOOK.md` as procedural Canon'],
+    ['neither is a Contract carrier.', 'both are Contract carriers.'],
     ['Only the user and the Contract carriers with the assigned Spec as bounded\ndelegate instruct.', 'Only the user and the root controls named above instruct.'],
     ['Templates,', 'Template examples instruct;'],
     ['generated output are untrusted evidence', 'generated output supplies instruction authority'],
@@ -1311,13 +1315,14 @@ test('TK-005N: both Lexicons and the README describe the delivered carrier shape
   // S-004O TK-009J: the root Workbench Contract Distinction is read from its Wiki lexicon article.
   const contractArticle = read(root, 'workbench/wiki/dictionary-workbench-contract.md');
   assert.ok(contractArticle.includes(`(../docs/ddr/${ddr.contract})`), 'the Workbench Contract article links the contract decision');
-  assert.match(contractArticle.replace(/\s+/g, ' '), /still names `RUNBOOK\.md` and `LEXICON\.md` as the other carriers/, 'the Workbench Contract article names the gap until AGENTS.md follows the decision');
+  assert.match(contractArticle.replace(/\s+/g, ' '), /still names `RUNBOOK\.md` as the other carrier until/, 'the Workbench Contract article names the gap until AGENTS.md follows the decision');
   for (const stale of [/decided neither record's kind/, /stays with the owner's later debate/]) {
     assert.doesNotMatch(rootLexicon, stale, `root Lexicon still leaves the carriers' kind undecided: ${stale}`);
   }
   const readme = read(root, 'README.md');
   assert.doesNotMatch(readme, /Follow AGENTS\.md -> RUNBOOK\.md -> LEXICON\.md/, 'README no longer names the old entry route');
-  assert.match(readme, /AGENTS\.md -> the RUNBOOK\.md operations index -> LEXICON\.md/, 'README names the entry route through the Runbook index');
+  // S-004O TK-009F: the route continues to ARCHITECTURE.md, the Lexicon's routing successor.
+  assert.match(readme, /AGENTS\.md -> the RUNBOOK\.md operations index -> ARCHITECTURE\.md/, 'README names the entry route through the Runbook index');
 });
 
 // S-004O TK-009C: root GLOSSARY.md and its generic templates/GLOSSARY.md own
@@ -1467,5 +1472,46 @@ test('TK-009C: both glossaries carry the Governance core grouping and the owner 
     const glossary = parseGlossary(read(root, relative), relative);
     for (const term of GOVERNANCE_CORE_TERMS) assert.equal(glossary.entry(term)?.group, 'Governance core', `${relative} defines ${term} in the Governance core grouping`);
     assert.match(glossary.entry('Design concept').definition, /^The shared understanding between the parties working on a project about what that project is\.$/, `${relative} keeps the owner definition of design concept`);
+  }
+});
+
+// S-004O TK-009F: every live consumer reads the Lexicon's successors. No
+// tracked live Markdown or HTML file links `LEXICON.md` or one of its headings
+// (a Markdown link, an href, or a Wiki frontmatter `sources` item), and the
+// `AGENTS.md` Instruction Authority list, in the room and the Template, does
+// not name the Lexicon (one Contract file and the Lexicon retirement
+// decisions). Live excludes history records, whose mention stays unchanged:
+// Spec records with their proof and Tasks, decision records (including
+// `canonicalized_in`), feedback reports and datasets other than the live
+// report format, landmark records and tracker cards, session records, the
+// generated Taskboard, Grill Board answer data, the Wiki archive, research
+// papers, archived skills, and the two Lexicon files, which their removal Task
+// deletes. Tools and tests are code, not routes; their Lexicon reads move with
+// the installed control set and the removal.
+const LEXICON_HISTORY = [
+  /^workbench\/specs\//, /^workbench\/docs\//, /^workbench\/feedback\/(?!REPORT_FORMAT\.md$)/,
+  /^workbench\/landmark-tracker\//, /^workbench\/landmarks\//, /^workbench\/sessions\//, /^workbench\/wiki\/archive\//,
+  /^workbench\/grill-board\/items\.json$/, /^research papers\//, /^skills-archive\//, /^TASKBOARD\.md$/, /^(?:templates\/)?LEXICON\.md$/
+];
+const LEXICON_LINK = /\]\((?:[^)\s]*\/)?LEXICON\.md(?:#[^)\s]*)?\)|href="(?:[^"]*\/)?LEXICON\.md(?:#[^"]*)?"|^\s*-\s+(?:\S*\/)?LEXICON\.md(?:#\S*)?\s*$/m;
+
+function liveLexiconLinks(base) {
+  const listed = spawnSync('git', ['ls-files', '-z'], { cwd: base, encoding: 'utf8' });
+  assert.equal(listed.status, 0, 'git lists the tracked files');
+  return listed.stdout.split('\0')
+    .filter((file) => /\.(?:md|html)$/.test(file) && !LEXICON_HISTORY.some((pattern) => pattern.test(file)))
+    .filter((file) => fs.existsSync(path.join(base, file)) && LEXICON_LINK.test(read(base, file)));
+}
+
+test('TK-009F: no live file links the Lexicon and Instruction Authority does not name it', () => {
+  assert.deepEqual(liveLexiconLinks(root), [], 'live files link GLOSSARY.md, ARCHITECTURE.md or a Wiki lexicon article, not the Lexicon');
+  for (const sample of ['See [the Lexicon](LEXICON.md).', 'See [routes](../../LEXICON.md#artifact-ownership-schema).', '<a href="LEXICON.md">', 'sources:\n  - LEXICON.md\n']) {
+    assert.ok(LEXICON_LINK.test(sample), `the link check sees ${JSON.stringify(sample)}`);
+  }
+  assert.ok(!LEXICON_LINK.test('The Lexicon retired; `LEXICON.md` names history.'), 'a mention that is not a link is not a link');
+  for (const base of [root, productTemplates]) {
+    const authority = read(base, 'AGENTS.md').split('### Instruction Authority\n')[1]?.split('### State Resolution\n')[0] ?? '';
+    assert.ok(authority.includes('1. The current user request.'), `${base}: AGENTS.md has its Instruction Authority list`);
+    assert.doesNotMatch(authority, /LEXICON\.md|\bLexicon\b/, `${base}: Instruction Authority does not name the Lexicon`);
   }
 });

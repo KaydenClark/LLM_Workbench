@@ -42,7 +42,7 @@ Do not restart grilling or implement the capability.
    discipline, which also sets each Task's stance. You may note the intended
    slice direction in prose. This applies to new Specs only: when you reuse an
    existing Spec, keep the Tasks it already has.
-7. Preserve project vocabulary from `LEXICON.md` and cross-cutting boundaries
+7. Preserve project vocabulary from `GLOSSARY.md` and cross-cutting boundaries
    from `BLUEPRINT.md`. A spec owns one capability; it replaces neither.
 8. Run `node workbench/tools/spec-workbench.mjs render` and
    `node workbench/tools/spec-workbench.mjs doctor`, then report the spec path, open owner

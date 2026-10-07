@@ -231,7 +231,7 @@ The lowercase `workbench/` directory whose manifest declares the seven support l
 _Avoid_: portable layout
 
 **Core skill bundle**:
-The closed set of twenty workflow skills, four coordination skills and four stance skills, counted from the manifest, that every room carries in its `workbench/skills` lane.
+The closed set of twenty-four workflow skills, four coordination skills and four stance skills, counted from the manifest, that every room carries in its `workbench/skills` lane.
 
 **Skills lane**:
 The seventh manifest-declared lane, `workbench/skills`: the core skills tracked inside the room, owned and versioned by LLM Workbench, marked by a receipt naming source release, commit and a hash per skill, and replaced only by the Workbench update.

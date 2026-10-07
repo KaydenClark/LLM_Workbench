@@ -1,0 +1,16 @@
+== BEFORE: 6dbec705 tree with workbench/skills/pr absent ==
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: workbench/skills/pr/SKILL.md must carry the pinned upstream source
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v26.3.0
+exit=1

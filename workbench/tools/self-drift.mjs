@@ -9,7 +9,12 @@ import { assertSafeReadPath, isMainModule, readManifest, laneRelative, collectio
 import { doctor } from './spec-workbench.mjs';
 import { provenanceFindings, seededDocumentFindings } from './workbench-layout.mjs';
 
-const CONTROLS = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'README.md', 'TASKBOARD.md'];
+const CONTROLS = ['AGENTS.md', 'BLUEPRINT.md', 'RUNBOOK.md', 'README.md', 'TASKBOARD.md'];
+// The glossary and architecture file succeed the retiring Lexicon. A room the
+// update has not reached yet has neither and may still carry its Lexicon, so
+// all three are read when present; one that exists but is not an ordinary
+// readable file is still unreadable.
+const VOCABULARY_CONTROLS = ['GLOSSARY.md', 'ARCHITECTURE.md', 'LEXICON.md'];
 const HISTORY = /(?:^|\/)(?:retired|archive|checkpoints|recovery)(?:\/|$)/;
 function field(text, name) { return text.match(new RegExp(`^\\*\\*${name}:\\*\\* (.+)$`, 'm'))?.[1]?.trim() ?? null; }
 function section(text, name) { return text.match(new RegExp(`^## ${name}\\r?\\n([\\s\\S]*?)(?=^## |$(?![\\s\\S]))`, 'm'))?.[1]?.trim() ?? ''; }
@@ -76,6 +81,7 @@ export function inspectSelfDrift(project, options = {}) {
     manifest = readManifest(root);
     if (manifest.schemaVersion !== 2) throw new Error('schemaVersion must be 2');
     for (const control of CONTROLS) read(control);
+    for (const control of VOCABULARY_CONTROLS) read(control, false);
     const specs = laneRelative(root, 'specs');
     read(`${specs}/CATALOG.md`);
     read(`${laneRelative(root, 'wiki')}/MEMORY.md`);

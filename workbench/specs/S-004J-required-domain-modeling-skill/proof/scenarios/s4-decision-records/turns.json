@@ -1,0 +1,3 @@
+[
+  "/domain-modeling We settled four choices while reworking billing today. Which of them, if any, should get a decision record?\n1. Rename the test helper `invoice()` in tests/settlement.test.js to `openInvoice()`.\n2. Invoice ids are numbered sequentially, INV-1, INV-2 and so on, like every invoicing system does.\n3. Store all money as integer cents, because the payment processor we must use only accepts integer cents.\n4. An issued Invoice is never edited; every correction is a Credit Note against it. We chose that over editable Invoices with an audit log, even though support staff lose a quick fix, because auditors need issued Invoices to stay exactly as sent."
+]

@@ -13,7 +13,7 @@ source_paths:
   - tools/test-skill-catalog.mjs
   - workbench/skills/implement/SKILL.md
   - workbench/skills/save/SKILL.md
-  - LEXICON.md
+  - GLOSSARY.md
   - RUNBOOK.md
 last_verified: 2026-10-01
 ---
@@ -47,7 +47,7 @@ In the S-01C (carry skill rebuild Spec) scenario, a fresh agent was given only t
 
 ## Upstream relationship
 
-Carry is Workbench-native. It entered at [`f93c8a4`](https://github.com/KaydenClark/LLM_Workbench/commit/f93c8a4f) as the seventeenth core-bundle skill under [S-049](../specs/S-049-assignment-ownership-and-coordination-record/SPEC.md), whose point was the measurement: one carried assignment produced zero coordination hand-backs, and that Spec's completion result says plainly that one run is an anecdote. There is no third-party upstream in [THIRD_PARTY_NOTICES](../../THIRD_PARTY_NOTICES.md). The [LEXICON](../../LEXICON.md) entry for *Coordination hand-back* names carry as the recorder and still agrees with the source.
+Carry is Workbench-native. It entered at [`f93c8a4`](https://github.com/KaydenClark/LLM_Workbench/commit/f93c8a4f) as the seventeenth core-bundle skill under [S-049](../specs/S-049-assignment-ownership-and-coordination-record/SPEC.md), whose point was the measurement: one carried assignment produced zero coordination hand-backs, and that Spec's completion result says plainly that one run is an anecdote. There is no third-party upstream in [THIRD_PARTY_NOTICES](../../THIRD_PARTY_NOTICES.md). The [GLOSSARY](../../GLOSSARY.md#chats-and-roles) entry for *Coordination hand-back*, explained in its [lexicon article](dictionary-coordination-hand-back.md), names carry as the recorder and still agrees with the source.
 
 ## Verified behavior and limits
 
@@ -60,7 +60,7 @@ Carry is Workbench-native. It entered at [`f93c8a4`](https://github.com/KaydenCl
 - [Carry source](../skills/carry/SKILL.md)
 - [Individual delivery Spec](../specs/S-01C-carry-skill-rebuild/SPEC.md)
 - [Origin Spec S-049](../specs/S-049-assignment-ownership-and-coordination-record/SPEC.md)
-- [Coordination hand-back in LEXICON](../../LEXICON.md)
+- [Coordination hand-back in GLOSSARY](../../GLOSSARY.md#chats-and-roles) and its [lexicon article](dictionary-coordination-hand-back.md)
 - [Runbook behavior selection](../../RUNBOOK.md#behavior-selection)
 - [Wiki router](MEMORY.md)
 

@@ -1,0 +1,426 @@
+[
+  {
+    "index": 1,
+    "command": "node tools/test-spec-workbench.mjs",
+    "exitCode": 0,
+    "seconds": 195.75,
+    "log": "/private/tmp/retro-final-suite-01.txt",
+    "candidate": "9a25b00c31f7a4cdc6c41d7cffd0dfda43d97145"
+  },
+  {
+    "index": 2,
+    "command": "node tools/test-spec-assembly-selection.mjs",
+    "exitCode": 0,
+    "seconds": 2.32,
+    "log": "/private/tmp/retro-final-suite-02.txt",
+    "candidate": "9a25b00c31f7a4cdc6c41d7cffd0dfda43d97145"
+  },
+  {
+    "index": 3,
+    "command": "node tools/test-skill-catalog.mjs",
+    "exitCode": 0,
+    "seconds": 0.49,
+    "log": "/private/tmp/retro-final-suite-03.txt",
+    "candidate": "9a25b00c31f7a4cdc6c41d7cffd0dfda43d97145"
+  },
+  {
+    "index": 4,
+    "command": "node tools/test-skill-inspection.mjs",
+    "exitCode": 0,
+    "seconds": 0.13,
+    "log": "/private/tmp/retro-final-suite-04.txt",
+    "candidate": "9a25b00c31f7a4cdc6c41d7cffd0dfda43d97145"
+  },
+  {
+    "index": 5,
+    "command": "node tools/test-skills-lane.mjs",
+    "exitCode": 0,
+    "seconds": 9.14,
+    "log": "/private/tmp/retro-final-suite-05.txt",
+    "candidate": "9a25b00c31f7a4cdc6c41d7cffd0dfda43d97145"
+  },
+  {
+    "index": 6,
+    "command": "node tools/test-core-composition.mjs",
+    "exitCode": 0,
+    "seconds": 2.66,
+    "log": "/private/tmp/retro-final-suite-06.txt",
+    "candidate": "9a25b00c31f7a4cdc6c41d7cffd0dfda43d97145"
+  },
+  {
+    "index": 7,
+    "command": "node tools/test-project-evidence.mjs",
+    "exitCode": 0,
+    "seconds": 1.07,
+    "log": "/private/tmp/retro-final-suite-07.txt",
+    "candidate": "9a25b00c31f7a4cdc6c41d7cffd0dfda43d97145"
+  },
+  {
+    "index": 8,
+    "command": "node tools/test-genesis-from-decisions.mjs",
+    "exitCode": 0,
+    "seconds": 28.34,
+    "log": "/private/tmp/retro-final-suite-08.txt",
+    "candidate": "9a25b00c31f7a4cdc6c41d7cffd0dfda43d97145"
+  },
+  {
+    "index": 9,
+    "command": "node tools/test-blueprint-contract.mjs",
+    "exitCode": 0,
+    "seconds": 0.12,
+    "log": "/private/tmp/retro-final-suite-09.txt",
+    "candidate": "9a25b00c31f7a4cdc6c41d7cffd0dfda43d97145"
+  },
+  {
+    "index": 10,
+    "command": "node tools/test-session-transport.mjs",
+    "exitCode": 0,
+    "seconds": 24.11,
+    "log": "/private/tmp/retro-final-suite-10.txt",
+    "candidate": "9a25b00c31f7a4cdc6c41d7cffd0dfda43d97145"
+  },
+  {
+    "index": 11,
+    "command": "node tools/test-configured-host.mjs",
+    "exitCode": 0,
+    "seconds": 11.56,
+    "log": "/private/tmp/retro-final-suite-11.txt",
+    "candidate": "9a25b00c31f7a4cdc6c41d7cffd0dfda43d97145"
+  },
+  {
+    "index": 12,
+    "command": "node tools/test-core-skill-installer.mjs",
+    "exitCode": 0,
+    "seconds": 18.23,
+    "log": "/private/tmp/retro-final-suite-12.txt",
+    "candidate": "9a25b00c31f7a4cdc6c41d7cffd0dfda43d97145"
+  },
+  {
+    "index": 13,
+    "command": "node tools/test-workbench-layout.mjs",
+    "exitCode": 0,
+    "seconds": 47.55,
+    "log": "/private/tmp/retro-final-suite-13.txt",
+    "candidate": "9a25b00c31f7a4cdc6c41d7cffd0dfda43d97145"
+  },
+  {
+    "index": 14,
+    "command": "node tools/test-workbench-adoption.mjs",
+    "exitCode": 0,
+    "seconds": 11.4,
+    "log": "/private/tmp/retro-final-suite-14.txt",
+    "candidate": "9a25b00c31f7a4cdc6c41d7cffd0dfda43d97145"
+  },
+  {
+    "index": 15,
+    "command": "node tools/test-workbench-upgrade.mjs",
+    "exitCode": 0,
+    "seconds": 13.0,
+    "log": "/private/tmp/retro-final-suite-15.txt",
+    "candidate": "9a25b00c31f7a4cdc6c41d7cffd0dfda43d97145"
+  },
+  {
+    "index": 16,
+    "command": "node tools/test-workbench-tools.mjs",
+    "exitCode": 0,
+    "seconds": 8.91,
+    "log": "/private/tmp/retro-final-suite-16.txt",
+    "candidate": "9a25b00c31f7a4cdc6c41d7cffd0dfda43d97145"
+  },
+  {
+    "index": 17,
+    "command": "node tools/test-diagnostics.mjs",
+    "exitCode": 0,
+    "seconds": 32.87,
+    "log": "/private/tmp/retro-final-suite-17.txt",
+    "candidate": "9a25b00c31f7a4cdc6c41d7cffd0dfda43d97145"
+  },
+  {
+    "index": 18,
+    "command": "node tools/test-adr.mjs",
+    "exitCode": 0,
+    "seconds": 17.77,
+    "log": "/private/tmp/retro-final-suite-18.txt",
+    "candidate": "9a25b00c31f7a4cdc6c41d7cffd0dfda43d97145"
+  },
+  {
+    "index": 19,
+    "command": "node tools/test-governance-core.mjs",
+    "exitCode": 0,
+    "seconds": 0.1,
+    "log": "/private/tmp/retro-final-suite-19.txt",
+    "candidate": "9a25b00c31f7a4cdc6c41d7cffd0dfda43d97145"
+  },
+  {
+    "index": 20,
+    "command": "node tools/test-branch-closeout.mjs",
+    "exitCode": 0,
+    "seconds": 5.13,
+    "log": "/private/tmp/retro-final-suite-20.txt",
+    "candidate": "9a25b00c31f7a4cdc6c41d7cffd0dfda43d97145"
+  },
+  {
+    "index": 21,
+    "command": "node tools/test-wiki.mjs",
+    "exitCode": 0,
+    "seconds": 9.63,
+    "log": "/private/tmp/retro-final-suite-21.txt",
+    "candidate": "9a25b00c31f7a4cdc6c41d7cffd0dfda43d97145"
+  },
+  {
+    "index": 22,
+    "command": "node tools/test-sessions.mjs",
+    "exitCode": 0,
+    "seconds": 5.93,
+    "log": "/private/tmp/retro-final-suite-22.txt",
+    "candidate": "9a25b00c31f7a4cdc6c41d7cffd0dfda43d97145"
+  },
+  {
+    "index": 23,
+    "command": "node tools/test-notepads.mjs",
+    "exitCode": 0,
+    "seconds": 12.47,
+    "log": "/private/tmp/retro-final-suite-23.txt",
+    "candidate": "9a25b00c31f7a4cdc6c41d7cffd0dfda43d97145"
+  },
+  {
+    "index": 24,
+    "command": "node tools/test-visible-ids.mjs",
+    "exitCode": 0,
+    "seconds": 0.58,
+    "log": "/private/tmp/retro-final-suite-24.txt",
+    "candidate": "9a25b00c31f7a4cdc6c41d7cffd0dfda43d97145"
+  },
+  {
+    "index": 25,
+    "command": "node tools/test-workbench-identity.mjs",
+    "exitCode": 0,
+    "seconds": 3.89,
+    "log": "/private/tmp/retro-final-suite-25.txt",
+    "candidate": "9a25b00c31f7a4cdc6c41d7cffd0dfda43d97145"
+  },
+  {
+    "index": 26,
+    "command": "node tools/test-visible-id-consumers.mjs",
+    "exitCode": 0,
+    "seconds": 13.55,
+    "log": "/private/tmp/retro-final-suite-26.txt",
+    "candidate": "9a25b00c31f7a4cdc6c41d7cffd0dfda43d97145"
+  },
+  {
+    "index": 27,
+    "command": "node tools/test-direct-promotion.mjs",
+    "exitCode": 0,
+    "seconds": 4.63,
+    "log": "/private/tmp/retro-final-suite-27.txt",
+    "candidate": "9a25b00c31f7a4cdc6c41d7cffd0dfda43d97145"
+  },
+  {
+    "index": 28,
+    "command": "node tools/test-workbench-round-trip.mjs",
+    "exitCode": 0,
+    "seconds": 42.81,
+    "log": "/private/tmp/retro-final-suite-28.txt",
+    "candidate": "9a25b00c31f7a4cdc6c41d7cffd0dfda43d97145"
+  },
+  {
+    "index": 29,
+    "command": "node tools/test-cross-provider-fixture.mjs",
+    "exitCode": 0,
+    "seconds": 2.55,
+    "log": "/private/tmp/retro-final-suite-29.txt",
+    "candidate": "9a25b00c31f7a4cdc6c41d7cffd0dfda43d97145"
+  },
+  {
+    "index": 30,
+    "command": "node tools/test-portability-matrix.mjs",
+    "exitCode": 0,
+    "seconds": 0.56,
+    "log": "/private/tmp/retro-final-suite-30.txt",
+    "candidate": "9a25b00c31f7a4cdc6c41d7cffd0dfda43d97145"
+  },
+  {
+    "index": 31,
+    "command": "node tools/test-workbench-dogfood.mjs",
+    "exitCode": 0,
+    "seconds": 6.55,
+    "log": "/private/tmp/retro-final-suite-31.txt",
+    "candidate": "9a25b00c31f7a4cdc6c41d7cffd0dfda43d97145"
+  },
+  {
+    "index": 32,
+    "command": "node tools/test-evaluate-workbench.mjs",
+    "exitCode": 0,
+    "seconds": 0.39,
+    "log": "/private/tmp/retro-final-suite-32.txt",
+    "candidate": "9a25b00c31f7a4cdc6c41d7cffd0dfda43d97145"
+  },
+  {
+    "index": 33,
+    "command": "node tools/test-guardrail-audit.mjs",
+    "exitCode": 0,
+    "seconds": 0.24,
+    "log": "/private/tmp/retro-final-suite-33.txt",
+    "candidate": "9a25b00c31f7a4cdc6c41d7cffd0dfda43d97145"
+  },
+  {
+    "index": 34,
+    "command": "node tools/test-context-tools.mjs",
+    "exitCode": 0,
+    "seconds": 0.26,
+    "log": "/private/tmp/retro-final-suite-34.txt",
+    "candidate": "9a25b00c31f7a4cdc6c41d7cffd0dfda43d97145"
+  },
+  {
+    "index": 35,
+    "command": "node tools/test-outcome-trials.mjs",
+    "exitCode": 0,
+    "seconds": 0.66,
+    "log": "/private/tmp/retro-final-suite-35.txt",
+    "candidate": "9a25b00c31f7a4cdc6c41d7cffd0dfda43d97145"
+  },
+  {
+    "index": 36,
+    "command": "node tools/test-eval-runner.mjs",
+    "exitCode": 0,
+    "seconds": 0.89,
+    "log": "/private/tmp/retro-final-suite-36.txt",
+    "candidate": "9a25b00c31f7a4cdc6c41d7cffd0dfda43d97145"
+  },
+  {
+    "index": 37,
+    "command": "node tools/test-feedback-automation.mjs",
+    "exitCode": 0,
+    "seconds": 0.61,
+    "log": "/private/tmp/retro-final-suite-37.txt",
+    "candidate": "9a25b00c31f7a4cdc6c41d7cffd0dfda43d97145"
+  },
+  {
+    "index": 38,
+    "command": "node tools/test-symlink-invocation.mjs",
+    "exitCode": 0,
+    "seconds": 1.01,
+    "log": "/private/tmp/retro-final-suite-38.txt",
+    "candidate": "9a25b00c31f7a4cdc6c41d7cffd0dfda43d97145"
+  },
+  {
+    "index": 39,
+    "command": "node tools/test-control-fidelity.mjs",
+    "exitCode": 0,
+    "seconds": 2.13,
+    "log": "/private/tmp/retro-final-suite-39.txt",
+    "candidate": "9a25b00c31f7a4cdc6c41d7cffd0dfda43d97145"
+  },
+  {
+    "index": 40,
+    "command": "node tools/test-spec-citation-anchors.mjs",
+    "exitCode": 0,
+    "seconds": 25.08,
+    "log": "/private/tmp/retro-final-suite-40.txt",
+    "candidate": "9a25b00c31f7a4cdc6c41d7cffd0dfda43d97145"
+  },
+  {
+    "index": 41,
+    "command": "node tools/test-controls-vocabulary-sweep.mjs",
+    "exitCode": 0,
+    "seconds": 0.07,
+    "log": "/private/tmp/retro-final-suite-41.txt",
+    "candidate": "9a25b00c31f7a4cdc6c41d7cffd0dfda43d97145"
+  },
+  {
+    "index": 42,
+    "command": "node tools/test-carrier-landing.mjs",
+    "exitCode": 0,
+    "seconds": 3.67,
+    "log": "/private/tmp/retro-final-suite-42.txt",
+    "candidate": "9a25b00c31f7a4cdc6c41d7cffd0dfda43d97145"
+  },
+  {
+    "index": 43,
+    "command": "node tools/test-runbook-index.mjs",
+    "exitCode": 0,
+    "seconds": 0.7,
+    "log": "/private/tmp/retro-final-suite-43.txt",
+    "candidate": "9a25b00c31f7a4cdc6c41d7cffd0dfda43d97145"
+  },
+  {
+    "index": 44,
+    "command": "node tools/test-spec-report.mjs",
+    "exitCode": 0,
+    "seconds": 38.43,
+    "log": "/private/tmp/retro-final-suite-44.txt",
+    "candidate": "9a25b00c31f7a4cdc6c41d7cffd0dfda43d97145"
+  },
+  {
+    "index": 45,
+    "command": "node tools/test-landmark-wiki.mjs",
+    "exitCode": 0,
+    "seconds": 9.05,
+    "log": "/private/tmp/retro-final-suite-45.txt",
+    "candidate": "9a25b00c31f7a4cdc6c41d7cffd0dfda43d97145"
+  },
+  {
+    "index": 46,
+    "command": "node tools/test-self-drift.mjs",
+    "exitCode": 0,
+    "seconds": 0.37,
+    "log": "/private/tmp/retro-final-suite-46.txt",
+    "candidate": "9a25b00c31f7a4cdc6c41d7cffd0dfda43d97145"
+  },
+  {
+    "index": 47,
+    "command": "node tools/test-feedback-inventory.mjs",
+    "exitCode": 0,
+    "seconds": 0.13,
+    "log": "/private/tmp/retro-final-suite-47.txt",
+    "candidate": "9a25b00c31f7a4cdc6c41d7cffd0dfda43d97145"
+  },
+  {
+    "index": 48,
+    "command": "node tools/test-grilling-ledger.mjs",
+    "exitCode": 0,
+    "seconds": 0.14,
+    "log": "/private/tmp/retro-final-suite-48.txt",
+    "candidate": "9a25b00c31f7a4cdc6c41d7cffd0dfda43d97145"
+  },
+  {
+    "index": 49,
+    "command": "node tools/test-grill-board.mjs",
+    "exitCode": 0,
+    "seconds": 0.77,
+    "log": "/private/tmp/retro-final-suite-49.txt",
+    "candidate": "9a25b00c31f7a4cdc6c41d7cffd0dfda43d97145"
+  },
+  {
+    "index": 50,
+    "command": "python3 tools/test-check-append-only.py",
+    "exitCode": 0,
+    "seconds": 231.42,
+    "log": "/private/tmp/retro-final-suite-50.txt",
+    "candidate": "9a25b00c31f7a4cdc6c41d7cffd0dfda43d97145"
+  },
+  {
+    "index": 51,
+    "command": "python3 evals/tasks/task_b_path_safety/test_grade.py",
+    "exitCode": 0,
+    "seconds": 0.42,
+    "log": "/private/tmp/retro-final-suite-51.txt",
+    "candidate": "9a25b00c31f7a4cdc6c41d7cffd0dfda43d97145"
+  },
+  {
+    "index": 52,
+    "command": "node tools/evaluate-workbench.mjs --path templates --include-controls",
+    "exitCode": 0,
+    "seconds": 0.08,
+    "log": "/private/tmp/retro-final-suite-52.txt",
+    "candidate": "9a25b00c31f7a4cdc6c41d7cffd0dfda43d97145"
+  },
+  {
+    "index": 53,
+    "command": "node workbench/tools/spec-workbench.mjs doctor",
+    "exitCode": 0,
+    "seconds": 3.02,
+    "log": "/private/tmp/retro-final-suite-53.txt",
+    "candidate": "9a25b00c31f7a4cdc6c41d7cffd0dfda43d97145"
+  }
+]

@@ -188,7 +188,7 @@ assigned target; it never authorizes a repair or invokes automated repair.
 3. Write `REPORT-topic-date.md` in the declared feedback lane using its
    `REPORT_FORMAT.md`. Include Target And Scope, Evidence And Limitations,
    Findings, Challenged Or Rejected Findings, Next Action And Open Questions,
-   and Review Boundary. Every finding requires exactly one Lexicon disposition,
+   and Review Boundary. Every finding requires exactly one `GLOSSARY.md` Feedback disposition,
    recorded in its owning Spec with an evidence route; missing ownership stays
    an explicit gap. No findings is valid. Reports never live loose or in
    the Wiki. If the format is absent in an older installation, these sections

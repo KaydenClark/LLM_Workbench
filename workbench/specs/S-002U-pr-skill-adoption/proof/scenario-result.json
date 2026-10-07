@@ -1,0 +1,73 @@
+{
+  "spec": "S-002U",
+  "task": "TK-007W",
+  "observedOn": "2026-10-07",
+  "sourceCandidate": "3082ae8c9f69c0725349aeab0a490948f700f90b",
+  "skill": {
+    "path": "workbench/skills/pr/SKILL.md",
+    "sha256": "ab63f1cf78647389edcd386c9427c5dfca27ed2836930c24773ffee834c19bcd",
+    "pinnedNormalizedSha256": "bb2f9427da7c83ec95abf1207380c19d726d6d8c933f6d0314cb14e84c3e998b",
+    "note": "Byte-identical to Matt Pocock skills/engineering/pr at d81f3a183412e71a5b1e84ca21bc1a35eea03a60; the catalog test's normalized pin hash matches."
+  },
+  "method": "Claude Code subagent (general-purpose, Opus 5.5, same host as the Worker) spawned with no conversation history. Its prompt named only the skill path to load and follow, the scenario-input directory, a scratch output path outside the repository and a ban on other writes and on git/gh. It used 5 tool calls and replied 'written'. The produced file was copied byte-for-byte to scenario-output.md.",
+  "knownChange": "Commit 6dbec705 'Install the pinned pr skill source with lineage': four new files under workbench/skills/pr/ plus a 15-line hash-pin block in tools/test-skill-catalog.mjs. Expected door: two-way. Expected blast radius: branch-local now; every room's Skills lane only after pr is declared in the Core skill bundle and released.",
+  "inputs": {
+    "directory": "scenario-input/",
+    "treeSha256": "a6bb96a40a1b40a0cf383654ebfd4adec7e3d643527bb1f4765418c33d548673",
+    "glossary": "scenario-input/GLOSSARY.md is a scenario fixture condensed from LEXICON.md (Room, Skills lane, Core skill bundle, Spec, Task). The room's canonical GLOSSARY.md is undelivered; S-004O owns it.",
+    "evidenceRuns": [
+      "evidence/before.txt: node tools/test-skill-catalog.mjs on the exported 6dbec705 tree with workbench/skills/pr moved aside -> 'must carry the pinned upstream source', exit 1 (reproduces TK-007U's recorded red)",
+      "evidence/after.txt: same command on the tree as committed -> passes the pin, fails later at 'live discovery source must contain exactly the locked 28 skills' with extra 'pr', exit 1 (TK-007V's declaration work)",
+      "evidence/isolated.txt: the pin assertion block alone, verbatim in a standalone script -> exit 1 without pr, exit 0 with pr",
+      "evidence/suite-summary-at-56eb7a9b.txt: TK-007U's full suite on clean candidate 56eb7a9b -> pass=46 fail=7"
+    ]
+  },
+  "output": {
+    "file": "scenario-output.md",
+    "sha256": "461848f28bca2fd37fca45eb42e5a39abe5a113c82bd955dd1bf6311862fef98"
+  },
+  "acceptance": [
+    {
+      "criterion": "Brief visual summary present and useful",
+      "verdict": "pass",
+      "observed": "Summary opens with one sentence, then a file-layout diff of the Skills lane with one-line responsibilities per file, then a five-line pseudocode of the new assertion, then one sentence on what the change does not touch. Both visuals sit beside the text they support; no preamble.",
+      "note": "Two visuals rather than one; both carry distinct points (what lands where, what the test checks), within the source's 'one, sometimes several' guidance."
+    },
+    {
+      "criterion": "Actual before/after evidence, nothing invented",
+      "verdict": "pass",
+      "observed": "Before/after quote the exact assertion messages and exit codes from evidence/isolated.txt. It separately reports that the full catalog test still fails, with the exact message, and the suite result pass=46 fail=7 with the seven failing check names, all matching the evidence files. No screenshot or unrun check is claimed.",
+      "note": "It chose the isolated assertion as the before/after and presented the still-red full test as expected red, which is the honest reading of the input."
+    },
+    {
+      "criterion": "Door and blast radius accurate",
+      "verdict": "pass-with-imprecision",
+      "observed": "Door: two-way, because the commit adds files and one test block and a revert removes it. Blast radius: branch-local, because it targets the assembly branch and cuts no release so no Room receives pr; it names the real cost that the branch suite stays red (7 checks) until the follow-up Task.",
+      "assessment": "Accurate for this commit in isolation. It does not mention that once pr is declared and released, every room's Skills lane carries it; the input placed that in a follow-up Task and release, so omitting it is defensible. Imprecision: Merge Danger says the commit 'adds five files and one test block' and the Summary says 'adds files only'; the commit adds four files and edits one existing test file.",
+      "inputLimit": "scenario-input/CHANGE.md stated the door and blast-radius facts outright ('The commit only adds files and one test block; it deletes and rewrites nothing', no manifest or Core-list edit, no release cut) beside a five-file diff stat. The verdict therefore shows faithful restatement of supplied merge-danger facts, not independent derivation from the diff, and that framing partly seeded the five-files miscount. Added after the S-002U assembled review at 24d47f06; the recorded input and body are unchanged and the scenario was not rerun."
+    },
+    {
+      "criterion": "Supplied glossary terms used",
+      "verdict": "pass",
+      "observed": "Uses Skills lane, Core skill bundle, Room, Task and Spec in the fixture's senses; introduces no competing vocabulary.",
+      "limit": "The glossary was a fixture; the room's own GLOSSARY.md does not exist yet."
+    },
+    {
+      "criterion": "No Git or PR side effect",
+      "verdict": "pass",
+      "observed": "scenario-environment-diff.md: HEAD, porcelain status including ignored files, this lane's refs, s002u branch list, worktree count and gh pr list (by head branch and by head:claude/s002u search) are identical before and after; diff exit 0. No PR exists for any s002u branch."
+    }
+  ],
+  "alsoObserved": [
+    "The body carries no Workbench merge-safety and completion answers, consistent with draft finding F:pr:01; the caller must add them."
+  ],
+  "limits": [
+    "Single run; no repeat-run variance or comparative quality claim",
+    "Merge-danger facts (door, blast radius, add-only shape) were supplied in the input, so independent derivation of Merge Danger from the diff is unobserved",
+    "Glossary was a scenario fixture; the canonical GLOSSARY.md is undelivered (S-004O)",
+    "Fresh context means no conversation history; the subagent ran in the same host (Claude Code, macOS) and model (Opus 5.5) as the Worker and may have loaded the host's project instructions and memory",
+    "Direct skill-path invocation, not ordinary-prompt discovery through the .agents/skills or .claude/skills adapters; pr is not yet declared in the Core skill bundle on this base",
+    "No Codex or other-provider run",
+    "The subagent's raw tool transcript is not preserved; only its output file and reply are"
+  ]
+}

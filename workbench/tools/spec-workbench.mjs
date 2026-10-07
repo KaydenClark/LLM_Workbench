@@ -2406,7 +2406,11 @@ export function findSpec(rootDir, selector) {
 // caller is handling separately (the Spec directory that is itself moving).
 function collectSpecReferenceFiles(root, excludeDir) {
   const files = [];
-  for (const name of ['AGENTS.md', 'RUNBOOK.md', 'LEXICON.md', 'BLUEPRINT.md', 'TASKBOARD.md', 'README.md', 'CLAUDE.md']) {
+  // ARCHITECTURE.md carries the routes the retiring Lexicon held and links
+  // records; a room the update has not reached still carries `LEXICON.md`, and
+  // every name is read only if present. The glossary links no record and only
+  // promotion writes it, so a reference repair never touches it.
+  for (const name of ['AGENTS.md', 'RUNBOOK.md', 'ARCHITECTURE.md', 'LEXICON.md', 'BLUEPRINT.md', 'TASKBOARD.md', 'README.md', 'CLAUDE.md']) {
     const file = path.join(root, name);
     if (fs.existsSync(file) && fs.statSync(file).isFile()) files.push(file);
   }
@@ -3426,7 +3430,7 @@ function durableOwnerRefusal(root, specId, historicalRoute, noteAbsolute, { feat
   }
   // Review corrective (Low, S-00I TK-005): a note can satisfy every property
   // check above and still be unreachable from a cold-start agent's actual
-  // entry point. `MEMORY.md` is the one router `SCHEMA.md`/`LEXICON.md` name.
+  // entry point. `MEMORY.md` is the one router `SCHEMA.md`/`ARCHITECTURE.md` name.
   const memoryPath = path.join(wikiRoot, 'MEMORY.md');
   const memoryContent = fs.existsSync(memoryPath) ? fs.readFileSync(memoryPath, 'utf8') : '';
   const noteRelativeToWikiRoot = path.relative(wikiRoot, noteAbsolute).split(path.sep).join('/');

@@ -177,7 +177,7 @@ Controls and tools: [manifest](../../manifest.json), the
 [path reader](../../tools/workbench-paths.mjs),
 [skills lane tool](../../../tools/workbench-skills.mjs) and
 [host-floor check](../../tools/host-floor.mjs); the room's operations live in
-[RUNBOOK](../../../RUNBOOK.md) and its terms in [LEXICON](../../../LEXICON.md).
+[RUNBOOK](../../../RUNBOOK.md) and its terms in [GLOSSARY](../../../GLOSSARY.md).
 
 ## Related pages
 
@@ -194,3 +194,4 @@ Controls and tools: [manifest](../../manifest.json), the
 ## History
 
 - 2026-10-04: created by the Wiki Evolving-Synthesis Migration Spec (S-003W), Task TK-004 (landmark synthesis pages), seeded from the cards' current answers.
+- 2026-10-07: Re-pointed the retiring Lexicon's links and live routes to `GLOSSARY.md`, `ARCHITECTURE.md` and the Wiki lexicon articles (the Lexicon Retirement Spec (S-004O), its consumer re-pointing Task (TK-009F)); no claim changed.

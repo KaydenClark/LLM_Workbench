@@ -11,7 +11,7 @@ source_paths:
   - workbench/specs/S-01Q-auditor-skill-rebuild/SPEC.md
   - tools/test-skill-catalog.mjs
   - tools/test-delivery-skills.mjs
-  - LEXICON.md
+  - GLOSSARY.md
   - workbench/docs/adr/0036-stances-change-method-not-authority.md
   - team templates/SUBAGENT.md
   - team templates/MANAGER.md
@@ -50,7 +50,7 @@ The optional [team templates](../../team%20templates/SUBAGENT.md) (also [MANAGER
 
 ## Upstream relationship
 
-The auditor is Workbench-native. It entered with the portable stance workflow at [`bfae8c0`](https://github.com/KaydenClark/LLM_Workbench/commit/bfae8c0d731d1a799a487b0848f2e39af25c68d5) (v3.1.1) and has no third-party upstream in [THIRD_PARTY_NOTICES](../../THIRD_PARTY_NOTICES.md), so there is no upstream fidelity to compare. The [LEXICON](../../LEXICON.md#stance-terms) definition ("checks claims against named evidence and reports a bounded verdict") still agrees; "bounded verdict" remains the wrapper for the classified findings.
+The auditor is Workbench-native. It entered with the portable stance workflow at [`bfae8c0`](https://github.com/KaydenClark/LLM_Workbench/commit/bfae8c0d731d1a799a487b0848f2e39af25c68d5) (v3.1.1) and has no third-party upstream in [THIRD_PARTY_NOTICES](../../THIRD_PARTY_NOTICES.md), so there is no upstream fidelity to compare. The [GLOSSARY](../../GLOSSARY.md#stance-terms) definition ("checks claims against named evidence and reports a bounded verdict") still agrees; "bounded verdict" remains the wrapper for the classified findings.
 
 ## Verified behavior and limits
 
@@ -62,7 +62,7 @@ The auditor is Workbench-native. It entered with the portable stance workflow at
 
 - [Auditor source](../skills/auditor/SKILL.md)
 - [Individual delivery Spec](../specs/S-01Q-auditor-skill-rebuild/SPEC.md)
-- [Stance terms in LEXICON](../../LEXICON.md#stance-terms)
+- [Stance terms in GLOSSARY](../../GLOSSARY.md#stance-terms)
 - [ADR-0036: stances change method, not authority](../docs/adr/0036-stances-change-method-not-authority.md)
 - [Runbook behavior selection](../../RUNBOOK.md#behavior-selection)
 - [Wiki router](MEMORY.md)

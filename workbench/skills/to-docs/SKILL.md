@@ -13,7 +13,9 @@ For a v3 project, first read `workbench/manifest.json`. It declares the support
 lanes; do not create a root `specs/`, project-local `skills/` core shadow, or parallel
 truth store. Authorized room-local extensions follow the Runbook ownership procedure.
 
-- accepted shared definitions -> `LEXICON.md`;
+- accepted shared definitions -> `GLOSSARY.md`, with fuller explanation in
+  its Wiki lexicon article; which artifact owns a kind of truth, its routes
+  and invariants -> `ARCHITECTURE.md`;
 - what the product is, who it serves, its promised outcomes and its
   non-goals (the Blueprint's four parts) -> `BLUEPRINT.md`;
 - capability requirements, decisions, acceptance, proof, or completion -> the
@@ -41,7 +43,7 @@ truth store. Authorized room-local extensions follow the Runbook ownership proce
 
 Route each claim once. Split a mixed finding into its claims and give each
 exactly one owner by its job: a procedure step to its operational owner, a
-definition to the Lexicon, a requirement or proof to the Spec, an explanation
+definition to the glossary, a requirement or proof to the Spec, an explanation
 to the Wiki. When another owner needs the claim, link to the owner that holds
 it rather than copy it; a Wiki reference article explains why and links the
 procedure instead of restating its steps. Never paste the whole finding into
@@ -151,7 +153,7 @@ record while leaving and counting references inside append-only evidence
 sections, regenerates both registers and stages the result. A refused move
 writes nothing. No separate approval ceremony is added.
 
-Both kinds answer the five read words the Lexicon defines, and reads never
+Both kinds answer the five read words the glossary defines, and reads never
 write. `list` gives the records that exist (both kinds unless `--kind` narrows
 it, optionally one `--status`), one tab-separated line each with identifier,
 status, date, title, path and, for a superseded record, its successor.

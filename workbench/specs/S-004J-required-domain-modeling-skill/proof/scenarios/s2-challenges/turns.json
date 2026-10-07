@@ -1,0 +1,6 @@
+[
+  "/domain-modeling I'm reworking our month-end flow. At month end the Settlement goes through every active Account and issues its Invoice.",
+  "Next: when an account logs in, it should see all of its open Invoices.",
+  "And one rule I want: a Payment always pays exactly one Invoice.",
+  "Last thing: today the code already settles an Invoice partially when a Payment is too small to cover it in full."
+]

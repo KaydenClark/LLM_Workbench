@@ -6,7 +6,7 @@ knowledge_role: curated
 provenance:
   - Owner-confirmed grilling of 2026-10-02 on the workflow verbs and which verb writes each artifact
 source_paths:
-  - LEXICON.md
+  - GLOSSARY.md
   - BLUEPRINT.md
   - workbench/docs/adr/000X-the-workflow-is-eight-verbs-and-each-verb-writes-the-plane-its-claims-live-on.md
   - workbench/docs/adr/000Y-a-locked-and-confirmed-answer-is-promoted-without-further-ceremony.md
@@ -19,14 +19,14 @@ last_verified: 2026-10-05
 
 A workflow verb is a defined action or process that workflows are built from
 and that people use in ordinary language. The set is open: the owner defines
-verbs one at a time, each in its own row of the [Lexicon](../../../LEXICON.md),
+verbs one at a time, each in its own entry of the [glossary](../../../GLOSSARY.md#workflow-verbs),
 and workflows are composed from them. Idea, Align, Confirm, Map, Plan,
 Implement, Review and Verify were the first standardization, accepted on
 2026-10-02; Prototype, Check, QA, Submit, Approve, Delivered and Clean Up and
 the Journey verb have been defined since. The owner had been calling the delivery sequence
 the workflow while it kept being called the ladder or the steps. This page
 explains the verbs and how they decide where a claim is written. It authorizes
-nothing; the Lexicon holds the definitions.
+nothing; the glossary holds the definitions.
 
 ## The delivery workflow
 
@@ -59,7 +59,7 @@ saying so.
 
 ## Which verb writes what
 
-The [Governance Planes](../../../LEXICON.md) are the lens. The owner assigned
+The [Governance Planes](../../../GLOSSARY.md#governance-core) are the lens. The owner assigned
 planes to the first eight verbs only; Prototype, Check, QA, Submit, Journey,
 Approve, Delivered and Clean Up have none assigned. Applied claim by claim as work moves
 through the workflow, most of the time:
@@ -90,8 +90,8 @@ moved to [the workflow page](idea-to-delivery-workflow.md), written in the
 verbs. The Landmark Tracker still prints the earlier step names and its Specs and tests
 use them, and the [landmark tracker page](landmark-tracker.md) describes the
 tool as it is. Which skill owns which verb, and where separate-context review
-(the Lexicon's Automated review), owner Human QA and promotion to main sit among
-Review, Verify and Approve, are not yet decided beyond what the Lexicon rows say.
+(the glossary's Automated review), owner Human QA and promotion to main sit among
+Review, Verify and Approve, are not yet decided beyond what the glossary entries say.
 The Lexicon rows changed no command, status, folder or gate: the `complete`
 command and status and the `S-###:delivered` blocker qualifier keep their names,
 and renaming them is the owner's call.
@@ -103,7 +103,7 @@ and renaming them is the owner's call.
 - [Workbench Terms And Workflow Verb Rows](../../specs/S-004G-workbench-terms-and-workflow-verbs/SPEC.md): the Spec that put the verb rows in the Lexicon.
 - [ADR-000Y, A locked and confirmed answer is promoted without further ceremony](../../docs/adr/000Y-a-locked-and-confirmed-answer-is-promoted-without-further-ceremony.md):
   what ends a grilling and what an answer needs before promotion.
-- [Lexicon](../../../LEXICON.md): the Workflow verb, Workflow, one row per verb, Writer verb and Governance Plane definitions.
+- [Glossary](../../../GLOSSARY.md#workflow-verbs): the Workflow verb, Workflow, one entry per verb, Writer verb and Governance Plane definitions.
 - [Blueprint](../../../BLUEPRINT.md): the short page; its sentence on carrying a concept through the Journey.
 - [The Workflow From Idea To Delivery](idea-to-delivery-workflow.md): the owner's workflow map, rewritten in the verbs.
 - [Decision Records and the Concept Map](decision-records-and-the-concept-map.md):
@@ -120,3 +120,4 @@ and renaming them is the owner's call.
   Rows Spec).
 - 2026-10-05: the owner added QA and Submit to the Journey and moved Review
   after it, with a failed Review going back to Map, Plan and Journey.
+- 2026-10-07: Re-pointed the retiring Lexicon's links and live routes to `GLOSSARY.md`, `ARCHITECTURE.md` and the Wiki lexicon articles (the Lexicon Retirement Spec (S-004O), its consumer re-pointing Task (TK-009F)); no claim changed.

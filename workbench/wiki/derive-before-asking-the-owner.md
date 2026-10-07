@@ -27,7 +27,7 @@ proposals, because his chat answers had not been written back.
    topic, and read its `status` (`locked`, `answered-in-chat`, `not-a-question`,
    `withdrawn` and so on).
 2. Locked decisions that imply the answer: active ADRs, the assigned Spec's
-   Decisions And Contracts, the Lexicon.
+   Decisions And Contracts, the glossary (`GLOSSARY.md`).
 3. Local working records and session transcripts, when the host has them. They
    are not durable evidence, and a cloud instance will not have them; that is why
    the ledger exists.

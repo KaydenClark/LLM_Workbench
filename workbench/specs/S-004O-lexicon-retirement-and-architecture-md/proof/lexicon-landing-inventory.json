@@ -1859,7 +1859,7 @@
       "hash": "014f165cc11fd47953e791fdbce81f24a8b19b45e8ce462dbde98ca4e607edf2",
       "homeKind": "glossary",
       "homePath": "GLOSSARY.md",
-      "landedText": "**Core skill bundle**: The closed set of twenty workflow skills, four coordination skills and four stance skills, counted from the manifest, that every room carries in its `workbench/skills` lane.",
+      "landedText": "**Core skill bundle**: The closed set of twenty-four workflow skills, four coordination skills and four stance skills, counted from the manifest, that every room carries in its `workbench/skills` lane.",
       "reason": null,
       "explanationHome": "workbench/wiki/dictionary-core-skill-bundle.md",
       "explanationText": "It is not Kayden's private catalog or a generalized marketplace; the lane is the room's own discovery source, reached through the tracked `.agents/skills` and `.claude/skills` adapters."
@@ -2615,7 +2615,7 @@
       "landedText": "**Workbench Contract**: The binding claim set `AGENTS.md` Instruction Authority names: `AGENTS.md` itself, the explicitly assigned Spec's bounded capability requirements and, while an operation is performed, the binding requirements of the lane skill the Contract points to for it.",
       "reason": null,
       "explanationHome": "workbench/wiki/dictionary-workbench-contract.md",
-      "explanationText": "The owner decided `AGENTS.md` is the only Contract file and binding runs from it straight to the skill it names ([one Contract file](../docs/ddr/001C-agents-md-is-the-map-and-the-only-contract-file.md)); its Instruction Authority list still names `RUNBOOK.md` and `LEXICON.md` as the other carriers until the [Contract Carrier Pointer-Brief Rewrite](../specs/S-004C-contract-carrier-pointer-brief-rewrite/SPEC.md) moves it to that decision. It is not a file; other root artifacts are routed by intent, and no `CONTRACT.md` exists ([ADR-000C](../docs/adr/000C-the-workbench-contract-is-the-obligation-claim-set-carried-by-three-root-controls-and-the-assigned-spec.md))."
+      "explanationText": "The owner decided `AGENTS.md` is the only Contract file and binding runs from it straight to the skill it names ([one Contract file](../docs/ddr/001C-agents-md-is-the-map-and-the-only-contract-file.md)); its Instruction Authority list still names `RUNBOOK.md` as the other carrier until the [Contract Carrier Pointer-Brief Rewrite](../specs/S-004C-contract-carrier-pointer-brief-rewrite/SPEC.md) moves it to that decision. It is not a file; other root artifacts are routed by intent, and no `CONTRACT.md` exists ([ADR-000C](../docs/adr/000C-the-workbench-contract-is-the-obligation-claim-set-carried-by-three-root-controls-and-the-assigned-spec.md))."
     },
     {
       "line": 319,

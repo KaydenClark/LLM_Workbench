@@ -11,7 +11,7 @@ source_paths:
   - workbench/docs/adr/000R-the-wiki-is-the-evolving-synthesis-every-agent-reads-and-updates.md
   - workbench/wiki/SCHEMA.md
 parent: none
-authorized_by: the Wiki Evolving-Synthesis Migration Spec (S-003W), Task TK-004 (landmark synthesis pages)
+authorized_by: the Wiki Evolving-Synthesis Migration Spec (S-003W), Task TK-004 (landmark synthesis pages); paired Core delivery under Writing-for-agents Skill Adoption (S-002P) and Retro Skill Adoption (S-002V), owner assignment 2026-10-07
 last_verified: 2026-10-04
 ---
 
@@ -51,8 +51,10 @@ owner-confirmed.
 - **A skills reference.** The owner wants one readable Wiki entry per skill, in the
   shape of a public skills reference
   (card [DQC-001D: "How should the Wiki explain each available skill?"](../../landmark-tracker/destination-questions/DQC-001D.json), revision 6).
-  Pages named `skill-<name>.md` sit beside the router for twenty-five of the
-  twenty-seven skills in the lane.
+  Pages named `skill-<name>.md` sit beside the router for most of the skills in
+  the lane; the [Core skills catalog](../../skills/README.md) holds the current
+  bundle and its count. The [Wiki router](../MEMORY.md#skills-reference)
+  owns current navigation, including the linked skills draft collection.
 - **Feature articles.** A Wiki collection named features, not capabilities and not a
   widening of design concepts, is designed to hold one article per completed Spec. It is written
   at the Spec's closure point, which follows separate-context review and the owner's
@@ -110,8 +112,8 @@ The Specs are [Wiki Evolving-Synthesis Migration (S-003W)](../../specs/S-003W-wi
 [Destination Question Cards records (S-002B)](../../specs/S-002B-destination-question-cards/SPEC.md).
 The tools are the [Wiki validator](../../tools/wiki.mjs), the
 [landmark article validator](../../tools/landmark-wiki.mjs) and the
-[landmark tracker](../../tools/landmark-tracker.mjs). The Lexicon rows are in
-[LEXICON.md](../../../LEXICON.md).
+[landmark tracker](../../tools/landmark-tracker.mjs). The glossary entries are in
+[GLOSSARY.md](../../../GLOSSARY.md).
 
 ## Related pages
 
@@ -129,3 +131,10 @@ The tools are the [Wiki validator](../../tools/wiki.mjs), the
 
 - 2026-10-04: created by the Wiki Evolving-Synthesis Migration Spec (S-003W), Task TK-004 (landmark synthesis pages), seeded from the cards' current answers.
 - 2026-10-04: corrected after the whole-Wiki lint of the Wiki Evolving-Synthesis Migration Spec (S-003W), Task TK-006P (Wiki wording): the features collection and the move of the per-Spec articles into it are delivered, so the closed item left the Open list. No card answer was changed.
+- 2026-10-07: skills-reference count corrected for the Required Domain Modeling Skill Spec (S-004J), Task TK-00JC (Wiki reconciliation): the lane now holds twenty-nine skills and twenty-seven of them have a `skill-<name>.md` page, checked against the manifest's required list. No card answer was changed.
+
+- 2026-10-07: PR #415 integration conflict repair reconciled the combined `domain-modeling` and `pr` bundle count to thirty; prior dated count observations remain history.
+- 2026-10-07: corrected after the whole-Wiki lint at review of the pr skill adoption Spec (S-002U), Task TK-007V: the skills-reference item no longer states a skill count, because the Core bundle grew past the twenty-seven skills it named; the catalog owns the count. No card answer was changed.
+
+- 2026-10-07: Writing-for-agents Skill Adoption (S-002P) and Retro Skill Adoption (S-002V) routed the skills reference to the current catalog and Wiki router; no card answer or prior PR Skill Adoption (S-002U) review verdict changed.
+- 2026-10-07: Re-pointed the retiring Lexicon's links and live routes to `GLOSSARY.md`, `ARCHITECTURE.md` and the Wiki lexicon articles (the Lexicon Retirement Spec (S-004O), its consumer re-pointing Task (TK-009F)); no claim changed.

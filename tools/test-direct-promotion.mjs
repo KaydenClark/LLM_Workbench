@@ -332,7 +332,9 @@ test('TK-009E: no runtime tool writes GLOSSARY.md outside promotion', () => {
   // be one of these two, never a capture-time (notepad, grilling) write path.
   // S-004O TK-009D: wiki.mjs only reads the glossary, to check that a lexicon
   // article's declared term is an entry.
-  const allowed = { 'sessions.mjs': 'the promotion owner rule', 'template-placeholders.mjs': 'the Genesis scaffold file list', 'wiki.mjs': 'the lexicon article check, read-only' };
+  const allowed = { 'sessions.mjs': 'the promotion owner rule', 'template-placeholders.mjs': 'the Genesis scaffold file list', 'wiki.mjs': 'the lexicon article check, read-only',
+    // S-004O TK-009F: self-drift reads the glossary among the controls it inventories.
+    'self-drift.mjs': 'the control inventory, read-only' };
   const tools = path.join(root, 'workbench/tools');
   const naming = fs.readdirSync(tools).filter(file => file.endsWith('.mjs') && /GLOSSARY/.test(fs.readFileSync(path.join(tools, file), 'utf8')));
   assert.deepEqual(naming.sort(), Object.keys(allowed).sort());

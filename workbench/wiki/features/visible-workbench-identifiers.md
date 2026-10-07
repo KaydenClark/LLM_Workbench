@@ -11,7 +11,7 @@ source_paths:
   - workbench/tools/visible-ids.mjs
   - tools/test-visible-ids.mjs
   - tools/test-visible-id-consumers.mjs
-  - LEXICON.md
+  - GLOSSARY.md
   - workbench/specs/S-01W-uppercase-width-four-workbench-artifact-ids/SPEC.md
   - workbench/docs/adr/0041-visible-base62-workbench-identifiers.md
   - RUNBOOK.md
@@ -36,7 +36,7 @@ The reader sees one identity, not a label beside a hidden second identity. The s
 
 ## Limits
 
-- ADR-0041 (visible Workbench identifiers) and the Lexicon own semantics.
+- ADR-0041 (visible Workbench identifiers) and the glossary own semantics.
 - The source record deliberately avoids attributing engineering alphabet, width and sort choices to the owner.
 - Historical integration proof at 7f9fe21 establishes the delivered generation, not that every later caller inventories all lifecycle folders correctly.
 
@@ -48,7 +48,7 @@ The source record was read at `bc370fe742d5ddb8348bf361fccea31205f6cee7` and the
 - [Immutable source and proof at `bc370fe`](https://github.com/KaydenClark/LLM_Workbench/blob/bc370fe742d5ddb8348bf361fccea31205f6cee7/workbench/specs/S-047-visible-workbench-identifiers/SPEC.md). Exact source recovery: `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-047-visible-workbench-identifiers/SPEC.md`.
 - [workbench/tools/visible-ids.mjs](../../../workbench/tools/visible-ids.mjs) - the identifier allocator and parser.
 - [tools/test-visible-ids.mjs](../../../tools/test-visible-ids.mjs) and [tools/test-visible-id-consumers.mjs](../../../tools/test-visible-id-consumers.mjs) - the verification seams.
-- [LEXICON.md](../../../LEXICON.md) - the owner of identifier semantics.
+- [GLOSSARY.md](../../../GLOSSARY.md#continuity-terms) - the owner of identifier semantics.
 - [Uppercase Width-Four Workbench Artifact IDs Spec (S-01W)](../../specs/S-01W-uppercase-width-four-workbench-artifact-ids/SPEC.md) - the later amendment.
 - [ADR-0041 Visible Workbench identifiers](../../docs/adr/0041-visible-base62-workbench-identifiers.md) - the decision record.
 - [RUNBOOK.md Visible Identifiers](../../../RUNBOOK.md#visible-identifiers) - the Runbook pointer to the commands.
@@ -60,3 +60,4 @@ The source record was read at `bc370fe742d5ddb8348bf361fccea31205f6cee7` and the
 - 2026-10-02: Added the Uppercase Width-Four Workbench Artifact IDs Spec (S-01W) amendment during that Spec's assembled QA; the Visible Workbench Identifiers Spec (S-047) historical account above is unchanged.
 - 2026-10-04: The identifier commands moved from the Runbook into the `workbench-runtime` skill behind the Runbook operations index, in the Task Move The Operations Every Room Runs Behind Their Pointers (TK-005J) of the Contract Carrier Pointer-Brief Rewrite Spec (S-004C); the account above is unchanged.
 - 2026-10-04: Moved from `design-concepts/spec-S-047-visible-workbench-identifiers.md` into the features collection under this name with `wiki.mjs move-note`, retyped `feature` and restructured into the four feature sections from its existing prose, for the Wiki Evolving-Synthesis Migration Spec (S-003W) Task Move And Retype Remaining Per-Spec Articles (TK-002). Every live link to it was rewritten by the move; no claim was changed.
+- 2026-10-07: Re-pointed the retiring Lexicon's links and live routes to `GLOSSARY.md`, `ARCHITECTURE.md` and the Wiki lexicon articles (the Lexicon Retirement Spec (S-004O), its consumer re-pointing Task (TK-009F)); no claim changed.

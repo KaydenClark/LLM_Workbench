@@ -10,7 +10,7 @@ source_paths:
   - workbench/skills/spec-manager/SKILL.md
   - workbench/specs/S-002G-spec-manager-stance/SPEC.md
   - tools/test-skill-catalog.mjs
-  - LEXICON.md
+  - GLOSSARY.md
   - AGENTS.md
   - RUNBOOK.md
   - workbench/docs/adr/000P-roles-scope-work-and-stances-define-the-job.md
@@ -21,7 +21,7 @@ last_verified: 2026-10-06
 
 # Spec Manager: dispatch and monitor one Spec's Tasks to an assembled candidate
 
-Use the `spec-manager` stance when you hold the Dispatcher role for one assigned Spec and its flight has launched: Spec Planner has cut the Spec into Task records and handed over the plan, and those Tasks now need Workers. The job is to run that plan. Send Workers to the Tasks that are ready and do not collide, watch their progress and evidence, release later Tasks as their dependencies are actually met, and assemble the proven results into one candidate for the Director. The [LEXICON](../../LEXICON.md#stance-terms) owns the definition of Spec Manager; this article explains how the stance is used. It is an execution job inside one Spec. It does not take on a neighbouring Spec, and it does not approve the candidate it assembled.
+Use the `spec-manager` stance when you hold the Dispatcher role for one assigned Spec and its flight has launched: Spec Planner has cut the Spec into Task records and handed over the plan, and those Tasks now need Workers. The job is to run that plan. Send Workers to the Tasks that are ready and do not collide, watch their progress and evidence, release later Tasks as their dependencies are actually met, and assemble the proven results into one candidate for the Director. The [GLOSSARY](../../GLOSSARY.md#stance-terms) owns the definition of Spec Manager; this article explains how the stance is used. It is an execution job inside one Spec. It does not take on a neighbouring Spec, and it does not approve the candidate it assembled.
 
 **Inputs:** the Spec Planner result (the Spec's slices and its Task records, each with its Status and Blockers); the live state of each Task; the dependencies between Tasks and on other Specs; the Spec branch and the files each Task may touch; and the Worker hand-backs, each naming an exact commit, its proof, docs status and remaining gap. **Output:** Tasks closed with named proof, or returned with a named gap; proven results merged into the Spec branch; the assembled immutable candidate; and that candidate's evidence and remaining gaps reported to the Director. **Done when:** every dispatched Task is closed with proof or carries a recorded gap or blocker, the Spec branch holds only proven results, and the Director has the candidate with its evidence and gaps, with no independent approval claimed for work managed in the same context.
 
@@ -54,7 +54,7 @@ The GPT_OS Captain informed project coordination and its Engineer informed bound
 - [Dispatcher](skill-dispatcher.md) ([dispatcher skill](../skills/dispatcher/SKILL.md)): the role this stance composes with; it supplies the Spec scope, the single-writer rule and the hand-back to the Director.
 - [Spec Planner](skill-spec-planner.md) ([spec-planner skill](../skills/spec-planner/SKILL.md)): the flight-launch stance whose plan and open gates Spec Manager consumes; the same Dispatcher changes stance, and no authority moves with it.
 - [Director](skill-director.md) ([director skill](../skills/director/SKILL.md)): where the assembled candidate, its evidence and gaps go, and where cross-Spec dependencies and shared writers outside the Spec are settled.
-- **Worker** ([LEXICON](../../LEXICON.md#core-terms); owned by `workbench/specs/S-002E-worker-role/SPEC.md`, not yet delivered): one Task, one attempt, hand-back to the Dispatcher.
+- **Worker** ([GLOSSARY](../../GLOSSARY.md#chats-and-roles); owned by `workbench/specs/S-002E-worker-role/SPEC.md`, not yet delivered): one Task, one attempt, hand-back to the Dispatcher.
 - **Reviewer** ([reviewer skill](../skills/reviewer/SKILL.md)) and [Auditor](skill-auditor.md) ([auditor skill](../skills/auditor/SKILL.md)): the named verification jobs the manager arranges for the assembled Spec; prior involvement still controls independent-review eligibility.
 
 The [roles and stances design concept](design-concepts/roles-and-stances.md) explains how these compose; each linked Spec owns its own delivery state.
@@ -69,7 +69,7 @@ The [roles and stances design concept](design-concepts/roles-and-stances.md) exp
 
 - [Spec Manager source](../skills/spec-manager/SKILL.md)
 - [Individual delivery Spec](../specs/S-002G-spec-manager-stance/SPEC.md)
-- [Stance terms in LEXICON](../../LEXICON.md#stance-terms)
+- [Stance terms in GLOSSARY](../../GLOSSARY.md#stance-terms)
 - [ADR-000P: roles scope work and stances define the job](../docs/adr/000P-roles-scope-work-and-stances-define-the-job.md)
 - [ADR-0036: stances change method, not authority](../docs/adr/0036-stances-change-method-not-authority.md)
 - [Role model](design-concepts/roles-and-stances.md)

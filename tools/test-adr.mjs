@@ -6,7 +6,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
-import { ADR_LIFECYCLE_FOLDERS, ID_PATTERN, REGISTER_NAME, acceptRecord, deprecateRecord, inspectRecord, listAdrs, listRecords, localLinks, migrateLifecycleFolders, newAdr, normalizeAdrs, parseFrontmatter, recordHistory, renderRegister, searchRecords, showRecord, stripFrontmatterKey, supersedeRecord, validateAdrs, validateDecisionRecords, writeDecisionRegisters, writeRegister } from '../workbench/tools/adr.mjs';
+import { ADR_LIFECYCLE_FOLDERS, ID_PATTERN, REGISTER_NAME, acceptRecord, collectRecordReferenceFiles, deprecateRecord, inspectRecord, listAdrs, listRecords, localLinks, migrateLifecycleFolders, newAdr, normalizeAdrs, parseFrontmatter, recordHistory, renderRegister, searchRecords, showRecord, stripFrontmatterKey, supersedeRecord, validateAdrs, validateDecisionRecords, writeDecisionRegisters, writeRegister } from '../workbench/tools/adr.mjs';
 import { doctor, render } from '../workbench/tools/spec-workbench.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -860,7 +860,7 @@ function workflowCorpus() {
       assert.ok(record, `missing ADR-${id}`);
       return [id, { ...record, body: record.body.split('\n## Historical proposal')[0] }];
     })),
-    controls: new Map(['LEXICON.md', 'GLOSSARY.md', 'AGENTS.md', 'RUNBOOK.md', 'BLUEPRINT.md', 'workbench/wiki/dictionary-design-concept.md', 'workbench/wiki/dictionary-destination-packet.md'].map(file => [file, fs.readFileSync(path.join(root, file), 'utf8')]))
+    controls: new Map(['LEXICON.md', 'GLOSSARY.md', 'ARCHITECTURE.md', 'AGENTS.md', 'RUNBOOK.md', 'BLUEPRINT.md', 'workbench/wiki/dictionary-design-concept.md', 'workbench/wiki/dictionary-destination-packet.md'].map(file => [file, fs.readFileSync(path.join(root, file), 'utf8')]))
   };
 }
 
@@ -938,7 +938,8 @@ function assertWorkflowMeaning(corpus) {
   requires(controls.get('AGENTS.md'), /Dispatcher owns whole-Spec QA[\s\S]*separate Director context reviews/, 'AGENTS carries review roles');
   requires(controls.get('AGENTS.md'), /verification on main -> `complete`/, 'AGENTS carries closure order');
   // A reader follows literal paths and fragments; basename fallback is unsafe.
-  for (const [file, text] of [['LEXICON.md', lexicon], ...[...records.values()].map(record => [record.relativePath, record.body])]) {
+  // S-004O TK-009F: ARCHITECTURE.md now carries the Context Map routes.
+  for (const [file, text] of [['LEXICON.md', lexicon], ['ARCHITECTURE.md', controls.get('ARCHITECTURE.md')], ...[...records.values()].map(record => [record.relativePath, record.body])]) {
     for (const match of text.matchAll(/\[[^\]]*\]\(([^)]+)\)/g)) {
       const target = decodeURIComponent(match[1]);
       if (/^(?:https?:|mailto:)/.test(target)) continue;
@@ -990,6 +991,8 @@ test('workflow checks reject substantive and literal-route mutations with accept
     // S-004C TK-005N routes the Lexicon's Runbook links through the operations index.
     ['Context Map route', 'LEXICON.md', '(RUNBOOK.md#operations-index)', '(MISSING-RUNBOOK.md#operations-index)'],
     ['Context Map heading', 'LEXICON.md', '(#artifact-ownership-schema)', '(#missing-owner-heading)'],
+    ['Architecture route', 'ARCHITECTURE.md', '(RUNBOOK.md#operations-index)', '(MISSING-RUNBOOK.md#operations-index)'],
+    ['Architecture heading', 'ARCHITECTURE.md', '(#ownership)', '(#missing-owner-heading)'],
     ['Packet regains a corrective Wiki claim', 'workbench/wiki/dictionary-destination-packet.md', 'Spec acceptance lines it satisfies, the Task', 'Spec acceptance lines it satisfies or the reconciled Wiki claim for corrective work, the Task'],
     ['Design concept article loses its distinction', 'workbench/wiki/dictionary-design-concept.md', 'It exists between participants.', 'It exists in the Blueprint.'],
     ['glossary Task loses its repair destination', 'GLOSSARY.md', 'slice that reaches or repairs a destination', 'slice that reaches a destination'],
@@ -1519,4 +1522,19 @@ test('every existing decision-record command keeps its name and refuses a stray 
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }
+});
+
+// S-004O TK-009F: a decision-record move repairs references in ARCHITECTURE.md,
+// which carries the routes the retiring Lexicon held, and still in a Lexicon a
+// room has not retired yet; an absent control is skipped. The glossary links no
+// record and only promotion writes it (TK-009E), so the repair never touches it.
+test('a record move repairs ARCHITECTURE.md, a Lexicon only while one exists, and never the glossary', () => {
+  const project = fs.mkdtempSync(path.join(os.tmpdir(), 'adr-references-'));
+  try {
+    for (const name of ['AGENTS.md', 'GLOSSARY.md', 'ARCHITECTURE.md']) fs.writeFileSync(path.join(project, name), '# Current\n');
+    const names = () => collectRecordReferenceFiles(project).map((file) => path.relative(project, file));
+    assert.deepEqual(names().filter((name) => !name.includes('/')).sort(), ['AGENTS.md', 'ARCHITECTURE.md']);
+    fs.writeFileSync(path.join(project, 'LEXICON.md'), '# Current\n');
+    assert.ok(names().includes('LEXICON.md'), 'a Lexicon the update has not retired is still repaired');
+  } finally { fs.rmSync(project, { recursive: true, force: true }); }
 });

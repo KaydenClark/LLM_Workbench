@@ -1,0 +1,12 @@
+✔ a six-lane schema 2 manifest gains the skills lane through migrate, after which the lane installs and migrate reports current (849.246042ms)
+✔ each listed legacy version validates only at the policy its release declared, and a malformed version is invalid-manifest (1924.385ms)
+✔ prior28 v3.2.1 room stays readable and migratable at its exact 28-skill lane policy (514.275875ms)
+✔ the exact 29 and 30 skill v3.2.1 transition cohorts validate and migrate unchanged (781.922417ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4167.428541

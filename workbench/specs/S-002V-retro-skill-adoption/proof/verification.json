@@ -1,0 +1,390 @@
+{
+  "candidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544",
+  "passed": 53,
+  "total": 53,
+  "commands": [
+    {
+      "index": 1,
+      "command": "node tools/test-spec-workbench.mjs",
+      "exitCode": 0,
+      "seconds": 203.57,
+      "candidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544"
+    },
+    {
+      "index": 2,
+      "command": "node tools/test-spec-assembly-selection.mjs",
+      "exitCode": 0,
+      "seconds": 2.28,
+      "candidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544"
+    },
+    {
+      "index": 3,
+      "command": "node tools/test-skill-catalog.mjs",
+      "exitCode": 0,
+      "seconds": 0.46,
+      "candidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544"
+    },
+    {
+      "index": 4,
+      "command": "node tools/test-skill-inspection.mjs",
+      "exitCode": 0,
+      "seconds": 0.12,
+      "candidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544"
+    },
+    {
+      "index": 5,
+      "command": "node tools/test-skills-lane.mjs",
+      "exitCode": 0,
+      "seconds": 9.04,
+      "candidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544"
+    },
+    {
+      "index": 6,
+      "command": "node tools/test-core-composition.mjs",
+      "exitCode": 0,
+      "seconds": 2.63,
+      "candidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544"
+    },
+    {
+      "index": 7,
+      "command": "node tools/test-project-evidence.mjs",
+      "exitCode": 0,
+      "seconds": 1.1,
+      "candidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544"
+    },
+    {
+      "index": 8,
+      "command": "node tools/test-genesis-from-decisions.mjs",
+      "exitCode": 0,
+      "seconds": 30.79,
+      "candidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544"
+    },
+    {
+      "index": 9,
+      "command": "node tools/test-blueprint-contract.mjs",
+      "exitCode": 0,
+      "seconds": 0.13,
+      "candidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544"
+    },
+    {
+      "index": 10,
+      "command": "node tools/test-session-transport.mjs",
+      "exitCode": 0,
+      "seconds": 26.36,
+      "candidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544"
+    },
+    {
+      "index": 11,
+      "command": "node tools/test-configured-host.mjs",
+      "exitCode": 0,
+      "seconds": 11.87,
+      "candidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544"
+    },
+    {
+      "index": 12,
+      "command": "node tools/test-core-skill-installer.mjs",
+      "exitCode": 0,
+      "seconds": 20.55,
+      "candidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544"
+    },
+    {
+      "index": 13,
+      "command": "node tools/test-workbench-layout.mjs",
+      "exitCode": 0,
+      "seconds": 48.95,
+      "candidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544"
+    },
+    {
+      "index": 14,
+      "command": "node tools/test-workbench-adoption.mjs",
+      "exitCode": 0,
+      "seconds": 11.47,
+      "candidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544"
+    },
+    {
+      "index": 15,
+      "command": "node tools/test-workbench-upgrade.mjs",
+      "exitCode": 0,
+      "seconds": 12.9,
+      "candidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544"
+    },
+    {
+      "index": 16,
+      "command": "node tools/test-workbench-tools.mjs",
+      "exitCode": 0,
+      "seconds": 8.69,
+      "candidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544"
+    },
+    {
+      "index": 17,
+      "command": "node tools/test-diagnostics.mjs",
+      "exitCode": 0,
+      "seconds": 34.7,
+      "candidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544"
+    },
+    {
+      "index": 18,
+      "command": "node tools/test-adr.mjs",
+      "exitCode": 0,
+      "seconds": 19.09,
+      "candidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544"
+    },
+    {
+      "index": 19,
+      "command": "node tools/test-governance-core.mjs",
+      "exitCode": 0,
+      "seconds": 0.09,
+      "candidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544"
+    },
+    {
+      "index": 20,
+      "command": "node tools/test-branch-closeout.mjs",
+      "exitCode": 0,
+      "seconds": 5.48,
+      "candidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544"
+    },
+    {
+      "index": 21,
+      "command": "node tools/test-wiki.mjs",
+      "exitCode": 0,
+      "seconds": 9.68,
+      "candidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544"
+    },
+    {
+      "index": 22,
+      "command": "node tools/test-sessions.mjs",
+      "exitCode": 0,
+      "seconds": 5.93,
+      "candidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544"
+    },
+    {
+      "index": 23,
+      "command": "node tools/test-notepads.mjs",
+      "exitCode": 0,
+      "seconds": 12.65,
+      "candidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544"
+    },
+    {
+      "index": 24,
+      "command": "node tools/test-visible-ids.mjs",
+      "exitCode": 0,
+      "seconds": 0.71,
+      "candidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544"
+    },
+    {
+      "index": 25,
+      "command": "node tools/test-workbench-identity.mjs",
+      "exitCode": 0,
+      "seconds": 4.0,
+      "candidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544"
+    },
+    {
+      "index": 26,
+      "command": "node tools/test-visible-id-consumers.mjs",
+      "exitCode": 0,
+      "seconds": 13.47,
+      "candidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544"
+    },
+    {
+      "index": 27,
+      "command": "node tools/test-direct-promotion.mjs",
+      "exitCode": 0,
+      "seconds": 4.51,
+      "candidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544"
+    },
+    {
+      "index": 28,
+      "command": "node tools/test-workbench-round-trip.mjs",
+      "exitCode": 0,
+      "seconds": 44.14,
+      "candidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544"
+    },
+    {
+      "index": 29,
+      "command": "node tools/test-cross-provider-fixture.mjs",
+      "exitCode": 0,
+      "seconds": 2.56,
+      "candidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544"
+    },
+    {
+      "index": 30,
+      "command": "node tools/test-portability-matrix.mjs",
+      "exitCode": 0,
+      "seconds": 0.55,
+      "candidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544"
+    },
+    {
+      "index": 31,
+      "command": "node tools/test-workbench-dogfood.mjs",
+      "exitCode": 0,
+      "seconds": 6.96,
+      "candidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544"
+    },
+    {
+      "index": 32,
+      "command": "node tools/test-evaluate-workbench.mjs",
+      "exitCode": 0,
+      "seconds": 0.39,
+      "candidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544"
+    },
+    {
+      "index": 33,
+      "command": "node tools/test-guardrail-audit.mjs",
+      "exitCode": 0,
+      "seconds": 0.24,
+      "candidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544"
+    },
+    {
+      "index": 34,
+      "command": "node tools/test-context-tools.mjs",
+      "exitCode": 0,
+      "seconds": 0.26,
+      "candidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544"
+    },
+    {
+      "index": 35,
+      "command": "node tools/test-outcome-trials.mjs",
+      "exitCode": 0,
+      "seconds": 0.69,
+      "candidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544"
+    },
+    {
+      "index": 36,
+      "command": "node tools/test-eval-runner.mjs",
+      "exitCode": 0,
+      "seconds": 0.98,
+      "candidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544"
+    },
+    {
+      "index": 37,
+      "command": "node tools/test-feedback-automation.mjs",
+      "exitCode": 0,
+      "seconds": 0.91,
+      "candidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544"
+    },
+    {
+      "index": 38,
+      "command": "node tools/test-symlink-invocation.mjs",
+      "exitCode": 0,
+      "seconds": 1.08,
+      "candidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544"
+    },
+    {
+      "index": 39,
+      "command": "node tools/test-control-fidelity.mjs",
+      "exitCode": 0,
+      "seconds": 2.21,
+      "candidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544"
+    },
+    {
+      "index": 40,
+      "command": "node tools/test-spec-citation-anchors.mjs",
+      "exitCode": 0,
+      "seconds": 25.73,
+      "candidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544"
+    },
+    {
+      "index": 41,
+      "command": "node tools/test-controls-vocabulary-sweep.mjs",
+      "exitCode": 0,
+      "seconds": 0.07,
+      "candidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544"
+    },
+    {
+      "index": 42,
+      "command": "node tools/test-carrier-landing.mjs",
+      "exitCode": 0,
+      "seconds": 3.85,
+      "candidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544"
+    },
+    {
+      "index": 43,
+      "command": "node tools/test-runbook-index.mjs",
+      "exitCode": 0,
+      "seconds": 0.73,
+      "candidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544"
+    },
+    {
+      "index": 44,
+      "command": "node tools/test-spec-report.mjs",
+      "exitCode": 0,
+      "seconds": 38.65,
+      "candidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544"
+    },
+    {
+      "index": 45,
+      "command": "node tools/test-landmark-wiki.mjs",
+      "exitCode": 0,
+      "seconds": 9.33,
+      "candidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544"
+    },
+    {
+      "index": 46,
+      "command": "node tools/test-self-drift.mjs",
+      "exitCode": 0,
+      "seconds": 0.44,
+      "candidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544"
+    },
+    {
+      "index": 47,
+      "command": "node tools/test-feedback-inventory.mjs",
+      "exitCode": 0,
+      "seconds": 0.13,
+      "candidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544"
+    },
+    {
+      "index": 48,
+      "command": "node tools/test-grilling-ledger.mjs",
+      "exitCode": 0,
+      "seconds": 0.13,
+      "candidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544"
+    },
+    {
+      "index": 49,
+      "command": "node tools/test-grill-board.mjs",
+      "exitCode": 0,
+      "seconds": 0.77,
+      "candidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544"
+    },
+    {
+      "index": 50,
+      "command": "python3 tools/test-check-append-only.py",
+      "exitCode": 0,
+      "seconds": 235.07,
+      "candidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544"
+    },
+    {
+      "index": 51,
+      "command": "python3 evals/tasks/task_b_path_safety/test_grade.py",
+      "exitCode": 0,
+      "seconds": 0.46,
+      "candidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544"
+    },
+    {
+      "index": 52,
+      "command": "node tools/evaluate-workbench.mjs --path templates --include-controls",
+      "exitCode": 0,
+      "seconds": 0.08,
+      "candidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544"
+    },
+    {
+      "index": 53,
+      "command": "node workbench/tools/spec-workbench.mjs doctor",
+      "exitCode": 0,
+      "seconds": 3.08,
+      "candidate": "9a63801b5abf1ad7b0d3265abe4cac96a7a74544"
+    }
+  ],
+  "additional": [
+    "Wiki validate passed",
+    "Ruby YAML name/description and Codex/Claude explicit-only metadata checks passed",
+    "Source fidelity red then green",
+    "Pre-pair 28-skill v3.2.1 migration regression red then green"
+  ],
+  "limitations": [
+    "Optional Python quick_validate unavailable: PyYAML missing",
+    "Earlier partial run had three dirty-source refusals; not a first-pass clean run",
+    "Existing self-drift 15 findings, cleanUpdate false; none added",
+    "Final binding assembled verdict, Task close and integration remain pending"
+  ]
+}

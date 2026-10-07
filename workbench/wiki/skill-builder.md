@@ -12,7 +12,7 @@ source_paths:
   - tools/test-builder-skill.mjs
   - workbench/skills/implement/SKILL.md
   - workbench/skills/auditor/SKILL.md
-  - LEXICON.md
+  - GLOSSARY.md
   - workbench/docs/adr/0036-stances-change-method-not-authority.md
 last_verified: 2026-10-01
 ---
@@ -100,7 +100,7 @@ whole-Spec acceptance or owner Human QA.
 
 - [Builder source](../skills/builder/SKILL.md) and [scenario](../skills/builder/references/verification.md)
 - [Individual delivery Spec](../specs/S-01P-builder-skill-rebuild/SPEC.md)
-- [Stance terms](../../LEXICON.md#stance-terms)
+- [Stance terms](../../GLOSSARY.md#stance-terms)
 - [ADR-0036: stances change method, not authority](../docs/adr/0036-stances-change-method-not-authority.md)
 - [Wiki router](MEMORY.md)
 

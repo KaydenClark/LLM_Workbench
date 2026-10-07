@@ -11,7 +11,7 @@ source_paths:
   - workbench/docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md
   - workbench/skills/README.md
 parent: none
-authorized_by: the Wiki Evolving-Synthesis Migration Spec (S-003W), Task TK-004 (landmark synthesis pages)
+authorized_by: the Wiki Evolving-Synthesis Migration Spec (S-003W), Task TK-004 (landmark synthesis pages); paired Core delivery under Writing-for-agents Skill Adoption (S-002P) and Retro Skill Adoption (S-002V), owner assignment 2026-10-07
 last_verified: 2026-10-04
 ---
 
@@ -64,8 +64,8 @@ owner-confirmed, and this page keeps that distinction.
   (card [DQC-000W: "Which reusable behaviors belong in the required skill bundle?"](../../landmark-tracker/destination-questions/DQC-000W.json), revision 8;
   card [DQC-001E: "What place should carry have in the delivery workflow?"](../../landmark-tracker/destination-questions/DQC-001E.json), revision 8,
   where the owner chose the name from four candidates and that carry is installed through the supported route, with no hand-copy workaround).
-  Both cards plan for a seventeen-skill bundle; the lane README now describes a closed
-  bundle of twenty-seven, so the count on the cards is a point-in-time figure.
+  Both cards plan for a seventeen-skill bundle, a point-in-time figure. The
+  [Core skills README](../../skills/README.md) and manifest own the current bundle.
 - **Versions and updates.** The checked-out Workbench release owns the bundled
   skill versions, with no separate release dependency
   (card [DQC-000X: "How do skill versions relate to Workbench releases?"](../../landmark-tracker/destination-questions/DQC-000X.json), revision 10).
@@ -88,9 +88,10 @@ owner-confirmed, and this page keeps that distinction.
 - **A Wiki skills reference.** The owner wants one readable Wiki entry per skill
   (cards [DQC-001C: "Which skills are owner-facing entrypoints and which are composition details?"](../../landmark-tracker/destination-questions/DQC-001C.json), revision 5, and
   [DQC-001D: "How should the Wiki explain each available skill?"](../../landmark-tracker/destination-questions/DQC-001D.json), revision 6).
-  Pages named `skill-<name>.md` exist beside the router for twenty-five of the
-  twenty-seven lane skills; the tracer-bullet and update-harness skills had no
-  page when this page was written.
+  On 2026-10-04, pages named `skill-<name>.md` existed beside the router for
+  twenty-five of the then twenty-seven lane skills; tracer-bullet and
+  update-harness had no page. The [Wiki router](../MEMORY.md#skills-reference)
+  owns current reference navigation, including the linked skills draft collection.
 
 ## Open and unresolved
 
@@ -134,9 +135,9 @@ The tools are the [skills installer](../../../tools/workbench-skills.mjs), the
 [core skill installer](../../../tools/core-skill-installer.mjs), the
 [presence check](../../../tools/skill-presence.mjs), the
 [layout check](../../tools/workbench-layout.mjs) and the
-[skill catalog test](../../../tools/test-skill-catalog.mjs). The Lexicon rows on
+[skill catalog test](../../../tools/test-skill-catalog.mjs). The glossary entries on
 the core bundle, normal setup and explicit skill update live in
-[LEXICON.md](../../../LEXICON.md).
+[GLOSSARY.md](../../../GLOSSARY.md#support-root-and-skills-lane).
 
 ## Related pages
 
@@ -153,3 +154,6 @@ the core bundle, normal setup and explicit skill update live in
 ## History
 
 - 2026-10-04: created by the Wiki Evolving-Synthesis Migration Spec (S-003W), Task TK-004 (landmark synthesis pages), seeded from the cards' current answers.
+
+- 2026-10-07: Writing-for-agents Skill Adoption (S-002P) and Retro Skill Adoption (S-002V) reconciled the bundle count with the current catalog and dated the earlier Wiki coverage observation; card answers are unchanged.
+- 2026-10-07: Re-pointed the retiring Lexicon's links and live routes to `GLOSSARY.md`, `ARCHITECTURE.md` and the Wiki lexicon articles (the Lexicon Retirement Spec (S-004O), its consumer re-pointing Task (TK-009F)); no claim changed.

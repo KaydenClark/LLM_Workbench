@@ -230,7 +230,7 @@ test('design-concept articles need the authorized-operation shape and stale note
   }
 });
 
-test('the product wiki adopts the contract and both Lexicons route design questions to the collection', () => {
+test('the product wiki adopts the contract and both architecture files route design questions to the collection', () => {
   for (const relative of ['MEMORY.md', 'SCHEMA.md', 'AGENTS.md', 'design-concepts/README.md', 'features/README.md']) {
     const file = path.join(root, 'workbench', 'wiki', relative);
     assert.equal(fs.existsSync(file), true, `workbench/wiki/${relative} must exist in the product`);
@@ -253,8 +253,15 @@ test('the product wiki adopts the contract and both Lexicons route design questi
     assert.match(content, /^---\ntype: design-concept\n/, `${name} must be a design-concept article, not an un-directed file`);
     assert.match(content, /\nauthorized_by: /, `${name} must record who authorized it`);
   }
-  for (const relative of ['LEXICON.md', 'templates/LEXICON.md']) {
-    assert.match(fs.readFileSync(path.join(root, relative), 'utf8'), /workbench\/wiki\/design-concepts\//, `${relative} routes design questions to the collection`);
+  // S-004O TK-009F: the design-concept route moved from the Lexicons to
+  // ARCHITECTURE.md, which starts the question at its glossary term.
+  for (const relative of ['ARCHITECTURE.md', 'templates/ARCHITECTURE.md']) {
+    const route = fs.readFileSync(path.join(root, relative), 'utf8').split('\n').filter((line) => line.trim()).join(' ').match(/Design-concept routing:[^.]*\./)?.[0] ?? '';
+    assert.match(route, /starts at its glossary term/, `${relative} starts design questions at the glossary term`);
+    assert.match(route, /workbench\/wiki\/design-concepts\//, `${relative} routes design questions to the collection`);
+  }
+  for (const relative of ['workbench/wiki/design-concepts/README.md', 'templates/wiki/design-concepts/README.md']) {
+    assert.match(fs.readFileSync(path.join(root, relative), 'utf8'), /Discovery\s+starts from the root `GLOSSARY\.md` term,\s+then the `ARCHITECTURE\.md`\s+design-concept route/, `${relative} names the glossary and architecture route into the collection`);
   }
 });
 

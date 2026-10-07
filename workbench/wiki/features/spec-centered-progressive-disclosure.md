@@ -10,7 +10,8 @@ source_paths:
   - workbench/specs/retired/S-001-progressive-disclosure/SPEC.md
   - AGENTS.md
   - RUNBOOK.md
-  - LEXICON.md
+  - GLOSSARY.md
+  - ARCHITECTURE.md
   - BLUEPRINT.md
   - workbench/tools/spec-workbench.mjs
   - tools/test-spec-workbench.mjs
@@ -20,7 +21,7 @@ last_verified: 2026-10-04
 # Spec-Centered Progressive Disclosure
 
 Ordinary entry stays small: an agent reads the agent contract, follows the
-Runbook and Lexicon routes, then loads the assigned capability and its relevant
+Runbook and `ARCHITECTURE.md` routes, then loads the assigned capability and its relevant
 source. The Spec-Centered Progressive Disclosure Spec (S-001) established that
 separation when startup material mixed product detail, completed evidence and
 live work.
@@ -28,7 +29,7 @@ live work.
 ## What It Does
 
 Progressive disclosure keeps ordinary entry small: read the agent contract,
-follow the Runbook and Lexicon routes, then load the assigned capability and
+follow the Runbook and `ARCHITECTURE.md` routes, then load the assigned capability and
 its relevant source. A Spec carries the assignment and its proof; the hot
 Taskboard derives an operational view. Reading an entire historical catalog is
 not a prerequisite for doing one bounded piece of work. The Contract Carrier
@@ -63,7 +64,7 @@ question instead of copying its answer into every startup surface.
 - [Immutable source and proof at `bc370fe`](https://github.com/KaydenClark/LLM_Workbench/blob/bc370fe742d5ddb8348bf361fccea31205f6cee7/workbench/specs/S-001-progressive-disclosure/SPEC.md). Recover the original with `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-001-progressive-disclosure/SPEC.md`.
 - [AGENTS.md](../../../AGENTS.md) - the agent contract that starts ordinary entry.
 - [RUNBOOK.md](../../../RUNBOOK.md) - the operations index and procedures entry follows.
-- [LEXICON.md](../../../LEXICON.md) - the routing and vocabulary owner.
+- [ARCHITECTURE.md](../../../ARCHITECTURE.md#routes) and [GLOSSARY.md](../../../GLOSSARY.md) - the routing and vocabulary owners.
 - [BLUEPRINT.md](../../../BLUEPRINT.md) - the destination owner, which carries no generated catalog.
 - [workbench/tools/spec-workbench.mjs](../../../workbench/tools/spec-workbench.mjs) - the manifest-resolved spec runtime that provides the seams.
 - [tools/test-spec-workbench.mjs](../../../tools/test-spec-workbench.mjs) - the verification seam for that runtime.
@@ -73,3 +74,4 @@ question instead of copying its answer into every startup surface.
 - 2026-09-19: Created on owner direction as one article for this legacy Spec; read the full historical record and checked the named live sources. Historical proof is distinguished from current behavior. No Spec was moved, retired or discarded, and no retrospective Human QA is asserted.
 - 2026-10-04: Moved from `design-concepts/spec-S-001-progressive-disclosure.md` into the features collection under this name with `wiki.mjs move-note`, retyped `feature` and restructured into the four feature sections from its existing prose, for the Move And Retype The Remaining Per-Spec Articles Task (TK-002) of the Wiki Evolving-Synthesis Migration Spec (S-003W). Every live link to it was rewritten by the move; no claim was changed.
 - 2026-10-04: Noted that the Contract Carrier Pointer-Brief Rewrite (S-004C) Lexicon And Orientation Wording Task (TK-005N) applies progressive disclosure to the carriers.
+- 2026-10-07: Re-pointed the retiring Lexicon's links and live routes to `GLOSSARY.md`, `ARCHITECTURE.md` and the Wiki lexicon articles (the Lexicon Retirement Spec (S-004O), its consumer re-pointing Task (TK-009F)); no claim changed.

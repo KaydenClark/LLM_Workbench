@@ -9,7 +9,8 @@ source_paths:
   - workbench/specs/S-004D-shared-interactive-board/SPEC.md
   - workbench/grill-board/README.md
   - BLUEPRINT.md
-  - LEXICON.md
+  - GLOSSARY.md
+  - ARCHITECTURE.md
   - AGENTS.md
   - RUNBOOK.md
   - workbench/landmark-tracker/README.md
@@ -160,7 +161,7 @@ knowledge jobs.
 A confirmed answer settles understanding within its scope. It does not itself
 authorize implementation, promotion or another assignment. The existing
 [authority rules](../../../AGENTS.md#authority-order) and
-[ownership map](../../../LEXICON.md#artifact-ownership-schema) still govern.
+[ownership map](../../../ARCHITECTURE.md#ownership) still govern.
 Live navigation follows current records; historical proof identifies the
 version that was checked. The [recovery procedures](../../../RUNBOOK.md) govern
 retirement and recovery, including the distinction between tracked records and
@@ -234,7 +235,7 @@ reach their source owners and generated views are rebuilt.
 ## Evidence and Sources
 
 - [Product direction](../../../BLUEPRINT.md)
-- [Definitions and information ownership](../../../LEXICON.md)
+- [Definitions](../../../GLOSSARY.md) and [information ownership](../../../ARCHITECTURE.md#ownership)
 - [Agent authority and continuity](../../../AGENTS.md)
 - [Available operations and delivery route](../../../RUNBOOK.md#landmark-tracker-accepted-design-and-available-operations)
 - [Tracker record procedure](../../landmark-tracker/README.md)
@@ -263,3 +264,4 @@ reach their source owners and generated views are rebuilt.
 - 2026-10-04: The Runbook's accepted-design and available-operation text moved into the notepad skill behind the Runbook operations index (Contract Carrier Pointer-Brief Rewrite Spec (S-004C), Operations Every Room Runs Task (TK-005J)); the Runbook keeps the delivery route.
 - 2026-10-04: The shared browser workspace is no longer a post-v4 backlog: the owner named the Grill Board its first working form, so the section links the Grill Board and Shared Interactive Workbench Board (S-004D) as one product line.
 - 2026-10-06: The `LANDMARK.md` artifact and its runtime are installed by the LANDMARK.md Artifact And Lane Runtime Spec (S-003Z); only the JSON-record migration and the Tracker regrouping remain, so the "none of this is installed yet" line now says so (S-003Z, Task TK-008J (landmark templates and documentation)).
+- 2026-10-07: Re-pointed the retiring Lexicon's links and live routes to `GLOSSARY.md`, `ARCHITECTURE.md` and the Wiki lexicon articles (the Lexicon Retirement Spec (S-004O), its consumer re-pointing Task (TK-009F)); no claim changed.

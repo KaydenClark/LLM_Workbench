@@ -15,7 +15,7 @@ source_paths:
   - workbench/docs/adr/000P-roles-scope-work-and-stances-define-the-job.md
   - workbench/docs/adr/0036-stances-change-method-not-authority.md
   - workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md
-  - LEXICON.md
+  - GLOSSARY.md
   - AGENTS.md
   - RUNBOOK.md
 last_verified: 2026-10-03
@@ -29,7 +29,7 @@ Use the Director role when the owner assigns you the project and its integration
 
 ## How it works
 
-A role is the assigned scope of responsibility; a stance is the job performed inside it ([LEXICON](../../LEXICON.md#core-terms) Role, Director, Dispatcher and Worker rows; [Stance](../../LEXICON.md#stance-terms); [ADR-000P](../docs/adr/000P-roles-scope-work-and-stances-define-the-job.md)). The Director covers the whole project and its integration branch, a Dispatcher covers one Spec and its branch, and a Worker covers one Task for one attempt. The owner remains the human above the Director. Holding the integration branch adds no authority: the owner request, the controls and the repository permissions establish it first. Loading a stance changes the method only and never makes a prior participant independent ([ADR-0036](../docs/adr/0036-stances-change-method-not-authority.md)).
+A role is the assigned scope of responsibility; a stance is the job performed inside it ([GLOSSARY](../../GLOSSARY.md#chats-and-roles) Role, Director, Dispatcher and Worker entries; [Stance](../../GLOSSARY.md#stance-terms); [ADR-000P](../docs/adr/000P-roles-scope-work-and-stances-define-the-job.md)). The Director covers the whole project and its integration branch, a Dispatcher covers one Spec and its branch, and a Worker covers one Task for one attempt. The owner remains the human above the Director. Holding the integration branch adds no authority: the owner request, the controls and the repository permissions establish it first. Loading a stance changes the method only and never makes a prior participant independent ([ADR-0036](../docs/adr/0036-stances-change-method-not-authority.md)).
 
 - **State from tracked owners.** The Director starts from the controls and the integration branch, and recovers accepted decisions, open gates and the assigned Specs from tracked owners: each `SPEC.md`, the rendered Taskboard, the ADR collection and the Wiki router. It never relies on a local chat, private memory or an unmerged branch for state another agent must continue from, and it records each coordination decision as it makes it, not at closeout.
 - **One writer per shared artifact.** Parallel lanes collide on shared files: Spec records, projections, controls, routers or a shared source file. The Director names one writer for each and serializes the others behind it. A Spec's own records keep their single writer, the Spec's Dispatcher, so the Director routes what belongs in a Spec to that writer, or records it in the coordination owner the project names, and never edits another writer's Spec state concurrently.
@@ -74,7 +74,7 @@ The agent reported one conflict: the entry told it to record each dependency and
 
 - [Director Role Spec](../specs/S-002C-director-role/SPEC.md)
 - [Roles and stances design concept](design-concepts/roles-and-stances.md)
-- [Role terms in LEXICON](../../LEXICON.md#core-terms) and [stance terms](../../LEXICON.md#stance-terms)
+- [Role terms in GLOSSARY](../../GLOSSARY.md#chats-and-roles) and [stance terms](../../GLOSSARY.md#stance-terms)
 - [ADR-000P: roles scope work and stances define the job](../docs/adr/000P-roles-scope-work-and-stances-define-the-job.md)
 - [ADR-0036: stances change method, not authority](../docs/adr/0036-stances-change-method-not-authority.md)
 - [AGENTS Git Rules](../../AGENTS.md#git-rules) and [Assigned Work And Stances](../../AGENTS.md#assigned-work-and-stances)

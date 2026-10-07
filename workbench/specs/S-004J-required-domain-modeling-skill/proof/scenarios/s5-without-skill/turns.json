@@ -1,0 +1,5 @@
+[
+  "/grilling Grill me on what Settlement should mean in Ledgerline; I'm not sure the current definition is right.",
+  "I think a Settlement should also cover refunds that go back to the Customer.",
+  "Thinking about it more: no. A Settlement only applies a Payment to open Invoices; refunds are a separate concept we haven't named yet. I confirm that, and we can stop the grilling here."
+]

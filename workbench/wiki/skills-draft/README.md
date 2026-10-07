@@ -87,8 +87,8 @@ Carry work from an idea to a merged change: specify, cut Tasks, implement, revie
 | spec-planner | core | S-002F (spec planner stance) | none |
 | spec-manager | core | S-002G (spec manager stance) | none (nearest implement-spec) |
 | [implement-spec](main-workflow/implement-spec.md) | core lane, Workbench-only maintainer | S-002T (implement spec skill adoption) | implement-spec |
-| pr | new | S-002U (pr skill adoption) | pr |
-| retro | new | S-002V (retro skill adoption) | retro |
+| [pr](main-workflow/pr.md) | core lane, owner-approved required Core | S-002U (pr skill adoption) | pr |
+| [retro](main-workflow/retro.md) | core | S-002V (retro skill adoption) | retro |
 
 ## shaping
 
@@ -144,12 +144,12 @@ Skills other skills compose: interviews, notes, promotion, documentation, vocabu
 | to-docs | core | S-01J (to docs skill rebuild) | none |
 | save | core | S-01O (save skill rebuild) | none |
 | tracer-bullet | core | S-01M (tracer bullet skill rebuild) | part of to-tickets |
-| domain-modeling | pending | S-002H (domain modeling skill) | domain-modeling |
+| domain-modeling | core | S-004J (required domain modeling skill), which replaced S-002H | domain-modeling |
 | ubiquitous-language | pending | S-003L (ubiquitous language skill alignment) | removed upstream (superseded by domain-modeling) |
 | codebase-design | pending | S-003M (codebase design skill alignment) | codebase-design |
 | tdd | pending | S-003N (tdd skill alignment) | tdd |
 | lexicon | personal | S-003O (lexicon skill alignment) | none (nearest domain-modeling, wait-what) |
-| writing-for-agents | new, becomes core | S-002P (writing for agents skill adoption) | writing-for-agents |
+| [writing-for-agents](primitives/writing-for-agents.md) | core | S-002P (writing for agents skill adoption) | writing-for-agents |
 
 ## productivity
 
