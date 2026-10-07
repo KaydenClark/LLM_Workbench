@@ -152,7 +152,7 @@ Records and the Tracker: [Landmark Records (S-002A)](../../specs/S-002A-landmark
 The ownership map: [Ownership Map Root Control (S-00G)](../../specs/S-00G-ownership-map-root-control/SPEC.md).
 The tools are the [landmark tracker](../../tools/landmark-tracker.mjs) and the
 [Wiki validator](../../tools/wiki.mjs). The routing rules live in
-[LEXICON.md](../../../LEXICON.md) and [AGENTS.md](../../../AGENTS.md).
+[ARCHITECTURE.md](../../../ARCHITECTURE.md#routes) and [AGENTS.md](../../../AGENTS.md).
 
 ## Related pages
 
@@ -169,3 +169,4 @@ The tools are the [landmark tracker](../../tools/landmark-tracker.mjs) and the
 
 - 2026-10-04: created by the Wiki Evolving-Synthesis Migration Spec (S-003W), Task TK-004 (landmark synthesis pages), seeded from the cards' current answers.
 - 2026-10-04: corrected after the whole-Wiki lint of the Wiki Evolving-Synthesis Migration Spec (S-003W), Task TK-006P (Wiki wording): the features collection statements now say it is delivered with the migrated feature articles routed under Feature Articles (earlier design-concept or guidebook notes can remain valid retirement owners), and the Destination Question Card DQC-002D citation moved to revision 8 (its answer is unchanged). No card answer was changed.
+- 2026-10-07: Re-pointed the retiring Lexicon's links and live routes to `GLOSSARY.md`, `ARCHITECTURE.md` and the Wiki lexicon articles (Lexicon Retirement And ARCHITECTURE.md Spec (S-004O), consumer re-pointing Task (TK-009F)); no claim changed.

@@ -10,7 +10,7 @@ source_paths:
   - workbench/specs/retired/S-027-workbench-v3-1-1-boundaries/SPEC.md
   - AGENTS.md
   - RUNBOOK.md
-  - LEXICON.md
+  - ARCHITECTURE.md
   - workbench/skills/builder/SKILL.md
   - workbench/skills/auditor/SKILL.md
   - workbench/skills/reviewer/SKILL.md
@@ -33,7 +33,7 @@ together with several repairs to update, rollback and adoption behavior.
 ## What It Does
 
 - **Entry route.** The normal entry route is `AGENTS.md` -> the `RUNBOOK.md`
-  operations index -> `LEXICON.md` (the
+  operations index -> `ARCHITECTURE.md` (the
   Contract Carrier Pointer-Brief Rewrite (S-004C) made the Runbook an index of
   pointers to the skills that hold each procedure), followed by the assigned capability
   and only its relevant context. The Blueprint is loaded for architecture and
@@ -80,7 +80,7 @@ delivered work.
 
 - [Historical Workbench Boundaries Spec (S-027) for v3.1.1](../../specs/S-027-workbench-v3-1-1-boundaries/SPEC.md). Original decisions, corrections, evidence and limitations remain preserved; its eventual retired route is named in this article's `source_paths`.
 - [Immutable source and proof at `7f314af`](https://github.com/KaydenClark/LLM_Workbench/blob/7f314af2bd9ad8693ed570912568180acd742779/workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md). Recover the original with `git show 7f314af2bd9ad8693ed570912568180acd742779:workbench/specs/S-027-workbench-v3-1-1-boundaries/SPEC.md`.
-- [AGENTS.md](../../../AGENTS.md), [RUNBOOK.md](../../../RUNBOOK.md) and [LEXICON.md](../../../LEXICON.md) - the entry route and the controls that own the boundaries.
+- [AGENTS.md](../../../AGENTS.md), [RUNBOOK.md](../../../RUNBOOK.md) and [ARCHITECTURE.md](../../../ARCHITECTURE.md) - the entry route and the controls that own the boundaries.
 - [workbench/skills/builder/SKILL.md](../../skills/builder/SKILL.md), [workbench/skills/auditor/SKILL.md](../../skills/auditor/SKILL.md), [workbench/skills/reviewer/SKILL.md](../../skills/reviewer/SKILL.md) and [workbench/skills/reconciler/SKILL.md](../../skills/reconciler/SKILL.md) - the four portable stances.
 - [tools/test-governance-core.mjs](../../../tools/test-governance-core.mjs), [tools/test-branch-closeout.mjs](../../../tools/test-branch-closeout.mjs), [tools/test-workbench-tools.mjs](../../../tools/test-workbench-tools.mjs) and [tools/test-workbench-adoption.mjs](../../../tools/test-workbench-adoption.mjs) - the verification seams.
 
@@ -90,3 +90,4 @@ delivered work.
 - 2026-09-30: Repaired live skill links and source_paths after relocation to workbench/skills; verified destinations only, without revalidating historical capability claims.
 - 2026-10-04: Moved from `design-concepts/spec-S-027-workbench-v3-1-1-boundaries.md` into the features collection under this name with `wiki.mjs move-note`, retyped `feature` and restructured into the four feature sections from its existing prose, for the Wiki Evolving-Synthesis Migration Spec (S-003W) Task TK-002 (Move And Retype The Remaining Per-Spec Articles). Every live link to it was rewritten by the move; no claim was changed. This move checked that the named current source paths (the first entry names the Spec's eventual retired route, which does not exist yet) and the immutable commit exist, not the behavior of the capability itself.
 - 2026-10-04: The entry route names the Runbook operations index, which the Contract Carrier Pointer-Brief Rewrite (S-004C) Lexicon And Orientation Wording Task (TK-005N) delivered.
+- 2026-10-07: Re-pointed the retiring Lexicon's links and live routes to `GLOSSARY.md`, `ARCHITECTURE.md` and the Wiki lexicon articles (Lexicon Retirement And ARCHITECTURE.md Spec (S-004O), consumer re-pointing Task (TK-009F)); no claim changed.

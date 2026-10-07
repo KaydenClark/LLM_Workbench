@@ -15,7 +15,8 @@ source_paths:
   - tools/test-wiki.mjs
   - AGENTS.md
   - RUNBOOK.md
-  - LEXICON.md
+  - GLOSSARY.md
+  - ARCHITECTURE.md
 last_verified: 2026-10-04
 ---
 
@@ -27,9 +28,9 @@ Use `to-docs` when a conversation or piece of work has already settled something
 
 ## How it works
 
-The [skill](../skills/to-docs/SKILL.md) owns the judgment. The [Lexicon ownership schema](../../LEXICON.md#artifact-ownership-schema) defines which owner holds which kind of truth; [AGENTS](../../AGENTS.md#documentation-ownership-and-proof) keeps the always-true documentation rules and points to that schema. The skill's [Citation anchors](../skills/to-docs/SKILL.md#citation-anchors) section carries how a citation into a changing file names its tree, and its [Decision records](../skills/to-docs/SKILL.md#decision-records) section carries how an ADR or DDR is written, accepted, superseded, deprecated, read and validated with `adr.mjs`, and when to amend an existing record instead of adding one; the [Runbook operations index](../../RUNBOOK.md#operations-index) points there.
+The [skill](../skills/to-docs/SKILL.md) owns the judgment. The [`ARCHITECTURE.md` ownership map](../../ARCHITECTURE.md#ownership) defines which owner holds which kind of truth; [AGENTS](../../AGENTS.md#documentation-ownership-and-proof) keeps the always-true documentation rules and points to that schema. The skill's [Citation anchors](../skills/to-docs/SKILL.md#citation-anchors) section carries how a citation into a changing file names its tree, and its [Decision records](../skills/to-docs/SKILL.md#decision-records) section carries how an ADR or DDR is written, accepted, superseded, deprecated, read and validated with `adr.mjs`, and when to amend an existing record instead of adding one; the [Runbook operations index](../../RUNBOOK.md#operations-index) points there.
 
-- **Destinations first.** The agent reads `workbench/manifest.json` and states where each claim will go before it edits anything. Definitions go to the Lexicon, product direction to the Blueprint, requirements and proof to the assigned Spec, commands and recovery to the Runbook, agent rules to AGENTS, decision rationale to an ADR, and explanations or durable knowledge to the Wiki. If capability truth needs a Spec and none is assigned, it routes to `to-spec` instead of improvising one.
+- **Destinations first.** The agent reads `workbench/manifest.json` and states where each claim will go before it edits anything. Definitions go to the glossary, product direction to the Blueprint, requirements and proof to the assigned Spec, commands and recovery to the Runbook, agent rules to AGENTS, decision rationale to an ADR, and explanations or durable knowledge to the Wiki. If capability truth needs a Spec and none is assigned, it routes to `to-spec` instead of improvising one.
 - **Each claim once.** A mixed finding is split into its claims, and each claim goes to exactly one owner. When another owner needs it, that owner links to it. A Wiki reference article explains why and links the procedure. It does not restate the procedure's steps.
 - **Only supported claims.** Pending meaning is read the way [notepad](skill-notepad.md) records it. A `source_record` whose readback is still listed in `current.unresolved` is pending, however settled it sounds. Only a `decision` entry records a confirmed owner answer. Pending, tentative or disputed material stays in its live note.
 - **Durable evidence only.** Evidence cites durable owners and exact commits. It never cites an ignored live path such as a note, handoff or recovery file. Spec state changes at meaningful transitions, and evidence rows are appended. Conversation, working notes and superseded interim states do not become permanent Spec history.

@@ -98,8 +98,8 @@ holds the skills-lane and catalog-review work. The ownership scopes for skills
 are in the decision record
 [Core, personal/shared and room-local skill ownership](../../docs/adr/0046-core-personal-shared-and-room-local-skill-ownership.md).
 The Blueprint states that the portable Workbench does not import Foundry
-machinery ([BLUEPRINT](../../../BLUEPRINT.md)); the Lexicon defines the Foundry
-as a downstream extension ([LEXICON](../../../LEXICON.md)); the skills-lane
+machinery ([BLUEPRINT](../../../BLUEPRINT.md)); the glossary defines the Foundry
+as a downstream extension ([GLOSSARY](../../../GLOSSARY.md#project-specific-terms)); the skills-lane
 procedure is in [RUNBOOK](../../../RUNBOOK.md).
 
 ## Related pages
@@ -116,3 +116,4 @@ procedure is in [RUNBOOK](../../../RUNBOOK.md).
 ## History
 
 - 2026-10-04: created by the Wiki Evolving-Synthesis Migration Spec (S-003W), Task TK-004 (landmark synthesis pages), seeded from the cards' current answers.
+- 2026-10-07: Re-pointed the retiring Lexicon's links and live routes to `GLOSSARY.md`, `ARCHITECTURE.md` and the Wiki lexicon articles (Lexicon Retirement And ARCHITECTURE.md Spec (S-004O), consumer re-pointing Task (TK-009F)); no claim changed.

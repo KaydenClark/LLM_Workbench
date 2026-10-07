@@ -211,8 +211,9 @@ planned only.
 
 - [Landmark record Taskboard (LMK-000Q)](../../landmark-tracker/landmarks/LMK-000Q.json): title, summary, importance and history.
 - The fifteen question cards named above, each at the revision cited: they hold the answers, the confirmation basis, the open uncertainties and the expected results this page summarizes.
-- [Lexicon](../../../LEXICON.md) and [agent contract](../../../AGENTS.md): the Taskboard, Frontier and work-selection definitions the cards expect to land.
+- [Glossary](../../../GLOSSARY.md) and [agent contract](../../../AGENTS.md): the Taskboard, Frontier and work-selection definitions the cards expect to land.
 
 ## History
 
 - 2026-10-04: created by the Wiki Evolving-Synthesis Migration Spec (S-003W), Task TK-004 (landmark synthesis pages), seeded from the cards' current answers.
+- 2026-10-07: Re-pointed the retiring Lexicon's links and live routes to `GLOSSARY.md`, `ARCHITECTURE.md` and the Wiki lexicon articles (Lexicon Retirement And ARCHITECTURE.md Spec (S-004O), consumer re-pointing Task (TK-009F)); no claim changed.

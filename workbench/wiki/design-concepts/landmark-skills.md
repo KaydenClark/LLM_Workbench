@@ -135,9 +135,9 @@ The tools are the [skills installer](../../../tools/workbench-skills.mjs), the
 [core skill installer](../../../tools/core-skill-installer.mjs), the
 [presence check](../../../tools/skill-presence.mjs), the
 [layout check](../../tools/workbench-layout.mjs) and the
-[skill catalog test](../../../tools/test-skill-catalog.mjs). The Lexicon rows on
+[skill catalog test](../../../tools/test-skill-catalog.mjs). The glossary entries on
 the core bundle, normal setup and explicit skill update live in
-[LEXICON.md](../../../LEXICON.md).
+[GLOSSARY.md](../../../GLOSSARY.md#support-root-and-skills-lane).
 
 ## Related pages
 
@@ -156,3 +156,4 @@ the core bundle, normal setup and explicit skill update live in
 - 2026-10-04: created by the Wiki Evolving-Synthesis Migration Spec (S-003W), Task TK-004 (landmark synthesis pages), seeded from the cards' current answers.
 
 - 2026-10-07: Writing-for-agents Skill Adoption (S-002P) and Retro Skill Adoption (S-002V) reconciled the bundle count with the current catalog and dated the earlier Wiki coverage observation; card answers are unchanged.
+- 2026-10-07: Re-pointed the retiring Lexicon's links and live routes to `GLOSSARY.md`, `ARCHITECTURE.md` and the Wiki lexicon articles (Lexicon Retirement And ARCHITECTURE.md Spec (S-004O), consumer re-pointing Task (TK-009F)); no claim changed.

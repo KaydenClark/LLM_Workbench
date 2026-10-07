@@ -8,7 +8,8 @@ provenance:
   - Moved into the features collection and restructured as a feature article by Wiki Evolving-Synthesis Migration (S-003W) Task TK-002 (Move and retype the remaining per-Spec articles) using wiki.mjs move-note, 2026-10-04
 source_paths:
   - workbench/specs/retired/S-00L-lexicon-freshness-repair/SPEC.md
-  - LEXICON.md
+  - GLOSSARY.md
+  - ARCHITECTURE.md
   - workbench/manifest.json
   - tools/test-governance-core.mjs
   - tools/test-control-fidelity.mjs
@@ -50,7 +51,7 @@ later stamp or promotion, even while its links and Markdown remain valid.
 
 - [Historical Lexicon Freshness Repair Spec (S-00L)](../../specs/S-00L-lexicon-freshness-repair/SPEC.md). Original decisions, corrections, evidence and limitations remain preserved; its eventual retired route is named in this article's `source_paths`.
 - [Immutable source and proof at `bc370fe`](https://github.com/KaydenClark/LLM_Workbench/blob/bc370fe742d5ddb8348bf361fccea31205f6cee7/workbench/specs/S-00L-lexicon-freshness-repair/SPEC.md). The source record and named owners were read at that commit. Recover the original with `git show bc370fe742d5ddb8348bf361fccea31205f6cee7:workbench/specs/S-00L-lexicon-freshness-repair/SPEC.md`.
-- [LEXICON.md](../../../LEXICON.md) - the terminology router the repair concerned.
+- The Lexicon, the terminology router the repair concerned, retires into [GLOSSARY.md](../../../GLOSSARY.md) and [ARCHITECTURE.md](../../../ARCHITECTURE.md) ([the Lexicon retirement](../../docs/ddr/001E-the-lexicon-retires-terms-live-in-the-wiki-and-ownership-routes-and-invariants-live-in-architecture-md.md)).
 - [workbench/manifest.json](../../../workbench/manifest.json) - the version source current claims are read from.
 - [tools/test-governance-core.mjs](../../../tools/test-governance-core.mjs) and [tools/test-control-fidelity.mjs](../../../tools/test-control-fidelity.mjs) - the verification seams.
 
@@ -58,3 +59,4 @@ later stamp or promotion, even while its links and Markdown remain valid.
 
 - 2026-09-19: Reconciled into one Spec article on owner direction. Original source and proof remain intact; this article does not authorize retirement or discard.
 - 2026-10-04: Moved from `design-concepts/spec-S-00L-lexicon-freshness-repair.md` into the features collection under this name with `wiki.mjs move-note`, retyped `feature` and restructured into the four feature sections from its existing prose, for the Wiki Evolving-Synthesis Migration Spec (S-003W) Task TK-002 (Move and retype the remaining per-Spec articles). Every live link to it was rewritten by the move; no claim was changed.
+- 2026-10-07: Re-pointed the retiring Lexicon's links and live routes to `GLOSSARY.md`, `ARCHITECTURE.md` and the Wiki lexicon articles (Lexicon Retirement And ARCHITECTURE.md Spec (S-004O), consumer re-pointing Task (TK-009F)); no claim changed.

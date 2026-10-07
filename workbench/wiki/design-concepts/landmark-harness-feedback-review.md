@@ -124,7 +124,7 @@ The format is [REPORT_FORMAT](../../feedback/REPORT_FORMAT.md) in the feedback
 lane. The decision is
 [Every feedback finding carries one of five dispositions](../../docs/adr/000K-every-feedback-finding-carries-one-of-four-dispositions.md).
 The procedures are in the [RUNBOOK](../../../RUNBOOK.md#manual-harness-feedback-reports)
-and the vocabulary in the [LEXICON](../../../LEXICON.md).
+and the vocabulary in the [GLOSSARY](../../../GLOSSARY.md#feedback-disposition).
 
 ## Related pages
 
@@ -141,3 +141,4 @@ and the vocabulary in the [LEXICON](../../../LEXICON.md).
 
 - 2026-10-04: created by the Wiki Evolving-Synthesis Migration Spec (S-003W), Task TK-004 (landmark synthesis pages), seeded from the cards' current answers.
 - 2026-10-06: the Harness Improvement Playbook Skill Spec (S-004L), at its whole-Spec QA, replaced the stale "family is planned" statements with the retired family and the one `improve-harness` skill; the cards themselves are unchanged.
+- 2026-10-07: Re-pointed the retiring Lexicon's links and live routes to `GLOSSARY.md`, `ARCHITECTURE.md` and the Wiki lexicon articles (Lexicon Retirement And ARCHITECTURE.md Spec (S-004O), consumer re-pointing Task (TK-009F)); no claim changed.

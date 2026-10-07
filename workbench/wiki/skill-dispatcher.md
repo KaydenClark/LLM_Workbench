@@ -15,7 +15,7 @@ source_paths:
   - workbench/docs/adr/000P-roles-scope-work-and-stances-define-the-job.md
   - workbench/docs/adr/0036-stances-change-method-not-authority.md
   - workbench/specs/S-00O-workbench-v4-0-0-release/SPEC.md
-  - LEXICON.md
+  - GLOSSARY.md
   - AGENTS.md
   - RUNBOOK.md
 last_verified: 2026-10-06
@@ -29,7 +29,7 @@ Use the Dispatcher role when the Director or the owner request assigns you one S
 
 ## How it works
 
-A role is the assigned scope of responsibility; a stance is the job performed inside it ([LEXICON](../../LEXICON.md#core-terms) Role, Director, Dispatcher and Worker rows; [Stance](../../LEXICON.md#stance-terms); [ADR-000P](../docs/adr/000P-roles-scope-work-and-stances-define-the-job.md)). The Dispatcher scope is one Spec and its branch. Inside that scope it composes whichever stance the moment needs: Spec Planner at flight launch, Spec Manager during execution, Reviewer or Auditor for a named verification job. Loading a stance changes the method only; it grants, removes or transfers no authority and never makes a prior participant independent ([ADR-0036](../docs/adr/0036-stances-change-method-not-authority.md)). Holding the branch adds nothing either: the owner request, the controls and repository permissions establish authority first.
+A role is the assigned scope of responsibility; a stance is the job performed inside it ([GLOSSARY](../../GLOSSARY.md#chats-and-roles) Role, Director, Dispatcher and Worker entries; [Stance](../../GLOSSARY.md#stance-terms); [ADR-000P](../docs/adr/000P-roles-scope-work-and-stances-define-the-job.md)). The Dispatcher scope is one Spec and its branch. Inside that scope it composes whichever stance the moment needs: Spec Planner at flight launch, Spec Manager during execution, Reviewer or Auditor for a named verification job. Loading a stance changes the method only; it grants, removes or transfers no authority and never makes a prior participant independent ([ADR-0036](../docs/adr/0036-stances-change-method-not-authority.md)). Holding the branch adds nothing either: the owner request, the controls and repository permissions establish authority first.
 
 - **One durable writer.** Before any Worker starts, the Dispatcher names one writer for the Spec, its `TASK.md` records, the rendered projections and any file more than one Task must touch. By default that writer is the Dispatcher. Workers return exact commit SHAs, proof, docs status and remaining gap to that writer and never edit shared Spec state concurrently; conflicting writes are serialized.
 - **Never approves its own candidate.** A Worker never approves its own Task result, and the Dispatcher never approves its own assembled candidate. Independent review needs an eligible uninvolved context; changing stance does not create one.
@@ -74,7 +74,7 @@ The agent also reported one boundary incident itself. During the first review, i
 
 - [Dispatcher Role Spec](../specs/S-002D-dispatcher-role/SPEC.md)
 - [Roles and stances design concept](design-concepts/roles-and-stances.md)
-- [Role terms in LEXICON](../../LEXICON.md#core-terms) and [stance terms](../../LEXICON.md#stance-terms)
+- [Role terms in GLOSSARY](../../GLOSSARY.md#chats-and-roles) and [stance terms](../../GLOSSARY.md#stance-terms)
 - [ADR-000P: roles scope work and stances define the job](../docs/adr/000P-roles-scope-work-and-stances-define-the-job.md)
 - [ADR-0036: stances change method, not authority](../docs/adr/0036-stances-change-method-not-authority.md)
 - [AGENTS Git Rules](../../AGENTS.md#git-rules) and [Assigned Work And Stances](../../AGENTS.md#assigned-work-and-stances)

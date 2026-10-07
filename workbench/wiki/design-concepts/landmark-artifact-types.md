@@ -23,7 +23,7 @@ This page is the evolving synthesis of the Artifact Types landmark
 It sums up, in prose, what the landmark's fifteen question cards currently say
 about what each kind of Workbench record is for, and is updated whenever one of
 them changes. The cards and the landmark record keep the structured account and
-the lineage. The decision records, the Lexicon and the Specs named below govern.
+the lineage. The decision records, the glossary and the Specs named below govern.
 For the explanations of how the altitudes and the decision chain fit together,
 read [The three altitudes of delivery](delivery-altitudes.md) and
 [Decision records and the concept map](decision-records-and-the-concept-map.md),
@@ -189,3 +189,4 @@ artifact in depth.
 
 - 2026-10-04: created by the Wiki Evolving-Synthesis Migration Spec (S-003W), Task TK-004 (landmark synthesis pages), seeded from the cards' current answers.
 - 2026-10-04: corrected after the whole-Wiki lint of the Wiki Evolving-Synthesis Migration Spec (S-003W), Task TK-006P (Wiki wording): the Destination Question Card DQC-002D citation moved from revision 7 to revision 8 (only its expected-result route changed; the answer is unchanged).
+- 2026-10-07: Re-pointed the retiring Lexicon's links and live routes to `GLOSSARY.md`, `ARCHITECTURE.md` and the Wiki lexicon articles (Lexicon Retirement And ARCHITECTURE.md Spec (S-004O), consumer re-pointing Task (TK-009F)); no claim changed.

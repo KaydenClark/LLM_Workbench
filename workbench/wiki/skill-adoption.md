@@ -75,7 +75,7 @@ Owner Human QA of the conversational fidelity of an adoption on `integration` re
 - [Adoption source](../skills/adoption/SKILL.md), the protocol in `templates/ADOPTION.md`, and the helper `tools/workbench-adoption.mjs`
 - [Individual delivery Spec](../specs/S-01D-adoption-skill-rebuild/SPEC.md)
 - [Runbook: V3 Adoption migration check](../../RUNBOOK.md#v3-adoption-migration-check) and [Control fidelity report](../../RUNBOOK.md#control-fidelity-report)
-- [Lexicon: Core Terms](../../LEXICON.md#core-terms) (normal setup, explicit skill update) and [Governance Core](../../LEXICON.md#governance-core) (declared integration branch)
+- [Glossary: Support root and skills lane](../../GLOSSARY.md#support-root-and-skills-lane) (normal setup, explicit skill update) and [Governance core](../../GLOSSARY.md#governance-core) (declared integration branch)
 - [Wiki router](MEMORY.md)
 
 ## History

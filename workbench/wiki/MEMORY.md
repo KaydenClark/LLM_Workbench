@@ -403,7 +403,8 @@ entry.
 |---|---|
 | [AGENTS.md](../../AGENTS.md) | Authority, scope, safety, and the work loop |
 | [BLUEPRINT.md](../../BLUEPRINT.md) | What the product is, who it serves, the outcomes it promises and what it is not |
-| [LEXICON.md](../../LEXICON.md) | Shared terms, the Governance Core, the Artifact Ownership Schema, and design-concept routing |
+| [GLOSSARY.md](../../GLOSSARY.md) | Shared terms and the Governance core |
+| [ARCHITECTURE.md](../../ARCHITECTURE.md) | Which artifact owns each kind of truth, the routes to it, the invariants, and design-concept routing |
 | [TASKBOARD.md](../../TASKBOARD.md) | Generated work-state view; follow each row to its owning Spec |
 | [RUNBOOK.md](../../RUNBOOK.md) | Exact operating and verification commands |
 | `workbench/specs/` | Stable capability records, acceptance, evidence, and proof |
@@ -417,7 +418,7 @@ entry.
 
 | Question | Read first |
 |---|---|
-| How the Workbench is governed | [LEXICON.md](../../LEXICON.md) -> Governance Core, then `workbench/docs/adr/` |
+| How the Workbench is governed | [GLOSSARY.md](../../GLOSSARY.md#governance-core) -> Governance core, [ARCHITECTURE.md](../../ARCHITECTURE.md#ownership) -> Ownership, then `workbench/docs/adr/` |
 | What the Wiki is and how agents use it | [SCHEMA.md](SCHEMA.md), then the decision record [The Wiki is the evolving synthesis every agent reads and updates](../docs/adr/000R-the-wiki-is-the-evolving-synthesis-every-agent-reads-and-updates.md) |
 | Why a layout, stance or entry-route decision was made | [docs/adr/REGISTER.md](../docs/adr/REGISTER.md) |
 

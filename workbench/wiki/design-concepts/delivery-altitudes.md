@@ -10,7 +10,7 @@ source_paths:
   - workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md
   - workbench/docs/adr/000U-landmarks-are-landmark-md-artifacts-one-size-above-specs.md
   - workbench/docs/ddr/000O-the-blueprint-is-a-high-level-summary-of-the-direction-and-makes-us-ask-questions.md
-  - LEXICON.md
+  - GLOSSARY.md
 parent: none
 authorized_by: the owner's Blueprint teardown disposition, 2026-10-03
 last_verified: 2026-10-03
@@ -22,7 +22,7 @@ Delivery works at three altitudes, and the Blueprint, a Spec and a Task are the
 three of them. The accepted decision is
 [Blueprint, Spec and Task are three altitudes of one delivery chain](../../docs/adr/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md);
 this page is the readable explanation the Blueprint used to carry as a
-paragraph. It authorizes nothing, and the [Lexicon](../../../LEXICON.md) holds
+paragraph. It authorizes nothing, and the [glossary](../../../GLOSSARY.md) holds
 the definitions.
 
 ## Counting to 100
@@ -81,10 +81,11 @@ confirmed landmark set by the landmark migration Spec.
   the gates at the Spec and integration boundaries.
 - [Landmarks are LANDMARK.md artifacts one size above Specs](../../docs/adr/000U-landmarks-are-landmark-md-artifacts-one-size-above-specs.md).
 - [The Blueprint is a high-level summary of the direction](../../docs/ddr/000O-the-blueprint-is-a-high-level-summary-of-the-direction-and-makes-us-ask-questions.md).
-- [Lexicon](../../../LEXICON.md): the Blueprint, Spec and Task rows.
+- [Glossary](../../../GLOSSARY.md#specs-and-tasks): the Blueprint, Spec and Task entries.
 
 ## History
 
 - 2026-10-03: created in the Blueprint short-page work (the Blueprint Short Page
   Spec) from the altitude passages the owner's teardown disposition moved off the
   Blueprint.
+- 2026-10-07: Re-pointed the retiring Lexicon's links and live routes to `GLOSSARY.md`, `ARCHITECTURE.md` and the Wiki lexicon articles (Lexicon Retirement And ARCHITECTURE.md Spec (S-004O), consumer re-pointing Task (TK-009F)); no claim changed.

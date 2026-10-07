@@ -42,7 +42,7 @@ In the S-00X (grilling skill rebuild Spec) scenario, the agent recommended that 
 
 The interview works without persistence. When losing the session would impair continuation, which is the ordinary case for a consequential design session, grilling composes [notepad](skill-notepad.md) under the `AGENTS.md` session-record rule. An answer awaiting confirmation is saved as a `source_record` entry with the readback as its interpretation and stays listed as unresolved. The question stays `open`, because genesis intake accepts only `open`, `tentative` and `locked`. Only a `decision` entry records an owner answer. [grill-me](skill-grill-me.md) is the planned entry point that composes both skills by default; its delivery belongs to S-00Z (grill-me skill rebuild Spec).
 
-Lexicon, `domain-modeling` and `wayfinder` may help within the caller's scope, but grant no new authority. The exits (preserve, promote, specify, hand off, execute) each need an explicit owner direction. Specification comes only after the confirmed final readback.
+The vocabulary owner `ARCHITECTURE.md` routes to, `domain-modeling` and `wayfinder` may help within the caller's scope, but grant no new authority. The exits (preserve, promote, specify, hand off, execute) each need an explicit owner direction. Specification comes only after the confirmed final readback.
 
 ## Upstream relationship
 

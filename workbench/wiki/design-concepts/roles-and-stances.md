@@ -6,7 +6,7 @@ knowledge_role: curated
 provenance:
   - Owner-confirmed minimum role and stance buildout, 2026-09-27
 source_paths:
-  - LEXICON.md
+  - GLOSSARY.md
   - AGENTS.md
   - BLUEPRINT.md
   - RUNBOOK.md
@@ -94,7 +94,7 @@ establish these Spec-bound roles.
 
 ## Evidence and Sources
 
-- [Lexicon](../../../LEXICON.md): accepted role and stance definitions.
+- [Glossary](../../../GLOSSARY.md#chats-and-roles): accepted role and stance definitions ([Stance terms](../../../GLOSSARY.md#stance-terms)).
 - [Decision record: "Captain, Director, Dispatcher and Worker scope work and role skills own each job"](../../docs/adr/000V-captain-director-dispatcher-and-worker-scope-work-and-role-skills-own-each-job.md): the Captain and landmark Director, and role jobs moving into role skills.
 - [AGENTS](../../../AGENTS.md): assignment, authority and integration review.
 - [Blueprint](../../../BLUEPRINT.md): coordinated delivery destination.
@@ -108,3 +108,4 @@ establish these Spec-bound roles.
 
 - 2026-09-27: Created on owner direction after confirmation of the combined concept. Reviewer changed from the initial role proposal to a stance; Dispatcher remains bounded by one Spec with parallel slices inside it.
 - 2026-10-02: Added the accepted Captain and landmark Director ladder and the move of role jobs into role skills, from the owner-confirmed grilling of 2026-10-02.
+- 2026-10-07: Re-pointed the retiring Lexicon's links and live routes to `GLOSSARY.md`, `ARCHITECTURE.md` and the Wiki lexicon articles (Lexicon Retirement And ARCHITECTURE.md Spec (S-004O), consumer re-pointing Task (TK-009F)); no claim changed.

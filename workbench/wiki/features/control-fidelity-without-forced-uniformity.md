@@ -14,7 +14,7 @@ source_paths:
   - templates/ADOPTION.md
   - workbench/skills/update-harness/SKILL.md
   - workbench/skills/workbench-room-checks/SKILL.md
-  - LEXICON.md
+  - GLOSSARY.md
   - RUNBOOK.md
 last_verified: 2026-10-04
 ---
@@ -82,7 +82,7 @@ dropped ADR qualifier.
 - [workbench/tools/template-placeholders.mjs](../../../workbench/tools/template-placeholders.mjs) - the template placeholder vocabulary.
 - [templates/ADOPTION.md](../../../templates/ADOPTION.md) - the adoption procedure that requires contract changes to be restored or recorded.
 - [workbench/skills/update-harness/SKILL.md](../../skills/update-harness/SKILL.md) - the update procedure with the same requirement.
-- [LEXICON.md](../../../LEXICON.md) - shared terms, including the current ADR rule.
+- [GLOSSARY.md](../../../GLOSSARY.md) - shared terms, including the current ADR rule.
 - [RUNBOOK.md](../../../RUNBOOK.md) - the operations index.
 
 ## History
@@ -91,3 +91,4 @@ dropped ADR qualifier.
 - 2026-09-30: Repaired live skill links and source_paths after relocation to workbench/skills; verified destinations only, without revalidating historical capability claims.
 - 2026-10-04: Moved from `design-concepts/spec-S-034-control-fidelity-report.md` into the features collection under this name with `wiki.mjs move-note`, retyped `feature` and restructured into the four feature sections from its existing prose, for the Wiki Evolving-Synthesis Migration Spec (S-003W) Task Move And Retype The Remaining Per-Spec Articles (TK-002). Every live link to it was rewritten by the move; no claim was changed. Checked the Spec name, that every listed current source path exists (the first entry names the Spec's eventual retired route, which does not exist yet), and that the report source declares the unchanged, filled, dropped, changed and added kinds; the other claims were not re-verified.
 - 2026-10-04: The Contract Carrier Pointer-Brief Rewrite Spec (S-004C), Task Carry the new shape through Genesis and the update route without losing a room's own controls (TK-005M), added the earlier-generation labels; the report procedure lives in the `workbench-room-checks` maintainer skill the Runbook index points to.
+- 2026-10-07: Re-pointed the retiring Lexicon's links and live routes to `GLOSSARY.md`, `ARCHITECTURE.md` and the Wiki lexicon articles (Lexicon Retirement And ARCHITECTURE.md Spec (S-004O), consumer re-pointing Task (TK-009F)); no claim changed.

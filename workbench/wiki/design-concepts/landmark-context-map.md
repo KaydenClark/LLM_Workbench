@@ -107,7 +107,8 @@ Specs: [Blueprint, Active ADR, And Context Map Rebuild (S-00A)](../../specs/S-00
 [Contract Carrier Pointer-Brief Rewrite (S-004C)](../../specs/S-004C-contract-carrier-pointer-brief-rewrite/SPEC.md)
 and [Lexicon Design-Concept Reconciliation (S-01U)](../../specs/S-01U-lexicon-design-concept-reconciliation/SPEC.md).
 Controls: [AGENTS](../../../AGENTS.md), [RUNBOOK](../../../RUNBOOK.md) and
-[LEXICON](../../../LEXICON.md) (Task Routing and the Context Map row), with the
+[ARCHITECTURE](../../../ARCHITECTURE.md#routes) (the routes the retiring Lexicon's Task Routing and
+Context Map row carried), with the
 guidebook collection declared in the [manifest](../../manifest.json).
 
 ## Related pages
@@ -119,8 +120,9 @@ explains how the Blueprint, decision records and ADRs fit together.
 
 - [Landmark record "Context Map" (LMK-000L)](../../landmark-tracker/landmarks/LMK-000L.json): title, summary and importance.
 - The three question cards named above, each at the revision cited.
-- [AGENTS](../../../AGENTS.md) and [LEXICON](../../../LEXICON.md), read for the current entry route on 2026-10-04.
+- [AGENTS](../../../AGENTS.md) and the Lexicon, read for the current entry route on 2026-10-04; the route now continues to [ARCHITECTURE](../../../ARCHITECTURE.md#routes).
 
 ## History
 
 - 2026-10-04: created by the Wiki Evolving-Synthesis Migration Spec (S-003W), Task TK-004 (landmark synthesis pages), seeded from the cards' current answers.
+- 2026-10-07: Re-pointed the retiring Lexicon's links and live routes to `GLOSSARY.md`, `ARCHITECTURE.md` and the Wiki lexicon articles (Lexicon Retirement And ARCHITECTURE.md Spec (S-004O), consumer re-pointing Task (TK-009F)); no claim changed.

@@ -8,7 +8,7 @@ provenance:
   - Moved into the features collection and restructured as a feature article by Wiki Evolving-Synthesis Migration (S-003W) Task TK-002 (Move And Retype The Remaining Per-Spec Articles) using wiki.mjs move-note, 2026-10-04
 source_paths:
   - workbench/specs/retired/S-024-governance-core-adrs-and-diagnostics/SPEC.md
-  - LEXICON.md
+  - GLOSSARY.md
   - AGENTS.md
   - workbench/tools/diagnostics.mjs
   - workbench/tools/adr.mjs
@@ -58,7 +58,7 @@ A Spec holds claims of different kinds, so classifying the claim rather than the
 file keeps accepted requirements, observed results and derived views from being
 read as one another. Separating severity, scope and blocking effect keeps a
 visible finding from becoming a blocker nobody declared. Readers follow the
-current Lexicon and active ADRs for accepted meaning, with superseded records
+current glossary and active ADRs for accepted meaning, with superseded records
 kept as history.
 
 ## Limits
@@ -79,7 +79,7 @@ kept as history.
 
 - [Historical Governance Core, ADRs, And Scoped Diagnostics Spec (S-024)](../../specs/S-024-governance-core-adrs-and-diagnostics/SPEC.md). The original acceptance and evidence retain their time and scope; its eventual retired route is named in this article's `source_paths`.
 - Immutable source: `git show 8035b41831985581e41ca713e87c2511d3dbbcc4:workbench/specs/S-024-governance-core-adrs-and-diagnostics/SPEC.md`. Source inspection for this article used that same commit; the links below route a fresh verification, rather than asserting every historical behavior remains current.
-- [LEXICON.md](../../../LEXICON.md) - the accepted meanings and Governance Core.
+- [GLOSSARY.md](../../../GLOSSARY.md#governance-core) - the accepted meanings and Governance core.
 - [AGENTS.md](../../../AGENTS.md) - the authorization and bounded-delegation owner.
 - [workbench/tools/diagnostics.mjs](../../tools/diagnostics.mjs) - the closed diagnostic registry.
 - [workbench/tools/adr.mjs](../../tools/adr.mjs) - the ADR tool.
@@ -96,3 +96,4 @@ kept as history.
 - 2026-09-19: Created on explicit owner direction for one article per legacy Spec. Preserved useful knowledge and historical limits; no source record retired or discarded.
 - 2026-09-29: Added the active three-carrier Contract route and retained the superseded Contract claim-set decision (ADR-0033) as a source under the owner-confirmed Wiki-first navigation rule.
 - 2026-10-04: Moved from `design-concepts/spec-S-024-governance-core-and-diagnostics.md` into the features collection under this name with `wiki.mjs move-note`, retyped `feature` and restructured into the four feature sections from its existing prose, for the Wiki Evolving-Synthesis Migration Spec (S-003W) Task TK-002 (Move And Retype The Remaining Per-Spec Articles). Every live link to it was rewritten by the move; no claim was changed. This move checked that the named current source paths (the first entry names the Spec's eventual retired route, which does not exist yet) and the immutable commit exist, not the behavior of the capability itself.
+- 2026-10-07: Re-pointed the retiring Lexicon's links and live routes to `GLOSSARY.md`, `ARCHITECTURE.md` and the Wiki lexicon articles (Lexicon Retirement And ARCHITECTURE.md Spec (S-004O), consumer re-pointing Task (TK-009F)); no claim changed.

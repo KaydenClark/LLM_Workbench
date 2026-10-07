@@ -12,7 +12,7 @@ source_paths:
   - workbench/specs/S-01R-reviewer-skill-rebuild/SPEC.md
   - tools/test-reviewer-stance.mjs
   - AGENTS.md
-  - LEXICON.md
+  - GLOSSARY.md
 last_verified: 2026-10-01
 ---
 
@@ -94,7 +94,7 @@ Personal installed copies are not updated by a source edit.
 - [Reviewer entry](../skills/reviewer/SKILL.md) and its bundled reference.
 - [Code-review](../skills/code-review/SKILL.md): fixed comparison and evidence.
 - [AGENTS](../../AGENTS.md): authority, review and owner closure.
-- [Lexicon](../../LEXICON.md#stance-terms): accepted stance meanings.
+- [Glossary](../../GLOSSARY.md#stance-terms): accepted stance meanings.
 - [Runbook](../../RUNBOOK.md#role-and-stance-coordination): operating boundaries.
 - [S-01R](../specs/S-01R-reviewer-skill-rebuild/SPEC.md): delivery and evidence.
 

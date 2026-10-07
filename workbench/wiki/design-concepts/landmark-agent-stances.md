@@ -135,7 +135,7 @@ Their sources sit in the skills lane, and the Wiki holds one note per skill, for
 example [the builder note](../skill-builder.md) and
 [the reviewer note](../skill-reviewer.md). The controls are
 [AGENTS](../../../AGENTS.md#assigned-work-and-stances), the vocabulary is
-[LEXICON](../../../LEXICON.md#stance-terms) and the operating procedure is
+[GLOSSARY](../../../GLOSSARY.md#stance-terms) and the operating procedure is
 [RUNBOOK](../../../RUNBOOK.md#role-and-stance-coordination).
 
 ## Related pages
@@ -155,3 +155,4 @@ example [the builder note](../skill-builder.md) and
 - 2026-10-06: linked the newer bounded correction exception accepted by the Implement-spec Skill Adoption Spec (S-002T), preserving the question-card revisions and their source lineage.
 
 - 2026-10-04: created by the Wiki Evolving-Synthesis Migration Spec (S-003W), Task TK-004 (landmark synthesis pages), seeded from the cards' current answers.
+- 2026-10-07: Re-pointed the retiring Lexicon's links and live routes to `GLOSSARY.md`, `ARCHITECTURE.md` and the Wiki lexicon articles (Lexicon Retirement And ARCHITECTURE.md Spec (S-004O), consumer re-pointing Task (TK-009F)); no claim changed.

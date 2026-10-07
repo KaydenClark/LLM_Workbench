@@ -58,7 +58,7 @@ In the S-01E (checkpoint skill rebuild Spec) scenario, a scratch room held one f
 - [Individual delivery Spec](../specs/S-01E-checkpoint-skill-rebuild/SPEC.md)
 - [Retirement Spec S-048](../specs/S-048-checkpoint-retirement/SPEC.md), its [disposition](../specs/S-048-checkpoint-retirement/checkpoint-disposition.md) and [inventory](../specs/S-048-checkpoint-retirement/checkpoint-inventory.json)
 - [Frozen history and operational recovery](../skills/checkpoint/SKILL.md#frozen-history-and-operational-recovery) and the [promotion command reference](../skills/promote/SKILL.md#command-reference), which the Runbook's [Frozen Checkpoint History](../../RUNBOOK.md#frozen-checkpoint-history-and-operational-recovery) and [Direct Owner Promotion](../../RUNBOOK.md#direct-owner-promotion) sections point to
-- [Lexicon: Checkpoint](../../LEXICON.md#governance-core)
+- [Glossary: Checkpoint](../../GLOSSARY.md#governance-core) and its [lexicon article](dictionary-checkpoint.md)
 - [Wiki router](MEMORY.md)
 
 ## History

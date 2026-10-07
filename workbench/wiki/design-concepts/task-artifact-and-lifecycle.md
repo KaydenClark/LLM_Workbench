@@ -89,7 +89,7 @@ run took more than one pass.
 `Task` is the execution-slice term across the Workbench - explanatory prose,
 the live tool vocabulary, the board's columns, and every identifier newly
 allocated to an execution slice. `Ticket` is retired as a live term, because
-one concept carrying two names is exactly what `LEXICON.md` forbids. Existing
+one concept carrying two names is exactly what the glossary (`GLOSSARY.md`) forbids. Existing
 `TK-###` identifiers already issued before the rename are **not** rewritten:
 they sit in append-only evidence rows inside Specs that are themselves frozen
 by their own retention rule, and rewriting them would edit a record precisely
@@ -122,3 +122,4 @@ folded into a single oversized one.
 - 2026-09-18: created on owner direction, via the Retirement Lifecycle By Folder For Records Spec (S-00I) Reconcile And Retire Task's (TK-005) dispatcher
   handoff, to serve as the durable Wiki owner of Task Artifact And Terminology Migration's (S-00H) surviving current
   claims ahead of its retirement into `workbench/specs/retired/`.
+- 2026-10-07: Re-pointed the retiring Lexicon's links and live routes to `GLOSSARY.md`, `ARCHITECTURE.md` and the Wiki lexicon articles (Lexicon Retirement And ARCHITECTURE.md Spec (S-004O), consumer re-pointing Task (TK-009F)); no claim changed.
