@@ -198,7 +198,7 @@ A general AI coding concept stays Wiki-only and needs no glossary entry ([the Le
 
 ## Workbench Term Dictionary
 
-Lexicon articles: one flat `dictionary-*.md` entry for each [GLOSSARY.md](../../GLOSSARY.md) term that needs more than its canonical definition, carrying the fuller meaning, the neighbouring words, an example in use and the owning sources. Each declares the term it explains in `glossary_term:` and links its glossary entry, which `wiki.mjs validate` checks; none authorizes anything. Batch one covers the glossary's Destination and direction and Workflow verbs groupings.
+Lexicon articles: one flat `dictionary-*.md` entry for each [GLOSSARY.md](../../GLOSSARY.md) term that needs more than its canonical definition, carrying the fuller meaning, the neighbouring words, an example in use and the owning sources. Each declares the term it explains in `glossary_term:` and links its glossary entry, which `wiki.mjs validate` checks; none authorizes anything. Batch one covers the glossary's Destination and direction and Workflow verbs groupings; batch two covers its Workbench, room and artifacts, Specs and Tasks, and Chats and roles groupings.
 
 ### Destination and direction
 
@@ -234,6 +234,55 @@ Lexicon articles: one flat `dictionary-*.md` entry for each [GLOSSARY.md](../../
 - [Delivered](dictionary-delivered.md): approved work on main, and why the verb is not Complete
 - [Clean Up](dictionary-clean-up.md): clearing the scaffolding once its knowledge is kept
 - [Writer verb](dictionary-writer-verb.md): the verb at which a claim is written, read through its Governance Plane
+
+### Workbench, room and artifacts
+
+- [Context Map](dictionary-context-map.md): how the Workbench's owners connect through the routes in `ARCHITECTURE.md`, and why a rendered map is only a Projection
+- [Workbench](dictionary-workbench.md): the agentic management system a harness loads, never the harness, and how Workbenches and Projects nest
+- [Project](dictionary-project.md): the work a Workbench exists to deliver, with exactly one Workbench of its own
+- [Owner](dictionary-owner.md): the person above the roles who confirms, approves and alone promotes to main
+- [Room](dictionary-room.md): a project seen as the place its work happens, with the Workbench as the table in it
+- [Workbench Template](dictionary-workbench-template.md): LLM Workbench's product, distinct from any template and from the `templates/` folder
+- [Scaffolding](dictionary-scaffolding.md): the architecture artifacts taken together, cleared away once their knowledge is kept
+- [Contract artifact](dictionary-contract-artifact.md): what the agent loads and pays for on every turn, today `AGENTS.md` alone
+- [Routing artifact](dictionary-routing-artifact.md): a durable file reached by pointer that routes to the detail and binds nothing by itself
+- [Architecture artifact](dictionary-architecture-artifact.md): one piece of the scaffolding, neither Contract nor routing
+- [Control](dictionary-control.md): a one-action tool agents work the workbench through, and the retired "root controls"
+- [Portable Workbench](dictionary-portable-workbench.md): everything an agent needs is in the repository, so any agent anywhere can do the work
+- [Host portability](dictionary-host-portability.md): the same behavior on every configured machine, one thing a Portable Workbench depends on
+- [Ownership origin model](dictionary-ownership-origin-model.md): upstream or project-local ownership, and how a room's deliberate differences survive updates
+- [Workbench self-drift check](dictionary-workbench-self-drift-check.md): the read-only check of the Workbench's own current-facing artifacts around an update
+- [Skill](dictionary-skill.md): a capability read only when the task matches it, and how a pointed lane skill binds
+- [Context pointer](dictionary-context-pointer.md): a stable path plus when to follow it, and how a pointer gives a skill authority
+- [Flow](dictionary-flow.md): a short sequence of skills that composes them without copying their instructions
+- [Router](dictionary-router.md): a skill that recommends the next skill or flow without running it
+- [Blueprint](dictionary-blueprint.md): the four-part short page that asks questions rather than answering them, and what it is not
+
+### Specs and Tasks
+
+- [Spec](dictionary-spec.md): a PRD-shaped scoped objective with its own destination, and what it owns while delivery needs it
+- [Task](dictionary-task.md): one bounded slice toward a destination, when a miss continues it, and the retired "ticket"
+- [Destination Packet](dictionary-destination-packet.md): the links an agent needs to find, reach and verify its destination, with nothing copied
+- [Assembled-Spec review](dictionary-assembled-spec-review.md): whole-Spec QA and a separate review of the immutable candidate before integration
+- [Human QA](dictionary-human-qa.md): the owner's evaluation of delivered work, on the owner's timing, and what a failure returns to
+- [Retired](dictionary-retired.md): the transient staging place for reconciled Specs and Tasks before discard
+- [Archive](dictionary-archive.md): permanent storage for superseded decision records, never cleared
+- [Feature article](dictionary-feature-article.md): the Wiki page that keeps a delivered capability's knowledge before its Spec retires
+- [Uncaptured complete](dictionary-uncaptured-complete.md): a complete Spec still missing its feature article, and why it cannot retire yet
+- [Task receipt](dictionary-task-receipt.md): one appended row per run of a Task, written as the run proceeds
+- [Hot projection](dictionary-hot-projection.md): the generated `TASKBOARD.md` view of current work, never a second tracker
+
+### Chats and roles
+
+- [Chat](dictionary-chat.md): one owner-visible working context that works at most one Task, and why it is not a session
+- [Conversation](dictionary-conversation.md): the exchange in a Chat, and why durable state still goes to its owner
+- [Thread](dictionary-thread.md): related Chats taken together, grouping continuity without owning work
+- [Role](dictionary-role.md): an agent's scope of responsibility, one per scale, and how a stance differs
+- [Captain](dictionary-captain.md): the project-scale role of the accepted destination, today called the Director
+- [Director](dictionary-director.md): the landmark-lane role of the accepted destination and today's integration role
+- [Dispatcher](dictionary-dispatcher.md): the Spec-scale role that coordinates Tasks and owns assembled-Spec verification
+- [Worker](dictionary-worker.md): the Task-scale role that produces a self-checked result and hands back
+- [Coordination hand-back](dictionary-coordination-hand-back.md): a point where the owner had to do an agent's work, recorded as a defect
 
 ### Feedback disposition
 
