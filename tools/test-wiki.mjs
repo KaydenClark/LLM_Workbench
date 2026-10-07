@@ -992,8 +992,11 @@ test('TK-009D: each explained glossary entry lands its Distinction text in a rou
   const router = fs.readFileSync(path.join(root, 'workbench', 'wiki', 'MEMORY.md'), 'utf8');
   const explained = new Map();
   for (const entry of inventory.entries.filter((item) => item.explanationText !== undefined)) {
-    const term = entry.text.match(/^\| \*\*(.+?)\*\* \|/)?.[1];
-    assert.ok(term, `line ${entry.line} is a term row`);
+    // S-004O TK-009J: an AI coding row carries its dictionary link after the
+    // term and a boundary entry is a bullet, so the term is read from the
+    // glossary entry the line lands as.
+    const term = entry.landedText?.match(/^\*\*(.+?)\*\*:/)?.[1];
+    assert.ok(term, `line ${entry.line} lands a glossary term entry`);
     assert.equal(entry.homeKind, 'glossary', `${term} is a glossary entry`);
     const file = path.join(root, entry.explanationHome);
     assert.ok(fs.existsSync(file), `${term} explanation home ${entry.explanationHome} exists`);

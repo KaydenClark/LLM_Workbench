@@ -239,6 +239,71 @@ Lexicon articles: one flat `dictionary-*.md` entry for each [GLOSSARY.md](../../
 
 - [Feedback disposition: the one outcome each finding gets](dictionary-feedback-disposition.md): why a disposition routes work to an owner without scheduling or permitting it, and how a report and finding ID identify an occurrence
 
+Batch three covers the glossary's Support root and skills lane, Feedback disposition, Workbench meanings of AI coding terms, Continuity terms, Stance terms, Governance core, Project-specific terms and Continuity and evidence boundaries groupings. The five disposition codes are explained in the Feedback disposition entry above, and the Automated review entry is routed under AI Coding Dictionary Entries.
+
+### Support root and skills lane
+
+- [Support root](dictionary-support-root.md): the lowercase `workbench/` directory whose manifest declares the lanes and collections, and how older manifests migrate
+- [Core skill bundle](dictionary-core-skill-bundle.md): the closed set of skills every room carries, counted from the manifest, and why it is not a personal catalog
+- [Skills lane](dictionary-skills-lane.md): the room's tracked copy of its core skills, its receipt and discovery adapters, and room-added skills
+- [Normal setup](dictionary-normal-setup.md): laying the skills lane down at Genesis or Adoption without reading the provider home
+- [Explicit skill update](dictionary-explicit-skill-update.md): the only route that replaces a core skill, with backup and rollback
+- [Control fidelity](dictionary-control-fidelity.md): the line-by-line report of how a room's root files relate to their templates, never a gate
+
+### Workbench meanings of AI coding terms
+
+- [Grilling](dictionary-grilling.md): building a design concept one decision at a time, and the mid-grilling handoff where the Workbench differs from the dictionary
+
+### Continuity terms
+
+- [Notepad](dictionary-notepad.md): an objective's local JSON working record, who owns it and why it is not Canon
+- [Scoped handoff](dictionary-scoped-handoff.md): the readable Markdown map to a notepad's high-fidelity context
+- [WBID](dictionary-wbid.md): an artifact's visible identifier, its width-four form and how old labels stay readable
+
+### Stance terms
+
+- [Stance](dictionary-stance.md): the job done inside a role, which grants no authority by being loaded
+- [Spec Planner](dictionary-spec-planner.md): planning one Spec into small Tasks and parallel slices at flight launch
+- [Spec Manager](dictionary-spec-manager.md): dispatching and monitoring a Spec's planned Tasks
+- [Builder](dictionary-builder.md): delivering a scoped, verified result with its documentation
+- [Auditor](dictionary-auditor.md): a bounded verdict on named claims that authorizes no repair
+- [Reviewer](dictionary-reviewer.md): challenging a candidate in a separate context without repairing it
+- [Reconciler](dictionary-reconciler.md): bringing records into line with achieved work without manufacturing completion
+
+### Governance core
+
+- [Governance Plane](dictionary-governance-plane.md): the role one claim plays in one operation, never a whole file
+- [Workbench Contract](dictionary-workbench-contract.md): the binding claim set `AGENTS.md` names, and the gap until its list follows the one-Contract-file decision
+- [Instruction authority](dictionary-instruction-authority.md): what an agent may do and in what order, and why a Spec cannot enlarge the request
+- [State resolution](dictionary-state-resolution.md): implementation gap, documentation drift or ambiguity, with no universal winner
+- [No-governance-tax rule](dictionary-no-governance-tax-rule.md): ordinary work needs only the Contract and its verification
+- [Diagnostic](dictionary-diagnostic.md): a registered finding with a code, severity, scope and blocking effect the consuming command enforces
+- [Support lane](dictionary-support-lane.md): one of the seven slots under `workbench/`, a structure and not a plane
+- [Collection](dictionary-collection.md): a declared, machine-used directory inside a lane, and the full set
+- [ADR](dictionary-adr.md): an architecture decision record and what in it is Canon
+- [Decision Record](dictionary-decision-record.md): ADR or DDR, one tool for both, and the test that chooses between them
+- [DDR](dictionary-ddr.md): a destination decision record, its landmark and what it is not
+- [Read words](dictionary-read-words.md): list, show, search, history and inspect, and the decision-record tool that answers all five
+- [Checkpoint](dictionary-checkpoint.md): a retained historical copy whose creation is retired
+- [Operational recovery](dictionary-operational-recovery.md): local, ignored rollback material kept out of notepads and provenance
+- [Design Concept article](dictionary-design-concept-article.md): an encyclopedic article on one durable design model or landmark synthesis
+- [Wiki profile](dictionary-wiki-profile.md): the manifest's `project` or `deployment` Wiki shape, which grants no authority
+- [Managed runtime tool](dictionary-managed-runtime-tool.md): a release-installed tool listed in the tools receipt, and the application-owned root `tools/`
+- [Managed skill marker](dictionary-managed-skill-marker.md): the `.workbench-skill.json` file that names an installed skill's generation
+- [Declared integration branch](dictionary-declared-integration-branch.md): the manifest-declared branch reviewed work merges into
+
+### Project-specific terms
+
+- [Foundry](dictionary-foundry.md): the owner's factory of many rooms, and why the workbench is a management system the Foundry never supplies
+
+### Continuity and evidence boundaries
+
+- [Workbench connection identity](dictionary-workbench-connection-identity.md): the `workbenchId` namespace for private session transport, shared by clones and worktrees
+- [Private session transport](dictionary-private-session-transport.md): optional sync of live working records that changes recoverability, not authority
+- [Direct promotion](dictionary-direct-promotion.md): reconciling selected confirmed claims into their durable owner, more than a copy or commit
+- [Configured-host capability](dictionary-configured-host-capability.md): what the actual host was seen to do, and what that does not prove
+- [Core compatibility](dictionary-core-compatibility.md): the declared range a core release supports, where a version gap alone proves nothing
+
 ## General Reference Pages
 
 General programming concepts and Workbench history with no distinct project meaning. Each page is the concept's Workbench home, stays Wiki-only and needs no glossary entry, and authorizes nothing.
