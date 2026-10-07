@@ -241,17 +241,22 @@ export function update(project, options = {}) {
   if (changed.length === 0) return { status: 'current', lane: relative, receipt };
   const backupRoot = fs.mkdtempSync(path.join(home, '.workbench-tools-backup-'));
   const backedUp = [];
+  const absent = [];
+  const hashes = {};
   for (const tool of changed) {
     const file = path.join(lane, tool);
     if (lstatOrNull(file)) {
       fs.copyFileSync(file, path.join(backupRoot, tool));
       backedUp.push(tool);
+      hashes[tool] = sha256(path.join(backupRoot, tool));
+    } else {
+      absent.push(tool);
     }
   }
   fs.writeFileSync(path.join(backupRoot, RECEIPT_NAME), `${JSON.stringify(receipt, null, 2)}\n`);
   const files = { ...receipt.files };
   for (const tool of changed) files[tool] = copyTool(tool, lane);
-  const updated = { ...receipt, source: identity, updatedAt: options.date ?? new Date().toISOString().slice(0, 10), files, backups: [...(receipt.backups ?? []), { path: backupRoot, files: backedUp }] };
+  const updated = { ...receipt, source: identity, updatedAt: options.date ?? new Date().toISOString().slice(0, 10), files, backups: [...(receipt.backups ?? []), { path: backupRoot, files: backedUp, absent, hashes }] };
   writeReceipt(lane, updated);
   return { status: 'updated', lane: relative, changed, backup: backupRoot, receipt: updated };
 }
@@ -264,25 +269,97 @@ export function rollback(project, options = {}) {
   if (unsafe) return unsafe;
   const backupRoot = path.resolve(options.backup ?? '');
   if (!options.backup || !lstatOrNull(backupRoot)?.isDirectory()) return fail('invalid-backup', '--backup must name an existing backup directory recorded in the receipt.');
+  const current = readReceipt(lane);
+  const recorded = Array.isArray(current?.backups) ? current.backups.filter(entry =>
+    typeof entry?.path === 'string' && path.resolve(entry.path) === backupRoot) : [];
+  if (recorded.length !== 1) return fail('invalid-backup', 'The current receipt must record this backup exactly once.');
+  const entry = recorded[0];
+  if (!Array.isArray(entry.files) || new Set(entry.files).size !== entry.files.length
+      || entry.files.some(name => !RUNTIME_TOOLS.includes(name))) {
+    return fail('invalid-backup', 'Backup file inventory is invalid.');
+  }
   const previous = readReceipt(backupRoot);
-  if (!previous || !previous.files || typeof previous.files !== 'object' || Array.isArray(previous.files)) return fail('invalid-backup', `${backupRoot} carries no valid receipt to restore.`);
-  const unsafeBackup = safeManagedFiles(backupRoot, Object.keys(previous.files));
+  for (const receipt of [previous, current]) {
+    const map = managedReceiptFiles(receipt);
+    if (map.error || map.entries.some(([name, hash]) => !RUNTIME_TOOLS.includes(name)
+        || typeof hash !== 'string' || !/^[0-9a-f]{64}$/.test(hash))) {
+      return fail('invalid-backup', 'Both receipts must contain valid managed file hashes.');
+    }
+  }
+  const unsafeBackup = safeManagedFiles(backupRoot);
   if (unsafeBackup) return unsafeBackup;
-  // A backup is the lane exactly as it was before the update, including any
-  // local edit that already drifted from the receipt; rollback restores that
-  // state verbatim and lets `verify` report the drift again.
+  const saved = new Set(entry.files);
+  const previousNames = Object.keys(previous.files);
+  const currentNames = Object.keys(current.files);
+  if (previousNames.some(name => !Object.hasOwn(current.files, name))
+      || entry.files.some(name => !Object.hasOwn(current.files, name))
+      || RUNTIME_TOOLS.some(name => Boolean(lstatOrNull(path.join(backupRoot, name))) !== saved.has(name))) {
+    return fail('invalid-backup', 'Recorded files do not match the backup or current receipt.');
+  }
+  let absent;
+  if (Object.hasOwn(entry, 'absent')) {
+    absent = entry.absent;
+  } else {
+    // This known producer generation always marks receipt-missing names as
+    // changed and saves every present changed file. Older/unknown histories
+    // cannot establish absence safely from the legacy file list alone.
+    const commit = current.source?.commit;
+    if (!/^[0-9a-f]{40}$/.test(commit ?? '') || gitStatus(['merge-base', '--is-ancestor',
+      '9378eada35b30199a53f6b921215950d0fa7ff38', commit]).status !== 0) {
+      return fail('invalid-backup', 'Legacy original absence requires verified producer history; use recorded absence or whole-room recovery.');
+    }
+    absent = currentNames.filter(name => !Object.hasOwn(previous.files, name) && !saved.has(name));
+  }
+  if (!Array.isArray(absent) || new Set(absent).size !== absent.length
+      || absent.some(name => !Object.hasOwn(current.files, name) || saved.has(name))
+      || currentNames.some(name => !Object.hasOwn(previous.files, name) && !saved.has(name) && !absent.includes(name))) {
+    return fail('invalid-backup', 'Original absence conflicts with the saved inventory or receipt.');
+  }
+  const hasHashes = Object.hasOwn(entry, 'hashes');
+  if (hasHashes && (!entry.hashes || typeof entry.hashes !== 'object' || Array.isArray(entry.hashes)
+      || Object.keys(entry.hashes).length !== entry.files.length
+      || Object.keys(entry.hashes).some(name => !saved.has(name)))) {
+    return fail('invalid-backup', 'Backup hash inventory is invalid.');
+  }
+  // Complete every integrity/local-edit check before the first restore or
+  // deletion. New receipts authenticate pre-update edits by their saved hashes;
+  // legacy backups only prove saved bytes that match their previous receipt.
+  for (const name of entry.files) {
+    const expected = hasHashes ? entry.hashes[name] : previous.files[name];
+    if (typeof expected !== 'string' || !/^[0-9a-f]{64}$/.test(expected)
+        || sha256(path.join(backupRoot, name)) !== expected) {
+      return fail('invalid-backup', 'Saved file differs from its recorded original hash.', { tool: name });
+    }
+  }
+  for (const name of [...entry.files, ...absent]) {
+    const file = path.join(lane, name);
+    const info = lstatOrNull(file);
+    if (info && (sha256(file) !== current.files[name] || (info.mode & 0o777) !== 0o644)) {
+      return fail('rollback-conflict', 'Preserve the post-update local change before rollback.', { tool: name });
+    }
+  }
+  for (const name of previousNames.filter(name => !saved.has(name) && !absent.includes(name))) {
+    const file = path.join(lane, name);
+    if (!lstatOrNull(file)?.isFile() || sha256(file) !== previous.files[name]) {
+      return fail('rollback-conflict', 'An unchanged original cannot be recovered from this backup.', { tool: name });
+    }
+  }
   const restored = [];
-  for (const tool of Object.keys(previous.files)) {
+  for (const tool of entry.files) {
     const source = path.join(backupRoot, tool);
-    if (!lstatOrNull(source)?.isFile()) continue;
     const destination = path.join(lane, tool);
     fs.copyFileSync(source, destination);
     fs.chmodSync(destination, 0o644);
     if (sha256(destination) !== sha256(source)) return fail('rollback-mismatch', `${tool} was not restored byte for byte.`, { tool });
     restored.push(tool);
   }
+  const removed = [];
+  for (const tool of absent) {
+    const file = path.join(lane, tool);
+    if (lstatOrNull(file)) { fs.unlinkSync(file); removed.push(tool); }
+  }
   writeReceipt(lane, { ...previous, rolledBackAt: options.date ?? new Date().toISOString().slice(0, 10), rolledBackFrom: backupRoot });
-  return { status: 'rolled-back', lane: relative, backup: backupRoot, restored };
+  return { status: 'rolled-back', lane: relative, backup: backupRoot, restored, removed };
 }
 
 function parseArgs(argv) {
