@@ -3,13 +3,13 @@
 **Spec ID:** S-004J
 **Status:** active
 **Priority:** 2
-**Owner:** claude-s004j-dispatcher
+**Owner:** claude-s004j-worker-ja
 **Stance:** Builder
-**Updated:** 2026-10-06
+**Updated:** 2026-10-07
 **Catalog description:** Ship domain modeling in every room's skills lane as the Align companion that shows the downstream consequences of an upstream name, boundary or relationship before it settles, and hands settled meaning to promotion instead of writing Canon inline.
 **Blockers:** none
-**Latest event:** Activated on 2026-10-06 under the owner's `/implement-spec` launch; three Tasks cut on assembly branch `claude/s004j-assembly`.
-**Next gate:** Deliver TK-00JA, then TK-00JB and TK-00JC, on the assembly branch; assembled review before integration.
+**Latest event:** TK-00JA claimed by claude-s004j-worker-ja.
+**Next gate:** Close TK-00JA with verification and documentation proof.
 
 > **Citation anchors.** pre=`46ad978956a74a3ee1bda22c36eb16207dcd98fd` post=`46ad978956a74a3ee1bda22c36eb16207dcd98fd`.
 
