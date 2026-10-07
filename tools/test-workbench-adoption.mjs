@@ -648,8 +648,22 @@ console.log('ok - one adoption refusal names every unreconciled control, the rec
 // line has landed (a Template Lexicon line, or text the room's glossary,
 // architecture or Wiki holds); otherwise it is kept and the unlanded lines are
 // reported as an attention finding.
+// The Template no longer ships LEXICON.md (S-004O TK-009H), so its last
+// shipped text is read from this checkout's history the way the runtime reads
+// it: the parent of the commit that deleted it.
+function retiredTemplateLexicon() {
+  const relative = 'templates/LEXICON.md';
+  if (fs.existsSync(path.join(root, relative))) return fs.readFileSync(path.join(root, relative), 'utf8');
+  const deleted = spawnSync('git', ['log', '-1', '--format=%H', '--diff-filter=D', 'HEAD', '--', relative], { cwd: root, encoding: 'utf8' });
+  const commit = deleted.stdout.trim();
+  assert.match(commit, /^[0-9a-f]{40}$/, 'the release history records the Template Lexicon deletion');
+  const shown = spawnSync('git', ['show', `${commit}^:${relative}`], { cwd: root, encoding: 'utf8' });
+  assert.equal(shown.status, 0, shown.stderr);
+  return shown.stdout;
+}
+
 {
-  const lexicon = fs.readFileSync(path.join(root, 'templates', 'LEXICON.md'), 'utf8')
+  const lexicon = retiredTemplateLexicon()
     .replaceAll('[PROJECT_NAME]', 'Pond').replaceAll('[HARNESS_VERSION]', VERSION.slice(1))
     .replaceAll('[YYYY-MM-DD]', '2026-09-01').replaceAll('[active / partial / stale]', 'active');
   const row = '| **Puffer** | The fish the pond shows. | Not a balloon. |';

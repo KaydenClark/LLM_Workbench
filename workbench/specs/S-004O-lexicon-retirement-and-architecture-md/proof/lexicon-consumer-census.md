@@ -4,6 +4,8 @@ Census record of [Lexicon Retirement And ARCHITECTURE.md (S-004O)](../SPEC.md), 
 
 Census base: assembly base `1f4e2d676221ae2fd6b15607389ddb97c6cc99ac` (integration plus the glossary planning commits). Neither Lexicon changed between that base and the TK-009A branch point.
 
+Refreshed by TK-009H [remove the Lexicon with every line landed](../tasks/TK-009H/TASK.md) to the delivered homes: the final inventories re-scaffolded at the pre-removal commit `0059669f1e1b81c8048dfea9714d0ce7a9e1d914`, the Template Wiki homes as delivered (grouped `templates/wiki/vocabulary-*.md` articles and `templates/wiki/ai-coding-reference.md`), the landing check at removal, and the live mentions that remain. The TK-009A census text below is kept as the record of what was planned.
+
 ## Line inventories
 
 Two inventories, one per carrier, scaffolded with `node tools/check-carrier-landing.mjs scaffold --base 1f4e2d676221ae2fd6b15607389ddb97c6cc99ac --carrier <carrier> --out <inventory>` and then classified entry by entry. Every non-blank, non-heading line has exactly one classified entry.
@@ -12,6 +14,10 @@ Two inventories, one per carrier, scaffolded with `node tools/check-carrier-land
 |---|---|---|---|---|---|---|---|
 | [lexicon-landing-inventory.json](lexicon-landing-inventory.json) | `LEXICON.md` | 308 | 139 | 107 | 37 | 5 | 20 |
 | [template-lexicon-landing-inventory.json](template-lexicon-landing-inventory.json) | `templates/LEXICON.md` | 269 | 117 | 100 | 38 | 0 | 14 |
+| [lexicon-landing-inventory-final.json](lexicon-landing-inventory-final.json) (TK-009H) | `LEXICON.md` | 308 | 139 | 107 | 37 | 5 | 20 |
+| [template-lexicon-landing-inventory-final.json](template-lexicon-landing-inventory-final.json) (TK-009H) | `templates/LEXICON.md` | 269 | 117 | 100 | 38 | 0 | 14 |
+
+The two final inventories were scaffolded at the pre-removal commit `0059669f1e1b81c8048dfea9714d0ce7a9e1d914` (the TK-009H lane merged with integration `d0fb161c`) and carry every classification over from the census inventories by line hash; the census inventories stay as history. One line changed after the census: root line 218, the Core skill bundle row, now counts twenty-four workflow skills (TK-009F carried the count into GLOSSARY.md and its article), and it keeps the same row's classification, whose `landedText` already carried the new count. No line was added or removed after the census in either Lexicon.
 
 ### How lines were classified
 
@@ -38,41 +44,42 @@ Template: 96 glossary terms plus the `[TERM]` placeholder entry in `templates/GL
 Root Wiki homes (`wiki` entries):
 
 - `workbench/wiki/MEMORY.md` (exists)
-- `workbench/wiki/dictionary-agent.md` (planned)
-- `workbench/wiki/dictionary-attention-budget.md` (planned)
-- `workbench/wiki/dictionary-attention-degradation.md` (planned)
-- `workbench/wiki/dictionary-automated-check.md` (planned)
+- `workbench/wiki/dictionary-agent.md` (exists)
+- `workbench/wiki/dictionary-attention-budget.md` (exists)
+- `workbench/wiki/dictionary-attention-degradation.md` (exists)
+- `workbench/wiki/dictionary-automated-check.md` (exists)
 - `workbench/wiki/dictionary-cache-tokens.md` (exists)
 - `workbench/wiki/dictionary-context-window.md` (exists)
 - `workbench/wiki/dictionary-context.md` (exists)
-- `workbench/wiki/dictionary-effort.md` (planned)
-- `workbench/wiki/dictionary-environment.md` (planned)
-- `workbench/wiki/dictionary-feedback-disposition.md` (planned)
-- `workbench/wiki/dictionary-filesystem.md` (planned)
+- `workbench/wiki/dictionary-effort.md` (exists)
+- `workbench/wiki/dictionary-environment.md` (exists)
+- `workbench/wiki/dictionary-feedback-disposition.md` (exists)
+- `workbench/wiki/dictionary-filesystem.md` (exists)
 - `workbench/wiki/dictionary-harness.md` (exists)
-- `workbench/wiki/dictionary-human-review.md` (planned)
-- `workbench/wiki/dictionary-inference.md` (planned)
-- `workbench/wiki/dictionary-input-tokens.md` (planned)
-- `workbench/wiki/dictionary-model-provider.md` (planned)
-- `workbench/wiki/dictionary-model.md` (planned)
-- `workbench/wiki/dictionary-next-token-prediction.md` (planned)
+- `workbench/wiki/dictionary-human-review.md` (exists)
+- `workbench/wiki/dictionary-inference.md` (exists)
+- `workbench/wiki/dictionary-input-tokens.md` (exists)
+- `workbench/wiki/dictionary-model-provider.md` (exists)
+- `workbench/wiki/dictionary-model.md` (exists)
+- `workbench/wiki/dictionary-next-token-prediction.md` (exists)
 - `workbench/wiki/dictionary-non-determinism.md` (exists)
-- `workbench/wiki/dictionary-output-tokens.md` (planned)
-- `workbench/wiki/dictionary-parameters.md` (planned)
-- `workbench/wiki/dictionary-progressive-disclosure.md` (planned)
-- `workbench/wiki/dictionary-seam.md` (planned)
+- `workbench/wiki/dictionary-output-tokens.md` (exists)
+- `workbench/wiki/dictionary-parameters.md` (exists)
+- `workbench/wiki/dictionary-progressive-disclosure.md` (exists)
+- `workbench/wiki/dictionary-seam.md` (exists)
 - `workbench/wiki/dictionary-session.md` (exists)
-- `workbench/wiki/dictionary-smart-zone.md` (planned)
-- `workbench/wiki/dictionary-software-factory.md` (planned)
+- `workbench/wiki/dictionary-smart-zone.md` (exists)
+- `workbench/wiki/dictionary-software-factory.md` (exists)
 - `workbench/wiki/dictionary-stateful.md` (exists)
 - `workbench/wiki/dictionary-stateless.md` (exists)
-- `workbench/wiki/dictionary-system-prompt.md` (planned)
-- `workbench/wiki/dictionary-token.md` (planned)
-- `workbench/wiki/version-labels.md` (planned)
+- `workbench/wiki/dictionary-system-prompt.md` (exists)
+- `workbench/wiki/dictionary-token.md` (exists)
+- `workbench/wiki/version-labels.md` (exists)
 
-Template Wiki homes (`wiki` entries):
+Template Wiki homes (`wiki` entries), as delivered by TK-009L:
 
-- `templates/wiki/MEMORY.project.md` (exists)
+- `templates/wiki/ai-coding-reference.md` (exists): the general AI coding reference article.
+- `templates/wiki/vocabulary-feedback-disposition.md` (exists).
 - `templates/wiki/dictionary-agent.md` (planned)
 - `templates/wiki/dictionary-attention-budget.md` (planned)
 - `templates/wiki/dictionary-attention-degradation.md` (planned)
@@ -104,6 +111,8 @@ Template Wiki homes (`wiki` entries):
 
 Explanation homes: 112 root lexicon articles under `workbench/wiki/dictionary-*.md` and 94 Template ones under `templates/wiki/dictionary-*.md` (per-entry `explanationHome`). Whether the Template ships per-term articles or folds them is TK-009D and TK-009G's decision; general reference pages may stay Wiki-only.
 
+As delivered: 113 root explanation homes, one flat `workbench/wiki/dictionary-*.md` article per glossary term, all present; the Template folds its explanations into ten grouped articles, one per glossary grouping, under the Wiki-shape decision in the Spec: `templates/wiki/vocabulary-chats-and-roles.md`, `vocabulary-continuity-and-evidence-boundaries.md`, `vocabulary-continuity-terms.md`, `vocabulary-destination-and-direction.md`, `vocabulary-governance-core.md`, `vocabulary-specs-and-tasks.md`, `vocabulary-stance-terms.md`, `vocabulary-workbench-meanings-of-ai-coding-terms.md`, `vocabulary-workbench-room-and-artifacts.md` and `vocabulary-workflow-verbs.md`, plus `vocabulary-feedback-disposition.md` and `ai-coding-reference.md` above. No planned `templates/wiki/dictionary-*.md` page was written; the per-entry `explanationHome` values name the grouped articles.
+
 ### Landing check against a candidate with both Lexicons removed
 
 A dry run on a throwaway commit (`8b3ac92e44f692282c1bd866e666937f55492287`, the TK-009A tree with `LEXICON.md` and `templates/LEXICON.md` deleted, never pushed) with `check --base 1f4e2d676221ae2fd6b15607389ddb97c6cc99ac --candidate <that commit> --inventory <inventory> --json`:
@@ -116,6 +125,17 @@ A dry run on a throwaway commit (`8b3ac92e44f692282c1bd866e666937f55492287`, the
 Lines that land now are the retired lines, the restated claims and the entries whose existing dictionary article already holds the text. `home-missing` lines wait for GLOSSARY.md, ARCHITECTURE.md and the planned Wiki articles; `home-lacks-text` lines are the planned additions to the existing Wiki memory routers. This is the expected red state for the removal Task (TK-009H).
 
 Lexicon edits that land after this base (the AI Coding Dictionary Terms Spec S-004E and the Workbench Terms And Workflow Verbs Spec S-004G are active Lexicon writers) are not in these inventories: TK-009H re-scaffolds against its own base and classifies the new lines before removal.
+
+### Landing check at removal (TK-009H)
+
+TK-009H deleted both Lexicons in one commit and ran `check --base 0059669f1e1b81c8048dfea9714d0ce7a9e1d914 --candidate <candidate> --inventory <final inventory> --json`. Both Lexicons reported every removed line landed with no inventory error, at the deletion commit and again at the final candidate; the saved outputs are [lexicon-landing-check.json](lexicon-landing-check.json) and [template-lexicon-landing-check.json](template-lexicon-landing-check.json).
+
+| Carrier | Removed | Landed | Unlanded | Inventory errors |
+|---|---|---|---|---|
+| `LEXICON.md` | 308 | 308 | 0 | 0 |
+| `templates/LEXICON.md` | 269 | 269 | 0 | 0 |
+
+The check proves each line's `landedText`. Moving the Template Lexicon checks to their new owners found definition text the Template glossary had cut and no Template article carried (the Template glossary cut each definition to one or two sentences, and TK-009L carried only the Distinction text). TK-009H landed it in the grouped Template articles: the Workbench nesting sentences, Portable Workbench's "nothing lives only on the owner's machine", the Blueprint's map-scale and one-Blueprint sentences, Task's one-context sentence, the two Notepad sentences, the WBID value format and the full Collection set, plus the Grilling and Automated review dictionary attribution links. The other cut sentences are self-references to Lexicon rows or Task Routing, now reworded in their glossary entries, and the retired-name rows, which land as `_Avoid_` aliases with their retirement notes in the articles. In this room the batch Tasks already wrote each row's fuller definition into its article.
 
 ## Consumer census
 
@@ -687,6 +707,23 @@ Their records stay history; each owner re-points its own planned Lexicon work to
 | S-002U PR skill adoption | Reads the delivered glossary. | GLOSSARY.md once delivered. |
 | S-00G Ownership Map Root Control | Moves the Artifact Ownership Schema out of the Lexicon. | ARCHITECTURE.md ownership table (TK-009B) is the source it starts from. |
 | S-004H Blueprint Short Page | Descriptions of the Blueprint in the Lexicon's Blueprint row and Template mirror. | GLOSSARY.md Blueprint entry. |
+
+## Live mentions after removal (TK-009H)
+
+A fresh `git grep -a -l LEXICON` over the files the TK-009F live-link check treats as live finds no link to the Lexicon (that check passes) and these mentions, each kept for its reason:
+
+| Files | Why the mention stays |
+|---|---|
+| `workbench/tools/workbench-layout.mjs`, `tools/workbench-adoption.mjs`, `tools/workbench-classify.mjs`, `templates/ADOPTION.md`, `workbench/skills/update-harness/SKILL.md`, `workbench/skills/workbench-room-checks/SKILL.md` (Lexicon retirement and harness-shaped paragraphs) | A room built before the retirement may still hold `LEXICON.md`; the update route and Adoption retire it only after its lines land, and classification reads it as the earlier control set. The Template Lexicon is read from release history. |
+| `workbench/tools/adr.mjs`, `workbench/tools/spec-workbench.mjs`, `workbench/tools/self-drift.mjs` | Optional legacy file: reference repair and self-drift read `LEXICON.md` only if present. `adr.mjs` also keeps a missing root `LEXICON.md` named in an accepted record's `canonicalized_in` as history (TK-009H), since those records keep that history unchanged. |
+| `tools/check-carrier-landing.mjs`, `tools/test-carrier-landing.mjs`, `RUNBOOK.md` and `workbench/skills/workbench-room-checks/SKILL.md` (Carrier line-landing check) | The landing check keeps the retired Lexicons as supported historical carriers, checked from their pre-removal base. |
+| `workbench/skills/domain-modeling/SKILL.md`, `workbench/skills/domain-modeling/GLOSSARY-FORMAT.md`, `workbench/wiki/skill-domain-modeling.md`, `tools/test-domain-modeling-skill.mjs` | The GLOSSARY-else-LEXICON fallback for a room the update has not reached, owned and pinned by S-004J. |
+| `tools/grill-board.mjs`, `tools/test-grill-board.mjs`, `workbench/grill-board/README.md`, `workbench/grill-board/index.html`, `workbench/grill-board/items.json`, `workbench/wiki/MEMORY.md` (Grill Board reading pages) | The Grill Board's `lexicon` group, left unchanged while the owner has uncommitted board edits; a recorded gap. `tools/test-grill-board.mjs` passes. |
+| `tools/test-adr.mjs`, `tools/test-blueprint-contract.mjs`, `tools/test-control-fidelity.mjs`, `tools/test-genesis-from-decisions.mjs`, `tools/test-governance-core.mjs`, `tools/test-self-drift.mjs`, `tools/test-wiki.mjs`, `tools/test-workbench-adoption.mjs`, `tools/test-workbench-layout.mjs`, `tools/test-workbench-upgrade.mjs` | Negative assertions (no Lexicon link, Instruction Authority names no Lexicon), legacy-room fixtures, the `canonicalized_in` history check, the Blueprint claim inventories' retired Lexicon owners resolved through their successors and this proof's landing record, and the Template Lexicon read from release history; none reads a Lexicon file of this checkout. |
+| `workbench/skills/README.md` | The `lexicon` skill catalog row says "Lexicon" names the retired root control. |
+| `workbench/wiki/design-concepts/landmark-context-map.md`, `workbench/wiki/skill-make-it-so.md`, `workbench/wiki/skills-draft/main-workflow/pr.md` | History: a quoted card revision, a recorded scenario, and a draft owned by S-002U that says not to substitute the Lexicon. |
+
+Spec records stay history under the live-link check; `doctor` reports four of them as attention-only `broken-link` findings once `LEXICON.md` is gone (S-002H, S-01A, S-01T and S-01U link `../../../LEXICON.md`, S-01A to a heading), which their owners re-point or keep.
 
 ## Totals
 

@@ -148,7 +148,8 @@ test('copy-ready v3 templates route active spec authority through workbench/spec
       `${relative} contains root specs authority outside the one bounded Adoption migration source`);
   }
   assert.match(fs.readFileSync(adoptionPath, 'utf8'), /The migration moves[\s\S]{0,200}`specs\/`[\s\S]{0,200}manifest-declared lanes/);
-  for (const relative of ['AGENTS.md', 'LEXICON.md', 'TASKBOARD.md', 'SPEC.md', 'README.md', path.join('wiki', 'MEMORY.project.md')]) {
+  // S-004O TK-009H: ARCHITECTURE.md carries the routes the removed Lexicon did.
+  for (const relative of ['AGENTS.md', 'ARCHITECTURE.md', 'TASKBOARD.md', 'SPEC.md', 'README.md', path.join('wiki', 'MEMORY.project.md')]) {
     assert.match(fs.readFileSync(path.join(templateRoot, relative), 'utf8'), /workbench\/specs\//, `${relative} does not name the manifest-default spec lane`);
   }
   // Exactly seven root controls: the feedback return channel lives in its lane.
@@ -2775,7 +2776,7 @@ test('declare-legibility writes the six entries into an existing manifest and ch
 // Distinction text (`explanationText`) lands in its `explanationHome` article,
 // under a section headed by the entry's term, beside a link to `GLOSSARY.md`
 // as it sits at the room root. The articles carry no producer-only content.
-const TEMPLATE_INVENTORY = 'workbench/specs/S-004O-lexicon-retirement-and-architecture-md/proof/template-lexicon-landing-inventory.json';
+const TEMPLATE_INVENTORY = 'workbench/specs/S-004O-lexicon-retirement-and-architecture-md/proof/template-lexicon-landing-inventory-final.json';
 const flatText = (text) => String(text).replace(/\s+/g, ' ').trim();
 
 function templateGlossaryGroups() {

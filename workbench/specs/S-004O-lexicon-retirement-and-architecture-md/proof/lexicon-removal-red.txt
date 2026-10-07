@@ -1,0 +1,61 @@
+S-004O TK-009H red evidence at the deletion commit 75b868e20a95bd08f77b27eff11698ab888eed45
+(base 0059669f1e1b81c8048dfea9714d0ce7a9e1d914 with LEXICON.md and templates/LEXICON.md deleted).
+
+Landing check at the deletion commit: LEXICON.md removed 308, landed 308; templates/LEXICON.md removed 269, landed 269; 0 inventory errors.
+No line was unlanded by the check. The red state was the tests and the decision-record validator that still read the Lexicon:
+
+== node tools/test-workbench-upgrade.mjs
+ℹ pass 10
+ℹ fail 2
+✖ TK-009G: an upgrade keeps a Lexicon whose project-specific row has not landed and names the row
+✖ TK-009G: an upgrade retires a fully landed Lexicon with a backup and records it for rollback
+
+== node tools/test-workbench-adoption.mjs
+Error: ENOENT: no such file or directory, open 'templates/LEXICON.md'
+
+== node tools/test-control-fidelity.mjs
+ℹ pass 43
+ℹ fail 7
+✖ both Lexicons carry the installed decision-record vocabulary, and the generic one stays generic
+✖ both Lexicons define the Workbench terms once and use "controls" only for one-action tools
+✖ both Lexicons define every workflow verb once and state the delivery workflow with Journey as the build loop
+✖ the Blueprint and Foundry rows carry the owner's confirmed answers and not the replaced ones
+✖ the Template Lexicon carries each adopted AI Coding Terms row exactly once with one dictionary link
+✖ neither Lexicon calls the Workbench a harness, and Chat is distinguished from a session
+✖ TK-005N: both Lexicons and the README describe the delivered carrier shape and route operations through the Runbook index
+
+== node tools/test-governance-core.mjs
+ℹ pass 12
+ℹ fail 2
+✖ root lexicon articles and the template Lexicon carry the Governance Core terms and keep the owner definition of design concept
+✖ template Blueprint and Runbook route decision records, diagnostics, and the tools lane
+
+== node tools/test-runbook-index.mjs
+ℹ pass 60
+ℹ fail 2
+✖ S-003Z TK-008Z: LEXICON.md describes the delivered landmark artifact
+✖ S-003Z TK-008Z: templates/LEXICON.md describes the delivered landmark artifact
+
+== node tools/test-controls-vocabulary-sweep.mjs
+Error: ENOENT: no such file or directory, stat 'LEXICON.md'
+
+== node tools/test-workbench-layout.mjs
+ℹ pass 86
+ℹ fail 1
+✖ copy-ready v3 templates route active spec authority through workbench/specs
+
+== node tools/test-adr.mjs
+ℹ pass 55
+ℹ fail 3
+✖ the product corpus validates with a current register and no error findings
+✖ active workflow decisions and Lexicon meanings reconstruct the confirmed owner chain
+✖ workflow checks reject substantive and literal-route mutations with accepted status retained
+
+== node tools/test-adr.mjs at a60e40f2 (new retired-owner validation test before the adr.mjs change)
+ℹ pass 55
+ℹ fail 4
+✖ validation keeps a retired Lexicon canonicalized_in owner as history and still refuses other missing owners
+✖ the product corpus validates with a current register and no error findings
+✖ active workflow decisions and Lexicon meanings reconstruct the confirmed owner chain
+✖ workflow checks reject substantive and literal-route mutations with accepted status retained
+message: 'workbench/docs/adr/0001-planes-classify-operations-not-artifacts.md canonicalized_in target LEXICON.md does not exist',

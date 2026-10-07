@@ -1,0 +1,30 @@
+✖ growth rollback recovers the recorded legacy nine-backed-up eleven-to-twenty-nine shape (543.789125ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 637.040667
+
+✖ failing tests:
+
+test at tools/test-workbench-tools.mjs:535:1
+✖ growth rollback recovers the recorded legacy nine-backed-up eleven-to-twenty-nine shape (543.789125ms)
+  AssertionError [ERR_ASSERTION]: {"source":{"repository":"https://github.com/KaydenClark/LLM_Workbench.git","release":"v3.2.1","commit":"9b915072a5ec025c972cce703ab07e2d52c6e5ba","dirty":false},"error":""}
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file://<producer-checkout>/tools/test-workbench-tools.mjs:540:12)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

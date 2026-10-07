@@ -16,7 +16,7 @@ explains them.
 
 [ONE-SENTENCE DESCRIPTION OF WHAT THIS PROJECT DOES AND FOR WHOM.]
 
-The room is a Git repository with root controls on top, Workbench lanes
+The room is a Git repository with root files on top, Workbench lanes
 declared by `workbench/manifest.json` underneath, and the project's own source
 beside them. Every kind of truth has one maintained owner; an agent enters at
 `AGENTS.md`, follows a route below to the smallest owner that answers its
@@ -32,7 +32,7 @@ true as files move.
 | Path | What lives there |
 |---|---|
 | `[path]` | [purpose] |
-| Root controls | `AGENTS.md`, `BLUEPRINT.md`, `GLOSSARY.md`, `ARCHITECTURE.md`, `RUNBOOK.md`, `README.md`, `TASKBOARD.md` and the `CLAUDE.md` host adapter; their jobs are in [Ownership](#ownership). |
+| Root files | `AGENTS.md`, `BLUEPRINT.md`, `GLOSSARY.md`, `ARCHITECTURE.md`, `RUNBOOK.md`, `README.md`, `TASKBOARD.md` and the `CLAUDE.md` host adapter; their jobs are in [Ownership](#ownership). |
 | `workbench/` | The lanes and collections the manifest declares: Specs and Tasks, landmarks, skills, the Wiki, decision records, managed runtime tools, sessions and feedback. |
 
 ## Ownership

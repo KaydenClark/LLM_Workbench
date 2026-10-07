@@ -1,0 +1,284 @@
+{
+  "candidate": "cb3809551a70f3307ee81bd33ba70e15f3414014",
+  "commands": [
+    {
+      "command": "node tools/test-spec-assembly-selection.mjs",
+      "exitCode": 0,
+      "seconds": 2.24
+    },
+    {
+      "command": "node tools/test-skill-catalog.mjs",
+      "exitCode": 0,
+      "seconds": 0.4
+    },
+    {
+      "command": "node tools/test-skill-inspection.mjs",
+      "exitCode": 0,
+      "seconds": 0.12
+    },
+    {
+      "command": "node tools/test-skills-lane.mjs",
+      "exitCode": 0,
+      "seconds": 9.19
+    },
+    {
+      "command": "node tools/test-domain-modeling-skill.mjs",
+      "exitCode": 0,
+      "seconds": 0.09
+    },
+    {
+      "command": "node tools/test-core-composition.mjs",
+      "exitCode": 0,
+      "seconds": 2.61
+    },
+    {
+      "command": "node tools/test-project-evidence.mjs",
+      "exitCode": 0,
+      "seconds": 1.06
+    },
+    {
+      "command": "node tools/test-genesis-from-decisions.mjs",
+      "exitCode": 0,
+      "seconds": 28.79
+    },
+    {
+      "command": "node tools/test-blueprint-contract.mjs",
+      "exitCode": 0,
+      "seconds": 0.13
+    },
+    {
+      "command": "node tools/test-session-transport.mjs",
+      "exitCode": 0,
+      "seconds": 23.8
+    },
+    {
+      "command": "node tools/test-configured-host.mjs",
+      "exitCode": 0,
+      "seconds": 12.21
+    },
+    {
+      "command": "node tools/test-core-skill-installer.mjs",
+      "exitCode": 0,
+      "seconds": 18.19
+    },
+    {
+      "command": "node tools/test-workbench-layout.mjs",
+      "exitCode": 0,
+      "seconds": 50.2
+    },
+    {
+      "command": "node tools/test-workbench-adoption.mjs",
+      "exitCode": 0,
+      "seconds": 11.57
+    },
+    {
+      "command": "node tools/test-workbench-upgrade.mjs",
+      "exitCode": 0,
+      "seconds": 13.91
+    },
+    {
+      "command": "node tools/test-workbench-tools.mjs",
+      "exitCode": 0,
+      "seconds": 17.06
+    },
+    {
+      "command": "node tools/test-spec-workbench.mjs",
+      "exitCode": 0,
+      "seconds": 208.02
+    },
+    {
+      "command": "node tools/test-adr.mjs",
+      "exitCode": 0,
+      "seconds": 19.36
+    },
+    {
+      "command": "node tools/test-governance-core.mjs",
+      "exitCode": 0,
+      "seconds": 0.11
+    },
+    {
+      "command": "node tools/test-diagnostics.mjs",
+      "exitCode": 0,
+      "seconds": 36.17
+    },
+    {
+      "command": "node tools/test-branch-closeout.mjs",
+      "exitCode": 0,
+      "seconds": 5.51
+    },
+    {
+      "command": "node tools/test-wiki.mjs",
+      "exitCode": 0,
+      "seconds": 10.98
+    },
+    {
+      "command": "node tools/test-sessions.mjs",
+      "exitCode": 0,
+      "seconds": 6.76
+    },
+    {
+      "command": "node tools/test-visible-ids.mjs",
+      "exitCode": 0,
+      "seconds": 0.61
+    },
+    {
+      "command": "node tools/test-workbench-identity.mjs",
+      "exitCode": 0,
+      "seconds": 4.12
+    },
+    {
+      "command": "node tools/test-notepads.mjs",
+      "exitCode": 0,
+      "seconds": 13.0
+    },
+    {
+      "command": "node tools/test-direct-promotion.mjs",
+      "exitCode": 0,
+      "seconds": 4.58
+    },
+    {
+      "command": "node tools/test-visible-id-consumers.mjs",
+      "exitCode": 0,
+      "seconds": 14.21
+    },
+    {
+      "command": "node tools/test-cross-provider-fixture.mjs",
+      "exitCode": 0,
+      "seconds": 2.81
+    },
+    {
+      "command": "node tools/test-portability-matrix.mjs",
+      "exitCode": 0,
+      "seconds": 0.62
+    },
+    {
+      "command": "node tools/test-workbench-dogfood.mjs",
+      "exitCode": 0,
+      "seconds": 9.54
+    },
+    {
+      "command": "node tools/test-evaluate-workbench.mjs",
+      "exitCode": 0,
+      "seconds": 0.4
+    },
+    {
+      "command": "node tools/test-guardrail-audit.mjs",
+      "exitCode": 0,
+      "seconds": 0.27
+    },
+    {
+      "command": "node tools/test-context-tools.mjs",
+      "exitCode": 0,
+      "seconds": 0.27
+    },
+    {
+      "command": "node tools/test-outcome-trials.mjs",
+      "exitCode": 0,
+      "seconds": 0.7
+    },
+    {
+      "command": "node tools/test-eval-runner.mjs",
+      "exitCode": 0,
+      "seconds": 0.89
+    },
+    {
+      "command": "node tools/test-feedback-automation.mjs",
+      "exitCode": 0,
+      "seconds": 0.63
+    },
+    {
+      "command": "node tools/test-symlink-invocation.mjs",
+      "exitCode": 0,
+      "seconds": 1.11
+    },
+    {
+      "command": "node tools/test-control-fidelity.mjs",
+      "exitCode": 0,
+      "seconds": 2.32
+    },
+    {
+      "command": "node tools/test-workbench-round-trip.mjs",
+      "exitCode": 0,
+      "seconds": 47.51
+    },
+    {
+      "command": "node tools/test-controls-vocabulary-sweep.mjs",
+      "exitCode": 0,
+      "seconds": 0.09
+    },
+    {
+      "command": "node tools/test-carrier-landing.mjs",
+      "exitCode": 0,
+      "seconds": 4.75
+    },
+    {
+      "command": "node tools/test-runbook-index.mjs",
+      "exitCode": 0,
+      "seconds": 0.93
+    },
+    {
+      "command": "node tools/test-spec-citation-anchors.mjs",
+      "exitCode": 0,
+      "seconds": 31.52
+    },
+    {
+      "command": "node tools/test-landmark-wiki.mjs",
+      "exitCode": 0,
+      "seconds": 10.22
+    },
+    {
+      "command": "node tools/test-self-drift.mjs",
+      "exitCode": 0,
+      "seconds": 0.4
+    },
+    {
+      "command": "node tools/test-feedback-inventory.mjs",
+      "exitCode": 0,
+      "seconds": 0.14
+    },
+    {
+      "command": "node tools/test-grilling-ledger.mjs",
+      "exitCode": 0,
+      "seconds": 0.21
+    },
+    {
+      "command": "node tools/test-grill-board.mjs",
+      "exitCode": 0,
+      "seconds": 0.83
+    },
+    {
+      "command": "python3 evals/tasks/task_b_path_safety/test_grade.py",
+      "exitCode": 0,
+      "seconds": 0.51
+    },
+    {
+      "command": "node tools/evaluate-workbench.mjs --path templates --include-controls",
+      "exitCode": 0,
+      "seconds": 0.08
+    },
+    {
+      "command": "node workbench/tools/spec-workbench.mjs doctor",
+      "exitCode": 0,
+      "seconds": 4.1
+    },
+    {
+      "command": "node tools/test-spec-report.mjs",
+      "exitCode": 0,
+      "seconds": 41.76
+    },
+    {
+      "command": "python3 tools/test-check-append-only.py",
+      "exitCode": 0,
+      "seconds": 367.57
+    }
+  ],
+  "started": 1791367871.384953,
+  "execution": "Three independent fixture-based checks at a time; clean shared source",
+  "finished": 1791368238.967361,
+  "passed": 54,
+  "limits": [
+    "Only the producer correction is verified; installed-root recovery is a separate dependent operation.",
+    "Later edits are native evidence/lifecycle records, checked separately; runtime payload/Core/version bytes are unchanged.",
+    "Known self-drift21 findings remain blocked with cleanUpdatefalse; no reliability, Owner QA/main or whole-v4 claim."
+  ]
+}

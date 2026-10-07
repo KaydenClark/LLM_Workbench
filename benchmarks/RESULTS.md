@@ -121,3 +121,8 @@ Writing-for-agents Skill Adoption (S-002P) and Retro Skill Adoption (S-002V) sou
 The five recommendations remain: repeated real outcome trials; no-template/generic/prior/candidate comparison; fresh dated verification and Spec evidence; recent real evidence; repeated-trial effects and uncertainty. No criteria were weakened and no agent-outcome improvement is claimed. Existing room findings remain with `cleanUpdate: false`; direct-path synthetic scenarios do not establish native invocation, reliability, owner Human QA or main closure.
 
 Current32 rebase Check: clean source `d2e12abef7f1b76e63dce8ed9cb001bd60f1680b` passed all54 Runbook commands. Current-source guardrail audit remains73/100; [rebased room proof](../workbench/specs/S-002P-writing-for-agents-skill-adoption/proof/rebase-room-checks.json) preserves the command/source identity and all recommendations. No outcome improvement claim.
+
+
+## 2026-10-07 Managed runtime growth rollback correction
+
+Managed Runtime Growth Rollback (S-004Q) static guardrails remain73/100 before and after with unchanged criteria. The producer source passes all54 current Runbook commands at clean `cb3809551a70f3307ee81bd33ba70e15f3414014`; installer32/32 includes historical11-to29 recovery and safe refusals. [Room and audit receipts](../workbench/specs/S-004Q-managed-runtime-growth-rollback/proof/room-checks.json) retain source/command identity, known21 self-drift findings, cleanUpdatefalse and unchanged recommendations. No private installed-room proof or outcome improvement claim.

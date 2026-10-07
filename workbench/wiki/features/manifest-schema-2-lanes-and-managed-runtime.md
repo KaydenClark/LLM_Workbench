@@ -7,6 +7,7 @@ provenance:
   - Owner-directed one-article-per-Spec migration, 2026-09-19
   - Moved into the features collection and restructured as a feature article by Wiki Evolving-Synthesis Migration (S-003W) Task TK-002 (Move And Retype The Remaining Per-Spec Articles) using wiki.mjs move-note, 2026-10-04
 source_paths:
+  - workbench/specs/S-004Q-managed-runtime-growth-rollback/SPEC.md
   - workbench/specs/retired/S-023-manifest-schema-2-and-managed-runtime/SPEC.md
   - workbench/manifest.json
   - workbench/tools/workbench-paths.mjs
@@ -51,6 +52,14 @@ because the Workbench has a managed tools lane, so the Workbench can manage its
 runtime without taking over application-owned tools. Comparing installed bytes,
 receipt claims and the selected source separately, and refusing contradictory
 layouts, keeps one authoritative support root.
+
+## Growth rollback and recovery limits
+
+[Managed Runtime Growth Rollback (S-004Q)](../../specs/S-004Q-managed-runtime-growth-rollback/SPEC.md) corrects component recovery when an update adds runtime tools. The release-side controller records originally absent names and saved-file hashes, validates the selected backup against the current receipt, and preflights restores and deletions before writing. It restores originally present saved files and removes only identified introduced tools; post-update local byte/mode changes or deletions, or corrupt/unsafe recovery input refuse without changing the lane.
+
+Recorded legacy growth backups can infer absence from their saved-file inventory only with verified producer history: integration generation `8e9c06f6f98825925e7da6cce59fb68768b589d7` always treats receipt-missing names as changed and saves every present changed file. Its controller matches historical main source `9378eada35b30199a53f6b921215950d0fa7ff38`; ancestry of the main merge itself is unnecessary. Unknown or unavailable history refuses. Legacy saved bytes must match the previous receipt; new saved hashes also authenticate pre-update local edits. Originally unreceipted files are restored only with that saved-byte proof.
+
+Recovery restores a historical generation, rather than upgrading it. The historical eleven-tool controller verifies eleven restored tools; the current twenty-nine-tool controller still reports the older generation's eighteen unaccounted members as requiring update. Current coverage is not weakened. The recovery-controller source identity and an unchanged runtime-payload receipt may differ; component receipts do not prove whole-room inverse recovery or Owner QA.
 
 ## Limits
 

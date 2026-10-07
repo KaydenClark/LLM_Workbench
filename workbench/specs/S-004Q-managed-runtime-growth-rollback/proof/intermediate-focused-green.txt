@@ -1,0 +1,19 @@
+✔ growth rollback records original absence and restores the historical eleven-file generation (765.670708ms)
+✔ growth rollback recovers the recorded legacy nine-backed-up eleven-to-twenty-nine shape (795.308834ms)
+✔ growth rollback refuses unrecorded before any lane writes (591.377ms)
+✔ growth rollback refuses modified-introduced before any lane writes (591.771416ms)
+✔ growth rollback refuses modified-restored before any lane writes (594.228ms)
+✔ growth rollback refuses corrupt-backup before any lane writes (583.641208ms)
+✔ growth rollback refuses unsafe-backup before any lane writes (584.031917ms)
+✔ growth rollback refuses inconsistent-absence before any lane writes (583.150458ms)
+✔ growth rollback refuses missing-unchanged before any lane writes (601.641375ms)
+✔ growth rollback refuses unknown-legacy-source before any lane writes (614.523292ms)
+✔ growth rollback restores an originally present unreceipted managed name instead of deleting it (595.60125ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6997.83675
