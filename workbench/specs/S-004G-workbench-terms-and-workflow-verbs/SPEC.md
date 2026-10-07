@@ -5,11 +5,11 @@
 **Priority:** 2
 **Owner:** claude-lane-g
 **Stance:** Builder
-**Updated:** 2026-10-03
+**Updated:** 2026-10-06
 **Catalog description:** Put the owner's Workbench terms and one row per workflow verb into the Lexicon, repair the rows that contradict the Blueprint teardown's locked answers, and record the changed Journey point of the workflow-verbs decision in a decision record.
 **Blockers:** none. The Lexicon rows take one writer at a time, so this Spec's first Task waits on the last Task of the AI Coding Dictionary Terms Spec. The `ddr` collection and the commands that write, accept and supersede a decision record are installed.
-**Latest event:** All five Tasks are closed: the Workbench term and artifact-kind rows, the workflow verb rows, the Blueprint and Foundry repairs, the amended workflow verbs decision and the Workflow Verbs article with the retired-controls inventory. One acceptance box stays open: recorded verification and limitations at assembled review.
-**Next gate:** Assembled-Spec review by a separate Director context and owner Human QA; the release proof decision's verb list needs a visible correction by its owner, and the controls wording outside the Lexicon waits for the Contract carrier rewrite.
+**Latest event:** 2026-10-06: assembled at integration `42431879`; Completion Result written and the verification line checked.
+**Next gate:** Separate-context review of the assembled candidate, then the owner's Human QA approval (declared in chat on 2026-10-06) is recorded on the reviewed content. The release proof decision's verb list still needs a visible correction by its owner, and the controls wording outside the Lexicon waits for the Contract carrier rewrite.
 
 > **Citation anchors.** pre=`5cfa987bacb0f6a9273d93e8d989e34000d75ad9` post=`5cfa987bacb0f6a9273d93e8d989e34000d75ad9`.
 
@@ -170,7 +170,7 @@ No Tasks cut. At Plan, use current Actuality to cut small complete-path slices. 
 - [x] No row assigns a meaning the owner did not confirm; each open question above is answered in the Spec with its evidence or left recorded as open. Met: the six open questions are answered in Decisions And Contracts with their evidence; renaming the `S-###:delivered` qualifier stays recorded as the owner's call.
 - [x] The template mirror carries the generic rows, or the exemption is recorded with its reason. Met: every row but Workbench Template and Foundry is mirrored, and the exemption for those two producer terms is recorded.
 - [x] Current-facing uses of the retired "controls" wording outside the Lexicon are inventoried and either corrected or recorded as drift for the Contract carrier rewrite. Met by TK-006G: inventoried in Retired Controls Wording Outside The Lexicon and recorded as drift for the Contract carrier rewrite.
-- [ ] Named verification and remaining limitations are recorded without claiming owner approval.
+- [x] Named verification and remaining limitations are recorded without claiming owner approval. Met at assembly: the 2026-10-06 assembly row names the targeted tests, the full suite, `render`, `doctor` and the self-drift receipts on the committed candidate; limitations are under Remaining Limitations.
 
 ## Testing Seams
 
@@ -198,7 +198,15 @@ Run the targeted vocabulary, control-fidelity and decision-record tests and the 
 
 ## Completion Result
 
-Pending.
+Assembled at integration `42431879` on 2026-10-06 from the five closed Tasks, each landed on integration with its own red/green proof (see the evidence log):
+
+- TK-006C: one Lexicon row each for Owner, Room, Workbench Template, Scaffolding, Contract artifact, Routing artifact, Architecture artifact, Control and Workflow verb, with the retired "controls"-for-files wording repaired in both Lexicons.
+- TK-006D: one row per workflow verb, and the Workflow row stating the open verb set and the delivery workflow.
+- TK-006E: the Align, Blueprint, Root controls and Foundry rows repaired to the owner's answers, and the Wiki router updated for the two delivery pages.
+- TK-006F: ADR-000X amended in place under the amendment-first rule for the open verb set and the Journey correction; nothing superseded.
+- TK-006G: the Workflow Verbs Wiki article rewritten, and the retired controls wording outside the Lexicon inventoried under Retired Controls Wording Outside The Lexicon for the Contract carrier rewrite.
+
+All eight acceptance lines are met. The template mirror carries every generic row; Workbench Template and Foundry are recorded producer-only exemptions. The assembly verification is recorded in the evidence log. No owner approval is claimed here.
 
 ## Remaining Limitations Or Follow-Up Specs
 

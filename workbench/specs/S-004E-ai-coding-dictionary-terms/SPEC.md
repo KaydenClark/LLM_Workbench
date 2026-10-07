@@ -5,11 +5,11 @@
 **Priority:** 2
 **Owner:** claude-lane-g
 **Stance:** Builder
-**Updated:** 2026-10-03
+**Updated:** 2026-10-06
 **Catalog description:** Put the owner's agreed meanings for AI Coding Dictionary terms into the Lexicon, with a Wiki dictionary entry wherever a term needs more than its row, starting with nineteen model, harness and session terms.
 **Blockers:** none. The owner answered the harness question on 2026-10-03 (option (a) in Decisions And Contracts), so no row waits on an owner answer. Lexicon writes take one writer at a time; the owner's Codex Lexicon reconciliation landed in integration on 2026-10-03 (PR #281), and the Lexicon Design-Concept Reconciliation Spec stays active for its whole-Lexicon audit. The four Tasks run serially in this Spec's writer lane.
-**Latest event:** All four Tasks are closed (the thirty rows in both Lexicons, the harness reconciliation and the eight Wiki entries). One acceptance box stays open: the AGENTS.md, RUNBOOK.md and README.md harness lines wait for the Contract Carrier Pointer-Brief Rewrite.
-**Next gate:** Assembled-Spec review by a separate Director context and owner Human QA; the open acceptance box clears when the Contract carrier rewrite lands.
+**Latest event:** 2026-10-06: assembled at integration `42431879`; Completion Result written and the verification line checked. The conflicting-control-lines box stays open for the Contract carrier rewrite.
+**Next gate:** Separate-context review of the assembled candidate, then the owner's Human QA approval (declared in chat on 2026-10-06) is recorded on the reviewed content; the second acceptance line clears when the Contract carrier rewrite lands.
 
 > **Citation anchors.** pre=`817096e676992cf7ece72967ac8bbb064261a3ee` post=`817096e676992cf7ece72967ac8bbb064261a3ee`.
 
@@ -262,7 +262,7 @@ No Tasks cut. At Plan, use current Actuality to cut small complete-path slices. 
 - [x] A mechanical comparison against the entries at the pinned commit finds no copied passage in any tracked file beyond a short attributed quotation. Met by TK-006B: the longest shared word run between any tracked row or entry and the pinned entries is seven words (common phrases such as a list of harness parts).
 - [x] The template mirror carries the generic rows, or the exemption is recorded with its reason. Met: every row is mirrored without root-only links, quotes or identifiers.
 - [x] A fresh agent given only the Lexicon and Wiki answers two probes with the Workbench meaning: why Claude Code and Claude.ai behave differently on the same model, and why the Workbench writes continuity to files. Met by TK-006B: a fresh read-only Codex agent given only LEXICON.md and the dictionary Wiki entries answered both probes with the Workbench meanings and found no contradiction.
-- [ ] Named verification and remaining limitations are recorded without claiming owner approval.
+- [x] Named verification and remaining limitations are recorded without claiming owner approval. Met at assembly: the 2026-10-06 assembly row names the targeted tests, the full suite, `render`, `doctor` and the self-drift receipts on the committed candidate; limitations are under Remaining Limitations and the open second line.
 
 ## Testing Seams
 
@@ -292,7 +292,14 @@ This Spec changes `LEXICON.md` (a new section, reconciled rows and the Last revi
 
 ## Completion Result
 
-Pending.
+Assembled at integration `42431879` on 2026-10-06 from the four closed Tasks, each landed on integration with its own red/green proof (see the evidence log):
+
+- TK-005Y: the `AI Coding Terms` section of `LEXICON.md` and `templates/LEXICON.md`, with its source, supply-date and no-live-import preamble and the first fifteen rows.
+- TK-005Z: both Lexicons reconciled to the owner's harness answer (the Workbench is an agentic management system, never a harness); the conflicting `AGENTS.md`, `RUNBOOK.md` and `README.md` lines inventoried under Conflicting Control Lines for the Contract Carrier Pointer-Brief Rewrite.
+- TK-006A: the ten batch-two rows, completing thirty rows in both Lexicons.
+- TK-006B: eight flat `dictionary-<term>.md` Wiki entries routed from `MEMORY.md`, the copied-passage comparison (longest shared run seven words) and the two cold-reader probes.
+
+Six of seven acceptance lines are met. The second stays open by design: the harness lines in `AGENTS.md`, `RUNBOOK.md` and `README.md` change only when the Contract Carrier Pointer-Brief Rewrite lands, so `complete` waits on it. The assembly verification is recorded in the evidence log. No owner approval is claimed here.
 
 ## Remaining Limitations Or Follow-Up Specs
 
