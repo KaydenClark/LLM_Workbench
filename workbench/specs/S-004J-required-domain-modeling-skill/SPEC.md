@@ -3,13 +3,13 @@
 **Spec ID:** S-004J
 **Status:** active
 **Priority:** 2
-**Owner:** claude-s004j-worker-fix
+**Owner:** claude-s004j-dispatcher
 **Stance:** Builder
 **Updated:** 2026-10-07
 **Catalog description:** Ship domain modeling in every room's skills lane as the Align companion that shows the downstream consequences of an upstream name, boundary or relationship before it settles, and hands settled meaning to promotion instead of writing Canon inline.
 **Blockers:** none
-**Latest event:** TK-00JC closed with proof.
-**Next gate:** Confirm acceptance criteria and completion result.
+**Latest event:** Correction pass closed on TK-00JA, TK-00JB and TK-00JC; integration `817661a4` merged forward as `abef8e91`; acceptance re-checked against the correction evidence.
+**Next gate:** Fresh separate-context integration review of the corrected candidate on its PR into integration, then authorized integration merge; owner Human QA and release stay separate.
 
 > **Citation anchors.** pre=`46ad978956a74a3ee1bda22c36eb16207dcd98fd` post=`46ad978956a74a3ee1bda22c36eb16207dcd98fd`.
 
@@ -89,6 +89,8 @@ At refreshed integration `42431879fab3057db9e26ae661b4e92512c281f0` on 2026-10-0
 At assembly candidate `345e8754556bb7fade26f2cc1f8fad919136af61` on 2026-10-07, `workbench/skills/domain-modeling/` ships in the lane, the manifest's required bundle holds 29 skills including `domain-modeling`, and a fresh clone resolves the same `SKILL.md` bytes through `.agents/skills` and `.claude/skills`. Root `GLOSSARY.md` is still absent at this base, so the skill reads the current Lexicon; the promote tool's root-glossary destination belongs to S-004O.
 
 At integration `c80cb282` on 2026-10-07 (PR #415 merged), the required bundle holds 30 skills with `domain-modeling` and then `pr` after `improve-harness`; assembled review 1, re-pinned to the merged head `d8b17a6a`, failed on the in-room MIT notice and four should-fix gaps, so the Tasks continue on `claude/s004j-corrections`.
+
+At corrections candidate `abef8e91` on 2026-10-07 (integration `817661a4` merged in), the required bundle holds 32 skills; `workbench/skills/domain-modeling/` ships `SKILL.md`, the verbatim `GLOSSARY-FORMAT.md` and an in-directory MIT `NOTICE.md`, which a room install copies byte-identical through both adapters. Root `GLOSSARY.md` is still absent, so the Lexicon remains the vocabulary owner the skill reads and promotes into.
 
 ## Desired Behavior
 
@@ -207,16 +209,16 @@ rooms; (4) Wiki article reconciliation.
 - [x] A fresh clone discovers `domain-modeling` through both adapters; the
   manifest, layout bundle, catalog and count-bearing documents agree.
 - [x] A RUNBOOK operations index row points to the skill.
-- [ ] In a grilling scenario, a proposed rename or boundary is traced to named
+- [x] In a grilling scenario, a proposed rename or boundary is traced to named
   owners, identifiers and tests before the owner chooses, and the room diff stays
   empty.
 - [x] A conflicting term, an overloaded term and an edge case each draw a
   specific challenge; a stated behavior is classified against named source.
-- [ ] A pending term and its correction remain in the notepad; confirmation
+- [x] A pending term and its correction remain in the notepad; confirmation
   records settled meaning and promotion reaches the canonical glossary only at
   the authorized boundary. No inline Canon or glossary write occurs.
   - QA scope: the recorded local glossary scenarios used an authorized manual write after `sessions.mjs promote` refused the root glossary destination. The skill boundary passed; the runtime glossary route remains owned by S-004O, with no tool-based promotion or cloud reliability claim. Curated proof retains observed replies, notepads and room diffs; original tool-result streams are not committed.
-- [ ] Source and format comparison records the pin, credits and each necessary
+- [x] Source and format comparison records the pin, credits and each necessary
   adapter; the upstream language challenges, scenario probes and code checks
   are preserved without unrelated policy rewrites.
 - [x] An easily reversed, an unsurprising and a no-alternative choice each fail
@@ -224,7 +226,7 @@ rooms; (4) Wiki article reconciliation.
   scope test.
 - [x] Grilling completes without the skill; no parallel terminology store is
   created.
-- [ ] The Wiki article separates upstream method, Workbench adaptation and
+- [x] The Wiki article separates upstream method, Workbench adaptation and
   verified behavior and limits.
 
 ## Testing Seams
@@ -272,10 +274,11 @@ Record `Docs checked; no update needed` for any other owner checked.
 | 2026-10-07 | TK-00JA | Task closed (run 2) | Correction pass: in-directory MIT NOTICE.md installed into rooms; scoped 11/11 with each new assertion failing on its mutation; full RUNBOOK suite 54/54 on clean e30df561; fast-forward into claude/s004j-corrections verified | Skill notice, credit, adapter list and format note; scoped test; THIRD_PARTY_NOTICES checked, no update needed | TK-00JB scenario 1 rerun and promotion qualification; TK-00JC Wiki; fresh assembled review |
 | 2026-10-07 | TK-00JB | Task closed (run 2) | Correction pass: scenario 1 run 3 names every owner and both tests before the choice with an empty room diff after a red-green trace wording fix; promotion evidence qualified (glossary variant manual write after tool refusal, tool promotion verified for the Lexicon fallback only); full RUNBOOK suite 54/54 on clean fb9765b5 | Skill trace sentence, scoped test, s1 and s3 observations and scenario-evidence; supersedes the earlier unqualified 4/4 wording | Single rerun with one model; glossary tool promotion owned by S-004O; TK-00JC Wiki; fresh assembled review |
 | 2026-10-07 | TK-00JC | Task closed (run 2) | Correction pass: Wiki article matches the corrected adapter list, NOTICE.md credit, qualified promotion evidence, scenario 1 reruns and the scenario 4 prompt limit; wiki validate ok, test-wiki 25/25, full RUNBOOK suite 54/54 on clean eab82fe5 | Domain Modeling Wiki article; router line checked, no update needed | Fresh assembled integration review and owner Human QA; glossary tool promotion owned by S-004O; release identity |
+| 2026-10-07 | correction | Correction pass for verdict #2 delivered: TK-00JA (in-directory MIT NOTICE.md, mutation-proven scoped assertions, complete adapter list, capture timing, lazy-creation note), TK-00JB (scenario 1 runs 2 FAIL and 3 PASS after a red-green trace naming sentence, promotion evidence qualified) and TK-00JC (Wiki article reconciled); integration `817661a4` merged forward as `abef8e91`. Acceptance lines 3, 5, 6 and 9 re-checked: line 3 on scenario 1 run 3, line 5 with its QA-scope note (tool promotion verified for the Lexicon, the current vocabulary owner, the glossary variant only by manual write), line 6 on the NOTICE and adapter list, line 9 on the reconciled article. This qualifies the earlier TK-00JB close row's unqualified capture and promotion 4/4. | Full RUNBOOK suite 54/54 on clean `abef8e91`; scoped 11/11; wiki validate ok and test-wiki 25/25; self-drift no new finding across the pass; guardrail 73/100 before and after (N1). | Skill source, notice, scoped test, proof and Wiki through the Task branches; Spec header, current state, acceptance and Completion Result here. | Fresh separate-context integration review, integration merge and owner Human QA; glossary tool promotion (S-004O); release identity; single model and single sharpened-trace run. |
 
 ## Completion Result
 
-Not complete. The three Tasks reached integration through [PR #415](https://github.com/KaydenClark/LLM_Workbench/pull/415) (`c80cb282`) after a pass verdict at `f6461f5c`; the later verdict at the merged head `d8b17a6a` failed, so TK-00JA, TK-00JB and TK-00JC continue for one correction pass. A fresh assembled review of the corrected candidate, its integration delivery and owner Human QA remain.
+Not complete. The correction pass for assembled review 1 is delivered on `claude/s004j-corrections`: the in-room MIT notice, a scoped test whose contract assertions each fail on their mutation, a complete adapter list without unrelated policy, a sharpened trace that named every owner and test in scenario 1's third run, qualified promotion evidence and a reconciled Wiki article. A fresh separate-context review of this candidate, its integration delivery and owner Human QA remain; glossary promotion through the tool waits on S-004O and release identity on the release owner.
 
 ## Supersession
 
