@@ -12,6 +12,7 @@ import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 import { RUNTIME_TOOLS, coreSkills } from '../workbench/tools/workbench-layout.mjs';
+import * as layoutRuntime from '../workbench/tools/workbench-layout.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const VERSION = JSON.parse(fs.readFileSync(path.join(root, 'workbench', 'manifest.json'), 'utf8')).workbenchVersion;
@@ -493,6 +494,32 @@ test('TK-009G: an upgrade and the managed update route leave a room without a Le
   } finally {
     fs.rmSync(project, { recursive: true, force: true });
     fs.rmSync(home, { recursive: true, force: true });
+  }
+});
+
+// S-004O TK-009G: the Template Lexicon leaves the release (TK-009H deletes it),
+// yet a room generated from it still retires through the update route: the
+// generic lines are read from the release history, from the last commit
+// before the Template Lexicon was deleted.
+test('TK-009G: Lexicon landing reads the Template Lexicon from release history once the Template no longer ships it', () => {
+  const release = fixture('workbench-upgrade-release-');
+  const project = fixture('workbench-upgrade-lexicon-history-');
+  try {
+    const git = (...args) => assert.equal(spawnSync('git', ['-c', 'user.name=Fixture', '-c', 'user.email=fixture@example.test', ...args], { cwd: release, encoding: 'utf8' }).status, 0, args.join(' '));
+    const generic = '# [PROJECT_NAME] - Lexicon\n\n> Generated from LLM Workbench v[HARNESS_VERSION].\n\nThis is the canonical lookup table for shared terms.\n\n| **[TERM]** | [DEFINITION] |\n';
+    write(release, 'templates/LEXICON.md', generic);
+    write(release, 'templates/GLOSSARY.md', '# [PROJECT_NAME]\n');
+    git('init', '-q'); git('add', '-A'); git('commit', '-qm', 'Template with a Lexicon');
+    fs.rmSync(path.join(release, 'templates', 'LEXICON.md'));
+    git('add', '-A'); git('commit', '-qm', 'Retire the Template Lexicon');
+    write(project, 'LEXICON.md', '# Greeter - Lexicon\n\n> Generated from LLM Workbench v9.9.9.\n\nThis is the canonical lookup table for shared terms.\n\n| **Greeting** | The line printed. |\n');
+    const manifest = { lanes: { wiki: 'workbench/wiki' }, provenance: { lifecycle: 'genesis' } };
+    const landing = layoutRuntime.lexiconLanding(project, { templates: path.join(release, 'templates'), manifest });
+    assert.deepEqual(landing.unlanded.map((item) => item.text), ['| **Greeting** | The line printed. |'], 'only the room\'s own row is unlanded; the generic lines are read from the deleted Template Lexicon');
+    assert.equal(landing.templateSources, 1, 'the deleted Template Lexicon is the one generic source');
+  } finally {
+    fs.rmSync(release, { recursive: true, force: true });
+    fs.rmSync(project, { recursive: true, force: true });
   }
 });
 
