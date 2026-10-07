@@ -24,7 +24,7 @@ The checked-out LLM Workbench release owns the exact source versions.
 | `carry` | Own an assigned spec or task to its already-authorized endpoint and record what the owner still had to supply. |
 | `notepad` | Keep one objective's local JSON working context: save it as it appears, retrieve a topic with its corrections, trim only what is reconciled. |
 | `save` | Persist authorized work and verify its actual local or remote recovery boundary. |
-| `promote` | Reconcile selected supported claims directly into their existing durable owners. |
+| `promote` | Carry confirmed decisions through durable docs, Specs, authorized Task plans and integration publication; retain selected-claim endpoints. |
 | `handoff` | Author readable, scope-preserving Markdown continuation for the requested destination. |
 | `grill-me` | Start a saved design inquiry: compose grilling with objective-scoped notepad continuity, keeping pending answers pending. |
 | `workbench-runtime` | Operate the room's installed runtime tools: read a finding and what it blocks, validate the Wiki, repair installed state, allocate visible identifiers, keep the connection identity, check a configured host and add a room-local skill. |

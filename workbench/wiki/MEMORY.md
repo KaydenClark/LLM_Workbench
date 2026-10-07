@@ -69,7 +69,7 @@ belong to their individual Specs as they are authored.
 - [Notepad](skill-notepad.md) - preserve one objective's working context
 - [Workbench runtime](skill-workbench-runtime.md) - read what the installed tools report and repair what they name
 - [To-docs](skill-to-docs.md) - route settled truth to the owner that holds it
-- [Promote](skill-promote.md) - move settled working claims into their durable owners
+- [Promote](skill-promote.md) - publish confirmed decisions, capability Specs and authorized Task plans to integration
 - [Checkpoint](skill-checkpoint.md) - route a retired request to current continuity
 - [Auditor](skill-auditor.md) - check named claims against pinned evidence
 - [Builder](skill-builder.md) - deliver one assigned result with checkable proof

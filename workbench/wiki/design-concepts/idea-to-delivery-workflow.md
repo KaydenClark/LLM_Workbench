@@ -6,6 +6,7 @@ knowledge_role: curated
 provenance:
   - Owner's workflow map of 2026-09-24, moved here from the Blueprint by the owner's Blueprint teardown answer of 2026-10-03, rewritten in the workflow verbs
 source_paths:
+  - workbench/docs/adr/001A-promote-publishes-confirmed-documentation-specs-and-task-plans-before-implementation.md
   - workbench/docs/adr/000X-the-workflow-is-eight-verbs-and-each-verb-writes-the-plane-its-claims-live-on.md
   - workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md
   - workbench/docs/adr/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md
@@ -15,7 +16,7 @@ source_paths:
   - AGENTS.md
 parent: none
 authorized_by: the owner's Blueprint teardown answer that the workflow map moves to the Workflow landmark and the Wiki, 2026-10-03
-last_verified: 2026-10-05
+last_verified: 2026-10-07
 ---
 
 # The Workflow From Idea To Delivery
@@ -31,8 +32,8 @@ structured account.
 
 ## The loop in the verbs
 
-The delivery workflow reads Idea, Align, Confirm, Map, Plan, Journey, Review,
-Verify, Approve, Delivered, Clean Up; the set of workflow verbs is open, and
+The delivery workflow reads Explore, Promote, Journey, Review, Verify,
+Approve, Delivered, Clean Up; the set of workflow verbs is open, and
 the [Workflow Verbs](workflow-verbs.md) page explains them. Journey is the
 build run for each Task: Implement, Check, QA and Submit, with Map and Plan
 before it. Review comes after the Journey and decides whether another Journey
@@ -41,11 +42,16 @@ The workflow loops back to Align when the owner sends the result back at
 Approve:
 
 ```text
-Idea -> Align -> Confirm -> Map -> Plan -> Journey -> Review -> Verify -> Approve -> Delivered -> Clean Up
-          ^                   ^                         |                    |
-          |                   +---- failed Review ------+                    |
-          +------------------------- sent back at Approve -------------------+
+Explore = { Idea -> Align }
+Promote = { Confirm -> to-docs -> Publish -> Map -> Publish -> Plan -> Publish }
+
+Explore -> Promote -> Journey -> Review -> Verify -> Approve -> Delivered -> Clean Up
+  ^          ^                     |                 |
+  |          +-- failed Review -----+                 |
+  +--------------- sent back at Approve --------------+
 ```
+
+The [Promote decision](../../docs/adr/001A-promote-publishes-confirmed-documentation-specs-and-task-plans-before-implementation.md) adds the parent composition: documentation precedes its Spec, and the Spec precedes authorized Tasks. Exploration may remain unfinished while a separately confirmed scope advances. A nearer endpoint stops promotion at that boundary.
 
 The owner brings an idea. Before it is clear enough to Align, the owner may
 explore it in conversation. Align is the inquiry in which the owner and the
@@ -155,3 +161,5 @@ and those words move with the controls.
   Workflow landmark and the Wiki, rewritten in the workflow verbs.
 - 2026-10-05: the owner added QA and Submit to the Journey and moved Review
   after it, with a failed Review going back to Map, Plan and Journey.
+
+- 2026-10-07: added Explore and Promote as parent workflows and Publish as their verified integration boundary, preserving the earlier verb decisions as history.

@@ -342,7 +342,17 @@ assert.ok(notepadSkill.indexOf('recheck live state before relying on either') < 
 // pending item in the note. These pin the source contract; the fresh-context
 // run in S-01B records the behavior.
 const promoteSkill = read('workbench/skills/promote/SKILL.md');
-assertIncludesAll(promoteSkill, [
+// Parent stage order is instruction structure, not proof of agent execution.
+const promotionStages = ['Confirm the scope', 'Author durable documentation', 'Publish the documentation', 'Map the capabilities', 'Publish the Specs', 'Plan the Tasks', 'Publish the Tasks', 'Hand back shared state'];
+let promotionStageEnd = -1;
+for (const stage of promotionStages) {
+  const position = promoteSkill.indexOf(`**${stage}.**`);
+  assert.ok(position > promotionStageEnd, `promote must give the ordered stage: ${stage}`);
+  promotionStageEnd = position;
+}
+assertIncludesAll(promoteSkill, ['nearer endpoint', 'selected-claims.md', 'publication.md', 'one writer', 'unfinished', 'already-promoted', 'interruption'], 'promote parent scope and continuation');
+const selectedPromotion = read('workbench/skills/promote/references/selected-claims.md');
+assertIncludesAll(selectedPromotion, [
   '`source_record`',
   '`current.unresolved`',
   'is pending, not supported',
@@ -352,9 +362,9 @@ assertIncludesAll(promoteSkill, [
   '`workbench/sessions/recovery/`',
   'Leave each pending entry and its `current.unresolved` item in place'
 ], 'promote pending, single-owner and draft contract');
-assert.ok(promoteSkill.indexOf('is pending, not supported') < promoteSkill.indexOf('\n2. '),
+assert.ok(selectedPromotion.indexOf('is pending, not supported') < selectedPromotion.indexOf('\n2. '),
   'recognizing pending meaning belongs to selection, before routing');
-assert.ok(promoteSkill.indexOf('Leave each pending entry') > promoteSkill.indexOf('\n5. '),
+assert.ok(selectedPromotion.indexOf('Leave each pending entry') > selectedPromotion.indexOf('\n5. '),
   'retaining the pending item belongs to the note update after promotion');
 // S-00Z: grill-me is the repository-owned entry that composes grilling with
 // objective-scoped notepad continuity. It is declared in the live core bundle

@@ -8,8 +8,8 @@
 **Updated:** 2026-10-07
 **Catalog description:** Carry confirmed decisions through durable documentation, Specs, authorized Task plans and verified publication to integration.
 **Blockers:** none
-**Latest event:** Owner requested the Promote parent workflow.
-**Next gate:** Activate the scoped delivery Task.
+**Latest event:** TK-007K claimed by codex-promote.
+**Next gate:** Close TK-007K with verification and documentation proof.
 
 ## Outcome
 
