@@ -997,7 +997,7 @@ function glossaryGroupTerms(group) {
 test('TK-009D: each explained glossary entry lands its Distinction text in a routed lexicon article that declares the term', () => {
   const inventory = JSON.parse(fs.readFileSync(path.join(root, ROOT_INVENTORY), 'utf8'));
   // S-004O TK-009M: every retired alias records the distinction its Lexicon
-  // row carried (Ticket's prefix rule, the Root controls public-name
+  // row carried (the Task identifier-prefix rule, the Root controls public-name
   // exception, Portable layout, Portability model).
   const aliases = inventory.entries.filter((item) => item.aliasOf);
   assert.equal(aliases.length, 4, 'the root inventory carries four retired aliases');
