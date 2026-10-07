@@ -931,6 +931,9 @@ test('both Lexicons carry each adopted AI Coding Terms row exactly once with one
       assert.deepEqual(links, [`https://www.aihero.dev/ai-coding-dictionary/${dictionarySlug(term)}`], `${relative} ${term} links its dictionary entry once`);
       if (relative.startsWith('templates/')) assert.doesNotMatch(rows[0], /ADR-0|S-0|TK-0|workbench\/specs\/|workbench\/wiki\//, `${relative} ${term} stays generic`);
     }
+    // S-004E TK-005Y continuation (fail verdict at a7e735b4): the Output
+    // tokens row's verb agrees with its singular subject.
+    assert.doesNotMatch(content.split('\n').find((line) => line.startsWith('| **Output tokens** ')), /and are produced one at a time/, `${relative} Output tokens row agrees in number`);
   }
 });
 
