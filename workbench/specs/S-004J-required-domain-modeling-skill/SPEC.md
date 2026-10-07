@@ -8,8 +8,8 @@
 **Updated:** 2026-10-07
 **Catalog description:** Ship domain modeling in every room's skills lane as the Align companion that shows the downstream consequences of an upstream name, boundary or relationship before it settles, and hands settled meaning to promotion instead of writing Canon inline.
 **Blockers:** none
-**Latest event:** PR #415 conflict repair combines the required domain-modeling and pr skills, preserves concurrent assembly evidence, and incorporates reviewed PR #418.
-**Next gate:** Final committed verification and fresh independent integration review, then authorized integration merge; owner Human QA and release remain separate.
+**Latest event:** Conflict repair and fresh independent integration review passed on f6461f5c; mandatory suite54/54 and evidence history CLEAN. PR #415 is ready for its authorized integration merge.
+**Next gate:** Authorized integration merge and containment; owner Human QA and release gates remain open, with glossary-runtime migration owned by S-004O.
 
 > **Citation anchors.** pre=`46ad978956a74a3ee1bda22c36eb16207dcd98fd` post=`46ad978956a74a3ee1bda22c36eb16207dcd98fd`.
 
@@ -264,6 +264,8 @@ Record `Docs checked; no update needed` for any other owner checked.
 | 2026-10-07 | conflict repair | Merged integration 6101c237 into assembly; retained both required skill additions and exact pre-merge transition policies | Domain-modeling source 10/10; new prior29 regression tests fail on both parent policies before adding the transition cohorts; catalog check exposed the missing twenty-two word token | Counts reconciled to 30, both skill catalog/router entries retained; Docs checked; skill and glossary semantics need no update because the repair preserves them | Final committed checks and fresh assembled integration review remain pending; owner Human QA and release identity unchanged |
 
 | 2026-10-07 | conflict repair | Preserved concurrent remote assembly a5320505 and corrected independent review finding at 9d15b738 | Initial review FAIL: current Domain Modeling article still named 29 skills; changed to 30; partial suite on 9d15b738 stopped to verify the combined remote candidate, no full-pass claim | Skill article count corrected; acceptance 5 explicitly scopes the manual glossary-write proof and unavailable original tool-result streams | Final full suite and fresh content-bound review pending; S-004O runtime glossary route, owner Human QA and release remain open |
+| 2026-10-07 | review | Review verdict: pass at f6461f5cb5dc6751b4473dc9fcd23e08d603306b [f07e8bcbee35] #1 | Fresh Codex independent final review PASS: no findings. Full RUNBOOK54/54 at clean f6461f5c; source10/10, catalog3/3, frozenlegacy/prior28/bothprior29 checks4/4 independently pass. Actual published evidence history CLEAN; no new self-drift findings (base23/final22, render-drift removed), cleanUpdate false. Original scenario tool-result streams unavailable; curated replies/notepads/diffs support bounded skill acceptance. Manual authorized glossary proof only; runtime glossary route remains S-004O; cloud reliability, owner QA and release unverified. | Codex fresh-context pr415_final_review | 6 |
+| 2026-10-07 | conflict repair | Final combined candidate f6461f5c verified and independently reviewed | Full RUNBOOK54/54 on clean f6461f5c; actual-history append-only CLEAN; self-drift expected-base23/post22 with no added findings, cleanUpdate false; final diff and source tree clean | Conflict resolution retained domain-modeling and pr, exact prior28 and both prior29 policies, both catalogs and histories; Taskboard regenerated | Authorized integration merge and containment follow; original scenario tool-result streams unavailable, runtime glossary route S-004O, owner QA and release remain explicit |
 
 ## Completion Result
 
