@@ -40,7 +40,7 @@ These checks are the agent's reading of the card's question, drafted when the la
 
 The decision records whose `Landmark:` line names this landmark, one line each, linked to their record. Each decision record belongs to exactly one landmark.
 
-- [The Lexicon retires: terms live in the Wiki and ownership, routes and invariants live in ARCHITECTURE.md](../../docs/ddr/001E-the-lexicon-retires-terms-live-in-the-wiki-and-ownership-routes-and-invariants-live-in-architecture-md.md)
+- [The Lexicon retires: canonical vocabulary in GLOSSARY.md, explanations in the Wiki and routes in ARCHITECTURE.md](../../docs/ddr/001E-the-lexicon-retires-terms-live-in-the-wiki-and-ownership-routes-and-invariants-live-in-architecture-md.md)
 - [The Blueprint keeps its name and decision records are the design-doc layer](../../docs/ddr/001G-the-blueprint-keeps-its-name-and-decision-records-are-the-design-doc-layer.md)
 
 ## Folds In
