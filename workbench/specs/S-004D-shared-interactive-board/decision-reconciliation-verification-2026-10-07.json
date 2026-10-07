@@ -404,7 +404,8 @@
     },
     "wiki": "both local checkouts validated",
     "doctor": "no finding that blocks everything; existing selected-slice and informational findings remain visible",
-    "diffWhitespace": "passed"
+    "diffWhitespace": "passed",
+    "liveBoardTests": "19/19 passed after rerunning with localhost socket permission; the restricted attempt failed with listen EPERM."
   },
   "browserVerification": {
     "environment": "disposable board fixture on 127.0.0.1:4648, then live read-only page on 127.0.0.1:4646",
@@ -833,7 +834,8 @@
     "fastRubric": "The live checkout scores 69.8 with the pre-existing dirty AGENTS rewrite. Replacing only AGENTS in the evaluator input in memory with its committed contents restores score 113; no AGENTS file was changed.",
     "fixtureInitialization": "The live checkout fixture check refuses invalid-source-identity because manifest/runtime/templates have uncommitted changes. CDR migration and lifecycle tests passed against the isolated committed implementation candidate.",
     "cleanUpdate": false,
-    "unchangedRoomFindings": 15
+    "unchangedRoomFindings": 15,
+    "afterEvidenceCopy": "The final live checkout has the same 15 earlier room findings plus one untracked-controls finding for this new verification receipt. The receipt is committed in the isolated source candidate; the live shared checkout remains uncommitted."
   },
   "endpoint": {
     "liveUrl": "http://127.0.0.1:4646/",
