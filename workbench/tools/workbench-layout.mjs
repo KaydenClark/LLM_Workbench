@@ -57,7 +57,22 @@ export const coordinationSkills = ['director', 'dispatcher', 'spec-planner', 'sp
 // harness improvement for one observed job (baseline, earliest gap, smallest
 // owning intervention, native verification, fresh rerun, then retain, revise
 // or remove), after `workbench-runtime` and ahead of the coordination entries.
-export const coreSkills = [...currentCoreSkills, 'carry', 'notepad', 'save', 'promote', 'handoff', 'grill-me', 'workbench-runtime', 'improve-harness', ...coordinationSkills, ...stanceSkills];
+// S-002U TK-007V adds `pr`, the owner-required PR body-authoring entry, after
+// `improve-harness` and ahead of the coordination entries.
+export const coreSkills = [...currentCoreSkills, 'carry', 'notepad', 'save', 'promote', 'handoff', 'grill-me', 'workbench-runtime', 'improve-harness', 'pr', ...coordinationSkills, ...stanceSkills];
+// The prior28 cohort: rooms built from integration before `pr` joined the
+// required Core carry this exact lane policy under v3.2.1. Keep it readable so
+// layout migration reaches the explicit skills update instead of rejecting its
+// own starting room. A literal, not a derivation, so later Core growth never
+// changes what it accepts. Each v3.2.1 transition cohort is one entry below.
+const prior28CoreSkills = [
+  'adoption', 'checkpoint', 'code-review', 'genesis', 'grilling', 'implement',
+  'make-it-so', 'to-docs', 'to-spec', 'to-tasks', 'tracer-bullet', 'update-harness',
+  'carry', 'notepad', 'save', 'promote', 'handoff', 'grill-me', 'workbench-runtime',
+  'improve-harness', 'director', 'dispatcher', 'spec-planner', 'spec-manager',
+  'builder', 'auditor', 'reviewer', 'reconciler'
+];
+const v321TransitionCoreSkills = [prior28CoreSkills];
 export const lanes = LANES;
 export const collections = COLLECTIONS;
 export const controls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md'];
@@ -527,7 +542,12 @@ export function validateManifest(project) {
   // bundle (S-00Z).
   const supportedLegacy = { 'v3.0.0': legacyCoreSkills, 'v3.1.0': legacyCoreSkills, 'v3.1.1': stanceRequired, 'v3.1.2': stanceRequired, 'v3.1.3': carryRequired, 'v3.1.4': notepadCoreSkills, 'v3.2.0': initialV32CoreSkills, 'v3.2.1': handoffCoreSkills };
   const legacyRequired = supportedLegacy[manifest.workbenchVersion];
-  const accepted = [skillPolicy, ...(legacyRequired ? [{ ...skillPolicy, required: legacyRequired }, { ...providerHomeSkillPolicy, required: legacyRequired }] : [])].map((policy) => JSON.stringify(policy));
+  // Transition cohorts are accepted only at their stamped version and only at
+  // the lane-install policy their rooms actually carry.
+  const transitionPolicies = manifest.workbenchVersion === 'v3.2.1'
+    ? v321TransitionCoreSkills.map((required) => ({ ...skillPolicy, required }))
+    : [];
+  const accepted = [skillPolicy, ...transitionPolicies, ...(legacyRequired ? [{ ...skillPolicy, required: legacyRequired }, { ...providerHomeSkillPolicy, required: legacyRequired }] : [])].map((policy) => JSON.stringify(policy));
   if (!accepted.includes(JSON.stringify(manifest.skillPolicy))) {
     return fail('invalid-skill-policy', 'Manifest skill policy must declare the closed missing-only core bundle.');
   }
