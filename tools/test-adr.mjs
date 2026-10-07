@@ -860,7 +860,7 @@ function workflowCorpus() {
       assert.ok(record, `missing ADR-${id}`);
       return [id, { ...record, body: record.body.split('\n## Historical proposal')[0] }];
     })),
-    controls: new Map(['LEXICON.md', 'AGENTS.md', 'RUNBOOK.md', 'BLUEPRINT.md'].map(file => [file, fs.readFileSync(path.join(root, file), 'utf8')]))
+    controls: new Map(['LEXICON.md', 'GLOSSARY.md', 'AGENTS.md', 'RUNBOOK.md', 'BLUEPRINT.md'].map(file => [file, fs.readFileSync(path.join(root, file), 'utf8')]))
   };
 }
 
@@ -907,14 +907,25 @@ function assertWorkflowMeaning(corpus) {
   requires(h, /A Wiki claim is never the destination of corrective work: a later gap against delivered work becomes a new Spec/, 'a later gap is a new Spec and the Wiki is never a corrective destination');
   requires(h, /Task's destination is a Spec's acceptance lines, or a Wiki page when the Task's own destination is producing that page/, 'the Wiki-page destination serves a Task that produces the page');
   const lexicon = controls.get('LEXICON.md');
+  // S-004O TK-009C: these Lexicon rows carry Distinction text beyond the
+  // glossary definition; they move with TK-009D and TK-009F.
   for (const [term, pattern] of [
-    // S-004G TK-006E: the Blueprint row describes the four-part short page and what the Blueprint is for.
-    ['Blueprint', /direction we want to head[\s\S]*four-part short page/],
     // S-004F TK-005V: the Wiki is evidence, never the destination a packet carries, so no corrective Wiki-claim member.
     ['Destination Packet', /Spec acceptance lines it satisfies, the Task[\s\S]*never the destination a packet carries/],
+    ['Design concept', /exists between participants/]
+  ]) {
+    const row = lexicon.split('\n').find(line => line.startsWith(`| **${term}** |`));
+    assert.ok(row, `Lexicon defines ${term}`);
+    requires(row, pattern, `Lexicon meaning of ${term}`);
+    if (term === 'Destination Packet') assert.doesNotMatch(row, /reconciled Wiki claim/, 'the Destination Packet row names no corrective Wiki-claim member');
+  }
+  // S-004O TK-009C: the decision vocabulary's definitions live in the glossary.
+  const glossary = controls.get('GLOSSARY.md').split('\n');
+  for (const [term, pattern] of [
+    // S-004G TK-006E: the Blueprint entry describes the four-part short page.
+    ['Blueprint', /direction we want to head[\s\S]*four-part short page/],
     // S-004G TK-006D: the owner's confirmed Align meaning (the inquiry, usually grilling, in which an idea becomes a design concept the owner and the agents share).
     ['Align', /inquiry, usually grilling, in which an idea becomes a design concept the owner and the agents share/],
-    ['Design concept', /exists between participants/],
     ['Spec', /scoped objective with its own destination/],
     ['Task', /reaches or repairs a destination/],
     ['Retired', /transient staging/],
@@ -924,10 +935,9 @@ function assertWorkflowMeaning(corpus) {
     ['Feature article', /manifest-declared `features` collection/],
     ['Uncaptured complete', /complete[\s\S]*missing[\s\S]*capture/]
   ]) {
-    const row = lexicon.split('\n').find(line => line.startsWith(`| **${term}** |`));
-    assert.ok(row, `Lexicon defines ${term}`);
-    requires(row, pattern, `Lexicon meaning of ${term}`);
-    if (term === 'Destination Packet') assert.doesNotMatch(row, /reconciled Wiki claim/, 'the Destination Packet row names no corrective Wiki-claim member');
+    const at = glossary.indexOf(`**${term}**:`);
+    assert.ok(at >= 0, `the glossary defines ${term}`);
+    requires(glossary[at + 1] ?? '', pattern, `glossary meaning of ${term}`);
   }
   requires(controls.get('AGENTS.md'), /Dispatcher owns whole-Spec QA[\s\S]*separate Director context reviews/, 'AGENTS carries review roles');
   requires(controls.get('AGENTS.md'), /verification on main -> `complete`/, 'AGENTS carries closure order');
@@ -985,6 +995,7 @@ test('workflow checks reject substantive and literal-route mutations with accept
     ['Context Map route', 'LEXICON.md', '(RUNBOOK.md#operations-index)', '(MISSING-RUNBOOK.md#operations-index)'],
     ['Context Map heading', 'LEXICON.md', '(#artifact-ownership-schema)', '(#missing-owner-heading)'],
     ['Packet regains a corrective Wiki claim', 'LEXICON.md', 'Spec acceptance lines it satisfies, the Task', 'Spec acceptance lines it satisfies or the reconciled Wiki claim for corrective work, the Task'],
+    ['glossary Task loses its repair destination', 'GLOSSARY.md', 'slice that reaches or repairs a destination', 'slice that reaches a destination'],
     ['operational owner claim', 'AGENTS.md', 'Dispatcher owns whole-Spec QA', 'Worker owns whole-Spec QA']
   ]) {
     const corpus = workflowCorpus();

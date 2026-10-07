@@ -462,12 +462,14 @@ test('an option whose value is another flag is an invocation error, and a closed
   assert.doesNotMatch(piped.stderr, /EPIPE|at .*\.mjs|Error/, `a closed pipe prints no stack trace: ${piped.stderr}`);
 });
 
+// S-004O TK-009C: the closed disposition set lives in both glossaries'
+// Feedback disposition grouping, one entry per disposition code.
 test('feedback disposition vocabulary is closed and shared by root and template', () => {
-  for (const relative of ['LEXICON.md', 'templates/LEXICON.md']) {
-    const content = read(root, relative);
-    const section = content.split('### Feedback Dispositions')[1]?.split(/\n## /)[0];
-    assert.ok(section, `${relative} defines feedback dispositions`);
-    assert.deepEqual([...section.matchAll(/^- \*\*([a-z-]+)\*\*/gm)].map(match => match[1]), ['diagnostic', 'test', 'repaired', 'declined', 'accepted-open']);
+  for (const relative of ['GLOSSARY.md', 'templates/GLOSSARY.md']) {
+    const glossary = parseGlossary(read(root, relative), relative);
+    assert.ok(glossary.entry('Feedback disposition'), `${relative} defines feedback disposition`);
+    const codes = glossary.entries.filter((entry) => entry.group === 'Feedback disposition' && entry.term !== 'Feedback disposition').map((entry) => entry.term);
+    assert.deepEqual(codes, ['`diagnostic`', '`test`', '`repaired`', '`declined`', '`accepted-open`'], `${relative} defines the closed disposition set`);
   }
 });
 
@@ -739,11 +741,13 @@ test('the completion-claim contract fails when a documented mechanism or Git-sco
 // S-003X TK-005A: the `ddr` collection, its commands and the read words are
 // installed, so both Lexicons define them and neither presents them as
 // pending; the generic Lexicon names no room-specific record.
+// S-004O TK-009C: the term definitions are checked in the glossaries below;
+// the Distinction and routing text still read from the Lexicons here moves
+// with the Wiki lexicon articles (TK-009D) and the consumer re-pointing (TK-009F).
 test('both Lexicons carry the installed decision-record vocabulary, and the generic one stays generic', () => {
   const termRows = (content, term) => content.split('\n').filter((line) => line.startsWith(`| **${term}** |`));
   for (const relative of ['LEXICON.md', 'templates/LEXICON.md']) {
     const content = read(root, relative);
-    for (const term of ['Decision Record', 'DDR', 'Read words']) assert.ok(termRows(content, term).length > 0, `${relative} defines ${term}`);
     const collection = termRows(content, 'Collection').join('\n');
     assert.match(collection, /`docs\/ddr`/, `${relative} lists the ddr collection`);
     assert.match(collection, /`wiki\/features`/, `${relative} lists the features collection`);
@@ -752,15 +756,21 @@ test('both Lexicons carry the installed decision-record vocabulary, and the gene
     assert.match(blueprint, /links no record that carries an identifier/, `${relative} Blueprint row narrows linking`);
     assert.match(termRows(content, 'Decisions').join('\n'), /workbench\/docs\/ddr\/REGISTER\.md/, `${relative} routes destination decisions to the DDR register`);
     assert.match(termRows(content, 'Read words').join('\n'), /decision-record tool answers all five/, `${relative} says which tool answers the read words`);
-    for (const line of [...termRows(content, 'DDR'), ...termRows(content, 'Decision Record'), ...termRows(content, 'Decisions')]) {
+    for (const line of termRows(content, 'Decisions')) {
       assert.doesNotMatch(line, /not installed yet|will live in|remain in delivery|as the accepted destination, a DDR/, `${relative} presents installed DDR tooling as pending: ${line.slice(0, 80)}`);
     }
   }
-  const template = read(root, 'templates/LEXICON.md');
-  for (const term of ['Decision Record', 'DDR', 'Read words']) {
-    // Review corrective: the generic Lexicon defines each term exactly once.
-    assert.equal(termRows(template, term).length, 1, `templates/LEXICON.md defines ${term} exactly once`);
-    for (const line of termRows(template, term)) assert.doesNotMatch(line, /ADR-0|S-0|TK-0|workbench\/docs\/adr\/0|workbench\/specs\//, `templates/LEXICON.md ${term} stays generic`);
+});
+
+test('TK-009C: both glossaries define the installed decision-record vocabulary once, and the generic one stays generic', () => {
+  for (const relative of ['GLOSSARY.md', 'templates/GLOSSARY.md']) {
+    const glossary = parseGlossary(read(root, relative), relative);
+    for (const term of ['Decision Record', 'DDR', 'Read words']) {
+      const entry = glossary.entry(term);
+      assert.ok(entry, `${relative} defines ${term}`);
+      assert.doesNotMatch(entry.definition, /not installed yet|will live in|remain in delivery|as the accepted destination, a DDR/, `${relative} presents installed DDR tooling as pending: ${term}`);
+      if (relative.startsWith('templates/')) assert.doesNotMatch(entry.definition, /ADR-0|S-0|TK-0|workbench\/docs\/adr\/0|workbench\/specs\//, `${relative} ${term} stays generic`);
+    }
   }
 });
 
@@ -776,17 +786,14 @@ const CONTROLS_EXCUSED = [
 ];
 const CONTROLS_EXCUSED_ROWS = ['Control', 'Control fidelity', 'Root controls'];
 
+// S-004O TK-009C: the Workbench term definitions and the retired name are
+// checked in the glossaries below; the Root files row (an ARCHITECTURE.md
+// boundary) and this whole-file sweep of the Lexicons stay until TK-009F/H.
 test('both Lexicons define the Workbench terms once and use "controls" only for one-action tools', () => {
   const rowsOf = (content, term) => content.split('\n').filter((line) => line.startsWith(`| **${term}** |`));
   for (const relative of ['LEXICON.md', 'templates/LEXICON.md']) {
     const content = read(root, relative);
-    for (const term of WORKBENCH_TERMS) assert.equal(rowsOf(content, term).length, 1, `${relative} has exactly one ${term} row`);
-    assert.equal(rowsOf(content, 'Root controls').length, 1, `${relative} keeps one retired-name Root controls row`);
     assert.equal(rowsOf(content, 'Root files').length, 1, `${relative} describes the root files once`);
-    assert.match(rowsOf(content, 'Control')[0], /A one-action tool/, `${relative} Control row`);
-    assert.match(rowsOf(content, 'Root controls')[0], /Retired name/, `${relative} Root controls row is retired`);
-    assert.match(rowsOf(content, 'Contract artifact')[0], /on every turn of every session/, `${relative} Contract artifact row`);
-    assert.match(rowsOf(content, 'Owner')[0], /alone promotes it to main/, `${relative} Owner row`);
     const stale = [];
     for (const line of content.split('\n')) {
       if (CONTROLS_EXCUSED_ROWS.some((row) => line.startsWith(`| **${row}** |`))) continue;
@@ -796,9 +803,30 @@ test('both Lexicons define the Workbench terms once and use "controls" only for 
     }
     assert.deepEqual(stale, [], `${relative} still uses "controls" for files:\n${stale.join('\n')}`);
   }
-  const root_ = read(root, 'LEXICON.md');
-  assert.equal(rowsOf(root_, 'Workbench Template').length, 1, 'LEXICON.md has exactly one Workbench Template row');
-  assert.equal(rowsOf(read(root, 'templates/LEXICON.md'), 'Workbench Template').length, 0, 'templates/LEXICON.md carries no producer-only Workbench Template row');
+});
+
+test('TK-009C: both glossaries define the Workbench terms once and use "controls" only for one-action tools', () => {
+  for (const relative of ['GLOSSARY.md', 'templates/GLOSSARY.md']) {
+    const glossary = parseGlossary(read(root, relative), relative);
+    for (const term of WORKBENCH_TERMS) assert.ok(glossary.entry(term), `${relative} defines ${term}`);
+    assert.match(glossary.entry('Control').definition, /A one-action tool/, `${relative} Control entry`);
+    assert.deepEqual(glossary.entry('Control').avoid, ['root controls'], `${relative} retires "root controls" as the Control entry's avoided alias`);
+    assert.match(glossary.entry('Contract artifact').definition, /on every turn of every session/, `${relative} Contract artifact entry`);
+    assert.match(glossary.entry('Owner').definition, /alone promotes it to main/, `${relative} Owner entry`);
+    const stale = [];
+    for (const entry of glossary.entries) {
+      if (['Control', 'Control fidelity'].includes(entry.term)) continue;
+      for (const text of [entry.term, entry.definition, ...entry.avoid]) {
+        let rest = text;
+        for (const token of CONTROLS_EXCUSED) rest = rest.split(token).join('');
+        if (/\bcontrols?\b/i.test(rest)) stale.push(`${entry.term}: ${text.slice(0, 120)}`);
+      }
+    }
+    if (/\bcontrols?\b/i.test(glossary.description)) stale.push(glossary.description);
+    assert.deepEqual(stale, [], `${relative} still uses "controls" for files:\n${stale.join('\n')}`);
+  }
+  assert.ok(parseGlossary(read(root, 'GLOSSARY.md'), 'GLOSSARY.md').entry('Workbench Template'), 'GLOSSARY.md defines Workbench Template');
+  assert.equal(parseGlossary(read(root, 'templates/GLOSSARY.md'), 'templates/GLOSSARY.md').entry('Workbench Template'), undefined, 'templates/GLOSSARY.md carries no producer-only Workbench Template entry');
 });
 
 
@@ -807,24 +835,15 @@ test('both Lexicons define the Workbench terms once and use "controls" only for 
 // workflow, with Journey as the build loop and Delivered replacing Complete.
 const WORKFLOW_VERBS = ['Idea', 'Align', 'Confirm', 'Prototype', 'Map', 'Plan', 'Implement', 'Check', 'QA', 'Submit', 'Review', 'Verify', 'Journey', 'Approve', 'Delivered', 'Clean Up'];
 
+// S-004O TK-009C: each verb's definition is checked in the glossaries below;
+// the Distinction text still read from the Lexicons here (the Review row's Wiki
+// route, the Automated review scope and the Confirm plane gate) moves with
+// TK-009D and TK-009F.
 test('both Lexicons define every workflow verb once and state the delivery workflow with Journey as the build loop', () => {
   const rowsOf = (content, term) => content.split('\n').filter((line) => line.startsWith(`| **${term}** |`));
   for (const relative of ['LEXICON.md', 'templates/LEXICON.md']) {
     const content = read(root, relative);
-    for (const verb of [...WORKFLOW_VERBS, 'Workflow verb', 'Workflow']) assert.equal(rowsOf(content, verb).length, 1, `${relative} has exactly one ${verb} row`);
-    const workflow = rowsOf(content, 'Workflow')[0];
-    assert.match(workflow, /Idea, Align, Confirm, Map, Plan, Journey, Review, Verify, Approve, Delivered, Clean Up/, `${relative} Workflow row names the delivery workflow`);
-    assert.match(workflow, /verb set stays open/, `${relative} Workflow row says the set is open`);
-    assert.doesNotMatch(workflow, /eight verbs Idea|official workflow verbs everywhere/, `${relative} Workflow row drops the closed list`);
-    // Owner, 2026-10-05: QA and Submit join the Journey; Review comes after it
-    // and decides whether another Journey is needed.
-    assert.match(rowsOf(content, 'Journey')[0], /Journey is Implement, Check, QA and Submit\. Map and Plan come before it; Review comes after it and decides whether another Journey is needed/, `${relative} Journey row`);
-    assert.doesNotMatch(rowsOf(content, 'Journey')[0], /Implement, Check, Review and Verify, repeated/, `${relative} Journey row drops the replaced loop`);
-    assert.match(rowsOf(content, 'QA')[0], /self-judgement/, `${relative} QA row`);
-    assert.match(rowsOf(content, 'Submit')[0], /merge request/, `${relative} Submit row`);
     const review = rowsOf(content, 'Review')[0];
-    assert.match(review, /decides whether another Journey is needed/, `${relative} Review row`);
-    assert.doesNotMatch(review, /before it merges into its Spec's branch|Task pull request/, `${relative} Review row is not a Task review`);
     if (relative === 'LEXICON.md') assert.match(review, /dictionary-automated-review\.md/, `${relative} Review row routes depth to the Wiki dictionary`);
     assert.match(content.split('\n').find((line) => line.startsWith('| **Automated review** (')), /a Spec, sometimes a landmark, or the Workbench as a whole[^|]*never a Task/, `${relative} Automated review row scope`);
     // Owner, 2026-10-05 (confirmed readback): Review judges a completed
@@ -833,12 +852,32 @@ test('both Lexicons define every workflow verb once and state the delivery workf
     assert.match(content.split('\n').find((line) => line.startsWith('| **Automated review** (')), /against its Map/, `${relative} Automated review row judges against the Map`);
     assert.match(rowsOf(content, 'Confirm')[0], /moves from Intent to Enduring Context only by the owner's confirmation/, `${relative} Confirm row states the plane gate`);
     assert.match(rowsOf(content, 'Confirm')[0], /an agent's recommendation is intent too/, `${relative} Confirm row covers recommendations`);
-    assert.match(rowsOf(content, 'Delivered')[0], /Delivered, not Complete/, `${relative} Delivered row`);
-    assert.match(rowsOf(content, 'Check')[0], /deterministic verifications the building agent runs in the environment on its own Task/, `${relative} Check row`);
-    assert.doesNotMatch(rowsOf(content, 'Align')[0], /not itself implementation permission/, `${relative} Align row drops the old confirmation clause`);
-    assert.match(rowsOf(content, 'Confirm')[0], /authorizes the agents to carry the concept to its endpoint/, `${relative} Confirm row`);
-    assert.equal(content.split('\n').filter((line) => /^\| \*\*Map\*\* \|/.test(line)).length, 1, `${relative} keeps one Map row for noun and verb`);
-    assert.match(content.split('\n').find((line) => /^\| \*\*Map\*\* \|/.test(line)), /As a workflow verb, Map is "Writing the direction to a destination: landmarks, Specs and decision records\."/, `${relative} Map row carries the verb`);
+  }
+});
+
+test('TK-009C: both glossaries define every workflow verb once and state the delivery workflow with Journey as the build loop', () => {
+  for (const relative of ['GLOSSARY.md', 'templates/GLOSSARY.md']) {
+    const glossary = parseGlossary(read(root, relative), relative);
+    const definition = (term) => glossary.entry(term)?.definition ?? '';
+    for (const verb of [...WORKFLOW_VERBS, 'Workflow verb', 'Workflow']) assert.ok(glossary.entry(verb), `${relative} defines ${verb}`);
+    const workflow = definition('Workflow');
+    assert.match(workflow, /Idea, Align, Confirm, Map, Plan, Journey, Review, Verify, Approve, Delivered, Clean Up/, `${relative} Workflow entry names the delivery workflow`);
+    assert.match(workflow, /verb set stays open/, `${relative} Workflow entry says the set is open`);
+    assert.doesNotMatch(workflow, /eight verbs Idea|official workflow verbs everywhere/, `${relative} Workflow entry drops the closed list`);
+    // Owner, 2026-10-05: QA and Submit join the Journey; Review comes after it
+    // and decides whether another Journey is needed.
+    assert.match(definition('Journey'), /Journey is Implement, Check, QA and Submit\. Map and Plan come before it; Review comes after it and decides whether another Journey is needed/, `${relative} Journey entry`);
+    assert.doesNotMatch(definition('Journey'), /Implement, Check, Review and Verify, repeated/, `${relative} Journey entry drops the replaced loop`);
+    assert.match(definition('QA'), /self-judgement/, `${relative} QA entry`);
+    assert.match(definition('Submit'), /merge request/, `${relative} Submit entry`);
+    assert.match(definition('Review'), /decides whether another Journey is needed/, `${relative} Review entry`);
+    assert.doesNotMatch(definition('Review'), /before it merges into its Spec's branch|Task pull request/, `${relative} Review entry is not a Task review`);
+    assert.match(definition('Delivered'), /Delivered, not Complete/, `${relative} Delivered entry`);
+    assert.match(definition('Check'), /deterministic verifications the building agent runs in the environment on its own Task/, `${relative} Check entry`);
+    assert.doesNotMatch(definition('Align'), /not itself implementation permission/, `${relative} Align entry drops the old confirmation clause`);
+    assert.match(definition('Confirm'), /authorizes the agents to carry the concept to its endpoint/, `${relative} Confirm entry`);
+    // One entry serves the noun and the verb because the verb is writing the noun.
+    assert.match(definition('Map'), /As a workflow verb, Map is writing the direction to a destination: landmarks, Specs and decision records\./, `${relative} Map entry carries the verb`);
   }
 });
 
@@ -847,21 +886,31 @@ test('both Lexicons define every workflow verb once and state the delivery workf
 // short page and says what the Blueprint is for, in the owner's confirmed
 // words; the Foundry row says what the owner said the Foundry is and keeps the
 // sole-source boundary.
+// S-004O TK-009C: the Blueprint and Foundry definitions are checked in the
+// glossaries below; the Blueprint's purpose and boundaries and the Foundry's
+// sole-source boundary are Distinction text that moves with TK-009D and TK-009F.
 test('the Blueprint and Foundry rows carry the owner\'s confirmed answers and not the replaced ones', () => {
   const rowOf = (content, term) => content.split('\n').find((line) => line.startsWith(`| **${term}** |`));
   for (const relative of ['LEXICON.md', 'templates/LEXICON.md']) {
     const blueprint = rowOf(read(root, relative), 'Blueprint');
-    assert.match(blueprint, /four-part short page \(what it is, who it serves, promised outcomes, non-goals\) for every room/, `${relative} Blueprint row names the short page`);
     assert.match(blueprint, /Each sentence can serve as a map toward an implementation plan/, `${relative} Blueprint row says what it is for`);
     assert.match(blueprint, /The Blueprint makes us ask questions; it does not give definite answers/, `${relative} Blueprint row`);
-    assert.doesNotMatch(blueprint, /The adaptable narrative of the desired finished product: destination, people, outcomes/, `${relative} Blueprint row drops the eight-section description`);
     assert.match(blueprint, /not current status, an ADR or DDR inventory/, `${relative} Blueprint row keeps its boundaries`);
   }
   const foundry = rowOf(read(root, 'LEXICON.md'), 'Foundry');
-  assert.match(foundry, /autonomous factory of many rooms, each with a workbench producing work/, 'Foundry row says what the Foundry is');
-  assert.match(foundry, /the Foundry needs the workbench proven first/, 'Foundry row carries the confirmed sentence');
   assert.match(foundry, /never its source, copy target, tool runtime, or prerequisite/, 'Foundry row keeps the sole-source boundary');
-  assert.doesNotMatch(foundry, /downstream coordination extension/, 'Foundry row drops the replaced description');
+});
+
+test('TK-009C: the glossary Blueprint and Foundry entries carry the owner\'s confirmed answers and not the replaced ones', () => {
+  for (const relative of ['GLOSSARY.md', 'templates/GLOSSARY.md']) {
+    const blueprint = parseGlossary(read(root, relative), relative).entry('Blueprint').definition;
+    assert.match(blueprint, /four-part short page \(what it is, who it serves, promised outcomes, non-goals\) for every room/, `${relative} Blueprint entry names the short page`);
+    assert.doesNotMatch(blueprint, /The adaptable narrative of the desired finished product: destination, people, outcomes/, `${relative} Blueprint entry drops the eight-section description`);
+  }
+  const foundry = parseGlossary(read(root, 'GLOSSARY.md'), 'GLOSSARY.md').entry('Foundry').definition;
+  assert.match(foundry, /autonomous factory of many rooms, each with a workbench producing work/, 'Foundry entry says what the Foundry is');
+  assert.match(foundry, /the Foundry needs the workbench proven first/, 'Foundry entry carries the confirmed sentence');
+  assert.doesNotMatch(foundry, /downstream coordination extension/, 'Foundry entry drops the replaced description');
 });
 
 
@@ -929,6 +978,19 @@ test('both Lexicons carry each adopted AI Coding Terms row exactly once with one
   }
 });
 
+// S-004O TK-009C: of the adopted AI Coding Dictionary terms only Grilling and
+// Automated review carry a distinct Workbench meaning, so only they have
+// glossary entries; the rest stay Wiki-only (their rows and dictionary links
+// above move to the Wiki articles with TK-009D).
+test('TK-009C: the glossaries define only the AI coding terms with a distinct Workbench meaning', () => {
+  for (const relative of ['GLOSSARY.md', 'templates/GLOSSARY.md']) {
+    const glossary = parseGlossary(read(root, relative), relative);
+    const defined = AI_CODING_TERMS.filter((term) => glossary.entry(term));
+    assert.deepEqual(defined.sort(), ['Automated review', 'Grilling'], `${relative} copies no general AI coding term`);
+    assert.doesNotMatch(read(root, relative), /aihero\.dev/, `${relative} links no dictionary entry`);
+  }
+});
+
 // S-004F TK-005Q: the owner's two corrective-work answers (a miss found by a
 // check continues the same Task unless the fix rewrites it; a later gap
 // against delivered work is a new Spec, never a correction anchored to a Wiki
@@ -966,19 +1028,31 @@ test('accepted decision records carry the corrective-work rules and no longer st
 // management system a harness loads, never a harness; Room has always meant
 // project. Neither Lexicon calls the Workbench the operating harness, and a
 // Chat is distinguished from a session.
+// S-004O TK-009C: the Workbench and Portable Workbench definitions are checked
+// in the glossaries below; the Distinction text (not a harness, Chat versus
+// session, which host) and the Wiki-only Harness and architecture-owned
+// Evaluation rows still read from the Lexicons here move with TK-009D and TK-009F.
 test('neither Lexicon calls the Workbench a harness, and Chat is distinguished from a session', () => {
   const termRow = (content, term) => content.split('\n').find((line) => line.startsWith(`| **${term}** `));
   for (const relative of ['LEXICON.md', 'templates/LEXICON.md']) {
     const content = read(root, relative);
     assert.doesNotMatch(content, /operating harness|agent harness|harness around it|this harness/i, `${relative} must not call the Workbench a harness`);
-    assert.doesNotMatch(termRow(content, 'Workbench'), /A room:/, `${relative} Workbench row must not call the Workbench a room`);
-    assert.match(termRow(content, 'Workbench'), /agentic management system/, `${relative} Workbench row says what it is`);
     assert.match(termRow(content, 'Workbench'), /Not a harness/, `${relative} Workbench row says what it is not`);
-    assert.match(termRow(content, 'Portable Workbench'), /agentic management system/, `${relative} Portable Workbench row`);
     assert.match(termRow(content, 'Chat'), /not a session either/, `${relative} Chat row distinguishes a session`);
     assert.match(termRow(content, 'Host portability'), /host" means the machine/, `${relative} Host portability row says which host`);
     assert.match(termRow(content, 'Harness'), /The Workbench is not a harness/, `${relative} Harness row`);
     assert.match(termRow(content, 'Evaluation'), /Does this Workbench help agents/, `${relative} Evaluation row`);
+  }
+});
+
+test('TK-009C: neither glossary calls the Workbench a harness or a room', () => {
+  for (const relative of ['GLOSSARY.md', 'templates/GLOSSARY.md']) {
+    const content = read(root, relative);
+    const glossary = parseGlossary(content, relative);
+    assert.doesNotMatch(content, /operating harness|agent harness|harness around it|this harness/i, `${relative} must not call the Workbench a harness`);
+    assert.doesNotMatch(glossary.entry('Workbench').definition, /A room:/, `${relative} Workbench entry must not call the Workbench a room`);
+    assert.match(glossary.entry('Workbench').definition, /agentic management system/, `${relative} Workbench entry says what it is`);
+    assert.match(glossary.entry('Portable Workbench').definition, /agentic management system/, `${relative} Portable Workbench entry`);
   }
 });
 
@@ -1163,7 +1237,9 @@ test('TK-005N: both Lexicons and the README describe the delivered carrier shape
     assert.doesNotMatch(lexicon, /Runbook operations index row points to/, `${label} Lexicon still says a Runbook index row makes a skill bind`);
     assert.doesNotMatch(lexicon, /the one place a pointer declares which skill binds/, `${label} Lexicon still names the Runbook as the binding registry`);
     assert.match(row('| **Skill and host adapter** |'), /A skill in the tracked skills lane that the Contract points to for an operation binds for that operation, as `AGENTS\.md` Instruction Authority states;/, `${label} Skill row states that a pointed lane skill binds through AGENTS.md`);
-    assert.match(row('| **Workbench Contract** |'), /\| The binding claim set `AGENTS\.md` Instruction Authority names: /, `${label} Workbench Contract row names the claim set by reference to AGENTS.md`);
+    // S-004O TK-009C: the Workbench Contract definition is read from the glossary.
+    const glossary = parseGlossary(read(root, label === 'root' ? 'GLOSSARY.md' : 'templates/GLOSSARY.md'), label);
+    assert.match(glossary.entry('Workbench Contract').definition, /^The binding claim set `AGENTS\.md` Instruction Authority names: /, `${label} Workbench Contract entry names the claim set by reference to AGENTS.md`);
     assert.match(lexicon.replace(/\s+/g, ' '), /The Workbench Contract is the claim set `AGENTS\.md` Instruction Authority names, with the bounded assigned Spec and, while an operation is performed, the lane skill the Contract points to for it; it is not another document\./, `${label} ownership schema opening names the Contract by reference to AGENTS.md`);
     assert.doesNotMatch(lexicon, /The Workbench Contract spans/, `${label} Lexicon no longer lists the Contract's carriers in the schema opening`);
     // Third review correction: every ownership-schema route to the Runbook
@@ -1329,5 +1405,22 @@ test('TK-009C: every glossary entry of both Lexicon landing inventories lands in
       assert.equal(entry.homePath, relative, `${label} line ${entry.line} homes in ${relative}`);
       assert.ok(home.includes(normalizeText(entry.landedText)), `${relative} holds the landed text of Lexicon line ${entry.line}: ${entry.landedText}`);
     }
+  }
+});
+
+// S-004O TK-009C: the Governance core terms every Workbench shares sit in one
+// glossary grouping in the room and the Template, beside the owner's definition
+// of design concept (tools/test-governance-core.mjs still reads the Lexicon
+// rows until that file is re-pointed).
+const GOVERNANCE_CORE_TERMS = [
+  'Governance Plane', 'Workbench Contract', 'Instruction authority', 'State resolution', 'No-governance-tax rule',
+  'Diagnostic', 'Support lane', 'Collection', 'ADR', 'Checkpoint', 'Design Concept article', 'Wiki profile', 'Managed runtime tool'
+];
+
+test('TK-009C: both glossaries carry the Governance core grouping and the owner definition of design concept', () => {
+  for (const relative of ['GLOSSARY.md', 'templates/GLOSSARY.md']) {
+    const glossary = parseGlossary(read(root, relative), relative);
+    for (const term of GOVERNANCE_CORE_TERMS) assert.equal(glossary.entry(term)?.group, 'Governance core', `${relative} defines ${term} in the Governance core grouping`);
+    assert.match(glossary.entry('Design concept').definition, /^The shared understanding between the parties working on a project about what that project is\.$/, `${relative} keeps the owner definition of design concept`);
   }
 });

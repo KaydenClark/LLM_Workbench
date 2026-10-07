@@ -116,7 +116,8 @@ for (const [relative, expected] of [
   ['README.md', [`closed ${bundleSize}-skill core bundle`]],
   // S-004C TK-005K: the Skills lane check moved into a maintainer skill.
   ['workbench/skills/workbench-room-checks/SKILL.md', [`the ${bundleSize} core skills`]],
-  ['LEXICON.md', [`closed set of ${workflowWord} workflow skills`]],
+  // S-004O TK-009C: the Core skill bundle entry lives in the glossary.
+  ['GLOSSARY.md', [`closed set of ${workflowWord} workflow skills`]],
   ['templates/GENESIS.md', [`exact ${bundleSize}-skill policy`]]
 ]) {
   assertIncludesAll(read(relative), expected,
@@ -169,12 +170,13 @@ for (const name of coreSkills) {
   if (/\bADR'?s?\b/i.test(skill)) assert.match(skill, /workbench\/docs\/adr/, `${name} may name ADRs only through the manifest adr collection`);
 }
 
-for (const relative of ['LEXICON.md', 'templates/LEXICON.md']) {
-  const lexicon = read(relative);
-  assert.match(lexicon, /^# .*Lexicon/m, `${relative} must identify itself as a lexicon`);
+// S-004O TK-009C: the vocabulary moved from the Lexicons to the glossaries.
+for (const relative of ['GLOSSARY.md', 'templates/GLOSSARY.md']) {
+  const glossary = read(relative);
+  assert.match(glossary, /^## Language$/m, `${relative} must carry the glossary's Language section`);
   assert.match(
-    lexicon,
-    /\*\*Design concept\*\*.*shared understanding between the parties working on a project about what that project is/is,
+    glossary,
+    /^\*\*Design concept\*\*:\nThe shared understanding between the parties working on a project about what that project is\.$/m,
     `${relative} must preserve the owner's definition of design concept`
   );
 }
