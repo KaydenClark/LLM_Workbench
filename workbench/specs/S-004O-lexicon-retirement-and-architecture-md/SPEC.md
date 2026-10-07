@@ -3,13 +3,13 @@
 **Spec ID:** S-004O
 **Status:** active
 **Priority:** 2
-**Owner:** claude-s004o-worker-h
+**Owner:** claude-s004o-worker-m
 **Stance:** Builder
 **Updated:** 2026-10-07
 **Catalog description:** Retire LEXICON.md into concise canonical project vocabulary in GLOSSARY.md, richer Wiki explanations and ownership routes in ARCHITECTURE.md, in this room and the Template.
 **Blockers:** none. The Lexicon writer's turn follows S-004E's assembled Lexicon edits; Lexicon edits that land after the census are re-scaffolded by the removal Task (TK-009H).
-**Latest event:** TK-009H closed with proof.
-**Next gate:** TK-009M corrects the whole-Spec code-review findings; then whole-Spec QA and the PR is marked ready for separate review.
+**Latest event:** TK-009M claimed by claude-s004o-worker-m.
+**Next gate:** Close TK-009M with verification and documentation proof.
 
 ## Outcome
 

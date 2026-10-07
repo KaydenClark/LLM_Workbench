@@ -3,11 +3,12 @@
 **Task ID:** TK-009M
 **Spec ID:** S-004O
 **Slice:** Correct the whole-Spec code-review findings
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: No link in the repository points at a Lexicon heading, the Instruction Authority list does not name the Lexicon, and the full suite passes on the committed candidate.
 **Planned verification:** Red: the narrowed live-link check fails on the S-01A and ADR-0042 Lexicon heading links; reproductions of the glossary-skip retirement and the Matt-format term-row landing fail in `tools/test-workbench-upgrade.mjs`. Green: those checks, `doctor` with no Lexicon broken-link finding, both landing checks, then the full suite on the committed candidate.
+**Claimed by:** claude-s004o-worker-m
 
 ## Scope
 
