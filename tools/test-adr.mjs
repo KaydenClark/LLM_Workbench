@@ -121,6 +121,25 @@ test('validation rejects unknown canonicalization targets, untracked provenance,
   }
 });
 
+// S-004O TK-009H: DDR-001E retires LEXICON.md, and accepted records that name
+// it in canonicalized_in keep that history unchanged. Once a room has retired
+// its Lexicon, the missing retired carrier is history, not an unknown target;
+// any other missing owner is still refused, and a record being accepted now
+// still needs a live owner.
+test('validation keeps a retired Lexicon canonicalized_in owner as history and still refuses other missing owners', () => {
+  const dir = fixture();
+  try {
+    const collection = path.join(dir, 'workbench', 'docs', 'adr');
+    assert.ok(!fs.existsSync(path.join(dir, 'LEXICON.md')), 'the fixture room has no Lexicon');
+    fs.writeFileSync(path.join(collection, '0001-first.md'), adr('accepted', 'canonicalized_in:\n  - AGENTS.md\n  - LEXICON.md\n'));
+    fs.writeFileSync(path.join(collection, '0002-second.md'), adr('accepted', 'canonicalized_in:\n  - templates/LEXICON.md\n'));
+    writeRegister(dir);
+    assert.deepEqual(validateAdrs(dir).map((item) => `${item.code}:${item.adr}:${item.owner}`), ['invalid-adr:0002-second.md:templates/LEXICON.md'], 'only the root retired Lexicon is history');
+    fs.writeFileSync(path.join(collection, '0003-proposed.md'), adr('proposed', 'canonicalized_in:\n  - LEXICON.md\n'));
+    assert.throws(() => acceptRecord(dir, 'ADR-0003'), /LEXICON\.md does not exist/, 'a record accepted now needs a live owner');
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
 // S-00I TK-002 corrective: folder is lifecycle, so a newly created record
 // must land in the folder its status implies (`proposed/`) and must not
 // carry a `status` key at all - a fresh `adr new` re-introducing that key
