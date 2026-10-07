@@ -18,6 +18,11 @@
   deployment. One deployment has exactly one, at its own
   `workbench/wiki/MEMORY.md`, with flat `[OWNER]/`, `Projects/`, and `Machine/`
   pointer collections beside it.
+- `vocabulary-*.md` (one grouped article per glossary grouping, each term a
+  section linking its `GLOSSARY.md` definition) and `ai-coding-reference.md`
+  (general AI coding words) explain the room's vocabulary. `init` seeds them
+  beside the contract files, filled the same way; `MEMORY.project.md` and
+  `MEMORY.root.md` route them under Vocabulary.
 - `guidebooks/` and `archive/` are declared collections that ship empty;
   `design-concepts/` must exist in every Workbench even when empty.
 
