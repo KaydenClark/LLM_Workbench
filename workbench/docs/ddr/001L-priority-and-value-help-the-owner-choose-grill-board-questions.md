@@ -77,7 +77,7 @@ S-004D. It does not assign a new landmark or activate a Task.
 
 ## Reconciliation Boundary
 
-Decision content is Owner-confirmed. This record is authored in `proposed/`
-as the decision-record procedure requires; no clean-tree lifecycle acceptance
-is claimed from the dirty shared checkout. P/V remains a planned board
+Decision content is Owner-confirmed (2026-10-07). This record was accepted in
+its promotion from a clean tree cut from integration
+`d9a353590644f957ae24636d13ce9a41ef1987e9`. P/V remains a planned board
 capability until its implementation and usefulness proof are recorded in S-004D.
