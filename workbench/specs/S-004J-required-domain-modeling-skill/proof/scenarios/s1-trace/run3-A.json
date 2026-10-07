@@ -1,0 +1,266 @@
+{
+  "room": "s1-A-r3",
+  "base": "9471b8d79fc24b7a19737a4bd2aae5e6061a3d76",
+  "model": "claude-opus-5-5",
+  "cliVersion": "2.1.287 (Claude Code)",
+  "sessionId": "d19cee32-ad81-4bb8-80ce-55614020b4fb",
+  "skillsLoaded": [
+    "<room>/.claude/skills/grilling",
+    "<room>/.claude/skills/domain-modeling"
+  ],
+  "turns": [
+    {
+      "n": 1,
+      "owner": "/grilling I'm reworking how Ledgerline models billing. Grill me on it one question at a time; I'll bring in domain modeling when a choice comes up.",
+      "exit": 0,
+      "skillInvocations": [],
+      "tools": [
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"cd \\\"$PWD\\\"; ls; sed -n '/Operations Index/,/^## /p' RUNBOOK.md | head -60; cat workbench/manifest.json | head -60; ls -R src tests 2>/dev/null | head -60\",\"description\":\"Orient on repo, runbook index, manifest, source\"}"
+        },
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"cd \\\"$PWD\\\"; for f in src/*/*.js tests/*.js; do echo \\\"=== $f\\\"; cat \\\"$f\\\"; done; grep -n -i -A3 'billing\\\\|invoice\\\\|settle\\\\|account\\\\|customer' LEXICON.md BLUEPRINT.md | head -80; ls workbench/specs workbench/docs/adr workbench/wiki 2>/dev/null; ls workbench/sessions/notepads/grilling 2>/dev/null\",\"description\":\"Read billing source, tests, and domain terms\"}"
+        },
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"cd \\\"$PWD\\\"; cat BLUEPRINT.md workbench/docs/adr/000A-*.md workbench/wiki/billing-model.md; ls workbench/docs/adr/proposed; cat workbench/docs/adr/proposed/* 2>/dev/null | head -60; ls workbench/specs/S-001-invoice-settlement; sed -n '1,80p' workbench/specs/S-001-invoice-settlement/SPEC.md\",\"description\":\"Read blueprint, ADR, wiki billing page, spec\"}"
+        },
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"cd \\\"$PWD\\\"; node workbench/tools/notepads.mjs create --note workbench/sessions/notepads/grilling/billing-model-rework-2026-10-07.json --type grilling \\\\\\n  --objective billing-model-rework --title \\\"Billing model rework\\\" --focus \\\"How Ledgerline models billing: Customer, Account, Invoice, Payment, Settlement, Billing Run\\\" \\\\\\n  --state \\\"Decision map drafted from Lexicon, Blueprint,"
+        }
+      ],
+      "agent": "Before the first question, I read the current billing model. The Lexicon, Blueprint, the accepted decision record \"Invoices belong to Accounts, not Customers\", the Wiki page on the billing model, the Invoice Settlement spec, and `src/billing/` mostly agree. Each Customer owns one or more Accounts. A Billing Run issues one Invoice per active Account. A Payment is settled only against its own Account's open Invoices, oldest first.\n\nThey disagree in one place. The Lexicon and the Invoice Settlement spec say a Settlement can pay part of an Invoice. The code doesn't: `src/billing/settlement.js:15` stops at the first Invoice the Payment can't fully cover, and the leftover money stays on the Account as unapplied credit. The spec's partial-settlement task is marked ready but hasn't been built. I'll bring this up when we reach settlement.\n\nI'm saving notes on this session locally at `workbench/sessions/notepads/grilling/billing-model-rework-2026-10-07.json` (revision 1). Nothing is decided yet.\n\n---\n\n**Question 1: What is billed?** Does the rework keep the **Account** as what Invoices are issued against, as the decision record \"Invoices belong to Accounts, not Customers\" says? Or does it reopen that, for example by billing the Customer directly, consolidating several Accounts onto one Invoice, or adding a new billing entity?\n\n**Recommended answer:** Keep the Account as what gets billed, and rework within that.\n\n**Why:** The decision record says why the alternative lost. Large Customers split their cost centres into separate Accounts, and each has its own payer. The code relies on this: every Invoice stores an `accountId`, and a Settlement refuses to apply a Payment across Accounts. The Lexicon, Blueprint and Wiki all state it too. Unless something about those cost-centre Customers has changed, reopening it gives up a settled reason for nothing.\n\n**Impact:**\n- **If we keep it:** The decision record, the Account and Invoice definitions, and the cross-Account check in Settlement all stay as they are. The rework then covers settlement, the Invoice lifecycle and how balances work.\n- **If we reopen it:** We'd need a new decision record to replace the old one. We'd also change the Lexicon's Account and Invoice definitions, both Blueprint promised outcomes, the `accountId` link in `invoice.js`, Settlement's cross-Account rule and its test, and the Wiki page. Before any of that, we'd need a modeling pass on what an Account still means.\n\nWhat's your answer, and what's driving the rework?",
+      "head": "9471b8d79fc24b7a19737a4bd2aae5e6061a3d76",
+      "headMoved": false,
+      "branches": [
+        "integration 9471b8d",
+        "main 9471b8d"
+      ],
+      "roomStatus": "",
+      "roomDiff": "",
+      "notepadPaths": [
+        "workbench/sessions/notepads/grilling/billing-model-rework-2026-10-07.json"
+      ],
+      "notepads": [
+        {
+          "file": "billing-model-rework-2026-10-07.json",
+          "current": {
+            "state": "Decision map drafted from Lexicon, Blueprint, ADR 000A, wiki billing-model, S-001 and src/billing; nothing answered yet. Observed drift: Lexicon Settlement row and S-001 accept partial settlement, src/billing/settlement.js leaves partially covered Invoices untouched (S-001 TK-001 ready, unimplemented).",
+            "unresolved": [],
+            "next_action": "Ask Q1: does the rework keep Account as the billing unit (ADR 000A) or reopen it",
+            "questions": [
+              {
+                "id": "1",
+                "status": "open",
+                "question": "Billing unit: keep Account (ADR 000A) or reopen it"
+              },
+              {
+                "id": "2",
+                "status": "open",
+                "question": "What the rework changes within the chosen unit (driver/scope)"
+              },
+              {
+                "id": "3",
+                "status": "open",
+                "question": "Settlement semantics: partial application, ordering, unapplied credit"
+              },
+              {
+                "id": "4",
+                "status": "open",
+                "question": "Invoice lifecycle and immutability vs adjustments"
+              },
+              {
+                "id": "5",
+                "status": "open",
+                "question": "Account balance: derived or stored"
+              }
+            ]
+          },
+          "entries": []
+        }
+      ],
+      "shadowStores": []
+    },
+    {
+      "n": 2,
+      "owner": "/domain-modeling Here's the change I'm leaning toward: Invoices should belong to the Customer instead of the Account, so each Customer gets one Invoice per billing period across all of its Accounts.",
+      "exit": 0,
+      "skillInvocations": [],
+      "tools": [
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"cd \\\"$PWD\\\"; grep -rn -i 'account' --include=*.md --include=*.js --include=*.json . | grep -v -e '^./workbench/tools' -e '^./workbench/skills' -e node_modules -e '^./AGENTS.md' -e '^./RUNBOOK.md' | grep -v 'LEXICON.md:[0-2][0-9]\\\\?[0-9]\\\\?:' | head -50; grep -n 'Account\\\\|Invoice\\\\|Payment\\\\|Settlement' LEXICON.md | tail -8; cat workbench/docs/adr/REGISTER.md | head -20\",\"description\":"
+        },
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"cd \\\"$PWD\\\"; grep -rn -i 'account' src tests BLUEPRINT.md README.md TASKBOARD.md workbench/wiki workbench/specs | head -50\",\"description\":\"Find Account references in source, tests, and owners\"}"
+        },
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"cd \\\"$PWD\\\"; N=workbench/sessions/notepads/grilling/billing-model-rework-2026-10-07.json; node workbench/tools/notepads.mjs --help 2>&1 | head -30\",\"description\":\"Check notepad runtime usage\"}"
+        },
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"cd \\\"$PWD\\\"; N=workbench/sessions/notepads/grilling/billing-model-rework-2026-10-07.json\\nnode workbench/tools/notepads.mjs append --note $N --kind source_record --question-id 1 \\\\\\n  --content \\\"Here's the change I'm leaning toward: Invoices should belong to the Customer instead of the Account, so each Customer gets one Invoice per billing period across all of its Accounts.\\\" \\\\\\n  --"
+        },
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"cd \\\"$PWD\\\"; N=workbench/sessions/notepads/grilling/billing-model-rework-2026-10-07.json\\nnode workbench/tools/notepads.mjs append --note $N --revision 1 --kind source_record --question-id 1 \\\\\\n  --content \\\"Here's the change I'm leaning toward: Invoices should belong to the Customer instead of the Account, so each Customer gets one Invoice per billing period across all of its Account"
+        },
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"cd \\\"$PWD\\\"; N=workbench/sessions/notepads/grilling/billing-model-rework-2026-10-07.json\\nnode workbench/tools/notepads.mjs append --note $N --revision 1 --topic billing-unit --kind source_record --question-id 1 \\\\\\n  --content \\\"Here's the change I'm leaning toward: Invoices should belong to the Customer instead of the Account, so each Customer gets one Invoice per billing period acro"
+        }
+      ],
+      "agent": "You're leaning toward the option the project already rejected, so I'm treating it as a pending lean, not your answer to Question 1. It's saved in the session notes, which are now at revision 3.\n\n**How it conflicts with the current vocabulary**\n- `LEXICON.md:309` defines Invoice as \"A request for payment issued against **one Account** for one billing period.\"\n- `LEXICON.md:308` defines Account as something that \"holds a balance and **receives Invoices**.\"\n- The decision record `workbench/docs/adr/000A-invoices-belong-to-accounts-not-customers.md` rejected exactly this idea: \"invoicing the Customer once across all Accounts, which lost because large Customers split cost centres into separate Accounts **with separate payers**.\"\n\nYour lean doesn't just rename things. It replaces an accepted decision, and that decision's stated reason is about who pays.\n\n**What the change would reach** (the source and tests agree with the current model today):\n- **Vocabulary:** the Account, Invoice, Payment, Settlement and Billing Run definitions at `LEXICON.md:308-312`. Every one of them says \"Account.\"\n- **Decision record:** \"Invoices belong to Accounts, not Customers\" would need a new record that replaces it.\n- **Blueprint:** `BLUEPRINT.md:17` promises \"Every active Account receives one Invoice per billing period.\" `BLUEPRINT.md:18` promises \"A Payment reduces the open Invoices of its own Account and never another's.\" `BLUEPRINT.md:13` says the product serves teams that need \"clean Account balances.\"\n- **Spec:** in `workbench/specs/S-001-invoice-settlement/SPEC.md`, two completed acceptance criteria would stop being true: line 27 (\"issued against exactly one Account\") and line 30 (\"never crosses Accounts, even when one Customer owns both\").\n- **Source:** `src/billing/invoice.js:9` (`accountId`), `src/billing/billing-run.js:5-7` (one Invoice per Account), `src/billing/settlement.js:11-12` (the cross-Account check), and the `balanceCents` field in `src/accounts/account.js:4`.\n- **Tests:** `tests/invoice.test.js` \"an Invoice is issued against exactly one Account\" and `tests/settlement.test.js` \"a Settlement never crosses Accounts.\"\n- **Wiki:** `workbench/wiki/billing-model.md` says \"a Customer with two Accounts receives two Invoices.\"\n\nThe question your lean doesn't answer yet is what a Payment and a Settlement attach to once the Invoice belongs to the Customer.\n\n---\n\n**A scenario to test the boundary (still Question 1)**\n\nCustomer Acme has two Accounts. ACC-1 is Marketing, paid by Marketing's AP team, and owes $100. ACC-2 is Engineering, paid by a different payer, and owes $200. Under your model, Acme gets one Invoice for $300 for August.\n\nMarketing pays $100 and Engineering pays nothing. What should Ledgerline show?\n- **(a)** The single $300 Invoice is partly paid with $200 still open. Nobody can tell from it that Engineering is the one behind.\n- **(b)** The Invoice keeps a breakdown by Account, so Marketing's portion is paid and Engineering's is open.\n- **(c)** Acme no longer has separate payers, so the cost-centre reason in the decision record doesn't apply any more.\n\n**Recommended answer:** If it's (a) or (b), keep Invoices on Accounts and add a separate per-Customer view for the period, such as a summary across Accounts. That gives Acme one document to read without changing who owes what. Option (b) quietly rebuilds per-Account Invoices inside a Customer Invoice. If the answer is (c), the rejected reason no longer holds, and replacing the decision record is justified.\n\n**Why:** The decision record lost the consolidated option over separate payers. Whether that still holds is what decides between replacing the record and adding a view on top.\n\n**Impact:**\n- **(c):** We replace the decision record and change everything traced above. After that, the first questions are what a Payment is made against and whether Account balances survive.\n- **(a) or (b):** The decision record stands, and the per-Customer view becomes a new branch of decisions.\n\nWhich is it? Has something changed about Customers with separate payers?",
+      "head": "9471b8d79fc24b7a19737a4bd2aae5e6061a3d76",
+      "headMoved": false,
+      "branches": [
+        "integration 9471b8d",
+        "main 9471b8d"
+      ],
+      "roomStatus": "",
+      "roomDiff": "",
+      "notepadPaths": [
+        "workbench/sessions/notepads/grilling/billing-model-rework-2026-10-07.json"
+      ],
+      "notepads": [
+        {
+          "file": "billing-model-rework-2026-10-07.json",
+          "current": {
+            "state": "Q1 pending: owner leaning to Customer-level consolidated Invoices (reopens ADR 000A). Consequence trace done: LEXICON.md:308-312, ADR 000A, BLUEPRINT.md:7-9,17-18, wiki billing-model.md, S-001 SPEC lines 9,16-17,27-28,30, src/billing/{invoice,billing-run,settlement}.js, src/accounts/account.js, tests invoice.test.js + settlement.test.js. Drift noted: partial Settlement accepted in Lexicon/S-001 but not in settlement.js (implementation gap, S-001 TK-001).",
+            "unresolved": [
+              "Q1 pending: Customer-level Invoice leaning; awaiting answer to the separate-payer scenario and a firm answer"
+            ],
+            "next_action": "Get owner's answer to the separate-payer scenario, then read back Q1 as pending",
+            "questions": [
+              {
+                "id": "1",
+                "status": "open",
+                "question": "Billing unit: keep Account (ADR 000A) or reopen it"
+              },
+              {
+                "id": "2",
+                "status": "open",
+                "question": "What the rework changes within the chosen unit (driver/scope)"
+              },
+              {
+                "id": "3",
+                "status": "open",
+                "question": "Settlement semantics: partial application, ordering, unapplied credit"
+              },
+              {
+                "id": "4",
+                "status": "open",
+                "question": "Invoice lifecycle and immutability vs adjustments"
+              },
+              {
+                "id": "5",
+                "status": "open",
+                "question": "Account balance: derived or stored"
+              }
+            ]
+          },
+          "entries": [
+            {
+              "id": "source_record-001",
+              "kind": "source_record",
+              "topic": "billing-unit",
+              "content": "Here's the change I'm leaning toward: Invoices should belong to the Customer instead of the Account, so each Customer gets one Invoice per billing period across all of its Accounts.",
+              "interpretation": "Leaning (not yet a firm answer) to reopen ADR 000A: Customer becomes the invoiced party; one consolidated Invoice per Customer per period. Exactly the alternative ADR 000A rejected (separate payers per cost-centre Account). Open sub-issue: what Payment/Settlement/balance attach to under consolidation."
+            }
+          ]
+        }
+      ],
+      "shadowStores": []
+    },
+    {
+      "n": 3,
+      "owner": "Another option I'm weighing instead: keep the boundary but rename Account to Billing Profile, since people keep confusing it with a login.",
+      "exit": 0,
+      "skillInvocations": [],
+      "tools": [
+        {
+          "name": "Bash",
+          "input": "{\"command\":\"cd \\\"$PWD\\\"; N=workbench/sessions/notepads/grilling/billing-model-rework-2026-10-07.json\\ngrep -rn -i 'profile' LEXICON.md BLUEPRINT.md src tests workbench/wiki/billing-model.md workbench/specs | head; grep -rln 'Account' workbench/docs/adr | head\\nnode workbench/tools/notepads.mjs append --note $N --revision 3 --topic billing-unit --kind source_record --question-id 1 \\\\\\n  --content \\"
+        }
+      ],
+      "agent": "Your second option is really two decisions in one: where the billing boundary sits, and what the Account concept is called. They're independent. You could rename the Account and still consolidate Invoices per Customer, or keep both as they are. I've split the name into its own question (6), which waits on the boundary. Both leans are saved as pending in the session notes (revision 5).\n\n**A problem with \"Billing Profile\" to settle at Question 6**\n\nThe project already tried to prevent this confusion, and it ruled out this exact word. `LEXICON.md:308`, in the Account definition, says: \"Not a login or user account; **avoid \"profile\"** and \"wallet\".\" \"Profile\" is also a word people strongly associate with logins, so it may make the login confusion worse. A rename would also reach well beyond the Lexicon:\n- **Identifiers:** `accountId` in `src/billing/invoice.js:9` and `src/billing/settlement.js:11`, the whole `src/accounts/` folder and `createAccount`, and the `ACC-` ids.\n- **Tests:** both test names, `tests/invoice.test.js` \"an Invoice is issued against exactly one Account\" and `tests/settlement.test.js` \"a Settlement never crosses Accounts.\"\n- **Other owners:** the Blueprint's promised outcomes, the Wiki billing-model page, the Invoice Settlement spec, and the title of the decision record \"Invoices belong to Accounts, not Customers.\"\n\nTwo things I'll want from you at Question 6: who gets confused (finance users, API consumers or developers), and whether a narrower name like \"Billing Account\" fixes it.\n\n---\n\n**Question 1, narrowed: the boundary only**\n\nIgnoring the name for now, which do you choose?\n- **(A)** Invoices belong to the Customer: one consolidated Invoice per Customer per period. This replaces the decision record.\n- **(B)** Invoices stay with the Account-like unit, as the decision record says.\n\n**Recommended answer:** (B). Your second option says the real problem is a confusing word, not the wrong boundary. The separate-payer reason for the boundary still stands unless you tell me Customers with several cost centres have stopped paying separately.\n\n**Why:** Choosing the boundary first keeps the naming question focused. Otherwise a rename and a structural change get decided together, and the vocabulary owners, decision record, source and tests all change twice.\n\n**Impact:**\n- **(B):** The decision record stays. The next question is the name, followed by settlement and balances.\n- **(A):** We go back to the Acme scenario from my last message and the full change I traced there.\n\nWhich boundary do you choose?",
+      "head": "9471b8d79fc24b7a19737a4bd2aae5e6061a3d76",
+      "headMoved": false,
+      "branches": [
+        "integration 9471b8d",
+        "main 9471b8d"
+      ],
+      "roomStatus": "",
+      "roomDiff": "",
+      "notepadPaths": [
+        "workbench/sessions/notepads/grilling/billing-model-rework-2026-10-07.json"
+      ],
+      "notepads": [
+        {
+          "file": "billing-model-rework-2026-10-07.json",
+          "current": {
+            "state": "Q1 pending between two owner leans: (A) Customer-level consolidated Invoices (reopens ADR 000A); (B) keep Account boundary, rename Account to Billing Profile for login confusion. Rename conflicts with LEXICON.md:308 avoid-list ('profile'). Consequence trace for A recorded at revision 3; rename reaches identifiers accountId, src/accounts/, createAccount, ACC- ids, test names, ADR 000A title, Blueprint, wiki, S-001.",
+            "unresolved": [
+              "Q1 pending: owner weighing (A) Customer consolidation vs (B) keep boundary + rename; asked to choose the boundary first"
+            ],
+            "next_action": "Get owner's Q1 boundary choice; read back as pending; if B, open Q6 naming with the 'profile' avoid-list conflict",
+            "questions": [
+              {
+                "id": "1",
+                "status": "open",
+                "question": "Billing unit: keep Account (ADR 000A) or reopen it"
+              },
+              {
+                "id": "2",
+                "status": "open",
+                "question": "What the rework changes within the chosen unit (driver/scope)"
+              },
+              {
+                "id": "3",
+                "status": "open",
+                "question": "Settlement semantics: partial application, ordering, unapplied credit"
+              },
+              {
+                "id": "4",
+                "status": "open",
+                "question": "Invoice lifecycle and immutability vs adjustments"
+              },
+              {
+                "id": "5",
+                "status": "open",
+                "question": "Account balance: derived or stored"
+              },
+              {
+                "id": "6",
+                "status": "open",
+                "question": "Name for the Account concept (login confusion); depends on Q1"
+              }
+            ]
+          },
+          "entries": [
+            {
+              "id": "source_record-001",
+              "kind": "source_record",
+              "topic": "billing-unit",
+              "content": "Here's the change I'm leaning toward: Invoices should belong to the Customer instead of the Account, so each Customer gets one Invoice per billing period across all of its Accounts.",
+              "interpretation": "Leaning (not yet a firm answer) to reopen ADR 000A: Customer becomes the invoiced party; one consolidated Invoice per Customer per period. Exactly the alternative ADR 000A rejected (separate payers per cost-centre Account). Open sub-issue: what Payment/Settlement/balance attach to under consolidation."
+            },
+            {
+              "id": "source_record-002",
+              "kind": "source_record",
+              "topic": "billing-unit",
+              "content": "Another option I'm weighing instead: keep the boundary but rename Account to Billing Profile, since people keep confusing it with a login.",
+              "interpretation": "Alternative lean: keep ADR 000A boundary (Invoices per Account) and treat the problem as naming. Stated reason: people confuse Account with a login. If chosen, Q1 resolves to keep-boundary and the rename becomes a separate naming decision (new Q6). Conflict: LEXICON.md:308 Account row already says 'Not a login or user account; avoid \"profile\" and \"wallet\"' - Billing Profile uses an avoided word. Owner still weighing two options; no answer yet."
+            }
+          ]
+        }
+      ],
+      "shadowStores": []
+    }
+  ]
+}

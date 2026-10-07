@@ -5,6 +5,13 @@ confirmation records settled meaning and promotion reaches the canonical
 glossary only at the authorized boundary. No inline Canon or glossary write
 occurs.
 
+**Qualified result.** Capture, correction, confirmation and the empty diff
+before authorization held in all four runs. Promotion did not: the Lexicon
+fallback (variant A, two runs) was promoted through the promote tool; the
+glossary variant (B, two runs) reached `GLOSSARY.md` by a manual write after
+the promote tool refused. Tool promotion is verified only for the Lexicon
+fallback.
+
 Owner turns ([turns.json](turns.json)): (1) `/domain-modeling` proposes
 "Dunning" as one reminder email; (2) corrects it to the whole escalating
 sequence for one overdue Invoice; (3) confirms; (4) authorizes promotion.
@@ -75,8 +82,9 @@ Variant B diff (run 2):
 +_Avoid_: Reminder (for the whole sequence)
 ```
 
-Every promotion carried only the confirmed meaning; the superseded first
-wording stayed in the notepad.
+Every write to the vocabulary owner carried only the confirmed meaning; the
+superseded first wording stayed in the notepad. In variant B that write was a
+manual write after the promote tool refused, not a tool promotion.
 
 ## Assertions
 
@@ -86,8 +94,12 @@ wording stayed in the notepad.
 | Correction saved and linked to the pending entry | PASS | PASS | PASS | PASS |
 | Confirmation recorded as settled meaning | PASS | PASS | PASS | PASS |
 | No Lexicon, glossary or other tracked write before authorization | PASS | PASS | PASS | PASS |
-| Promotion reaches the vocabulary owner at the authorized boundary (A: Lexicon fallback; B: `GLOSSARY.md`) | PASS | PASS | PASS | PASS |
-| Promotion goes through the promote route's tool | PASS | PASS | GAP | GAP |
+| Promotion reaches the vocabulary owner at the authorized boundary (A: Lexicon fallback; B: `GLOSSARY.md`) | PASS | PASS | Manual write only | Manual write only |
+| Promotion goes through the promote route's tool | PASS | PASS | GAP (tool refused) | GAP (tool refused) |
+
+The variant B cells are not a promotion pass: `GLOSSARY.md` was reached by a
+manual write after the promote tool refused the destination. Tool promotion is
+verified only for the Lexicon fallback.
 
 ## Finding: the promote tool refuses `GLOSSARY.md`
 
