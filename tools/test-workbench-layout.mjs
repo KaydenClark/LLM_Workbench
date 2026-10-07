@@ -23,8 +23,9 @@ const controls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASK
 // S-00M TK-002: doctor reports untracked files under the root controls, the
 // ADR collection and the spec lane. These Genesis rooms are never committed, so
 // that one attention finding is correctly present in their clean state, and the
-// clean expectation is that finding and nothing else.
-const UNCOMMITTED_ROOM = ['untracked-controls'];
+// These rooms also intentionally have no runtime surface: init and updates
+// must not invent one. Its advisory finding is part of their expected report.
+const UNCOMMITTED_ROOM = ['untracked-controls', 'legibility-undeclared'];
 const codesOf = (findings) => (findings ?? []).map((item) => item.code);
 
 function fixture() {
@@ -2690,6 +2691,33 @@ test(`Genesis accepts first spec and task suffix ${suffix} without truncation or
 // S-004M TK-008T: the legibility surface is an additive manifest block, like
 // the git block - absent is valid, a malformed block is a malformed manifest.
 const LEGIBILITY = Object.freeze({ run: 'npm start', operate: 'npm run cli -- --help', inspect: 'npm run status', errors: 'npm test; tail -f app.log', journey: 'npm run e2e', measure: 'npm run bench' });
+
+test('room updates preserve the runtime surface declaration and never inject one', () => {
+  for (const legibility of [undefined, { ...LEGIBILITY, confirmation: 'pending' }]) {
+    const project = fixture();
+    try {
+      assert.equal(run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION).status, 0);
+      const manifestPath = path.join(project, 'workbench', 'manifest.json');
+      const read = () => JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+      const initial = { ...read(), legibility };
+      fs.writeFileSync(manifestPath, `${JSON.stringify(initial, null, 2)}\n`);
+      const before = read();
+      for (const command of ['migrate', 'identify', 'record-source']) {
+        const result = run(command, '--project', project);
+        assert.equal(result.status, 0, result.stdout + result.stderr);
+        assert.deepEqual(read(), before, `${command} leaves an up-to-date manifest unchanged`);
+      }
+      const withoutDdr = read();
+      delete withoutDdr.collections.ddr;
+      fs.writeFileSync(manifestPath, `${JSON.stringify(withoutDdr, null, 2)}\n`);
+      assert.equal(run('migrate', '--project', project).status, 0);
+      assert.deepEqual(read(), before, 'adding the DDR collection restores only that binding');
+      assert.deepEqual(read().legibility, legibility, 'updates preserve absent or pending surfaces');
+    } finally {
+      fs.rmSync(project, { recursive: true, force: true });
+    }
+  }
+});
 
 test('the legibility block is additive: absent stays valid, six string entries validate, and a malformed block is invalid-manifest', () => {
   const project = fixture();

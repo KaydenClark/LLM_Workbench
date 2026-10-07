@@ -978,6 +978,8 @@ const PINNED_EFFECTS = {
   'session-transport-pending': ['attention', 'sessions', 'none'],
   'identity-write-failed': ['error', 'manifest', 'none'],
   'invalid-manifest': ['error', 'manifest', 'all'],
+  'legibility-undeclared': ['attention', 'manifest', 'none'],
+  'legibility-unconfirmed': ['attention', 'manifest', 'none'],
   'upgrade-required': ['error', 'manifest', 'all'],
   'invalid-lane': ['error', 'manifest', 'all'],
   'unsafe-lane': ['error', 'manifest', 'all'],
