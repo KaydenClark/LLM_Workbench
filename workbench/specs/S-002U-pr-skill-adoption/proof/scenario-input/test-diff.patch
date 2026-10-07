@@ -1,0 +1,46 @@
+commit 6dbec705b9c3600c39e80eb6e708f15ecfc6d068
+Author: r <r@example.com>
+Date:   Tue Oct 6 23:41:06 2026 -0600
+
+    Install the pinned pr skill source with lineage
+    
+    Adds Matt Pocock's pr skill (mattpocock/skills skills/engineering/pr at
+    d81f3a183412e71a5b1e84ca21bc1a35eea03a60) byte-identical, with its
+    CREDITS.md for the Dex Horthy / Humanlayer show-me lineage, its Codex
+    interface metadata and a NOTICE.md recording the pin, the absent adapter
+    and the MIT text. The skill catalog test now pins the source hash.
+    
+    Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>
+
+diff --git a/tools/test-skill-catalog.mjs b/tools/test-skill-catalog.mjs
+index aa32744b..75285571 100644
+--- a/tools/test-skill-catalog.mjs
++++ b/tools/test-skill-catalog.mjs
+@@ -1,5 +1,6 @@
+ #!/usr/bin/env node
+ import assert from 'node:assert/strict';
++import { createHash } from 'node:crypto';
+ import fs from 'node:fs';
+ import path from 'node:path';
+ import { fileURLToPath } from 'node:url';
+@@ -11,6 +12,20 @@ import { coordinationSkills, coreSkills as runtimeCoreSkills } from '../workbenc
+ import { readMaintainerSkills } from './maintainer-skills.mjs';
+ const coreSkills = [...runtimeCoreSkills].sort();
+ const read = (relative) => fs.readFileSync(path.join(root, relative), 'utf8');
++// S-002U TK-007U: pinned upstream imports, not rewrites. Each hash is the
++// pinned upstream text with checkout line endings and the final newline
++// ignored, so any instruction drift fails here.
++const importedSourceHashes = {
++  // mattpocock/skills skills/engineering/pr/SKILL.md @ d81f3a183412e71a5b1e84ca21bc1a35eea03a60
++  'pr/SKILL.md': 'bb2f9427da7c83ec95abf1207380c19d726d6d8c933f6d0314cb14e84c3e998b',
++};
++for (const [name, expectedHash] of Object.entries(importedSourceHashes)) {
++  const relative = `workbench/skills/${name}`;
++  assert.ok(fs.existsSync(path.join(root, relative)), `${relative} must carry the pinned upstream source`);
++  const source = read(relative).replaceAll('\r\n', '\n').replace(/\n+$/, '');
++  assert.equal(createHash('sha256').update(source).digest('hex'), expectedHash,
++    `${name} must preserve the pinned upstream text with only the declared adapter`);
++}
+ const assertIncludesAll = (content, requiredTerms, label) => {
+   for (const term of requiredTerms) {
+     assert.ok(content.includes(term), `${label} must use ${term}`);
