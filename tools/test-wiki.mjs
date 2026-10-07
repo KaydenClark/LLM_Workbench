@@ -1013,3 +1013,41 @@ test('TK-009D: each explained glossary entry lands its Distinction text in a rou
   const findings = validateWiki(root).filter((item) => item.severity === 'error');
   assert.deepEqual(findings, [], 'the room Wiki, with its lexicon articles, validates');
 });
+
+// S-004O TK-009K: every root landing-inventory `wiki` entry lands its text in
+// its home page, and that page is routed from MEMORY.md (MEMORY.md itself is
+// the router). A home that declares no glossary term is a general reference
+// page: it says it stays Wiki-only under the Lexicon retirement decision and
+// needs no GLOSSARY.md entry. One that explains a glossary entry declares it.
+test('TK-009K: each root Wiki-only inventory entry lands in a page routed from MEMORY.md, and general reference pages say they stay Wiki-only', () => {
+  const inventory = JSON.parse(fs.readFileSync(path.join(root, ROOT_INVENTORY), 'utf8'));
+  const router = fs.readFileSync(path.join(root, 'workbench', 'wiki', 'MEMORY.md'), 'utf8');
+  const glossary = fs.readFileSync(path.join(root, 'GLOSSARY.md'), 'utf8');
+  const entries = inventory.entries.filter((item) => item.homeKind === 'wiki');
+  assert.ok(entries.length >= 37, 'the root inventory routes its Wiki-only entries');
+  const missing = [];
+  const homes = new Set();
+  for (const entry of entries) {
+    assert.match(entry.homePath, /^workbench\/wiki\/[^/]+\.md$/, `line ${entry.line} is homed in a flat root Wiki page`);
+    const file = path.join(root, entry.homePath);
+    if (!fs.existsSync(file)) { missing.push(`${entry.homePath} (line ${entry.line}) is missing`); continue; }
+    if (!flat(fs.readFileSync(file, 'utf8')).includes(flat(entry.landedText))) missing.push(`${entry.homePath} lacks line ${entry.line}: ${entry.landedText}`);
+    homes.add(entry.homePath);
+  }
+  assert.deepEqual(missing, [], 'every root wiki entry lands in its page');
+  for (const home of homes) {
+    if (home === 'workbench/wiki/MEMORY.md') continue;
+    const name = home.slice('workbench/wiki/'.length);
+    assert.equal(router.split('\n').filter((line) => line.includes(`](${name})`)).length, 1, `MEMORY.md routes ${name} once`);
+    const content = fs.readFileSync(path.join(root, home), 'utf8');
+    const term = parseFrontmatter(content).data?.glossary_term;
+    if (term) {
+      assert.ok(glossary.includes(`**${term}**:`), `${home} declares the glossary entry ${term}`);
+    } else {
+      assert.match(flat(content), /stays Wiki-only and needs no \[GLOSSARY\.md\]\(\.\.\/\.\.\/GLOSSARY\.md\) entry/, `${home} says it is a Wiki-only general reference page`);
+      assert.ok(content.includes('(../docs/ddr/001E-the-lexicon-retires-terms-live-in-the-wiki-and-ownership-routes-and-invariants-live-in-architecture-md.md)'), `${home} links the Lexicon retirement decision`);
+    }
+  }
+  assert.doesNotMatch(router, /\]\(\.\.\/\.\.\/LEXICON\.md\)[^\n]*AI Coding|AI Coding Terms section\]\(/, 'MEMORY.md no longer routes the AI coding terms to the Lexicon');
+  assert.deepEqual(validateWiki(root).filter((item) => item.severity === 'error'), [], 'the room Wiki validates with its reference pages');
+});
