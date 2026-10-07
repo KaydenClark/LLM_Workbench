@@ -847,7 +847,8 @@ const escapeRegExp = (text) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 // The generic lines of the Template Lexicon: the one at the room's recorded
 // source commit when this release checkout holds it, and the one beside this
-// tool while the Template still ships it. Only the identity stamps (name,
+// tool while the Template still ships it, or else the last one the release
+// history shipped before deleting it. Only the identity stamps (name,
 // version, review date, status) match any filled value; a line carrying any
 // other placeholder is a slot the room fills with its own content (a term
 // row): it matches only left unfilled, and its filled form is project-specific
@@ -864,6 +865,17 @@ function templateLexiconMatchers(templates, manifest) {
   }
   const current = path.join(templates, RETIRED_LEXICON);
   if (lstatOrNull(current)?.isFile()) sources.push(fs.readFileSync(current, 'utf8'));
+  else {
+    // Once the Template no longer ships the Lexicon, its last shipped text is
+    // the parent of the commit that deleted it in this release's history.
+    const relative = `${path.relative(release, templates).split(path.sep).join('/')}/${RETIRED_LEXICON}`;
+    const deleted = spawnSync('git', ['log', '-1', '--format=%H', '--diff-filter=D', 'HEAD', '--', relative], { cwd: release, encoding: 'utf8' });
+    const commit = deleted.status === 0 ? deleted.stdout.trim() : '';
+    if (/^[0-9a-f]{40}$/.test(commit)) {
+      const shown = spawnSync('git', ['show', `${commit}^:${relative}`], { cwd: release, encoding: 'utf8' });
+      if (shown.status === 0) sources.push(shown.stdout);
+    }
+  }
   const exact = new Set();
   const patterns = [];
   for (const line of sources.flatMap(source => source.split(/\r?\n/))) {
