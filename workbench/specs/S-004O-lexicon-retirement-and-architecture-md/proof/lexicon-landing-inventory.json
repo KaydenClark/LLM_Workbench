@@ -1088,7 +1088,7 @@
       "hash": "6bd5f576f3f25e8f6ad129b05528e1288d91031b9ce43f26cd1a68b02da5b33c",
       "homeKind": "glossary",
       "homePath": "GLOSSARY.md",
-      "landedText": "**Map**: The direction to a destination, at two scales: a landmark and a Spec are each a map, and Tasks are the steps taken on it. A low-resolution view around a destination shows decisions so far, Fog and out-of-scope work.",
+      "landedText": "**Map**: The direction to a destination, at two scales: a landmark and a Spec are each a map, and Tasks are the steps taken on it; a low-resolution view around a destination shows decisions so far, Fog and out-of-scope work. As a workflow verb, Map is writing the direction to a destination: landmarks, Specs and decision records.",
       "reason": null,
       "explanationHome": "workbench/wiki/dictionary-map.md"
     },

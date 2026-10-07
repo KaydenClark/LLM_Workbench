@@ -3,6 +3,7 @@
 export const genesisTemplateFiles = [
   "AGENTS.md",
   "BLUEPRINT.md",
+  "GLOSSARY.md",
   "LEXICON.md",
   "RUNBOOK.md",
   "TASKBOARD.md",
@@ -21,6 +22,7 @@ export const templatePlaceholders = [
   "[###]",
   "[0-9]",
   "[A / B]",
+  "[ALIASES TO AVOID]",
   "[ANOTHER DURABLE QUESTION]",
   "[BACKUP_OR_RESTORE_COMMAND]",
   "[BRACKETED]",
@@ -56,6 +58,7 @@ export const templatePlaceholders = [
   "[MERGE_PR_COMMAND]",
   "[MIGRATION_COMMAND]",
   "[Name the people served, their important problems, and how the product changes their work or lives.]",
+  "[ONE- OR TWO-SENTENCE DEFINITION]",
   "[ONE-SENTENCE DEFINITION]",
   "[ONE-SENTENCE DESCRIPTION OF WHAT THIS PROJECT DOES AND FOR WHOM.]",
   "[OWNER_ONLY_MERGE]",

@@ -3,8 +3,8 @@
 // term across root controls, skills, and the generic template mirrors.
 // TK-003 already swept `workbench/tools` and `tools` (tools/test-spec-workbench.mjs);
 // this sweep covers everything that instructs an agent outside those tool
-// files: AGENTS.md, RUNBOOK.md, LEXICON.md, README.md, BLUEPRINT.md,
-// CLAUDE.md, skills/**, templates/** and `team templates/**`. It never
+// files: AGENTS.md, RUNBOOK.md, LEXICON.md, GLOSSARY.md, README.md,
+// BLUEPRINT.md, CLAUDE.md, skills/**, templates/** and `team templates/**`. It never
 // touches `workbench/specs/` (historical `TK-###` and `Ticket closed`
 // evidence rows live there, outside this sweep's scope by design) and does
 // not rewrite anything itself.
@@ -19,6 +19,12 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 // "ticket", with the reason a reviewer can check against the file itself.
 // Nothing else may say it.
 const ALLOWLIST = [
+  // S-004O TK-009C: the glossary Task entry names the retired word as its
+  // avoided alias, the glossary's home for the retired-term row.
+  { file: 'GLOSSARY.md', match: '_Avoid_: ticket',
+    reason: 'the glossary Task entry lists the retired term as the alias to avoid' },
+  { file: 'templates/GLOSSARY.md', match: '_Avoid_: ticket',
+    reason: 'the generic mirror of the same avoided alias' },
   { file: 'LEXICON.md', match: '**Ticket** | Retired as a live term.',
     reason: 'the Lexicon row that defines the retired term necessarily names it' },
   { file: 'templates/LEXICON.md', match: '**Ticket** | Retired as a live term.',
@@ -68,7 +74,7 @@ function walk(dir) {
 }
 
 const targets = [];
-for (const file of ['AGENTS.md', 'RUNBOOK.md', 'LEXICON.md', 'README.md', 'BLUEPRINT.md', 'CLAUDE.md']) {
+for (const file of ['AGENTS.md', 'RUNBOOK.md', 'LEXICON.md', 'GLOSSARY.md', 'README.md', 'BLUEPRINT.md', 'CLAUDE.md']) {
   targets.push(path.join(root, file));
 }
 for (const dir of ['skills', 'templates', 'team templates']) {
