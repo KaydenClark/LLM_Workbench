@@ -3,12 +3,13 @@
 **Task ID:** TK-009M
 **Spec ID:** S-004O
 **Slice:** Correct the whole-Spec code-review findings
-**Status:** in-progress
+**Status:** done
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: No link in the repository points at a Lexicon heading, the Instruction Authority list does not name the Lexicon, and the full suite passes on the committed candidate.
 **Planned verification:** Red: the narrowed live-link check fails on the S-01A and ADR-0042 Lexicon heading links; reproductions of the glossary-skip retirement and the Matt-format term-row landing fail in `tools/test-workbench-upgrade.mjs`. Green: those checks, `doctor` with no Lexicon broken-link finding, both landing checks, then the full suite on the committed candidate.
 **Claimed by:** claude-s004o-worker-m
+**Proof:** Red e2677a59 (narrowed live-link check lists ADR-0042, S-01A, S-01T and S-01U; test-workbench-upgrade 3 failing: glossary-skip retirement, Matt-format row landing, remove-landed-rows message; proof/review-correction-red.txt), green 242435d3: Lexicon links re-pointed to ARCHITECTURE.md, GLOSSARY.md or a permalink at 0059669f; live-link check scans live Spec, landmark and decision-record bodies; retireLexicon keeps a Lexicon whose generic homes were not installed from the Template; Matt-format term rows land; ARCHITECTURE routes go through the catalog and landmarks with a 2,800-word budget; four retired-alias distinctions landed; test-control-fidelity 50/50, test-workbench-upgrade 14/14, test-governance-core 14/14, test-wiki 30/30, test-adr 59/59; both landing checks pass; doctor has no broken-link finding; full suite 54/54 on clean 242435d3 (log-tk009m.txt); merged by PR #430
 
 ## Scope
 
@@ -21,3 +22,9 @@ One correction pass for the building-side whole-Spec code review of candidate `f
 5. (Low) `update-harness` says to draft the `ARCHITECTURE.md` codemap and description from project evidence for grilling to confirm and to clear the empty glossary term slot; optionally report remaining placeholders.
 6. (Low) Replace `ARCHITECTURE.md`'s per-Spec delivery routes with routes through the Spec catalog and landmarks, tighten its length, and add a word budget to its shape check.
 7. (Low) Land the four retired-alias distinctions (Ticket's prefix rule, the Root controls public-name exception, Portable layout, Portability model) in their Wiki articles and record their `explanationText` in the final inventory.
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | claude/s004o-lexicon-retirement | 9ad422d4217d980271e1f3bec6c21a1cb5e89936 | ahead 0 behind 0 | 0 | Red e2677a59 (narrowed live-link check lists ADR-0042, S-01A, S-01T and S-01U; test-workbench-upgrade 3 failing: glossary-skip retirement, Matt-format row landing, remove-landed-rows message; proof/review-correction-red.txt), green 242435d3: Lexicon links re-pointed to ARCHITECTURE.md, GLOSSARY.md or a permalink at 0059669f; live-link check scans live Spec, landmark and decision-record bodies; retireLexicon keeps a Lexicon whose generic homes were not installed from the Template; Matt-format term rows land; ARCHITECTURE routes go through the catalog and landmarks with a 2,800-word budget; four retired-alias distinctions landed; test-control-fidelity 50/50, test-workbench-upgrade 14/14, test-governance-core 14/14, test-wiki 30/30, test-adr 59/59; both landing checks pass; doctor has no broken-link finding; full suite 54/54 on clean 242435d3 (log-tk009m.txt); merged by PR #430 | ARCHITECTURE.md and its Template, update-harness, workbench-room-checks, templates/ADOPTION.md, four Wiki articles, prose links in S-01A, S-01T, S-01U, S-002H and ADR-0042, consumer census Grill Board gap section | Grill Board artifactCatalog and readArtifact still name LEXICON.md and ten open items cite it; not edited because the owner holds uncommitted edits on those lines; runtime reporting of leftover placeholders not added; no real room through migrate | e732adf995ff1f714996544b19dccba60441b5566fc601701794a3e6a8ae17b5 |
