@@ -2817,25 +2817,36 @@ test('TK-009L: the Template Wiki lands every vocabulary explanation and Wiki-onl
   assert.match(schema, /GLOSSARY\.md/, 'the Template Wiki schema routes term pages to the glossary');
 });
 
-test('TK-009L: a freshly initialized room receives the Template Wiki vocabulary articles, filled and valid', () => {
-  const { wiki, explained, homes } = templateVocabularyHomes();
+// A room receives the articles flat beside its router (templates/wiki/README.md
+// Instantiation); installing them with the room's GLOSSARY.md is the installed
+// control set's change. Until then this proves they are ready to install:
+// filling them with init's values leaves no placeholder, and every relative
+// link resolves in a room laid out from the Template root files, the wiki lane
+// and the skills lane.
+test('TK-009L: the Template Wiki vocabulary articles fill cleanly and every link resolves in a room laid out from the Template', () => {
+  const { homes } = templateVocabularyHomes();
   const articles = homes.filter((home) => !/\/MEMORY\.[a-z]+\.md$/.test(home));
   assert.ok(articles.length > 0, 'the Template Wiki has vocabulary articles');
-  const project = fixture();
-  try {
-    const initialized = run('init', '--project', project, '--provenance', 'genesis', '--version', VERSION, '--name', 'Puffer Pond', '--date', '2026-09-04');
-    assert.equal(initialized.status, 0, initialized.stdout);
-    for (const home of articles) {
-      const relative = path.relative(path.join(root, 'templates', 'wiki'), path.join(root, home)).split(path.sep).join('/');
-      const installed = path.join(project, 'workbench', 'wiki', relative);
-      assert.ok(fs.existsSync(installed), `init seeds workbench/wiki/${relative}`);
-      const content = fs.readFileSync(installed, 'utf8');
-      const tokens = [...content.matchAll(/(?<!\[)\[(?!\[|[ xX]\])[^\]\n]+\](?!\()/g)].map((match) => match[0]).filter((token) => templatePlaceholders.includes(token));
-      assert.deepEqual(tokens, [], `workbench/wiki/${relative} is seeded without placeholders`);
-      assert.match(content, /last_verified: 2026-09-04/, `workbench/wiki/${relative} carries the seeding date`);
-      for (const entry of wiki.filter((item) => item.homePath === home)) assert.ok(flatText(content).includes(flatText(entry.landedText)), `the room's ${relative} carries line ${entry.line}`);
-      for (const entry of explained.filter((item) => item.explanationHome === home)) assert.ok(flatText(content).includes(flatText(entry.explanationText)), `the room's ${relative} carries line ${entry.line}'s Distinction text`);
+  const glossary = fs.readFileSync(path.join(root, 'templates', 'GLOSSARY.md'), 'utf8');
+  const glossaryAnchors = new Set([...glossary.matchAll(/^#{1,6} (.+)$/gm)].map((match) => match[1].toLowerCase().replace(/[^a-z0-9 -]/g, '').trim().replace(/ /g, '-')));
+  const roomRoot = path.join(os.tmpdir(), 'room');
+  const wikiLane = path.join(roomRoot, 'workbench', 'wiki');
+  for (const home of articles) {
+    const content = fs.readFileSync(path.join(root, home), 'utf8');
+    const filled = content.replaceAll('[YYYY-MM-DD]', '2026-09-04').replaceAll('[HARNESS_VERSION]', '9.9.9').replaceAll('[PROJECT_NAME]', 'Puffer Pond');
+    const tokens = [...filled.matchAll(/(?<!\[)\[(?!\[|[ xX]\])[^\]\n]+\](?!\()/g)].map((match) => match[0]).filter((token) => templatePlaceholders.includes(token));
+    assert.deepEqual(tokens, [], `${home} fills every placeholder the way init fills the wiki contract`);
+    assert.match(filled, /last_verified: 2026-09-04/, `${home} carries its installation date`);
+    for (const [, target] of content.matchAll(/\]\(([^)\s]+)\)/g)) {
+      if (/^[a-z]+:/.test(target)) continue;
+      const [file, anchor] = target.split('#');
+      const inRoom = path.resolve(wikiLane, file);
+      const relative = path.relative(roomRoot, inRoom).split(path.sep).join('/');
+      assert.ok(!relative.startsWith('..'), `${home} link ${target} stays inside the room`);
+      const source = relative.startsWith('workbench/wiki/') ? path.join(root, 'templates', 'wiki', relative.slice('workbench/wiki/'.length))
+        : relative.startsWith('workbench/') ? path.join(root, relative) : path.join(root, 'templates', relative);
+      assert.ok(fs.existsSync(source), `${home} link ${target} resolves in a room (${relative})`);
+      if (relative === 'GLOSSARY.md' && anchor) assert.ok(glossaryAnchors.has(anchor), `${home} links an existing glossary grouping #${anchor}`);
     }
-    assert.equal(run('validate', '--project', project).report.status, 'valid');
-  } finally { fs.rmSync(project, { recursive: true, force: true }); }
+  }
 });

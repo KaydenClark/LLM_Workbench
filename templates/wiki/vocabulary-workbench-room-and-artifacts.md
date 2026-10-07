@@ -74,7 +74,7 @@ Definition: [GLOSSARY.md, Workbench, room and artifacts](../../GLOSSARY.md#workb
 
 "Root controls", and "controls" for files, are retired as stale: the files are Contract and routing artifacts. A Control sits beside the Source, tool and test entry (a tool performs an operation) and the Managed runtime tool entry; the dictionary's Tool is not adopted as a Workbench term.
 
-_Avoid_: root controls. Retired 2026-10-03: "controls" now means one-action tools (Control). Public names that carry the word, such as the control fidelity check, keep it until they are renamed on their own. Historical records keep the old wording.
+The alias listed under _Avoid_. Retired 2026-10-03: "controls" now means one-action tools (Control). Public names that carry the word, such as the control fidelity check, keep it until they are renamed on their own. Historical records keep the old wording.
 
 Definition: [GLOSSARY.md, Workbench, room and artifacts](../../GLOSSARY.md#workbench-room-and-artifacts).
 

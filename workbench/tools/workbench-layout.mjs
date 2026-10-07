@@ -100,24 +100,6 @@ const templateVocabulary = new Set(templatePlaceholders);
 // room is seeded with the collection's job and article shape, exactly as the
 // design-concepts README already is.
 export const wikiContractFiles = ['SCHEMA.md', 'AGENTS.md', 'design-concepts/README.md', 'features/README.md'];
-// S-004O TK-009L: the Template Wiki's vocabulary articles, one per glossary
-// grouping plus the general AI coding reference. `init` seeds them beside the
-// contract files so a new room can explain its glossary; they are ordinary
-// notes a room may edit, not contract files, so nothing requires them.
-export const wikiVocabularyFiles = [
-  'vocabulary-destination-and-direction.md',
-  'vocabulary-workflow-verbs.md',
-  'vocabulary-workbench-room-and-artifacts.md',
-  'vocabulary-specs-and-tasks.md',
-  'vocabulary-chats-and-roles.md',
-  'vocabulary-feedback-disposition.md',
-  'vocabulary-workbench-meanings-of-ai-coding-terms.md',
-  'vocabulary-continuity-terms.md',
-  'vocabulary-stance-terms.md',
-  'vocabulary-governance-core.md',
-  'vocabulary-continuity-and-evidence-boundaries.md',
-  'ai-coding-reference.md'
-];
 // Seeded lane documents are the third class of installed state, beside runtime
 // tools and installed skills: the harness copies them out of the release to be
 // read and, unlike a runtime tool, sometimes locally adjusted. Their generation
@@ -677,7 +659,7 @@ export function initialize(options) {
       if (!fs.readdirSync(target).length) fs.writeFileSync(path.join(target, '.gitkeep'), '');
     }
     writeSessionsIgnore(project);
-    const seeded = options.deferWikiSeed ? { wiki: false, reason: 'legacy wiki move pending' } : seedWiki(project, options, wikiContractFiles, wikiVocabularyFiles);
+    const seeded = options.deferWikiSeed ? { wiki: false, reason: 'legacy wiki move pending' } : seedWiki(project, options);
     fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
     const documents = writeSeedDocuments(project, { ...options, notepadOnly: true });
     return report('initialized', { manifestPath, manifest, seeded, documents });
@@ -726,7 +708,7 @@ function sourceIdentity(options) {
   return resolved;
 }
 
-export function seedWiki(project, options, files = wikiContractFiles, articles = []) {
+export function seedWiki(project, options, files = wikiContractFiles) {
   for (const relative of Object.values(collections).filter(value => value.startsWith(`${lanes.wiki}/`))) {
     fs.mkdirSync(path.join(project, relative), { recursive: true });
   }
@@ -737,19 +719,15 @@ export function seedWiki(project, options, files = wikiContractFiles, articles =
     '[YYYY-MM-DD]': options['--date'] ?? new Date().toISOString().slice(0, 10),
     '[PROJECT_NAME]': options['--name'] ?? path.basename(project)
   };
-  const copy = (list) => {
-    const copied = [];
-    for (const relative of list) {
-      const destination = path.join(project, lanes.wiki, relative);
-      if (lstatOrNull(destination)) continue;
-      fs.mkdirSync(path.dirname(destination), { recursive: true });
-      fs.writeFileSync(destination, fillTemplate(fs.readFileSync(path.join(templates, 'wiki', relative), 'utf8'), values));
-      copied.push(`${lanes.wiki}/${relative}`);
-    }
-    return copied;
-  };
-  const written = copy(files);
-  return articles.length ? { wiki: true, written, articles: copy(articles) } : { wiki: true, written };
+  const written = [];
+  for (const relative of files) {
+    const destination = path.join(project, lanes.wiki, relative);
+    if (lstatOrNull(destination)) continue;
+    fs.mkdirSync(path.dirname(destination), { recursive: true });
+    fs.writeFileSync(destination, fillTemplate(fs.readFileSync(path.join(templates, 'wiki', relative), 'utf8'), values));
+    written.push(`${lanes.wiki}/${relative}`);
+  }
+  return { wiki: true, written };
 }
 
 // Bring the seeded lane documents this release carries into a room and record
