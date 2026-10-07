@@ -8,8 +8,8 @@
 **Updated:** 2026-10-07
 **Catalog description:** Recover the prior managed runtime file set safely when update introduces new tools, including legacy growth backups.
 **Blockers:** none
-**Latest event:** TK-007J closed with proof.
-**Next gate:** Confirm acceptance criteria and completion result.
+**Latest event:** TK-007J claimed by codex-runtime-rollback.
+**Next gate:** Close TK-007J with verification and documentation proof.
 
 ## Outcome
 
