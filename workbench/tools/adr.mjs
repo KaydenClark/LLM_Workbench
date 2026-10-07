@@ -527,6 +527,7 @@ export function newAdr(root, options) {
   // route first; writing here would conjure an undeclared directory.
   const manifest = readManifest(root);
   if (spec.kind !== 'adr' && manifest && manifest.collections?.[spec.collection] === undefined) {
+    if (spec.kind === 'ddr') throw new Error('the ddr collection is not declared in workbench/manifest.json; run workbench-layout.mjs migrate --project PATH from the release checkout first');
     throw new Error(`the ${spec.collection} collection is not declared in workbench/manifest.json; declare it through the room's authorized layout update first`);
   }
   const directory = collectionPath(root, spec.collection);
@@ -1249,7 +1250,7 @@ if (isMainModule(import.meta.url)) {
     } else if (command === 'deprecate') {
       console.log(JSON.stringify(deprecateRecord(root, requireValue(options.id, 'deprecate needs a record identifier (ADR-... or DDR-...)'), options.reason)));
     } else {
-      throw new Error('Usage: adr.mjs list [--kind adr|ddr] [--status STATUS] [--json] | show|get ID [--json] | search QUERY [--kind adr|ddr] [--json] | history ID [--json] | inspect ID (--field NAME | --lines START:END) [--json] | validate [--kind adr|ddr] [--json] | normalize [--kind adr|ddr] [--date YYYY-MM-DD] [--json] | register [--kind adr|ddr] | new [--kind adr|ddr] --title "Decision title" [--date YYYY-MM-DD] | accept ID | supersede ID --by SUCCESSOR | deprecate ID --reason "Why" | migrate-folders');
+      throw new Error('Usage: adr.mjs list [--kind adr|ddr|cdr] [--status STATUS] [--json] | show|get ID [--json] | search QUERY [--kind adr|ddr|cdr] [--json] | history ID [--json] | inspect ID (--field NAME | --lines START:END) [--json] | validate [--kind adr|ddr|cdr] [--json] | normalize [--kind adr|ddr|cdr] [--date YYYY-MM-DD] [--json] | register [--kind adr|ddr|cdr] | new [--kind adr|ddr|cdr] --title "Decision title" [--date YYYY-MM-DD] | accept ID | supersede ID --by SUCCESSOR | deprecate ID --reason "Why" | migrate-folders');
     }
   } catch (error) {
     console.error(`error: ${error.message}`);

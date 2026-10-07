@@ -33,10 +33,12 @@ test('CDRs use the shared decision lifecycle and keep older rooms valid', () => 
     assert.equal(showRecord(dir, created.id).status, 'accepted');
     const successor = newAdr(dir, { kind: 'cdr', title: 'Reuse decisions within their scope' });
     acceptRecord(dir, successor.id);
-    supersedeRecord(dir, created.id, { by: successor.id });
+    supersedeRecord(dir, created.id, successor.id);
     assert.equal(showRecord(dir, created.id).status, 'superseded');
-    deprecateRecord(dir, successor.id, { reason: 'Fixture policy ended' });
-    assert.equal(showRecord(dir, successor.id).status, 'deprecated');
+    const ended = newAdr(dir, { kind: 'cdr', title: 'A temporary operating policy' });
+    acceptRecord(dir, ended.id);
+    deprecateRecord(dir, ended.id, 'Fixture policy ended');
+    assert.equal(showRecord(dir, ended.id).status, 'deprecated');
     assert.deepEqual(validateDecisionRecords(dir), []);
   } finally { fs.rmSync(dir, { recursive: true, force: true }); }
 });
@@ -610,7 +612,8 @@ test('every intra-ADR link in the real corpus resolves literally, and the re-cou
   assert.equal(filesWithLink, 48, 're-count of ADR files carrying an intra-ADR link at this candidate');
   // S-004H TK-008C: ADR-000G's workflow-map route moved from the Blueprint's retired Desired Lifecycle to the workflow Wiki page, one more counted edge.
   // S-004G TK-006F: the ADR-000X amendment links ADR-000A and the release proof decision, two more edges.
-  assert.equal(totalLinks, 120, 're-count of total intra-ADR link edges at this candidate');
+  // The CDR scope amendment adds one edge to the decision-reuse record.
+  assert.equal(totalLinks, 121, 're-count of total decision-record link edges at this candidate');
 });
 
 // S-00I TK-001 review correction: a link is validated literally, never
@@ -1064,7 +1067,7 @@ test('new --kind ddr writes the next DDR into ddr/proposed with the DDR identifi
     const listing = fs.readdirSync(path.join(collection, 'proposed')).sort();
     assert.throws(() => newAdr(dir, { kind: 'ddr', title: 'Must refuse' }), /ordinary, singly linked DDR file/);
     assert.deepEqual(fs.readdirSync(path.join(collection, 'proposed')).sort(), listing);
-    assert.throws(() => newAdr(dir, { kind: 'xdr', title: 'Unknown kind' }), /--kind must be adr or ddr/);
+    assert.throws(() => newAdr(dir, { kind: 'xdr', title: 'Unknown kind' }), /--kind must be adr, ddr or cdr/);
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }
