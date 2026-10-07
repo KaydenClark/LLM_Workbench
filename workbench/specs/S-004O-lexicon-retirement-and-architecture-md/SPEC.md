@@ -3,13 +3,13 @@
 **Spec ID:** S-004O
 **Status:** active
 **Priority:** 2
-**Owner:** claude-s004o-worker-a
+**Owner:** claude-s004o-dispatcher (Dispatcher; single writer of this Spec, its Task records and the projections; assembly branch `claude/s004o-lexicon-retirement`)
 **Stance:** Builder
 **Updated:** 2026-10-07
 **Catalog description:** Retire LEXICON.md into concise canonical project vocabulary in GLOSSARY.md, richer Wiki explanations and ownership routes in ARCHITECTURE.md, in this room and the Template.
 **Blockers:** none. The Lexicon writer's turn follows S-004E's assembled Lexicon edits; Lexicon edits that land after the census are re-scaffolded by the removal Task (TK-009H).
-**Latest event:** TK-009A claimed by claude-s004o-worker-a.
-**Next gate:** Close TK-009A with verification and documentation proof.
+**Latest event:** TK-009A closed with proof.
+**Next gate:** TK-009B (`ARCHITECTURE.md`) and TK-009C (`GLOSSARY.md`) run in parallel.
 
 ## Outcome
 
@@ -91,6 +91,7 @@ Run the targeted control, wiki, template, genesis, adoption and upgrade tests, t
 | 2026-10-06 | planning | Reconciled the owner-confirmed glossary refinement into DDR-001E and this existing planned capability. | Current implementation inspected at integration 42431879fab3057db9e26ae661b4e92512c281f0; no migration or skill proof claimed. | Decision and Spec updated; Blueprint destination and explanatory article reconciled. Template/runtime changes remain assigned delivery. | Activation, context census, Tasks, migration and all delivery gates. |
 | 2026-10-06 | planning-check | Verified documentation reconciliation; all delivery acceptance remains open. | Source `3d40a86505a339096c4629b814eb4fed1c789d5d`: full suite 53/53; ADR/Wiki, citation and diff checks passed. [Shared planning receipt](proof/planning-verification.json) preserves the initial Blueprint-link failure, repair, bounded self-drift summaries and existing doctor findings. | Source owners read back; render regenerated projections. | No implementation, independent assembled review, PR or integration delivery claimed; self-drift remains 15 findings and cleanUpdate false. |
 | 2026-10-06 | plan | Activated under the owner's `/implement-spec` request: context layout verified single-context at assembly base `1f4e2d67` (integration `9b524db3` plus the glossary planning commits); Task IDs TK-009A to TK-009H chosen clear of every remote tip and sibling session; eight Tasks cut. | Consumer survey at the base: 23 maintainer tests, 6 runtime tools, 9 workbench skills, about 40 Wiki pages and 13 Template files read the Lexicon; per-line census is TK-009A. | Spec header, slice order and Task records. | All eight Tasks, whole-Spec QA, separate review and integration. |
+| 2026-10-07 | TK-009A | Task closed | Red 6e53091f (glossary/architecture kinds refused) and fac06695 (deleted carrier refused), green 4c4bb495: test-carrier-landing 19/19, test-runbook-index 62/62, both inventories check ok with every entry classified (root 308: glossary 139, architecture 107, wiki 37, restates-owner 5, retired 20; Template 269: 117/100/38/0/14); full suite 53/53 on clean 4860e1d5 (log-tk009a.txt); merged into assembly by PR #409 | tools/check-carrier-landing.mjs header, workbench-room-checks skill Carrier line-landing check, RUNBOOK carrier line-landing pointer; proof inventories and consumer census under the Spec proof directory | Planned landedText for GLOSSARY, ARCHITECTURE and new Wiki homes is verified when TK-009B, C and D write them; Lexicon rows added after base 1f4e2d67 are re-scaffolded by TK-009H |
 
 ## Completion Result
 
