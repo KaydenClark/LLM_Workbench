@@ -57,6 +57,20 @@ that Spec is the destination this page grows into (the owner, 2026-10-04), and
 its Current Verified State maps what the page already delivers and what is
 still to come. There is one board, not two.
 
+## Priority and Value — confirmed design, awaiting delivery
+
+The Owner confirmed on 2026-10-07 that P/V should make the board's questions
+visible and filterable into an answering queue the Owner chooses. The shared
+meanings live in the [Lexicon](../../LEXICON.md#priority-and-value); rationale
+and source lineage live in the [Grill Board P/V decision](../docs/ddr/proposed/001L-priority-and-value-help-the-owner-choose-grill-board-questions.md).
+
+The [Shared Interactive Workbench Board Spec](../specs/S-004D-shared-interactive-board/SPEC.md#priority-and-value-for-answering-questions)
+owns the numbered red P / amber V badges, click-open grade explanations, full
+central question view, independent filters and the answer-to-card-update cycle.
+Those controls are **planned**, not available in the current page. The first
+proof is confined to this board and its questions; DQC classifications are deferred.
+Continue using the existing filters and batches until this slice is delivered.
+
 ## Agents: read this before touching anything here
 
 **You do not edit these files by hand, and you never edit the owner's file.**
