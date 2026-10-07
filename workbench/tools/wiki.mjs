@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // Portable wiki validator: router, declared collections, note metadata,
-// portability, the Design Concept and features article shapes, no copied live task state,
+// portability, the Design Concept and features article shapes, a lexicon article's
+// declared glossary term and its GLOSSARY.md link, no copied live task state,
 // no secret-like material, a one-line summary beside each routed page. Staleness and
 // a missing summary are attention, never blocking.
 import fs from 'node:fs';
@@ -242,6 +243,46 @@ export function routerSummaryFindings(root, wikiRoot, routerFile, content) {
   return findings;
 }
 
+// S-004O TK-009D: a lexicon article is a Wiki page that explains one glossary
+// term. It declares the term in `glossary_term:` and links the room's root
+// `GLOSSARY.md`, which owns the canonical definition (a `**Term**:` entry). A
+// page that declares no term is a general reference page and needs no glossary
+// entry, so a room without `GLOSSARY.md` is checked only where a page declares
+// a term, and is then told the glossary is absent.
+export const GLOSSARY_FILE = 'GLOSSARY.md';
+
+export function glossaryEntryTerms(content) {
+  return new Set([...String(content).replace(/\r\n?/g, '\n').matchAll(/^\*\*(.+?)\*\*:\s*$/gm)].map((match) => match[1].trim()));
+}
+
+function lazyGlossaryTerms(root) {
+  let terms;
+  return () => {
+    if (terms === undefined) {
+      const file = path.join(root, GLOSSARY_FILE);
+      terms = fs.existsSync(file) && fs.statSync(file).isFile() ? glossaryEntryTerms(fs.readFileSync(file, 'utf8')) : null;
+    }
+    return terms;
+  };
+}
+
+function lexiconArticleFindings(root, file, relative, declared, content, glossaryTerms) {
+  const term = typeof declared === 'string' ? declared.replace(/^(['"])(.*)\1$/, '$2').trim() : '';
+  if (!term) return [finding('invalid-note', `${relative} glossary_term is empty; a lexicon article names the ${GLOSSARY_FILE} term it explains, and a general reference page omits the key`, { note: relative })];
+  const findings = [];
+  const terms = glossaryTerms();
+  if (terms === null) {
+    findings.push(finding('invalid-note', `${relative} declares glossary_term ${term}, but this room has no ${GLOSSARY_FILE} to hold its canonical definition; add the glossary entry or remove the key from a general reference page`, { note: relative }));
+  } else if (!terms.has(term)) {
+    findings.push(finding('invalid-note', `${relative} declares glossary_term ${term}, which is not a ${GLOSSARY_FILE} entry (**${term}**:); name an existing entry exactly or add it to the glossary first`, { note: relative }));
+  }
+  const glossary = path.join(root, GLOSSARY_FILE);
+  if (!markdownLinkTargets(content).some((link) => path.resolve(path.dirname(file), link) === glossary)) {
+    findings.push(finding('invalid-note', `${relative} declares glossary_term ${term} and must link its canonical definition in ${GLOSSARY_FILE} at the room root`, { note: relative }));
+  }
+  return findings;
+}
+
 export function validateWiki(root, options = {}) {
   const findings = [];
   const wikiRoot = lanePath(root, 'wiki');
@@ -292,6 +333,7 @@ export function validateWiki(root, options = {}) {
   const draftRoot = path.join(wikiRoot, DRAFT_COLLECTION);
   const draftRelative = `${wikiRelative}/${DRAFT_COLLECTION}`;
   const basenames = new Map();
+  const glossaryTerms = lazyGlossaryTerms(root);
   for (const file of walkMarkdown(wikiRoot)) {
     const relative = path.relative(root, file).split(path.sep).join('/');
     const content = options.contentOverrides?.get(file) ?? fs.readFileSync(file, 'utf8');
@@ -352,6 +394,7 @@ export function validateWiki(root, options = {}) {
         if (!new RegExp(`^## ${section}$`, 'm').test(content)) findings.push(finding('invalid-note', `${relative} must end with a ${section} section`, { note: relative }));
       }
     }
+    if (data.glossary_term !== undefined) findings.push(...lexiconArticleFindings(root, file, relative, data.glossary_term, content, glossaryTerms));
     if (inDrafts) findings.push(...draftArticleFindings(relative, path.relative(draftRoot, file).split(path.sep), data, body));
     const inFeatures = file.startsWith(features + path.sep);
     if (inFeatures && basename !== 'README') {

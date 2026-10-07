@@ -836,22 +836,26 @@ test('TK-009C: both glossaries define the Workbench terms once and use "controls
 const WORKFLOW_VERBS = ['Idea', 'Align', 'Confirm', 'Prototype', 'Map', 'Plan', 'Implement', 'Check', 'QA', 'Submit', 'Review', 'Verify', 'Journey', 'Approve', 'Delivered', 'Clean Up'];
 
 // S-004O TK-009C: each verb's definition is checked in the glossaries below;
-// the Distinction text still read from the Lexicons here (the Review row's Wiki
-// route, the Automated review scope and the Confirm plane gate) moves with
-// TK-009D and TK-009F.
+// the Distinction text still read from the Lexicons here (the Automated review
+// scope, and the Template's Confirm plane gate) moves with TK-009J, TK-009L and
+// TK-009F.
+// S-004O TK-009D: in this room the Review route to the Wiki dictionary and the
+// Confirm plane gate are read from their Wiki lexicon articles.
 test('both Lexicons define every workflow verb once and state the delivery workflow with Journey as the build loop', () => {
   const rowsOf = (content, term) => content.split('\n').filter((line) => line.startsWith(`| **${term}** |`));
+  assert.match(read(root, 'workbench/wiki/dictionary-review.md'), /\]\(dictionary-automated-review\.md\)/, 'the Review lexicon article routes depth to the Automated review entry');
   for (const relative of ['LEXICON.md', 'templates/LEXICON.md']) {
     const content = read(root, relative);
-    const review = rowsOf(content, 'Review')[0];
-    if (relative === 'LEXICON.md') assert.match(review, /dictionary-automated-review\.md/, `${relative} Review row routes depth to the Wiki dictionary`);
     assert.match(content.split('\n').find((line) => line.startsWith('| **Automated review** (')), /a Spec, sometimes a landmark, or the Workbench as a whole[^|]*never a Task/, `${relative} Automated review row scope`);
     // Owner, 2026-10-05 (confirmed readback): Review judges a completed
     // destination against its Map, and confirmation is the gate a claim
     // passes from Intent to Enduring Context, for one answer or a batch.
     assert.match(content.split('\n').find((line) => line.startsWith('| **Automated review** (')), /against its Map/, `${relative} Automated review row judges against the Map`);
-    assert.match(rowsOf(content, 'Confirm')[0], /moves from Intent to Enduring Context only by the owner's confirmation/, `${relative} Confirm row states the plane gate`);
-    assert.match(rowsOf(content, 'Confirm')[0], /an agent's recommendation is intent too/, `${relative} Confirm row covers recommendations`);
+    const [confirmSource, confirm] = relative === 'LEXICON.md'
+      ? ['workbench/wiki/dictionary-confirm.md', read(root, 'workbench/wiki/dictionary-confirm.md').replace(/\s+/g, ' ')]
+      : [relative, rowsOf(content, 'Confirm')[0]];
+    assert.match(confirm, /moves from Intent to Enduring Context only by the owner's confirmation/, `${confirmSource} Confirm states the plane gate`);
+    assert.match(confirm, /an agent's recommendation is intent too/, `${confirmSource} Confirm covers recommendations`);
   }
 });
 
@@ -1058,7 +1062,8 @@ test('TK-009C: neither glossary calls the Workbench a harness or a room', () => 
 
 // S-004E: a dictionary term that needs more than its Lexicon row has a flat Wiki
 // entry, routed from MEMORY.md with a summary line, that links its Lexicon
-// row, its dictionary entry and an owning control.
+// row, its dictionary entry and an owning control (S-004O TK-009D: its glossary
+// definition, or that it is Wiki-only, in place of the Lexicon row).
 const AI_CODING_WIKI_ENTRIES = {
   'dictionary-harness.md': 'harness', 'dictionary-session.md': 'session', 'dictionary-context.md': 'context',
   'dictionary-context-window.md': 'context-window', 'dictionary-stateless.md': 'stateless', 'dictionary-stateful.md': 'stateful',
@@ -1073,7 +1078,11 @@ test('each AI Coding Dictionary Wiki entry is routed from MEMORY.md and links it
     const routed = memory.split('\n').filter((line) => line.includes(`](${file})`));
     assert.equal(routed.length, 1, `MEMORY.md routes ${file} once`);
     assert.match(routed[0], /\]\([^)]+\):\s*\S/, `MEMORY.md gives ${file} a summary line`);
-    assert.ok(page.includes('(../../LEXICON.md)'), `${file} links the Lexicon`);
+    // S-004O TK-009D: the Lexicon source is re-pointed: Automated review links
+    // its glossary definition, and the general AI coding terms stay Wiki-only.
+    assert.doesNotMatch(page, /\]\([^)]*LEXICON\.md/, `${file} links no Lexicon`);
+    if (file === 'dictionary-automated-review.md') assert.ok(page.includes('(../../GLOSSARY.md#workbench-meanings-of-ai-coding-terms)'), `${file} links its glossary definition`);
+    else assert.match(page, /stays Wiki-only and needs no \[GLOSSARY\.md\]\(\.\.\/\.\.\/GLOSSARY\.md\) entry/, `${file} says it is the Wiki-only home of its term`);
     assert.ok(page.includes(`https://www.aihero.dev/ai-coding-dictionary/${slug}`), `${file} links its dictionary entry`);
     assert.match(page, /\.\.\/\.\.\/AGENTS\.md|\.\.\/docs\/(adr|ddr)\//, `${file} links an owning control or decision record`);
   }

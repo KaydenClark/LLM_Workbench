@@ -3,11 +3,12 @@ type: memory
 status: active
 sensitivity: normal
 knowledge_role: curated
+glossary_term: Automated review
 provenance:
   - The owner's adopted AI Coding Dictionary term, 2026-10-03
   - The owner's answers of 2026-10-05 on review timing, the Journey verbs and provider spend (grilling note review-timing-and-codex-spend-2026-10-05)
 source_paths:
-  - LEXICON.md
+  - GLOSSARY.md
   - AGENTS.md
   - workbench/docs/adr/000X-the-workflow-is-eight-verbs-and-each-verb-writes-the-plane-its-claims-live-on.md
 last_verified: 2026-10-05
@@ -77,8 +78,12 @@ review.
 
 ## Sources
 
-- [Lexicon](../../LEXICON.md): the Review, QA, Submit, Journey and Automated
-  review rows.
+- [GLOSSARY.md, Workbench meanings of AI coding terms](../../GLOSSARY.md#workbench-meanings-of-ai-coding-terms):
+  the canonical Automated review definition; the Review, QA, Submit and Journey
+  definitions are in its [Workflow verbs](../../GLOSSARY.md#workflow-verbs)
+  grouping and explained in the [Review](dictionary-review.md),
+  [QA](dictionary-qa.md), [Submit](dictionary-submit.md) and
+  [Journey](dictionary-journey.md) entries.
 - [AI Coding Dictionary entry](https://www.aihero.dev/ai-coding-dictionary/automated-review):
   attribution only; the Workbench restates the meaning in its own words.
 - [AGENTS.md, Task Merge Answers And Verify Review](../../AGENTS.md#task-merge-answers-and-verify-review):

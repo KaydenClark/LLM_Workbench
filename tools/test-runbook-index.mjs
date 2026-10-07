@@ -1005,15 +1005,20 @@ test('S-003Z TK-008Y: the Runbooks and the implement skill name the Claimed by r
 function lexiconRow(text, term) {
   return text.split('\n').find((line) => line.startsWith(`| **${term}** |`)) ?? '';
 }
+// S-004O TK-009D: in this room the Landmark, Landmark Wiki page and Map
+// Distinction text is read from their Wiki lexicon articles; the Template keeps
+// reading its Lexicon until its Wiki carries them (TK-009L).
+const lexiconArticle = (term) => normalize(read(`workbench/wiki/dictionary-${term}.md`));
 for (const lexicon of ['LEXICON.md', 'templates/LEXICON.md']) {
   test(`S-003Z TK-008Z: ${lexicon} describes the delivered landmark artifact`, () => {
     const text = read(lexicon);
-    const landmark = lexiconRow(text, 'Landmark');
+    const room = lexicon === 'LEXICON.md';
+    const landmark = room ? lexiconArticle('landmark') : lexiconRow(text, 'Landmark');
     assert.doesNotMatch(landmark, /not installed yet/, 'the Landmark row no longer says the artifact is not installed');
     assert.match(landmark, /`LANDMARK\.md` artifact/, 'the Landmark row names the artifact');
     for (const phrase of ['`specs` folder', '`tasks` folder', '`planned`, `active` and `reached`', '`LMK-`', 'reviewed one size above a Spec']) assert.ok(landmark.includes(phrase), `the Landmark row names ${phrase}`);
-    assert.match(lexiconRow(text, 'Landmark Wiki page'), /a reached landmark retires into it/, 'the Landmark Wiki page row names the retirement');
-    assert.match(lexiconRow(text, 'Map'), /folder path carries every parent/, 'the Map row names the parent path');
+    assert.match(room ? lexiconArticle('landmark-wiki-page') : lexiconRow(text, 'Landmark Wiki page'), /a reached landmark retires into it/, 'the Landmark Wiki page row names the retirement');
+    assert.match(room ? lexiconArticle('map') : lexiconRow(text, 'Map'), /folder path carries every parent/, 'the Map row names the parent path');
     const task = lexiconRow(text, 'Task');
     assert.doesNotMatch(task, /Tasks directly under a landmark[^|]*no delivered home/, 'the Task row no longer says landmark-direct Tasks have no home');
     assert.doesNotMatch(task, /today ordinary Tasks are Spec-bound/, 'the Task row no longer says every Task is Spec-bound');

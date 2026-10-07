@@ -148,7 +148,10 @@ frontmatter, a retired `authority` property, an enum outside `type`,
 absolute or traversing `source_paths` entry, a duplicated note basename, and a
 `design-concepts/` article that lacks `type: design-concept`,
 `authorized_by`, `parent`, or its `Evidence and Sources` and `History`
-sections. `copied-task-state` flags generated-region markers or task rows
+sections, and a lexicon article (a note declaring `glossary_term:`) whose term
+is not a `**Term**:` entry in the root `GLOSSARY.md`, that does not link that
+file, or that sits in a room with no `GLOSSARY.md`; a page declaring no term
+needs no glossary entry. `copied-task-state` flags generated-region markers or task rows
 copied into a note; `secret-like-content` flags key blocks, tokens,
 credential assignments, absolute home paths, host temp handoff lanes, and
 email addresses in a `normal` note (the shared `workbench/tools/privacy.mjs`
