@@ -8,8 +8,8 @@
 **Updated:** 2026-10-07
 **Catalog description:** Put the owner's agreed meanings for AI Coding Dictionary terms into the Lexicon, with a Wiki dictionary entry wherever a term needs more than its row, starting with nineteen model, harness and session terms.
 **Blockers:** none. The owner answered the harness question on 2026-10-03 (option (a) in Decisions And Contracts), so no row waits on an owner answer. Lexicon writes take one writer at a time; the owner's Codex Lexicon reconciliation landed in integration on 2026-10-03 (PR #281), and the Lexicon Design-Concept Reconciliation Spec stays active for its whole-Lexicon audit. The four Tasks run serially in this Spec's writer lane.
-**Latest event:** TK-005Z closed with proof.
-**Next gate:** Confirm acceptance criteria and completion result.
+**Latest event:** 2026-10-06: reassembled after the corrections to the failed review at `a7e735b4`; verification line checked with its Reassembly verification row.
+**Next gate:** Fresh separate-context review of the reassembled candidate; owner Human QA is recorded only on reviewed content.
 
 > **Citation anchors.** pre=`817096e676992cf7ece72967ac8bbb064261a3ee` post=`817096e676992cf7ece72967ac8bbb064261a3ee`.
 
@@ -271,7 +271,7 @@ No Tasks cut. At Plan, use current Actuality to cut small complete-path slices. 
 - [x] A mechanical comparison against the entries at the pinned commit finds no copied passage in any tracked file beyond a short attributed quotation. Met by TK-006B: the longest shared word run between any tracked row or entry and the pinned entries is seven words (common phrases such as a list of harness parts). Rechecked by TK-007B against all twenty-nine pinned entries at ed1ebed3 with an eight-word window over this Spec, both Lexicons and the dictionary Wiki entries: the intake table cells that shared eight to twelve words were restated, and no tracked passage now shares more than seven.
 - [x] The template mirror carries the generic rows, or the exemption is recorded with its reason. Met: every row is mirrored without root-only links, quotes or identifiers.
 - [x] A fresh agent given only the Lexicon and Wiki answers two probes with the Workbench meaning: why Claude Code and Claude.ai behave differently on the same model, and why the Workbench writes continuity to files. Met by TK-006B: a fresh read-only Codex agent given only LEXICON.md and the dictionary Wiki entries answered both probes with the Workbench meanings and found no contradiction.
-- [ ] Named verification and remaining limitations are recorded without claiming owner approval. Open until the assembly verification has run on the committed candidate and its row is in the evidence log.
+- [x] Named verification and remaining limitations are recorded without claiming owner approval. Met at reassembly: the evidence row titled "Reassembly verification" names the targeted tests, the full Runbook suite, `render`, `doctor` and the self-drift receipts, run on the committed candidate that checked this line; the row sits outside the content digest, so the reviewed candidate's digest equals the verified one. Limitations are under Remaining Limitations.
 
 ## Testing Seams
 
@@ -312,7 +312,7 @@ Assembled at integration `42431879` on 2026-10-06 from the four closed Tasks, ea
 - TK-006A: the ten batch-two rows, completing twenty-nine rows in both Lexicons.
 - TK-006B: eight flat `dictionary-<term>.md` Wiki entries routed from `MEMORY.md`, the copied-passage comparison (longest shared run seven words) and the two cold-reader probes.
 
-Six of seven acceptance lines are met. The second stays open: TK-005Z refreshed the harness inventory across controls, skills, templates and two decision records and made the rewording this Spec's own, through a Task cut once the owner answers whether the harness-improvement wording stays, so `complete` waits on that Task. The verification line stays open until the assembly verification row is recorded. No owner approval is claimed here.
+Six of seven acceptance lines are met. The second stays open: TK-005Z refreshed the harness inventory across controls, skills, templates and two decision records and made the rewording this Spec's own, through a Task cut once the owner answers whether the harness-improvement wording stays, so `complete` waits on that Task. The verification is recorded in the Reassembly verification evidence row. No owner approval is claimed here.
 
 ## Remaining Limitations Or Follow-Up Specs
 

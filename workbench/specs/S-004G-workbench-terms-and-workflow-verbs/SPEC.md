@@ -8,8 +8,8 @@
 **Updated:** 2026-10-07
 **Catalog description:** Put the owner's Workbench terms and one row per workflow verb into the Lexicon, repair the rows that contradict the Blueprint teardown's locked answers, and record the changed Journey point of the workflow-verbs decision in a decision record.
 **Blockers:** none. The Lexicon rows take one writer at a time, so this Spec's first Task waits on the last Task of the AI Coding Dictionary Terms Spec. The `ddr` collection and the commands that write, accept and supersede a decision record are installed.
-**Latest event:** TK-007A closed with proof.
-**Next gate:** Confirm acceptance criteria and completion result.
+**Latest event:** 2026-10-06: reassembled after the corrections to the failed review at `a7e735b4`; verification line checked with its Reassembly verification row.
+**Next gate:** Fresh separate-context review of the reassembled candidate; owner Human QA is recorded only on reviewed content.
 
 > **Citation anchors.** pre=`5cfa987bacb0f6a9273d93e8d989e34000d75ad9` post=`5cfa987bacb0f6a9273d93e8d989e34000d75ad9`.
 
@@ -170,7 +170,7 @@ No Tasks cut. At Plan, use current Actuality to cut small complete-path slices. 
 - [x] No row assigns a meaning the owner did not confirm; each open question above is answered in the Spec with its evidence or left recorded as open. Met: the six open questions are answered in Decisions And Contracts with their evidence; renaming the `S-###:delivered` qualifier stays recorded as the owner's call.
 - [x] The template mirror carries the generic rows, or the exemption is recorded with its reason. Met: every row but Workbench Template and Foundry is mirrored, and the exemption for those two producer terms is recorded.
 - [x] Current-facing uses of the retired "controls" wording outside the Lexicon are inventoried and either corrected or recorded as drift for the Contract carrier rewrite. Met by TK-006G: inventoried in Retired Controls Wording Outside The Lexicon and recorded as drift for the Contract carrier rewrite.
-- [ ] Named verification and remaining limitations are recorded without claiming owner approval. Open until the assembly verification has run on the committed candidate and its row is in the evidence log.
+- [x] Named verification and remaining limitations are recorded without claiming owner approval. Met at reassembly: the evidence row titled "Reassembly verification" names the targeted tests, the full Runbook suite, `render`, `doctor` and the self-drift receipts, run on the committed candidate that checked this line; the row sits outside the content digest, so the reviewed candidate's digest equals the verified one. Limitations are under Remaining Limitations.
 
 ## Testing Seams
 
@@ -210,7 +210,7 @@ Assembled from the five original Tasks and the corrections after the failed revi
 - TK-006G: the Workflow Verbs Wiki article rewritten, and the retired controls wording outside the Lexicon inventoried under Retired Controls Wording Outside The Lexicon for the Contract carrier rewrite.
 - TK-007A: this record reconciled with the owner's 2026-10-05 Journey change, which later commits carried into the delivered rows and ADR-000X's second amendment: QA and Submit added, Journey as Implement, Check, QA and Submit, Review after the Journey.
 
-The delivered rows follow the 2026-10-05 meanings; the superseded Map-time meanings above stay marked as superseded. The verification line stays open until the assembly verification row is recorded. No owner approval is claimed here.
+The delivered rows follow the 2026-10-05 meanings; the superseded Map-time meanings above stay marked as superseded. The verification is recorded in the Reassembly verification evidence row. No owner approval is claimed here.
 
 ## Remaining Limitations Or Follow-Up Specs
 
