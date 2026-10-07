@@ -3,13 +3,13 @@
 **Spec ID:** S-004J
 **Status:** active
 **Priority:** 2
-**Owner:** claude-s004j-worker-jc
+**Owner:** claude-s004j-dispatcher
 **Stance:** Builder
 **Updated:** 2026-10-07
 **Catalog description:** Ship domain modeling in every room's skills lane as the Align companion that shows the downstream consequences of an upstream name, boundary or relationship before it settles, and hands settled meaning to promotion instead of writing Canon inline.
 **Blockers:** none
-**Latest event:** TK-00JC closed with proof.
-**Next gate:** Confirm acceptance criteria and completion result.
+**Latest event:** All three Tasks closed and assembled at `345e8754` with integration `621524d9`; acceptance checked against Task proof and a fresh clone.
+**Next gate:** Building-side assembled code review and its correction pass, then the PR moves to integration review.
 
 > **Citation anchors.** pre=`46ad978956a74a3ee1bda22c36eb16207dcd98fd` post=`46ad978956a74a3ee1bda22c36eb16207dcd98fd`.
 
@@ -85,6 +85,8 @@ Checked at the pre anchor unless a line says otherwise.
   explains the method and Matt's comparison; this pass points it at this Spec.
 
 At refreshed integration `42431879fab3057db9e26ae661b4e92512c281f0` on 2026-10-06, the required bundle contains 28 skills and still lacks `domain-modeling`. The original 27-skill observation above stays dated to its pre anchor. The glossary destination is accepted in [refined DDR-001E](../../docs/ddr/001E-the-lexicon-retires-terms-live-in-the-wiki-and-ownership-routes-and-invariants-live-in-architecture-md.md), with migration owned by [Lexicon Retirement And ARCHITECTURE.md (S-004O)](../S-004O-lexicon-retirement-and-architecture-md/SPEC.md); neither new root owner exists at this integration base. Read [Matt's pinned glossary-based source](https://github.com/mattpocock/skills/blob/d81f3a183412e71a5b1e84ca21bc1a35eea03a60/skills/engineering/domain-modeling/SKILL.md) and [format](https://github.com/mattpocock/skills/blob/d81f3a183412e71a5b1e84ca21bc1a35eea03a60/skills/engineering/domain-modeling/GLOSSARY-FORMAT.md) rather than treating the old CONTEXT source or rewritten PR #251 candidate as the adoption baseline.
+
+At assembly candidate `345e8754556bb7fade26f2cc1f8fad919136af61` on 2026-10-07, `workbench/skills/domain-modeling/` ships in the lane, the manifest's required bundle holds 29 skills including `domain-modeling`, and a fresh clone resolves the same `SKILL.md` bytes through `.agents/skills` and `.claude/skills`. Root `GLOSSARY.md` is still absent at this base, so the skill reads the current Lexicon; the promote tool's root-glossary destination belongs to S-004O.
 
 ## Desired Behavior
 
@@ -199,26 +201,26 @@ rooms; (4) Wiki article reconciliation.
 
 ## Acceptance Criteria
 
-- [ ] A fresh clone discovers `domain-modeling` through both adapters; the
+- [x] A fresh clone discovers `domain-modeling` through both adapters; the
   manifest, layout bundle, catalog and count-bearing documents agree.
-- [ ] A RUNBOOK operations index row points to the skill.
-- [ ] In a grilling scenario, a proposed rename or boundary is traced to named
+- [x] A RUNBOOK operations index row points to the skill.
+- [x] In a grilling scenario, a proposed rename or boundary is traced to named
   owners, identifiers and tests before the owner chooses, and the room diff stays
   empty.
-- [ ] A conflicting term, an overloaded term and an edge case each draw a
+- [x] A conflicting term, an overloaded term and an edge case each draw a
   specific challenge; a stated behavior is classified against named source.
-- [ ] A pending term and its correction remain in the notepad; confirmation
+- [x] A pending term and its correction remain in the notepad; confirmation
   records settled meaning and promotion reaches the canonical glossary only at
   the authorized boundary. No inline Canon or glossary write occurs.
-- [ ] Source and format comparison records the pin, credits and each necessary
+- [x] Source and format comparison records the pin, credits and each necessary
   adapter; the upstream language challenges, scenario probes and code checks
   are preserved without unrelated policy rewrites.
-- [ ] An easily reversed, an unsurprising and a no-alternative choice each fail
+- [x] An easily reversed, an unsurprising and a no-alternative choice each fail
   the decision-record offer; a qualifying one is offered as ADR or DDR by the
   scope test.
-- [ ] Grilling completes without the skill; no parallel terminology store is
+- [x] Grilling completes without the skill; no parallel terminology store is
   created.
-- [ ] The Wiki article separates upstream method, Workbench adaptation and
+- [x] The Wiki article separates upstream method, Workbench adaptation and
   verified behavior and limits.
 
 ## Testing Seams
@@ -256,10 +258,11 @@ Record `Docs checked; no update needed` for any other owner checked.
 | 2026-10-07 | TK-00JA | Task closed | Full RUNBOOK suite 54/54 on clean bac6db41; scoped domain-modeling 10/10 red-then-green; catalog, skills-lane, layout, runbook-index and installer green; fast-forward into assembly verified at bac6db41 | Skill source, catalog, count tokens, root and template RUNBOOK index row and suite list; THIRD_PARTY_NOTICES and AGENTS checked, no update needed | Behavior proof TK-00JB and Wiki TK-00JC; two Wiki pages still say 28 skills; release identity is the release owner's |
 | 2026-10-07 | TK-00JB | Task closed | Eight fresh-context sessions in disposable rooms with installed discovery: all five scenarios PASS (capture and promotion 4/4); full RUNBOOK suite 54/54 on clean c9905d94; fast-forward into assembly verified | proof/scenario-evidence.md with per-scenario observations, curated runs and room/runner scripts; skill checked, no correction needed | promote refuses root GLOSSARY.md until S-004O adds it to the layout controls; single model and run counts, scripted owner, local sessions; Wiki TK-00JC |
 | 2026-10-07 | TK-00JC | Task closed | Wiki validate clean, test-wiki 25/25, full RUNBOOK suite 54/54 on clean 989f1b09; article separates upstream method, Workbench adaptation and verified behavior and limits; fast-forward into assembly verified | Domain Modeling article, Wiki router lines, current bundle counts in four Wiki pages; dated count history checked, no update needed | Assembled code review and owner Human QA; promote GLOSSARY.md destination owned by S-004O; release identity unassigned |
+| 2026-10-07 | assembly | All three Tasks assembled; integration `621524d9` merged forward into assembly as `345e8754`; acceptance boxes checked against the TK-00JA, TK-00JB and TK-00JC close rows and a fresh clone. | Full RUNBOOK suite 54/54 on clean `345e8754`; fresh `git clone` of `claude/s004j-assembly` at `345e8754` resolves `domain-modeling/SKILL.md` (sha256 `2cf6f46e…5a41`) identically through both adapters and the lane, manifest required 29 with `domain-modeling`. | Spec header, current state line and Completion Result; no other owner changed. | Building-side assembled code review, correction pass, integration review and owner Human QA; promote root-glossary destination (S-004O); release identity (release owner). |
 
 ## Completion Result
 
-Not complete.
+Not complete. TK-00JA, TK-00JB and TK-00JC are done and assembled on `claude/s004j-assembly` ([PR #415](https://github.com/KaydenClark/LLM_Workbench/pull/415)); the assembled review, integration delivery and owner Human QA remain.
 
 ## Supersession
 
