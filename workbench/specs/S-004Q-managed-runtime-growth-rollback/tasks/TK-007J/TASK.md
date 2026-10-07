@@ -3,13 +3,13 @@
 **Task ID:** TK-007J
 **Spec ID:** S-004Q
 **Slice:** Public growth rollback and safe refusal
-**Status:** in-progress
+**Status:** done
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: New and recorded legacy11-to29 growth backups restore all original11 hashes/file set, remove18 introduced tools and preserve previous receipt/backups.
 **Planned verification:** Public11-to29 growth and legacy nine-backed-up regressions red/green; unchanged-lane refusal snapshots; historical native verify versus strict current coverage; full current Runbook suite, room checks and immutable assembled review.
 **Claimed by:** codex-runtime-rollback
-**Proof:** All54 Runbook commands pass on clean cb3809551a70f3307ee81bd33ba70e15f3414014; installer32/32 with exact legacy9/11/29 recovery, historical native verification, preserved source/backups and unchanged-lane refusal snapshots. Current29 coverage remains strict. Runtime/Core/version bytes unchanged; public proof/verification.json and room-checks.json retain limits.
+**Proof:** Corrective709c041af1e832f89d67aa57a01dc776c6ef01ec: installer34/34, full Runbook54/54; saved and introduced local deletion RED then unchanged-lane refusals GREEN. Existing exact legacy9/11/29 recovery and strict current coverage remain green. Runtime/Core/version unchanged.
 
 ## Scope
 
@@ -20,6 +20,7 @@ Only producer controller, its public CLI regressions, this owner and existing ma
 | Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
 |---|---|---|---|---|---|---|---|---|
 | 1 | codex/runtime-tools-rollback | 27acebcb10391fd0c0b9d06e1a77e91dbbc361a1 | ahead 0 behind 0 | 0 | All54 Runbook commands pass on clean cb3809551a70f3307ee81bd33ba70e15f3414014; installer32/32 with exact legacy9/11/29 recovery, historical native verification, preserved source/backups and unchanged-lane refusal snapshots. Current29 coverage remains strict. Runtime/Core/version bytes unchanged; public proof/verification.json and room-checks.json retain limits. | Source-only controller, its public regressions, existing managed-runtime feature article and bounded corrective owner; failure lineage, guardrails and room limits preserved; generic template exemption recorded. | Independent assembled review and integration next; installed-root recovery belongs to dependent coordinator. Known drift and Owner Human QA/main remain separate. | 2ffe2176d772e841b0f2fcb24c2c4c732172ec28fd5a6e65d7f82a87f3d9b2b9 |
+| 2 | codex/runtime-tools-rollback | b645cecd55470a4e61983ce806540f82de562da0 | ahead 0 behind 0 | 0 | Corrective709c041af1e832f89d67aa57a01dc776c6ef01ec: installer34/34, full Runbook54/54; saved and introduced local deletion RED then unchanged-lane refusals GREEN. Existing exact legacy9/11/29 recovery and strict current coverage remain green. Runtime/Core/version unchanged. | Scoped managed-runtime feature wording and owning Spec/proof updated; initial FAIL and original proof preserved. Generic templates exempt for release-side controller-only change. | Fresh independent assembled review and integration; after this close run render and doctor. Installed-root repeat belongs to dependent coordinator; known21 drift/Owner QA/main separate. | 84b29ab4cec5c25525289cdda9d562d9607f8b9ab2a281b09240eade5ce928bb |
 
 ## Continuation
 

@@ -8,8 +8,8 @@
 **Updated:** 2026-10-07
 **Catalog description:** Recover the prior managed runtime file set safely when update introduces new tools, including legacy growth backups.
 **Blockers:** none
-**Latest event:** TK-007J claimed by codex-runtime-rollback.
-**Next gate:** Close TK-007J with verification and documentation proof.
+**Latest event:** TK-007J closed with proof.
+**Next gate:** Confirm acceptance criteria and completion result.
 
 ## Outcome
 
@@ -78,6 +78,7 @@ This owner and existing managed-runtime feature explanation. Generic controls/te
 | 2026-10-07 | review | Review verdict: fail at 9a04913f227e7ebcc6b5245eaa5d370a9aef444a [81eeffd38dd0] #1 | continue TK-007J: Refuse rollback when a saved tool was deleted after update and prove unchanged lane and receipt; continue TK-007J: Render after native Task closure and verify doctor has no render drift | Fresh same-provider OpenAI Codex context runtime_rollback_review; read-only assembled Spec review; exact deployed model identifier not exposed | 2 |
 | 2026-10-07 | TK-007J | Review corrective Check passed | Local saved/introduced deletion RED25f984e3 then guarded GREEN709c041a; installer34/34, full54/54 on clean709c041af1e832f89d67aa57a01dc776c6ef01ec. Doctor has no render drift; post retains21 known findings/blocked/cleanUpdatefalse, guardrails73/100 unchanged. | First native FAIL preserved; corrective-verification.json, deletion-red.txt, corrective-installer-green.txt and corrective-room-check.json retain public proof. One-condition guard and scoped feature wording only. | Native close then render/doctor, one fresh immutable assembled review and ordinary integration; installed-root repeat remains dependent |
 | 2026-10-07 | TK-007J | Corrective close refused before mutation | Native close refused while branch was ahead3; no override used. | Publish checkpoint before retry; scoped room receipt retains findings and omits unrelated inventory. | Push, close, render and doctor before review |
+| 2026-10-07 | TK-007J | Task closed (run 2) | Corrective709c041af1e832f89d67aa57a01dc776c6ef01ec: installer34/34, full Runbook54/54; saved and introduced local deletion RED then unchanged-lane refusals GREEN. Existing exact legacy9/11/29 recovery and strict current coverage remain green. Runtime/Core/version unchanged. | Scoped managed-runtime feature wording and owning Spec/proof updated; initial FAIL and original proof preserved. Generic templates exempt for release-side controller-only change. | Fresh independent assembled review and integration; after this close run render and doctor. Installed-root repeat belongs to dependent coordinator; known21 drift/Owner QA/main separate. |
 
 ## Completion Result
 
