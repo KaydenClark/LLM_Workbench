@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -16,6 +17,19 @@ for (const name of ['writing-for-agents', 'retro']) {
 }
 
 const read = (relative) => fs.readFileSync(path.join(root, relative), 'utf8');
+// Owner correction: these are pinned upstream imports, not rewrites. Ignore
+// checkout line endings and the final newline, preserving every instruction.
+const importedSourceHashes = {
+  'writing-for-agents/SKILL.md': '482e371e48efc2dbb401aef7d124467f523c52b2bf9c486dedf60e2f48a7ce98',
+  'writing-for-agents/SKILL-MECHANICS.md': 'eec74bac6af1f45dee949ef6f08fcfd620f72f8de826753b4362de5e4de2e3b1',
+  'retro/SKILL.md': 'cae07b01608af94484df262dd9abdd87a144ec721392c30c051c999d814ee24d',
+};
+for (const [name, expectedHash] of Object.entries(importedSourceHashes)) {
+  const source = read(`workbench/skills/${name}`).replaceAll('\r\n', '\n').replace(/\n+$/, '');
+  assert.equal(createHash('sha256').update(source).digest('hex'), expectedHash,
+    `${name} must preserve the pinned upstream text with only the declared loading adapter`);
+}
+
 const assertIncludesAll = (content, requiredTerms, label) => {
   for (const term of requiredTerms) {
     assert.ok(content.includes(term), `${label} must use ${term}`);

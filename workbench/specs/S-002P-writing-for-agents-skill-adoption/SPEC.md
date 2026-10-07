@@ -48,7 +48,7 @@ The owner explicitly requested `retro` as required in every Workbench and reiter
 
 S-002L has delivered the draft collection and Template 2 on integration, although its owner Human QA and main closure are still open. Those release gates do not prevent this requested draft work. The six investigation/draft/comparison/alignment/source steps are covered by one Task per skill from current Actuality. Existing Current Verified State bullets below remain dated pre-anchor observations, not current installation claims.
 
-`retro` is explicitly invoked and proposes severity-ranked environment improvements without applying them. It loads the shipped writing reference, cites primary session evidence, checks existing guardrails and routes accepted interventions to `improve-harness`. `writing-for-agents` is a reusable authoring reference available to models and users. Its portable mechanics preserve Workbench skill composition and existing permission boundaries. The archived writing-great-skills source and personal installations stay intact; the new reference supersedes it for live Workbench authoring.
+`retro` retains Matt's session retrospective and severity ordering, with step 1 adapted to a real Workbench reference. `writing-for-agents` and its supporting mechanics retain the supplied upstream text. Existing Workbench controls govern authority, composition and artifact ownership; their rules are not duplicated into the imported skills. The archived writing-great-skills source and personal installations stay intact; the new reference supersedes it for live Workbench authoring.
 
 
 - Owner decision 2026-09-30: `writing-for-agents` replaces `writing-great-skills` and becomes Core. This Spec records that decision; it does not reopen it.
@@ -58,7 +58,7 @@ S-002L has delivered the draft collection and Template 2 on integration, althoug
   - The personal install copy at `~/.agents/skills/writing-great-skills/` retires only by the owner's hand. No step of this Spec writes, moves or deletes anything under `~/.agents/skills`, and the core-skill installer refuses to write there.
 - Origin is recorded at step 1 and step 3, not guessed: this skill is new as `writing-for-agents` and its Matt counterpart is `productivity/writing-for-agents`, but the true origin of `writing-great-skills` (Workbench, Matt, or other) is open.
 - Step 6 uses Matt's MIT source with the upstream notice kept in `THIRD_PARTY_NOTICES.md`, adapted as the article settles. The adaptation is the Workbench's, so the skill source states its upstream relationship and pin; it does not claim Matt's wording is Workbench Canon.
-- Invocation is model-selectable in this adoption, matching the read upstream reference and its use by retro; historically, `writing-great-skills` is user-invoked and the Core skills are mostly model-invoked or deliberately user-invoked case by case; Matt's setting is unread.
+- Invocation is model-selectable in this adoption, matching the unchanged upstream reference and its use by retro; historically, `writing-great-skills` is user-invoked and the Core skills are mostly model-invoked or deliberately user-invoked case by case; Matt's setting is unread.
 - A Wiki article is curated context, not instruction authority or proof of behavior. Current source and tests establish Actuality; the Spec and accepted controls establish the target.
 
 ## Non-Goals
@@ -96,7 +96,7 @@ Steps 1-5 touch only the draft wiki. Step 6 is the only step that touches a skil
 - [x] The fold-in of `writing-great-skills` is recorded per idea or term (survives, covered, dropped with reason), and the retirement note states that the personal-install copy retires only by the owner's hand.
 - [x] `workbench/skills/writing-for-agents/SKILL.md` exists, matches the article, and `THIRD_PARTY_NOTICES.md` keeps the upstream MIT notice.
 - [x] Every closed-bundle touchpoint reads 30 consistently (README, Lexicon row, `skillPolicy.required`, catalog tests, the five-archive-directory requirement), and the owner's 2026-09-30 decision is recorded as the S-00R disposition for `writing-great-skills`.
-- [x] A fresh-context scenario shows an agent using the skill to write or edit a skill with the process the skill describes.
+- [ ] A fresh-context scenario shows an agent using the skill to write or edit a skill with the process the skill describes.
 - [ ] The full suite from `AGENTS.md`, `node workbench/tools/wiki.mjs validate`, `render`, `doctor`, the Workbench self-drift pre/post receipts and a separate-context review of the immutable candidate are recorded at their proper gates; no unrun check is reported as passing.
 
 ## Testing Seams
@@ -125,6 +125,8 @@ For step 6, run the targeted catalog and skills-lane tests, then `node workbench
 | 2026-10-06 | TK-006Y | Core source and draft comparison delivered in candidate 8925425c; independent direct-path scenario observed | Catalog red then green; Wiki validation and Ruby YAML name/description parsing pass; scenario inputs/outputs and limits under proof/ | Draft, source, shared bundle owners, generic Runbook mirror and retained archive disposition agree; existing MIT notice retained | Full 53-command suite running; independent assembled review, integration, native-host discovery, owner Human QA and main closure remain; optional Python validator unavailable |
 
 | 2026-10-06 | TK-006Y | Independent provisional assembled review FAIL at 90ca0cc7: P2 exact pre-pair 28-skill lane policy rejected by validate and migrate; returned to diagnosis and correction within the open Task | Public-seam focused regression observed red: invalid instead of valid; prior suite interrupted after its partial results, including three dirty-source refusals | Compatibility correction preserves exact v3.2.1 transition shape only; malformed subsets and unlisted versions remain rejected | Focused green, final full suite and refreshed immutable review pending; earlier FAIL remains evidence |
+
+| 2026-10-06 | TK-006Y | Owner corrected the excessive adaptation: restore Matt's supplied text, retaining only retro's one-line loading adapter and separate Codex invocation metadata | Source-fidelity test observed red against the earlier rewrites; prior 9a25b00c candidate passed 53/53 but that result does not certify this text revision | Runtime rules removed from the imports where existing room controls already govern; shipped notice retains MIT attribution | New source-fidelity green, fresh-context evidence and immutable verification/review refresh pending |
 
 ## Completion Result
 

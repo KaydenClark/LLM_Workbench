@@ -44,7 +44,7 @@ It reads session messages and tool results, relevant commits, controls, verifica
 
 ## How it works
 
-It establishes the session and revision, traces observations to their primary sources, and looks for environmental causes. It checks existing guardrails before proposing another check, separates mechanical rules from judgement, and examines navigation, instruction load, tool cost and missing information. Each candidate names the smallest intervention, owner, confidence and a meaningful verification path.
+It establishes the session and revision, traces observations to their primary sources, and looks for environmental causes. It checks existing guardrails before proposing another check, separates mechanical rules from judgement, and examines navigation, instruction load, tool cost and missing information. It presents candidates in severity order. The room's existing controls govern any later assignment, saved report or intervention; the imported skill does not duplicate them.
 
 ## Common questions
 
@@ -56,7 +56,7 @@ It establishes the session and revision, traces observations to their primary so
 
 ## It's working if
 
-You can trace every candidate to evidence, locate its owner and understand how a later check would test it. Existing checks are recognized, candidates are ordered by consequence, and no proposal is reported as applied. A fresh-context scenario and portable install checks are required by the owning Spec; file presence alone proves neither host discovery nor behavioral reliability.
+You receive candidates grounded in the named session, ordered by severity, and existing check commands are examined before another guardrail is proposed. Candidate selection and implementation remain owner-directed under the room's existing controls. A fresh-context scenario and portable install checks are required by the owning Spec; file presence alone proves neither host discovery nor behavioral reliability.
 
 ## Where it fits
 
@@ -66,7 +66,7 @@ Session evidence -> retro proposals -> owner-selected intervention -> improve-ha
 
 ## Compared with Matt's
 
-Verdict: close. Matt's engineering/retro at d81f3a183412e71a5b1e84ca21bc1a35eea03a60 has the same seven candidate categories, session default, writing dependency and severity ordering. The adaptation makes its proposal boundary explicit, adds primary-evidence coverage and confidence, and routes follow-up to existing Workbench owners. It avoids assuming that every room has CODING_STANDARDS.md, or that a reviewer can judge a change using only its diff. Both versions prefer deterministic checks for mechanical violations and concise navigation pointers.
+Verdict: same behavior. The entrypoint retains engineering/retro at d81f3a183412e71a5b1e84ca21bc1a35eea03a60 except for step 1: the host-specific Skill tool instruction is replaced by a link to the shipped writing reference. The seven categories, default session, severity order and reference wording remain unchanged. Separate Codex metadata preserves explicit invocation. Upstream assumptions about standards-file names and reviewer context are read under the room's current controls; they do not replace its authority or review requirements.
 
 ## Findings
 

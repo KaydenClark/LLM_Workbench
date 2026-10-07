@@ -67,7 +67,7 @@ It sharpens pointers so each necessary branch reaches the right material, keeps 
 | No-op | survives: test behavior against model defaults when uncertain |
 | Negation | covered: positive actions paired with necessary hard boundaries |
 | Separate GLOSSARY.md | dropped as a duplicated definition store; definitions stay with their topics; the archive remains intact |
-| Universal user-only composition restriction | dropped as a portable rule; Workbench authority and host policy own composition |
+| Universal user-only composition restriction | retained as upstream reference; the actual host and higher-priority Workbench controls govern composition |
 
 The archived source remains recoverable provenance. The personal-install copy retires only by the owner's hand; this delivery changes no provider-home files.
 
@@ -87,12 +87,12 @@ Authorized document change -> writing-for-agents -> edited existing owner -> rou
 
 ## Compared with Matt's
 
-Verdict: close. Matt's productivity/writing-for-agents at d81f3a183412e71a5b1e84ca21bc1a35eea03a60 generalizes the preserved writing-great-skills material to all agent documents. The adaptation retains its pointers, loads, hierarchy, completion, leading-word and pruning levers with shorter explanations. Skill mechanics adds Codex explicit-only metadata and the existing Workbench lane and composition rules, without claiming a universal description-loading implementation or authorizing subagents through a writing technique.
+Verdict: same. The entrypoint and SKILL-MECHANICS.md retain the supplied productivity/writing-for-agents text at d81f3a183412e71a5b1e84ca21bc1a35eea03a60 unchanged. The earlier broad rewrite is superseded at the owner's request. Host-specific invocation and composition descriptions remain upstream reference; the existing Workbench controls and actual host metadata govern local operation. Notice files preserve source identity and the MIT license without adding rules to the skill body.
 
 ## Findings
 
 F:writing-for-agents:01 | stale-name | writing-great-skills remains preserved archive and personal provenance; the live authoring route now uses writing-for-agents | S-002P and S-00R for any later archive disposition
-F:writing-for-agents:02 | conflict | Upstream user-invocation rules are host-specific; portable mechanics preserve the Workbench's authorized composition instead of importing a second policy | S-002P
+F:writing-for-agents:02 | conflict | Upstream user-invocation rules are host-specific; the unchanged upstream mechanics are interpreted under higher-priority Workbench controls and actual host policy | S-002P
 F:writing-for-agents:03 | gap | Native configured-host discovery requires host evidence beyond structural installation and a direct-path scenario | S-002P
 
 ## Sources and history
