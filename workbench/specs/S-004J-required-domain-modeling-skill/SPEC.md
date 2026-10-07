@@ -8,8 +8,8 @@
 **Updated:** 2026-10-07
 **Catalog description:** Ship domain modeling in every room's skills lane as the Align companion that shows the downstream consequences of an upstream name, boundary or relationship before it settles, and hands settled meaning to promotion instead of writing Canon inline.
 **Blockers:** none
-**Latest event:** TK-00JC claimed by claude-s004j-worker-fix.
-**Next gate:** Close TK-00JC with verification and documentation proof.
+**Latest event:** TK-00JC closed with proof.
+**Next gate:** Confirm acceptance criteria and completion result.
 
 > **Citation anchors.** pre=`46ad978956a74a3ee1bda22c36eb16207dcd98fd` post=`46ad978956a74a3ee1bda22c36eb16207dcd98fd`.
 
@@ -271,6 +271,7 @@ Record `Docs checked; no update needed` for any other owner checked.
 | 2026-10-07 | integration | PR #415 merged into integration as `c80cb282` (head `d8b17a6a`) while assembled review 1 was in progress; the review, re-pinned to `d8b17a6a`, found the in-room MIT notice missing and the S1, S3, S4 and S5 gaps still present, so verdict #2 failed and the three Tasks continue on `claude/s004j-corrections` from `c80cb282`. Acceptance lines 3, 5, 6 and 9 reopened; the S2 Lexicon count exemption and the S-004O glossary-promotion dependency are recorded. | Reviewer re-pin: full RUNBOOK 54/54 on a fresh clone of `d8b17a6a`, scoped 10/10, counts consistent at 30, guardrail 73/100 at base and head; the evidence table's two stray blank lines removed without changing any row. | Spec header, Non-Goals, Dependencies, current state, acceptance boxes and Completion Result. | Correction pass, fresh assembled review, integration PR and owner Human QA; whether the owner directed the Codex review behind verdict #1 is not recorded here. |
 | 2026-10-07 | TK-00JA | Task closed (run 2) | Correction pass: in-directory MIT NOTICE.md installed into rooms; scoped 11/11 with each new assertion failing on its mutation; full RUNBOOK suite 54/54 on clean e30df561; fast-forward into claude/s004j-corrections verified | Skill notice, credit, adapter list and format note; scoped test; THIRD_PARTY_NOTICES checked, no update needed | TK-00JB scenario 1 rerun and promotion qualification; TK-00JC Wiki; fresh assembled review |
 | 2026-10-07 | TK-00JB | Task closed (run 2) | Correction pass: scenario 1 run 3 names every owner and both tests before the choice with an empty room diff after a red-green trace wording fix; promotion evidence qualified (glossary variant manual write after tool refusal, tool promotion verified for the Lexicon fallback only); full RUNBOOK suite 54/54 on clean fb9765b5 | Skill trace sentence, scoped test, s1 and s3 observations and scenario-evidence; supersedes the earlier unqualified 4/4 wording | Single rerun with one model; glossary tool promotion owned by S-004O; TK-00JC Wiki; fresh assembled review |
+| 2026-10-07 | TK-00JC | Task closed (run 2) | Correction pass: Wiki article matches the corrected adapter list, NOTICE.md credit, qualified promotion evidence, scenario 1 reruns and the scenario 4 prompt limit; wiki validate ok, test-wiki 25/25, full RUNBOOK suite 54/54 on clean eab82fe5 | Domain Modeling Wiki article; router line checked, no update needed | Fresh assembled integration review and owner Human QA; glossary tool promotion owned by S-004O; release identity |
 
 ## Completion Result
 
