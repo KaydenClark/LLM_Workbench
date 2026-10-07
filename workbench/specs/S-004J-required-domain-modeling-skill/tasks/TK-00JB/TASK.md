@@ -19,3 +19,9 @@ Exercise the delivered skill in disposable rooms only, never this repository's l
 ## Done criteria
 
 Each scenario has an observed transcript and room diff assertion under this Spec's proof path, with limits named; any correction is green on the scoped test and the full suite.
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | claude/s004j-assembly | c9905d94b35f7f8c9221378265d59bf530b7ad97 | ahead 0 behind 0 | 0 | Eight fresh headless claude-opus-5-5 sessions (Claude Code 2.1.287) in disposable rooms installed from bc3abc64, skills discovered from each room's .claude/skills: trace PASS, challenges PASS (implementation gap classified at settlement.js:14), capture and promotion PASS 4/4 (A and B twice), decision records PASS (three declined, one DDR offered by scope test), grilling without the skill PASS, no shadow store in any room. Full RUNBOOK suite 54/54 on clean c9905d94; doctor no blocking finding; privacy scan of proof clean. Fast-forward into assembly verified at c9905d94. | proof/scenario-evidence.md, per-scenario observations and curated runs, room generator and runner scripts. Skill source checked; no correction needed. | sessions.mjs promote refuses a root GLOSSARY.md destination until the layout controls list names it (owned by S-004O migration); one model, mostly one run per scenario, scripted owner, local not cloud sessions; Wiki TK-00JC. | c4f58b44e7c7f997e581891e251335cd64cfcf437f80096932b50b72ebac1257 |
