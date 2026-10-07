@@ -1019,7 +1019,8 @@ for (const lexicon of ['LEXICON.md', 'templates/LEXICON.md']) {
     for (const phrase of ['`specs` folder', '`tasks` folder', '`planned`, `active` and `reached`', '`LMK-`', 'reviewed one size above a Spec']) assert.ok(landmark.includes(phrase), `the Landmark row names ${phrase}`);
     assert.match(room ? lexiconArticle('landmark-wiki-page') : lexiconRow(text, 'Landmark Wiki page'), /a reached landmark retires into it/, 'the Landmark Wiki page row names the retirement');
     assert.match(room ? lexiconArticle('map') : lexiconRow(text, 'Map'), /folder path carries every parent/, 'the Map row names the parent path');
-    const task = lexiconRow(text, 'Task');
+    // S-004O TK-009I: in this room the Task Distinction is read from its Wiki lexicon article.
+    const task = room ? lexiconArticle('task') : lexiconRow(text, 'Task');
     assert.doesNotMatch(task, /Tasks directly under a landmark[^|]*no delivered home/, 'the Task row no longer says landmark-direct Tasks have no home');
     assert.doesNotMatch(task, /today ordinary Tasks are Spec-bound/, 'the Task row no longer says every Task is Spec-bound');
     assert.match(task, /a Task's parent is its Spec or, directly, (an assigned and active|its) landmark/, 'the Task row names a landmark as a possible parent');
