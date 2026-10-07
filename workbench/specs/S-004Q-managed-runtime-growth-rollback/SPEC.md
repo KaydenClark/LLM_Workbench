@@ -8,8 +8,8 @@
 **Updated:** 2026-10-07
 **Catalog description:** Recover the prior managed runtime file set safely when update introduces new tools, including legacy growth backups.
 **Blockers:** none
-**Latest event:** TK-007J claimed by codex-runtime-rollback.
-**Next gate:** Close TK-007J with verification and documentation proof.
+**Latest event:** TK-007J closed with proof.
+**Next gate:** Confirm acceptance criteria and completion result.
 
 ## Outcome
 
@@ -74,6 +74,7 @@ This owner and existing managed-runtime feature explanation. Generic controls/te
 | 2026-10-07 | setup | Initial Task claim refused | Native activation succeeded. Claim refused before mutation because the new Spec/Task own paths were uncommitted; its stated recovery is commit first. | Draft records and failed attempt preserved; no lifecycle-tool change | Checkpoint the assigned records, then native claim |
 | 2026-10-07 | TK-007J | Public growth rollback regression and correction | Original controller817661a4 returns rolled-back while retaining18 introduced files, accepts an unrecorded backup and overwrites post-update changes. Committed REDb69fd5ec; corrected controller9e85b668 focused11/11 and installer30/30 GREEN. Corrected fixture compares all original files including the existing lane placeholder; replay against unchanged original controller remains RED. | Controller now records absence and saved hashes, preflights recorded backup/integrity/local edits and restores exact previous receipt. Legacy ancestry guard corrected from historical main9378 to its controller-identical integration parent8e9; unknown sources still refuse. Feature explanation updated; no payload/Core/version/private target delta. | Added historical-source preservation and mode-edit checks, final full current suite, immutable assembled review and integration remain pending. Initial fixture expectation and legacy-guard failures retained locally; no first-pass-clean claim. |
 | 2026-10-07 | TK-007J | Deterministic producer Check passed | Full54/54 on clean cb380955; installer32/32. Legacy saved9/previous11/current29 restores exact original bytes, file set, backups and source9378; historical native valid, current29 honestly needs update. Original controller RED replay retained. Pruned-current legacy case failed RED then guarded GREEN. | Initial red, setup refusal, fixture/generation failures and final checks retained under proof/. Scoped feature explanation and legacy limits recorded. Guardrails73/100 unchanged; known21 findings retained; no runtime/Core/version/private target delta. | Native close, one immutable assembled review and integration delivery follow; installed-root repeat is not performed here |
+| 2026-10-07 | TK-007J | Task closed | All54 Runbook commands pass on clean cb3809551a70f3307ee81bd33ba70e15f3414014; installer32/32 with exact legacy9/11/29 recovery, historical native verification, preserved source/backups and unchanged-lane refusal snapshots. Current29 coverage remains strict. Runtime/Core/version bytes unchanged; public proof/verification.json and room-checks.json retain limits. | Source-only controller, its public regressions, existing managed-runtime feature article and bounded corrective owner; failure lineage, guardrails and room limits preserved; generic template exemption recorded. | Independent assembled review and integration next; installed-root recovery belongs to dependent coordinator. Known drift and Owner Human QA/main remain separate. |
 
 ## Completion Result
 
