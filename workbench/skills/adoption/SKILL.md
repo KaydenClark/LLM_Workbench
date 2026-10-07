@@ -38,7 +38,9 @@ v3 support root through `/update-harness`, which runs
 3. Read `templates/ADOPTION.md` in the canonical Workbench source named by the
    workspace controls completely, and follow its one-time inventory,
    provenance, migration, verification, and handoff phases. After reconciling
-   the seven filled root controls, run from the release checkout:
+   the eight filled root controls (`GLOSSARY.md` and `ARCHITECTURE.md`, whose
+   codemap is drafted from the source and confirmed by grilling, in place of
+   the retired Lexicon), run from the release checkout:
 
    ```bash
    node tools/workbench-adoption.mjs migrate \

@@ -136,7 +136,13 @@ Settle the target's starting point first:
   install` after the layout migration declares it. The manifest's adoption
   source remains historical; current tool and skill generations belong in
   their receipts. Exercise rollback from the recorded backup when the
-  upgrade's recovery proof has not already been established.
+  upgrade's recovery proof has not already been established. A room that
+  still holds `LEXICON.md` receives `GLOSSARY.md` and `ARCHITECTURE.md` from
+  the Template through `migrate`, which retires the Lexicon (backed up in the
+  recovery collection) only after every line has landed and otherwise keeps
+  it and names the unlanded lines in a `lexicon-unlanded` finding; move each
+  into the glossary, `ARCHITECTURE.md` or the Wiki, confirmed by grilling,
+  and rerun `migrate`.
 
 For the v3 spec-centered Workbench:
 
