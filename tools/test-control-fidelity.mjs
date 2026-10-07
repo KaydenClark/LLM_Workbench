@@ -1469,3 +1469,44 @@ test('TK-009C: both glossaries carry the Governance core grouping and the owner 
     assert.match(glossary.entry('Design concept').definition, /^The shared understanding between the parties working on a project about what that project is\.$/, `${relative} keeps the owner definition of design concept`);
   }
 });
+
+// S-004O TK-009F: every live consumer reads the Lexicon's successors. No
+// tracked live Markdown or HTML file links `LEXICON.md` or one of its headings
+// (a Markdown link, an href, or a Wiki frontmatter `sources` item), and the
+// `AGENTS.md` Instruction Authority list, in the room and the Template, does
+// not name the Lexicon (one Contract file and the Lexicon retirement
+// decisions). Live excludes history records, whose mention stays unchanged:
+// Spec records with their proof and Tasks, decision records (including
+// `canonicalized_in`), feedback reports and datasets other than the live
+// report format, landmark records and tracker cards, session records, the
+// generated Taskboard, Grill Board answer data, the Wiki archive, research
+// papers, archived skills, and the two Lexicon files, which their removal Task
+// deletes. Tools and tests are code, not routes; their Lexicon reads move with
+// the installed control set and the removal.
+const LEXICON_HISTORY = [
+  /^workbench\/specs\//, /^workbench\/docs\//, /^workbench\/feedback\/(?!REPORT_FORMAT\.md$)/,
+  /^workbench\/landmark-tracker\//, /^workbench\/landmarks\//, /^workbench\/sessions\//, /^workbench\/wiki\/archive\//,
+  /^workbench\/grill-board\/items\.json$/, /^research papers\//, /^skills-archive\//, /^TASKBOARD\.md$/, /^(?:templates\/)?LEXICON\.md$/
+];
+const LEXICON_LINK = /\]\((?:[^)\s]*\/)?LEXICON\.md(?:#[^)\s]*)?\)|href="(?:[^"]*\/)?LEXICON\.md(?:#[^"]*)?"|^\s*-\s+(?:\S*\/)?LEXICON\.md(?:#\S*)?\s*$/m;
+
+function liveLexiconLinks(base) {
+  const listed = spawnSync('git', ['ls-files', '-z'], { cwd: base, encoding: 'utf8' });
+  assert.equal(listed.status, 0, 'git lists the tracked files');
+  return listed.stdout.split('\0')
+    .filter((file) => /\.(?:md|html)$/.test(file) && !LEXICON_HISTORY.some((pattern) => pattern.test(file)))
+    .filter((file) => fs.existsSync(path.join(base, file)) && LEXICON_LINK.test(read(base, file)));
+}
+
+test('TK-009F: no live file links the Lexicon and Instruction Authority does not name it', () => {
+  assert.deepEqual(liveLexiconLinks(root), [], 'live files link GLOSSARY.md, ARCHITECTURE.md or a Wiki lexicon article, not the Lexicon');
+  for (const sample of ['See [the Lexicon](LEXICON.md).', 'See [routes](../../LEXICON.md#artifact-ownership-schema).', '<a href="LEXICON.md">', 'sources:\n  - LEXICON.md\n']) {
+    assert.ok(LEXICON_LINK.test(sample), `the link check sees ${JSON.stringify(sample)}`);
+  }
+  assert.ok(!LEXICON_LINK.test('The Lexicon retired; `LEXICON.md` names history.'), 'a mention that is not a link is not a link');
+  for (const base of [root, productTemplates]) {
+    const authority = read(base, 'AGENTS.md').split('### Instruction Authority\n')[1]?.split('### State Resolution\n')[0] ?? '';
+    assert.ok(authority.includes('1. The current user request.'), `${base}: AGENTS.md has its Instruction Authority list`);
+    assert.doesNotMatch(authority, /LEXICON\.md|\bLexicon\b/, `${base}: Instruction Authority does not name the Lexicon`);
+  }
+});
