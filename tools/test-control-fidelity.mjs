@@ -825,6 +825,12 @@ test('both Lexicons define every workflow verb once and state the delivery workf
     assert.match(review, /decides whether another Journey is needed/, `${relative} Review row`);
     assert.doesNotMatch(review, /before it merges into its Spec's branch|Task pull request/, `${relative} Review row is not a Task review`);
     if (relative === 'LEXICON.md') assert.match(review, /dictionary-automated-review\.md/, `${relative} Review row routes depth to the Wiki dictionary`);
+    // S-004G TK-006D continuation (fail verdict at a7e735b4): Review keeps the
+    // Reviewer stance distinction, the Writer verb row lists QA and Submit
+    // among the verbs with no plane, and the template quotes no producer owner.
+    assert.match(review, /verb behind the Reviewer stance/, `${relative} Review row names the Reviewer stance`);
+    if (relative === 'LEXICON.md') assert.match(rowsOf(content, 'Writer verb')[0], /Prototype, Check, QA, Submit, Journey, Approve, Delivered and Clean Up have none assigned/, `${relative} Writer verb row lists QA and Submit`);
+    if (relative === 'templates/LEXICON.md') assert.deepEqual(content.split('\n').filter((line) => line.startsWith('| **') && /The owner: "/.test(line)).map((line) => line.slice(0, 40)), [], `${relative} rows quote no producer owner`);
     assert.match(content.split('\n').find((line) => line.startsWith('| **Automated review** (')), /a Spec, sometimes a landmark, or the Workbench as a whole[^|]*never a Task/, `${relative} Automated review row scope`);
     // Owner, 2026-10-05 (confirmed readback): Review judges a completed
     // destination against its Map, and confirmation is the gate a claim
