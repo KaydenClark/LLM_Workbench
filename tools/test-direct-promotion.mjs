@@ -330,9 +330,12 @@ test('TK-009E: no runtime tool writes GLOSSARY.md outside promotion', () => {
   // A room's glossary arrives from the Genesis scaffold and changes only
   // through sessions.mjs promote. A new runtime reference to GLOSSARY.md must
   // be one of these two, never a capture-time (notepad, grilling) write path.
-  const allowed = { 'sessions.mjs': 'the promotion owner rule', 'template-placeholders.mjs': 'the Genesis scaffold file list' };
+  // S-004O TK-009D: wiki.mjs only reads the glossary, to check that a lexicon
+  // article's declared term is an entry.
+  const allowed = { 'sessions.mjs': 'the promotion owner rule', 'template-placeholders.mjs': 'the Genesis scaffold file list', 'wiki.mjs': 'the lexicon article check, read-only' };
   const tools = path.join(root, 'workbench/tools');
   const naming = fs.readdirSync(tools).filter(file => file.endsWith('.mjs') && /GLOSSARY/.test(fs.readFileSync(path.join(tools, file), 'utf8')));
   assert.deepEqual(naming.sort(), Object.keys(allowed).sort());
   assert.doesNotMatch(fs.readFileSync(path.join(tools, 'notepads.mjs'), 'utf8'), /GLOSSARY/, 'the notepad runtime has no glossary path');
+  assert.doesNotMatch(fs.readFileSync(path.join(tools, 'wiki.mjs'), 'utf8'), /write\w*\([^)\n]*GLOSSARY/, 'the Wiki validator never writes the glossary');
 });
