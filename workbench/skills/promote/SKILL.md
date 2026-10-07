@@ -98,13 +98,17 @@ authored documents, not new notepad records; keep them ignored until deliberatel
 reconciled. The command requires every selected entry, carries its corrections
 and dependencies, refuses private material, stale inputs and ignored-note
 citations, and validates the proposed owner before writing. Existing controls,
-specs, ADRs, Wiki and docs/feedback Markdown owners are supported; create new
-owners through their ordinary authorized workflow first.
+the root `GLOSSARY.md`, specs, ADRs, Wiki and docs/feedback Markdown owners are
+supported; create new owners through their ordinary authorized workflow first.
+A glossary promotion selects only `decision` entries, so a pending
+`source_record` or `proposal` stays in the notepad; no capture path writes the
+glossary.
 
 Spec checks reuse lifecycle diagnostics and preserve existing append-only rows;
-ADR and Wiki checks reuse their validators. Controls receive heading and placeholder checks; other documents receive a
-heading check. These are not semantic policy audits. Run the owner's normal
-checks too. Successful output names source selection/context, old/new hashes and
+ADR and Wiki checks reuse their validators. Controls receive heading and
+placeholder checks, and the glossary also keeps its `## Language` section;
+other documents receive a heading check. These are not semantic policy audits.
+Run the owner's normal checks too. Successful output names source selection/context, old/new hashes and
 verified destination bytes. Reconcile remaining source dependencies before a
 separate notepad trim; unchanged source and draft do not prove cleanup is safe.
 
