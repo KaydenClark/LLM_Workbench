@@ -125,7 +125,8 @@
     "workbench-room-checks",
     "workbench-evaluation",
     "implement-spec",
-    "promote-decision"
+    "promote-decision",
+    "readback"
   ],
   "workbenchId": "WB-4oRql1XWpf6VgsNwHUXW4Q"
 }

@@ -55,7 +55,7 @@ No Task is cut yet. The authorized next step is one complete-path Task for this 
 - [ ] One standard Linux workflow reads the existing canonical RUNBOOK suite and has bounded concurrency and runtime.
 - [ ] Hooks check staged bytes, including partially staged files, and avoid network work or the full suite at commit.
 - [ ] Install and recovery are repository-local, idempotent where safe, and refuse existing-hook collisions and other repositories.
-- [ ] Actual hosted CI and installation in LLM_Workbench are verified after reviewed integration delivery.
+- [ ] Hosted CI and canonical hook installation have explicit post-delivery checks scoped to LLM_Workbench; pre-publication success is not claimed.
 
 ## Testing Seams
 
@@ -80,6 +80,7 @@ Pending implementation and reviewed integration delivery. Owner Human QA and mai
 
 ## Remaining Limitations Or Follow-Up Specs
 
+- Actual hosted CI and hook installation can only be observed after the reviewed candidate is published and delivered. This Task carries that final proof to the owner's requested integration endpoint; the pre-integration gate checks the implementation and the named verification route.
 - Existing Workbench drift remains separately owned; passing this patch's tests cannot establish a globally clean Workbench or agent reliability.
 
 ## Supersession

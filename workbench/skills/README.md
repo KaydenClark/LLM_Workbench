@@ -73,6 +73,7 @@ its orchestration entry belongs to this repository's Runbook and lane adapters.
 | `workbench-evaluation` | Evaluate a harness change and run the feedback loop: claims, design, commands, feedback intake, the automated gate, run outcomes and manual reports. |
 | `implement-spec` | Orchestrate a sliced Spec through Workers and assembly to a PR ready for integration review; Workbench-only first delivery. |
 | `promote-decision` | Orchestrate one confirmed decision through delegated Record, Map, Plan and stage publication; Workbench-only first delivery. |
+| `readback` | Read an answer, concept or direction back for confirmation or correction at any time; Workbench-only first delivery. |
 <!-- maintainer-skills:end -->
 
 ## Normal setup

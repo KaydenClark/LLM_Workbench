@@ -25,6 +25,7 @@ Contract change.
 |---|---|---|
 | Write agent instructions | You create or edit skills, steering files or references agents reach through pointers. | [writing-for-agents](workbench/skills/writing-for-agents/SKILL.md) |
 | Retrospect on a session | The owner explicitly requests a retrospective on a named session or the current one. | [retro](workbench/skills/retro/SKILL.md) |
+| Find a workflow | You need the existing verb sequence, scenario and skill route. | [Workflows](#workflows) |
 | Enter a session | Every session start or resume: check root, branch and dirty state, run doctor and load the assigned Spec. | [Ordinary Entry](#ordinary-entry) |
 | Find the owner of a question | You need the file that owns a permission, meaning, work state, proof or procedure. | [Finding The Owner Of A Question](#finding-the-owner-of-a-question) |
 | Route a truth to its owner | Work changed a durable truth and its owner must be updated, or nothing changed and that must be recorded. | [to-docs](workbench/skills/to-docs/SKILL.md#to-docs) |
@@ -81,6 +82,29 @@ Contract change.
 | Check the Workbench connection identity | The room's `workbenchId` is created, read or compared. | [workbench-runtime](workbench/skills/workbench-runtime/SKILL.md#workbench-connection-identity) |
 | Check configured-host capabilities | A host is set up, or its lanes, skill discovery or tool execution are in doubt. | [workbench-runtime](workbench/skills/workbench-runtime/SKILL.md#configured-host-capability-checks) |
 | Review a candidate independently | An assembled Spec or landmark is at its Verify step and needs separate-context review, or a main-readiness or incident-claim review is requested. | [code-review](workbench/skills/code-review/SKILL.md#independent-review-boundaries) |
+
+## Workflows
+
+Maintain this reference with the project's confirmed workflows. It lines up
+verbs, scenarios and skill pointers; definitions and governing decisions stay
+with their existing owners. The reference adds no authority or new gate.
+
+| Scenario | Route | Skills and procedures |
+|---|---|---|
+| Take a new direction from idea to delivery | Idea → Align → Confirm → Map → Plan → Journey → Review → Verify → Approve → Delivered → Clean Up | [grilling](workbench/skills/grilling/SKILL.md), [to-docs](workbench/skills/to-docs/SKILL.md), [to-spec](workbench/skills/to-spec/SKILL.md), [to-tasks](workbench/skills/to-tasks/SKILL.md), [implement](workbench/skills/implement/SKILL.md), [dispatcher](workbench/skills/dispatcher/SKILL.md), [director](workbench/skills/director/SKILL.md) |
+| Build an assigned Task or resume an authorized handoff | Journey: Implement → Check → QA → Submit | [implement](workbench/skills/implement/SKILL.md#4-review-at-the-relevant-boundary), [handoff](workbench/skills/handoff/SKILL.md), [carry](workbench/skills/carry/SKILL.md) |
+| Correct a failed assembled review | Review fails → Map → Plan → Journey → Review → Verify | [corrective return](workbench/skills/dispatcher/SKILL.md#assembled-review-and-corrective-return) |
+| Promote confirmed claims | Promote to the requested endpoint | [promote](workbench/skills/promote/SKILL.md) |
+| Finish after reviewed integration delivery | Approve → Delivered → Clean Up | [owner closure](workbench/skills/director/SKILL.md#owner-closure-and-reconciliation) |
+
+Off-path arrivals use [genesis](workbench/skills/genesis/SKILL.md),
+[adoption](workbench/skills/adoption/SKILL.md),
+[update-harness](workbench/skills/update-harness/SKILL.md) or
+[version-control recovery](#version-control-procedures) for the actual scenario.
+Review judges the assembled Spec, landmark or Workbench, never a Task.
+Owner Human QA, owner-only main promotion, main verification and cleanup remain
+visible. An outer grouping involving Explore and Promote is unresolved; an
+abbreviation cannot replace these confirmed steps or authorize their removal.
 
 ## Ordinary Entry
 
