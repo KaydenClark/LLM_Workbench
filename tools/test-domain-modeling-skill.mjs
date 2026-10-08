@@ -52,6 +52,24 @@ function sections(text) {
     return { ...heading, body: flat(lines.slice(heading.line + 1, end).join('\n')) };
   });
 }
+// The top-level bullets of one section, each with its bold label and its own
+// flattened text, so a claim is checked inside the bullet that makes it.
+function bullets(text, title) {
+  const lines = text.split('\n');
+  const start = lines.findIndex((line) => line === `## ${title}`);
+  assert.ok(start >= 0, `${skillPath} has a "${title}" section`);
+  const items = [];
+  for (const line of lines.slice(start + 1)) {
+    if (/^#{1,6} /.test(line)) break;
+    if (/^- /.test(line)) items.push([line]);
+    else if (items.length > 0 && /^\s+\S/.test(line)) items.at(-1).push(line);
+    else if (items.length > 0 && line.trim() !== '') items.push(null);
+  }
+  return items.filter(Boolean).map((item) => {
+    const body = flat(item.join(' ').replace(/^- /, ''));
+    return { label: body.match(/^\*\*(.+?)\*\*/)?.[1] ?? '', body };
+  });
+}
 const section = (text, title) => {
   const found = sections(text).find((heading) => heading.title === title);
   assert.ok(found, `${skillPath} has a "${title}" section`);
@@ -215,21 +233,35 @@ test('the skill is a companion, keeps one vocabulary owner and records each adap
   assert.match(flat(text), /grilling .*complete[s]? without it/i, 'grilling and the question-card flow complete without it');
   const grilling = flat(read('workbench/skills/grilling/SKILL.md'));
   assert.doesNotMatch(grilling, /(must|always) (invoke|load|use) `?domain-modeling/i, 'grilling does not require the skill');
-  const adapters = section(text, 'Workbench adapters');
-  for (const adapter of ['consequence', 'notepad', '`LEXICON.md`', 'DDR', 'companion', 'vocabulary owner']) {
-    assert.ok(adapters.includes(adapter), `the adapters section records ${adapter}`);
+  // Each named change is its own bullet, and that bullet carries its own
+  // reason: a label left behind without its explanation fails here.
+  const adapters = bullets(text, 'Workbench adapters');
+  for (const [change, label, detail] of [
+    ['the rewritten description and trigger', /^Description and trigger/i, /GLOSSARY\.md/],
+    ['the upstream consequence trace', /consequence trace/i, /downstream/i],
+    ['notepad capture and promotion, with capture timing kept', /notepad and promotion/i, /as they happen/i],
+    ['vocabulary owner routing over the file-structure trees', /^Vocabulary owner routing/i, /`LEXICON\.md`.*file-structure|file-structure.*`LEXICON\.md`/],
+    ['the dropped lazy file creation', /^No lazy file creation/i, /create a glossary/i],
+    ['one question at a time inside grilling', /^One question at a time/i, /readback/i],
+    ['quoting the definition and its file', /^Quoting the definition and its file/i, /source/i],
+    ['reading tests as well as code', /tests as well/i, /contradiction/i],
+    ['State Resolution classes', /^State Resolution/i, /source-versus-Canon/i],
+    ['ADR or DDR by the scope test', /ADR or DDR/, /`to-docs`/],
+    ['saying which test failed', /which test failed/i, /record/i],
+    ['a companion, not a dependency', /companion/i, /grilling/i],
+    ['one vocabulary owner', /^One vocabulary owner/i, /second glossary/i],
+    ['the form changes', /^Form$/, /rewrapped/i]
+  ]) {
+    const matching = adapters.filter((item) => label.test(item.label));
+    assert.equal(matching.length, 1, `exactly one adapter bullet records ${change}`);
+    const [item] = matching;
+    assert.match(item.body, detail, `the adapter for ${change} names what it changes`);
+    const reason = item.body.match(/\bbecause\b(.*)$/)?.[1] ?? '';
+    assert.ok(reason.trim().split(/\s+/).length >= 4, `the adapter for ${change} states its own reason`);
   }
-  assert.ok((adapters.match(/ because /g) ?? []).length >= 5, 'each adapter states its reason');
-  for (const [change, pattern] of [
-    ['the rewritten description and trigger', /description and trigger/i],
-    ['one question at a time inside grilling', /one question at a time/i],
-    ['quoting the definition and its file', /quoting the definition and its file/i],
-    ['reading tests as well as code', /tests as well/i],
-    ['saying which test failed', /which test failed/i],
-    ['the dropped lazy file creation', /lazy file creation/i],
-    ['the dropped upstream file-structure trees', /file-structure/i],
-    ['capture timing kept', /as they happen/i]
-  ]) assert.match(adapters, pattern, `the adapters section records ${change}`);
+  for (const item of adapters) {
+    assert.match(item.body, /\bbecause\s+\S+(\s+\S+){3}/, `every adapter bullet states its reason: "${item.label}"`);
+  }
   for (const policy of [/supplies a method, never authority/i, /not evidence that a feature exists/i]) {
     assert.doesNotMatch(flat(text), policy, 'unrelated Workbench policy stays out of the imported body');
   }

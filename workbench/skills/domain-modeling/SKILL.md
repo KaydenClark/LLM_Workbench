@@ -181,7 +181,8 @@ Each change from the upstream source, and why:
 - **One vocabulary owner**: no second glossary, inferred context map or local
   decision-record tree, because a parallel store splits the room's meaning.
 - **Form**: lines are rewrapped, and this section and Source and credit are
-  added; the remaining wording is upstream's.
+  added, because every room that installs the skill must see each change and
+  its credit beside the method; the remaining wording is upstream's.
 
 ## Source and credit
 
