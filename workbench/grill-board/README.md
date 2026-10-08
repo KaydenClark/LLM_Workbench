@@ -291,9 +291,13 @@ identifiers only.
   (the room root when it has none), and link only to cataloged pages. Each page
   shows **Linked from**: the pages that link to it, and every question whose
   card links to it in any of those ways (by source, by identifier or shorthand,
-  or by a Markdown link), counted by the same rule the card uses and glossary terms show their
-  definition on hover, when the server's sources module offers them; without
-  them the page shows the board questions citing the file and no definitions.
+  or by a Markdown link). On the current board the server's count matches the
+  card's links for every question; unusual Markdown (titled or reference links,
+  links inside code) can still make the two differ. Identifiers written as a
+  comma list after a full one (`ADR-000F, 000M, 0046`) link only the first.
+  Glossary terms show their definition on hover. The Linked from panel, search
+  and hover definitions need the server's sources module; without it the page
+  shows the board questions citing the file and no definitions.
 
 Opening a question puts its `#GB-####` in the address, so a reload reopens it.
 
