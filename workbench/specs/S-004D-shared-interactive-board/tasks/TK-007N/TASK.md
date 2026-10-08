@@ -3,11 +3,12 @@
 **Task ID:** TK-007N
 **Spec ID:** S-004D
 **Slice:** Every live board question carries reasoned P/V grades
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** TK-007L
 **Destination:** spec-acceptance: Every in-scope live question has valid P1–P4 and V1–V4 grades with reasons traceable to its question and governed capability/change. Missing grades remain visible as unclassified rather than receiving invented defaults.
 **Planned verification:** Red first: a live-board assertion in `tools/test-grill-board.mjs` that every in-scope item carries a valid Priority and Value with nonempty reasons fails on the ungraded inventory. Green: that assertion and `node tools/grill-board.mjs validate` after grading through the TK-007L grade operation only; a diff check that the grade write changed no question, proposal, draft, sources, brief, identity, applied record or existing history entry and did not touch `answers.json`; a recorded read of a sample across every kind and group checking each reason against the Lexicon meanings and its cited source; then the full Runbook suite on the committed candidate.
+**Claimed by:** claude-dashboard-director
 
 ## Scope
 
