@@ -3,11 +3,12 @@
 **Task ID:** TK-007O
 **Spec ID:** S-004D
 **Slice:** Agents reassess P/V when updating cards from Owner answers, shown on the real board
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** TK-007M, TK-007N
 **Destination:** spec-acceptance: A demonstrated answer-to-card-update cycle shows the agent assessing whether each affected grade's basis changed, retaining grades when it did not and recording justified revisions when it did. No periodic DQC work is needed.
 **Planned verification:** Red first in `tools/test-grill-board.mjs`: a fixture cycle (Owner answer saved through the page path, agent `apply`/`revise`, then the P/V assessment) fails while the reassessment is not recorded or a retained grade cannot be told from an unassessed one. Green: that cycle for one retained and one revised grade, with identity, history and the Owner's answer preserved and `answers.json` untouched by agent operations; then the browser scenario on a disposable copy of the real inventory recorded in a proof receipt; then the full Runbook suite on the committed candidate.
+**Claimed by:** claude-dashboard-director
 
 ## Scope
 
