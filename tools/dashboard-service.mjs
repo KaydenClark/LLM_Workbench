@@ -107,7 +107,7 @@ export function serviceInstructions({ root, port = DEFAULT_PORT, label = DEFAULT
     `  Uninstall:  launchctl bootout gui/${uid}/${label}`,
     `              rm ${plist}`,
     `  Inspect:    launchctl print gui/${uid}/${label}`,
-    `  Open:       http://${HOST}:${port}/`
+    status?.installed ? `  Open:       http://${HOST}:${status.installed.port}/ (the installed service)` : `  Open:       http://${HOST}:${port}/`
   ].join('\n');
 }
 

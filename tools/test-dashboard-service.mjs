@@ -184,6 +184,7 @@ test('status reports a mismatch between the installed service and the request an
   assert.match(text, /already exists[\s\S]*install refuses to replace it/);
   assert.match(text, /Inspect it first:[\s\S]*cat \/Users\/owner\/Library\/LaunchAgents\/com\.kayden\.workbench-dashboard\.plist/);
   assert.match(text, /--label com\.kayden\.workbench-dashboard\.demo-copy/);
+  assert.match(text, /Open: {7}http:\/\/127\.0\.0\.1:4646\/ \(the installed service\)/);
   assert.doesNotMatch(text, /> \/Users\/owner\/Library\/LaunchAgents\/com\.kayden\.workbench-dashboard\.plist/, 'no instruction writes over the existing configuration');
   assert.doesNotMatch(text, /install --path \/tmp\/demo-copy --port 4720 --label com\.kayden\.workbench-dashboard\n/, 'no same-label install is offered');
 
