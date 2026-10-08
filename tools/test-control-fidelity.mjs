@@ -883,15 +883,30 @@ test('the workflow verbs decision carries the Journey correction and no active r
 });
 
 
-// S-004G: the Workflow Verbs and Idea To Delivery Wiki pages state the open verb set, the delivery
-// workflow and Journey as the build loop, as the Lexicon and the amended decision do.
-test('the workflow Wiki pages state the delivery workflow and Journey as the build loop', () => {
+// S-005F: the current map lives in the Runbook; Wiki explanations route there.
+// Existing verb-definition and amended-decision checks above retain their owners.
+test('the Runbooks carry the confirmed parent workflows and Wiki explanations route to that home', () => {
   for (const file of ['workflow-verbs.md', 'idea-to-delivery-workflow.md']) {
     const page = read(root, `workbench/wiki/design-concepts/${file}`).replace(/\s+/g, ' ');
     assert.doesNotMatch(page, /Journey \(Map, Plan, Implement, Review, Verify\)|Map, Plan, Implement, Review and Verify together are a \*\*Journey|Map through Verify together are one Journey/, `${file} still states the replaced Journey`);
-    assert.match(page, /Idea, Align, Confirm, Map, Plan, Journey, Review, Verify, Approve, Delivered, Clean Up/, `${file} names the delivery workflow`);
+    assert.match(page, /\[Runbook reference and diagram\]\(\.\.\/\.\.\/\.\.\/RUNBOOK\.md#workflows\)/, `${file} routes to the canonical workflow home`);
   }
   assert.match(read(root, 'workbench/wiki/design-concepts/workflow-verbs.md').replace(/\s+/g, ' '), /Journey is the build loop: Implement, Check, QA and Submit/);
+  const confirmed = [
+    ['Explore', 'Idea → Align → Confirm'],
+    ['Promote', 'Record → Publish → Map → Publish → Plan → Publish'],
+    ['Journey', 'Implement → Check → QA → Submit'],
+    ['Judge', 'Review → Verify → Approve'],
+    ['Complete', 'Delivered → Clean Up']
+  ];
+  for (const file of ['RUNBOOK.md', 'templates/RUNBOOK.md']) {
+    const content = read(root, file);
+    const section = content.split('## Workflows\n')[1].split('\n## Ordinary Entry')[0];
+    for (const [parent, verbs] of confirmed) assert.ok(section.includes(`| ${parent} | ${verbs} |`), `${file} retains the confirmed ${parent} sequence`);
+    assert.match(section.replace(/\s+/g, ' '), /Each Publish makes that stage's records available from integration/, `${file} binds stage publication to integration availability`);
+    assert.match(section, /Review applies to an assembled destination, never a Task/, `${file} retains assembled Review`);
+    assert.match(section, /owner-only main promotion, main verification and cleanup remain/, `${file} retains owner and closure safeguards`);
+  }
 });
 
 // S-004E: each AI Coding Dictionary term the owner adopted has exactly one
