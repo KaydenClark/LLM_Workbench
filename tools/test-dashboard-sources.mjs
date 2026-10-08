@@ -7,7 +7,8 @@ import test from 'node:test';
 import { createHash } from 'node:crypto';
 import { captureQuestion } from '../workbench/tools/landmark-tracker.mjs';
 import { readSourceFile } from './grill-board.mjs';
-import { dashboardRoute, dashboardSources } from './dashboard-sources.mjs';
+import { dashboardRoute, dashboardSources, decisionIds, questionLinkTargets } from './dashboard-sources.mjs';
+import { readItems } from './grill-board.mjs';
 
 function put(root, file, text) {
   fs.mkdirSync(path.dirname(path.join(root, file)), { recursive: true });
@@ -260,4 +261,44 @@ test('dashboardRoute answers only its own paths and requires the board reader', 
   assert.equal(route(root, '/api/board'), null);
   assert.equal(route(root, '/api/glossaryx'), null);
   assert.throws(() => dashboardRoute(root, new URL('http://127.0.0.1/api/search?q=x'), { items: [] }), TypeError);
+});
+
+// --- Question links: what a question card renders as links, counted the same way.
+
+test('decision-record shorthand expands after a full ID and never over an ordinary slash', () => {
+  assert.deepEqual(decisionIds('Board first before ADR-000B/C/D (TRACK).'), ['ADR-000B', 'ADR-000C', 'ADR-000D']);
+  assert.deepEqual(decisionIds('DDR-000P/000Q/000S and ADR-0013/0033'), ['DDR-000P', 'DDR-000Q', 'DDR-000S', 'ADR-0013', 'ADR-0033']);
+  assert.deepEqual(decisionIds('ADR-000B/its successor, ADR-000H/AGENTS.md, ADR-0017/ADR-0054, ADR-0054/S-00O'), ['ADR-000B', 'ADR-000H', 'ADR-0017', 'ADR-0054', 'ADR-0054']);
+  assert.deepEqual(decisionIds('ADR-000F/G/I and CDR-0001'), ['ADR-000F', 'ADR-000G', 'ADR-000I', 'CDR-0001']);
+  assert.deepEqual(decisionIds('XADR-000B, ADR-000BX, `code`'), []);
+});
+
+test('backlinks count decision-record mentions, shorthand and source-relative links as the page renders them', t => {
+  const root = room(); t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  const record = id => `---\ndate: 2026-10-04\n---\n# Record ${id}\n\nText.\n`;
+  put(root, 'workbench/docs/adr/000B-first.md', record('B'));
+  put(root, 'workbench/docs/adr/000C-second.md', record('C'));
+  put(root, 'workbench/docs/adr/000F-third.md', record('F'));
+  put(root, 'workbench/docs/ddr/000A-aligns.md', record('DDR A'));
+  const items = [
+    { id: 'GB-0001', title: 'Mentions by ID', question: 'Does ADR-000F still hold?', current: '', proposal: '', sources: [{ path: 'AGENTS.md' }], status: 'open' },
+    { id: 'GB-0002', title: 'Shorthand', question: '', current: '', proposal: '', brief: { history: 'Board first before ADR-000B/C/D (TRACK)' }, sources: [], status: 'open' },
+    { id: 'GB-0003', title: 'Source-relative draft link', question: '', current: '', proposal: '', draft: 'See [the decision](../adr/000F-third.md).', sources: [{ path: 'workbench/docs/ddr/000A-aligns.md' }], status: 'open' },
+    { id: 'GB-0004', title: 'Option mention', question: '', current: '', proposal: '', options: [{ value: 'a', label: 'Supersede ADR-000F' }], sources: [], status: 'open' },
+    { id: 'GB-0005', title: 'Unrelated', question: 'ADR-000B/its successor', current: '', proposal: '', sources: [], status: 'open' }
+  ];
+  const ids = target => route(root, `/api/backlinks?path=${encodeURIComponent(target)}`, items).links.filter(link => link.kind === 'question').map(link => link.id);
+  assert.deepEqual(ids('workbench/docs/adr/000F-third.md'), ['GB-0001', 'GB-0003', 'GB-0004']);
+  assert.deepEqual(ids('workbench/docs/adr/000C-second.md'), ['GB-0002'], 'shorthand counts the expanded record');
+  assert.deepEqual(ids('workbench/docs/adr/000B-first.md'), ['GB-0002', 'GB-0005']);
+  const paths = new Map([['ADR-000F', 'workbench/docs/adr/000F-third.md']]);
+  assert.deepEqual([...questionLinkTargets(items[2], paths)].sort(), ['workbench/docs/adr/000F-third.md', 'workbench/docs/ddr/000A-aligns.md']);
+});
+
+test('on the real board ADR-000F lists every question that links to it', () => {
+  const root = new URL('..', import.meta.url).pathname;
+  const items = readItems(root).items;
+  const result = route(root, `/api/backlinks?path=${encodeURIComponent('workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md')}`, items);
+  const questions = result.links.filter(link => link.kind === 'question').map(link => link.id);
+  for (const id of ['GB-0023', 'GB-0025', 'GB-0063', 'GB-0105', 'GB-0146', 'GB-0173', 'GB-0180']) assert.ok(questions.includes(id), `${id} links ADR-000F`);
 });
