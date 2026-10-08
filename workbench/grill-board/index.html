@@ -474,26 +474,45 @@
 
   // Decision-record identifiers (ADR, DDR and CDR) named in text link to
   // their cataloged Wiki page; an identifier without a cataloged record is
-  // shown as unavailable, never as a dead link.
-  const DECISION_ID = /(?<![\w-])(?:ADR|DDR|CDR)-[0-9A-Za-z]{4}(?![\w-])/g;
+  // shown as unavailable, never as a dead link. Slash shorthand expands: after
+  // a full ID, each "/X" continuation of one to four capitals or digits that
+  // ends the word replaces the ID's last characters ("ADR-000B/C/D"). The same
+  // rule as tools/dashboard-sources.mjs decisionIds, which backlinks use.
+  const DECISION_ID = /(?<![\w-])((?:ADR|DDR|CDR)-[0-9A-Za-z]{4})((?:\/[0-9A-Z]{1,4}(?![\w-]))*)(?![\w-])/g;
+  const expandDecisionId = (base, part) => base.slice(0, base.length - part.length) + part;
+  function decisionIdsIn(text) {
+    const ids = [];
+    for (const match of String(text ?? '').matchAll(DECISION_ID)) {
+      ids.push(match[1]);
+      for (const part of match[2].split('/').filter(Boolean)) ids.push(expandDecisionId(match[1], part));
+    }
+    return ids;
+  }
+  // A title shown in a hover or a generated label, without Markdown emphasis.
+  const plainTitle = title => String(title ?? '').replace(/\*\*|__|`/g, '');
   function decisionRecord(id) { return state.catalog?.artifacts.find(artifact => artifact.id === id && ['adrs', 'ddrs', 'cdrs'].includes(artifact.group)) || null; }
+  function recordLink(id, label) {
+    const record = decisionRecord(id);
+    return record
+      ? `<a class="record-link" href="${esc(artifactHref(record.path))}" title="${esc(plainTitle(record.title))} · ${esc(record.id)}">${esc(label)}</a>`
+      : `<span class="unavailable-link" title="No cataloged decision record ${esc(id)}">${esc(label)}</span>`;
+  }
   function withRecords(value, terms) {
     let html = '', start = 0;
     const text = String(value);
     const rest = segment => terms ? withTerms(esc(segment)) : esc(segment);
     for (const match of text.matchAll(DECISION_ID)) {
-      html += rest(text.slice(start, match.index));
-      const record = decisionRecord(match[0]);
-      html += record
-        ? `<a class="record-link" href="${esc(artifactHref(record.path))}" title="${esc(record.title)} · ${esc(record.id)}">${esc(match[0])}</a>`
-        : `<span class="unavailable-link" title="No cataloged decision record ${esc(match[0])}">${esc(match[0])}</span>`;
+      html += rest(text.slice(start, match.index)) + recordLink(match[1], match[1]);
+      for (const part of match[2].split('/').filter(Boolean)) html += `/${recordLink(expandDecisionId(match[1], part), part)}`;
       start = match.index + match[0].length;
     }
     return html + rest(text.slice(start));
   }
   // A deliberately small Markdown renderer: paragraphs, headings, lists,
   // quotes, tables, fenced code, inline code, bold and links. Everything else is text.
-  function inline(text, source = '') {
+  // source is the path relative links resolve against ('' for the room
+  // root); without one (null) relative links are plain labels.
+  function inline(text, source = null) {
     const token = /`([^`]+)`|\[([^\]]+)\]\(([^\s)]+)\)/g;
     let result = '', start = 0;
     // Plain text gets glossary terms and decision-record links; a link label
@@ -505,7 +524,7 @@
       else {
         const label = plain(match[2], false), target = match[3];
         if (/^https?:\/\//i.test(target)) result += `<a href="${esc(target)}" target="_blank" rel="noopener">${label}</a>`;
-        else if (source && !/^[a-z][a-z\d+.-]*:/i.test(target)) {
+        else if (source !== null && !/^[a-z][a-z\d+.-]*:/i.test(target)) {
           try {
             const url = new URL(target, `http://reader/${source}`);
             const local = decodeURIComponent(url.pathname.slice(1));
@@ -518,7 +537,12 @@
     }
     return result + plain(String(text).slice(start));
   }
-  function markdown(text, source = '', depth = 0) {
+  // A one-line text (the question) with a fresh glossary first-use set.
+  function inlineText(text, source = null) {
+    state.termSeen = state.termPattern ? new Set() : null;
+    return inline(text, source);
+  }
+  function markdown(text, source = null, depth = 0) {
     if (depth === 0) state.termSeen = state.termPattern ? new Set() : null;
     const lines = String(text ?? '').replace(/\r\n/g, '\n').split('\n');
     const out = [];
@@ -763,7 +787,8 @@
     document.getElementById('next-question').onclick = () => { openQuestion(shown[index + 1].id); panel.scrollIntoView({ block: 'start' }); };
   }
   // Decision records and other cataloged sources open in the Wiki section.
-  // The relative-link base for an item's text: its first in-room source.
+  // The relative-link base for an item's text: its first in-room source, else
+  // the room root ('').
   function itemBase(item) {
     const source = (item.sources || []).find(candidate => candidate.path && !candidate.path.startsWith('/') && !candidate.path.startsWith('..') && !/^[a-z][a-z\d+.-]*:/i.test(candidate.path));
     return source ? source.path : '';
@@ -771,7 +796,7 @@
   // Every decision-record identifier the question names in its text.
   function namedDecisionIds(item) {
     const text = [item.title, item.question, item.current, item.proposal, item.draft || '', ...Object.values(item.brief || {}), ...(item.options || []).flatMap(option => [option.label, option.hint || ''])].join('\n');
-    return [...new Set(text.match(DECISION_ID) || [])];
+    return [...new Set(decisionIdsIn(text))];
   }
   // Cataloged sources and the decision records the question names, each once.
   function wikiLinks(item) {
@@ -781,7 +806,7 @@
     const records = named.map(decisionRecord).filter(Boolean).filter(artifact => !seen.has(artifact.path) && seen.add(artifact.path));
     const missing = named.filter(id => !decisionRecord(id));
     if (!sources.length && !records.length && !missing.length) return '';
-    const link = artifact => `<a href="${esc(artifactHref(artifact.path, '', item.id))}">${esc(groupTitle(artifact.group))} · ${esc(artifact.title)}${artifact.id ? ` (${esc(artifact.id)})` : ''}</a>`;
+    const link = artifact => `<a href="${esc(artifactHref(artifact.path, '', item.id))}">${esc(groupTitle(artifact.group))} · ${esc(plainTitle(artifact.title))}${artifact.id ? ` (${esc(artifact.id)})` : ''}</a>`;
     return `<div class="wiki-links">${sources.length ? `<span>Read in the Wiki:</span>${sources.map(link).join('')}` : ''}${records.length || missing.length ? `<span>Decision records:</span>${records.map(link).join('')}${missing.map(id => `<span class="unavailable-link" title="No cataloged decision record ${esc(id)}">${esc(id)} (not in the Wiki)</span>`).join('')}` : ''}</div>`;
   }
   function card(item) {
@@ -798,7 +823,7 @@
     return `<article class="item" id="${item.id}" data-id="${item.id}" data-status="${status}" data-revision="${item.revision}">
       <div class="item-head"><h3>${esc(item.title)}<small class="identity">${item.id} · revision ${item.revision}</small></h3><span><span class="badge ${status}">${STATUS_LABEL[status]}</span><span class="kind">${esc(KIND_LABEL[item.kind] || item.kind)}</span></span></div>
       ${gradeDetail(item)}
-      <p class="q">${inline(item.question, itemBase(item))}</p>
+      <p class="q">${inlineText(item.question, itemBase(item))}</p>
       ${wikiLinks(item)}
       ${item.brief ? decisionBrief(item) : `<div class="block"><h4>Context · current</h4>${markdown(item.current, itemBase(item))}</div><div class="recommendation"><h4>Recommended answer · agent proposal</h4>${markdown(item.proposal, itemBase(item))}</div>`}
       ${item.draft ? `<details class="draft" open><summary>Proposed wording · draft at revision ${item.revision}</summary><div class="block">${markdown(item.draft, itemBase(item))}</div></details>` : ''}

@@ -8,6 +8,7 @@ import http from 'node:http';
 import * as board from './grill-board.mjs';
 import { appendEntry, readNote } from '../workbench/tools/notepads.mjs';
 import { createWorkflow, chainAnswers } from './dashboard-workflow.mjs';
+import { questionLinkTargets } from './dashboard-sources.mjs';
 function room() {
  const root=fs.mkdtempSync(path.join(os.tmpdir(),'dashboard-board-test-'));
  fs.mkdirSync(path.join(root,board.BOARD_DIR),{recursive:true});
@@ -228,7 +229,7 @@ function element() {
 }
 function pageModel({storage={},history=[]}={}) {
  const html=fs.readFileSync(new URL('../workbench/grill-board/index.html',import.meta.url),'utf8');
- const script=html.match(/<script>([\s\S]*?)<\/script>/)[1].replace('Promise.all([load()','window.model={state,matchesSlice,topicSummaries,sliceTitle,startBatch,batchProgress,resetSlice,gradeBadges,gradeDetail,answerModel,whysList,confirmedItems,dispositionTimeline,laneFor,rememberComment,commentDraftFor,forgetComment,cardWorkflowHtml,staleNotice,promotionBlocker,openQuestion,hasUnsavedWork,approvalSummary,conflictNotice,saveFailureMessage,autoSaveBlock,noteRefused,markdown,wikiLinks,namedDecisionIds,card,itemBase}; Promise.all([load()');
+ const script=html.match(/<script>([\s\S]*?)<\/script>/)[1].replace('Promise.all([load()','window.model={state,matchesSlice,topicSummaries,sliceTitle,startBatch,batchProgress,resetSlice,gradeBadges,gradeDetail,answerModel,whysList,confirmedItems,dispositionTimeline,laneFor,rememberComment,commentDraftFor,forgetComment,cardWorkflowHtml,staleNotice,promotionBlocker,openQuestion,hasUnsavedWork,approvalSummary,conflictNotice,saveFailureMessage,autoSaveBlock,noteRefused,markdown,wikiLinks,namedDecisionIds,card,itemBase,inline}; Promise.all([load()');
  const elements=new Map();
  const localStorage={getItem:key=>storage[key]??null,setItem:(key,value)=>{storage[key]=String(value);},removeItem:key=>{delete storage[key];}};
  const ctx=vm.createContext({document:{getElementById:id=>{if(!elements.has(id))elements.set(id,element());return elements.get(id);},querySelectorAll:()=>[],documentElement:{dataset:{}}},window:{addEventListener(){},scrollTo(){},scrollY:0},history:{replaceState:(_state,_title,url)=>history.push(url)},localStorage,setInterval(){},setTimeout,clearTimeout,URL,URLSearchParams,location:{hash:''},fetch:()=>new Promise(()=>{})});
@@ -810,4 +811,85 @@ test('on the real board every named, cataloged decision record in an open questi
   }
  }
  assert.ok(checked>=100,`checked ${checked} named records`);
+});
+
+const SHORTHAND_CATALOG={groups:[{id:'adrs',title:'ADRs'},{id:'ddrs',title:'DDRs'}],artifacts:['000B','000C','000H','0017','0054'].map(code=>({group:'adrs',id:`ADR-${code}`,title:code==='000C'?'**Bold** second record':`Record ${code}`,path:`workbench/docs/adr/${code}-r.md`,status:'accepted'})).concat(['000P','000Q'].map(code=>({group:'ddrs',id:`DDR-${code}`,title:`Destination ${code}`,path:`workbench/docs/ddr/${code}-d.md`,status:'accepted'})))};
+
+test('slash shorthand links each expanded decision record and never an ordinary slash',()=>{
+ const {model}=pageModel();
+ model.state.catalog=SHORTHAND_CATALOG;
+ const html=model.markdown('Board first before ADR-000B/C/D (TRACK); ADR-000B/its successor; ADR-000H/AGENTS.md; ADR-0017/ADR-0054; DDR-000P/000Q.','');
+ const linked=[...html.matchAll(/<a class="record-link" href="([^"]+)" title="([^"]+)">([^<]+)<\/a>/g)].map(m=>[m[3],decodeURIComponent(m[1]).replace('#artifact=','')]);
+ assert.deepEqual(linked,[['ADR-000B','workbench/docs/adr/000B-r.md'],['C','workbench/docs/adr/000C-r.md'],['ADR-000B','workbench/docs/adr/000B-r.md'],['ADR-000H','workbench/docs/adr/000H-r.md'],['ADR-0017','workbench/docs/adr/0017-r.md'],['ADR-0054','workbench/docs/adr/0054-r.md'],['DDR-000P','workbench/docs/ddr/000P-d.md'],['000Q','workbench/docs/ddr/000Q-d.md']]);
+ assert.match(html,/<span class="unavailable-link" title="No cataloged decision record ADR-000D">D<\/span>/,'an expanded ID without a record is unavailable');
+ assert.match(html,/title="Bold second record · ADR-000C"/,'Markdown emphasis is stripped from hover titles');
+ const item={id:'GB-0001',title:'T',question:'Board first before ADR-000B/C/D',current:'',proposal:'',sources:[]};
+ assert.deepEqual([...model.namedDecisionIds(item)],['ADR-000B','ADR-000C','ADR-000D']);
+ const links=model.wikiLinks(item);
+ assert.match(links,/ADRs · Bold second record \(ADR-000C\)/,'labels drop Markdown emphasis');
+ assert.match(links,/ADR-000D \(not in the Wiki\)/);
+});
+
+test('the question line shows glossary hovers whatever was rendered before it',()=>{
+ const {model}=pageModel();
+ model.state.catalog={groups:[],artifacts:[]};
+ model.state.termIndex=new Map([['Landmark',{term:'Landmark',definition:'A direction.',path:'LEXICON.md',anchor:'landmark'}]]);
+ model.state.termPattern=/(?<![\w-])(?:Landmark)(?![\w-])/g;
+ model.markdown('A Landmark first.','');
+ const item={id:'GB-0001',title:'T',question:'Which Landmark owns this?',current:'c',proposal:'p',sources:[],revision:1,history:[],derivedStatus:'pending',status:'open',controls:board.answerControls({kind:'owner-decision',options:null})};
+ assert.match(model.card(item),/<p class="q">Which <a class="term"[^>]*>Landmark<\/a> owns this\?<\/p>/);
+});
+
+// An independent scanner of what each open question should link to: its own
+// expressions over the raw item text, not the functions under test.
+function independentTargets(item, records, catalogPaths) {
+ const texts=[item.question,item.current,item.proposal,item.draft,...Object.values(item.brief||{})].filter(t=>typeof t==='string');
+ const named=[item.title,...texts,...(item.options||[]).flatMap(o=>[o.label,o.hint])].filter(t=>typeof t==='string').join('\n');
+ const ids=new Set();
+ for (const m of named.matchAll(/(?<![A-Za-z0-9_-])((?:ADR|DDR|CDR)-[0-9A-Za-z]{4})((?:\/[0-9A-Z]{1,4}(?![A-Za-z0-9_-]))*)(?![A-Za-z0-9_-])/g)) {
+  ids.add(m[1]);
+  for (const part of m[2].split('/').filter(Boolean)) ids.add(m[1].slice(0,8-part.length)+part);
+ }
+ const base=(item.sources||[]).find(src=>src.path&&!src.path.startsWith('/')&&!src.path.startsWith('..'))?.path||'';
+ const paths=new Set((item.sources||[]).map(src=>src.path).filter(p=>catalogPaths.has(p)));
+ for (const text of texts) for (const m of text.replace(/`[^`]*`/g,'').matchAll(/\[[^\]]+\]\(([^\s)]+)\)/g)) {
+  if (/^[a-z][a-z\d+.-]*:/i.test(m[1])) continue;
+  const local=decodeURIComponent(new URL(m[1],`http://reader/${base}`).pathname.slice(1));
+  if (catalogPaths.has(local)) paths.add(local);
+ }
+ const cataloged=[...ids].filter(id=>records.has(id));
+ for (const id of cataloged) paths.add(records.get(id).path);
+ return {ids:cataloged,paths};
+}
+const hrefPaths=html=>new Set([...html.matchAll(/href="#([^"]+)"/g)].map(m=>new URLSearchParams(m[1].replace(/&amp;/g,'&')).get('artifact')).filter(Boolean));
+
+test('independently: every cataloged decision record and link an open question names is linked on its card',()=>{
+ const repoRoot=new URL('..',import.meta.url).pathname;
+ const {model}=pageModel();
+ model.state.catalog=JSON.parse(JSON.stringify(board.artifactCatalog(repoRoot)));
+ const catalogPaths=new Set(model.state.catalog.artifacts.map(a=>a.path));
+ const records=new Map(model.state.catalog.artifacts.filter(a=>/^(ADR|DDR|CDR)-/.test(a.id||'')).map(a=>[a.id,a]));
+ let ids=0, questions=0;
+ for (const item of board.mergeBoard(repoRoot).items.filter(i=>i.status==='open')) {
+  const expected=independentTargets(item,records,catalogPaths);
+  const cardHtml=model.card(item), listHtml=model.wikiLinks(item);
+  const rendered=hrefPaths(cardHtml);
+  for (const p of expected.paths) assert.ok(rendered.has(p),`${item.id} card links ${p}`);
+  for (const id of expected.ids) assert.ok(hrefPaths(listHtml).has(records.get(id).path),`${item.id} lists ${id}`);
+  ids+=expected.ids.length; if(expected.ids.length) questions+=1;
+ }
+ assert.ok(ids>=100&&questions>=100,`${ids} named records over ${questions} questions`);
+});
+
+test('the page renders exactly the links the server counts for backlinks over the real board',()=>{
+ const repoRoot=new URL('..',import.meta.url).pathname;
+ const {model}=pageModel();
+ model.state.catalog=JSON.parse(JSON.stringify(board.artifactCatalog(repoRoot)));
+ const catalogPaths=new Set(model.state.catalog.artifacts.map(a=>a.path));
+ const recordPaths=new Map(model.state.catalog.artifacts.filter(a=>/^(ADR|DDR|CDR)-/.test(a.id||'')).map(a=>[a.id,a.path]));
+ for (const item of board.mergeBoard(repoRoot).items.filter(i=>i.status==='open')) {
+  const page=[...hrefPaths(model.card(item))].sort();
+  const server=[...questionLinkTargets(item,recordPaths)].filter(p=>catalogPaths.has(p)).sort();
+  assert.deepEqual(page,server,item.id);
+ }
 });

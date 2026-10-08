@@ -261,16 +261,65 @@ function stringsOf(value) {
   return [];
 }
 
+// ---- What a question card links to (mirrored by the page; a cross-check
+// test asserts the page renders exactly these links over the real board). ----
+
+// A decision-record identifier (ADR, DDR, CDR) and its slash shorthand: after
+// a full ID, each "/X" continuation of one to four capitals or digits that
+// ends the word replaces the ID's last characters ("ADR-000B/C/D" names
+// ADR-000B, ADR-000C and ADR-000D; "DDR-000P/000Q" names both). An ordinary
+// slash ("ADR-000B/its successor", "ADR-000H/AGENTS.md") does not expand.
+export const DECISION_ID_PATTERN = /(?<![\w-])((?:ADR|DDR|CDR)-[0-9A-Za-z]{4})((?:\/[0-9A-Z]{1,4}(?![\w-]))*)(?![\w-])/g;
+export function expandDecisionId(base, part) {
+  return base.slice(0, base.length - part.length) + part;
+}
+export function decisionIds(text) {
+  const ids = [];
+  for (const match of String(text ?? '').matchAll(DECISION_ID_PATTERN)) {
+    ids.push(match[1]);
+    for (const part of match[2].split('/').filter(Boolean)) ids.push(expandDecisionId(match[1], part));
+  }
+  return ids;
+}
+
+// The base a question's relative Markdown links resolve against: its first
+// in-room source, else the room root.
+export function questionBase(item) {
+  const source = (item.sources ?? []).find(candidate => typeof candidate?.path === 'string' && candidate.path && !path.isAbsolute(candidate.path) && !candidate.path.startsWith('..') && !/^[a-z][a-z\d+.-]*:/i.test(candidate.path));
+  return source ? source.path : '';
+}
+
+// Every room path a question card links to: its in-room sources, the
+// Markdown links in its rendered text (resolved against questionBase), and
+// the records its decision-record identifiers name (recordPaths: id -> path)
+// in its title, text, brief, draft or options.
+export function questionLinkTargets(item, recordPaths) {
+  const targets = new Set();
+  for (const source of item.sources ?? []) {
+    if (typeof source?.path !== 'string' || path.isAbsolute(source.path)) continue;
+    const resolved = resolveLink('', source.path);
+    if (resolved) targets.add(resolved);
+  }
+  const base = questionBase(item);
+  const rendered = [item.question, item.current, item.proposal, item.draft, ...stringsOf(item.brief)].filter(text => typeof text === 'string');
+  for (const text of rendered) for (const link of markdownLinks(text)) {
+    const resolved = resolveLink(base, link);
+    if (resolved) targets.add(resolved);
+  }
+  const named = [item.title, ...rendered, ...(item.options ?? []).flatMap(option => [option?.label, option?.hint])].filter(text => typeof text === 'string');
+  for (const id of named.flatMap(decisionIds)) if (recordPaths.has(id)) targets.add(recordPaths.get(id));
+  return targets;
+}
+
 function backlinks(root, requested, readSource, questions) {
   const target = typeof requested === 'string' && !path.isAbsolute(requested) && !/^[A-Za-z]:/.test(requested) ? resolveLink('', requested) : null;
   if (!target) throw routeError('unsafe-path', 'backlinks needs a room-relative path');
   const links = [];
-  for (const item of questions) {
-    const fromSources = (item.sources ?? []).some(source => typeof source?.path === 'string' && !path.isAbsolute(source.path) && resolveLink('', source.path) === target);
-    const fromBrief = !fromSources && stringsOf(item.brief).some(text => markdownLinks(text).some(link => resolveLink('', link) === target));
-    if (fromSources || fromBrief) links.push({ kind: 'question', id: item.id, title: item.title });
-  }
   const index = searchIndex(root, readSource);
+  const recordPaths = new Map(index.entries.filter(entry => entry.id && /^(?:ADR|DDR|CDR)-/.test(entry.id)).map(entry => [entry.id, entry.path]));
+  for (const item of questions) {
+    if (questionLinkTargets(item, recordPaths).has(target)) links.push({ kind: 'question', id: item.id, title: item.title });
+  }
   for (const entry of index.entries) {
     if (entry.path !== target && entry.links.has(target)) links.push({ kind: 'artifact', ...(entry.id ? { id: entry.id } : {}), path: entry.path, title: entry.title });
   }
