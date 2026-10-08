@@ -828,7 +828,7 @@ function parseArgs(argv) {
   return { positional, flags };
 }
 
-const USAGE = 'Usage: grill-board.mjs serve [--port N] | status | pending | show GB-#### | add --file ITEMS.json --by NAME [--reason TEXT] | revise GB-#### --by NAME --reason TEXT [--title T] [--question T] [--current T] [--proposal T] [--draft-file PATH] [--options-file PATH] [--brief-file PATH] | apply GB-#### --by NAME --where TEXT [--note TEXT] | withdraw GB-#### --by NAME --reason TEXT | grade --file GRADES.json --by NAME --reason TEXT | reassess --file ROWS.json --by NAME --reason TEXT | validate [--path ROOT] [--json] (see workbench/grill-board/README.md)';
+const USAGE = 'Usage: grill-board.mjs serve [--path ROOT] [--port N] | status | pending | show GB-#### | add --file ITEMS.json --by NAME [--reason TEXT] | revise GB-#### --by NAME --reason TEXT [--title T] [--question T] [--current T] [--proposal T] [--draft-file PATH] [--options-file PATH] [--brief-file PATH] | apply GB-#### --by NAME --where TEXT [--note TEXT] | withdraw GB-#### --by NAME --reason TEXT | grade --file GRADES.json --by NAME --reason TEXT | reassess --file ROWS.json --by NAME --reason TEXT | handoffs | disposition --file RECEIPT.json | validate [--path ROOT] [--json] (see workbench/grill-board/README.md)';
 
 function out(flags, value, text) {
   if (flags.json) process.stdout.write(`${JSON.stringify(value, null, 2)}\n`);

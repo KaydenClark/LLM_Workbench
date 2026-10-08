@@ -44,6 +44,13 @@ const BOARD_WORKING_FILES = ['workbench/grill-board/answers.json', `${COMMENT_DI
 
 const hash = value => createHash('sha256').update(typeof value === 'string' ? value : JSON.stringify(value)).digest('hex');
 const clone = value => JSON.parse(JSON.stringify(value));
+// A canonical form, object keys sorted at every depth, so the same action
+// sent with its fields in another order hashes the same.
+function canonical(value) {
+  if (Array.isArray(value)) return value.map(canonical);
+  if (value && typeof value === 'object') return Object.fromEntries(Object.keys(value).sort().map(key => [key, canonical(value[key])]));
+  return value;
+}
 function fail(code, message) { const error = new Error(`${code}: ${message}`); error.code = code; throw error; }
 function text(value, name) { if (typeof value !== 'string' || !value.trim()) fail('invalid-input', `${name} must be nonempty text`); return value; }
 function checkResult(result) { if (result.status === 'blocked') fail(result.error?.code ?? 'notepad', result.error?.message ?? JSON.stringify(result.error)); return result; }
@@ -269,10 +276,12 @@ export function createWorkflow(root, readers = {}) {
     if (input.actionId.length > 160) fail('invalid-input', 'actionId is too long');
     const state = read();
     const { expectedRevision, ...payload } = input;
-    const inputHash = hash({ operation, payload });
+    const inputHash = hash(canonical({ operation, payload }));
+    // Actions recorded before canonical hashing kept the sender's key order.
+    const legacyHash = hash({ operation, payload });
     const previous = state.actions.find(action => action.actionId === input.actionId);
     if (previous) {
-      if (previous.operation !== operation || previous.inputHash !== inputHash) fail('action-id-conflict', 'This action ID already records different input');
+      if (previous.operation !== operation || ![inputHash, legacyHash].includes(previous.inputHash)) fail('action-id-conflict', 'This action ID already records different input');
       return { repeated: { ...clone(previous.result), revision: state.revision, idempotent: true } };
     }
     if (!Number.isSafeInteger(expectedRevision) || expectedRevision !== state.revision) fail('stale-revision', `Workflow is at revision ${state.revision}; read it again`);

@@ -312,7 +312,7 @@
   const state = {
     board: null, catalog: null, workflow: null, workflowError: '', dashboard: null, drafts: null, glossary: null,
     termIndex: null, termPattern: null, termSeen: null,
-    edits: new Map(), errors: new Map(), inflight: new Map(), timers: new Map(), selected: new Map(), actions: new Map(),
+    edits: new Map(), comments: new Map(), errors: new Map(), inflight: new Map(), timers: new Map(), selected: new Map(), actions: new Map(),
     query: '', topic: 'all', intent: 'all', scope: 'all', lane: 'all', priority: 'all', value: 'all',
     focus: null, picked: new Set(), promote: new Set(), batch: null, inBatch: false, size: 5,
     route: 0, revisions: new Map(), artifact: null, view: 'grilling', questionScroll: 0, whyQuery: '', whyStatus: 'all'
@@ -708,13 +708,21 @@
     if (state.inBatch && !state.focus) state.focus = shown.find(item => !['answered', 'applied', 'withdrawn'].includes(item.derivedStatus))?.id || shown[0]?.id;
     const toolbar = state.inBatch ? '<h2>Batch questions</h2><p>Choose any question below. The list stays fixed as you answer.</p>' : `<div class="slice-toolbar"><strong>${shown.length} in ${esc(sliceTitle())}</strong><label for="batch-size">Batch size</label><select id="batch-size">${[3, 5, 10].map(n => `<option value="${n}" ${state.size === n ? 'selected' : ''}>${n} questions</option>`).join('')}</select><button class="primary" type="button" id="start-batch" ${!actionable.length || state.batch ? 'disabled' : ''}>Start next ${Math.min(state.size, actionable.length)}</button><button class="bulk" type="button" id="start-picked" ${!state.picked.size || state.batch ? 'disabled' : ''}>Start selected (${state.picked.size})</button>${state.batch ? '<small>Resume or release your saved batch before starting another.</small>' : ''}</div>`;
     content.innerHTML = toolbar + (shown.length ? `<div class="question-list">${shown.map(item => `<div class="question-row ${state.focus === item.id ? 'current' : ''}" data-row="${item.id}">${!state.inBatch ? `<input type="checkbox" data-pick="${item.id}" aria-label="Select ${esc(item.title)}" ${state.picked.has(item.id) ? 'checked' : ''}>` : ''}<button type="button" class="row-open" data-open="${item.id}">${esc(item.title)}<small>${item.id} · ${esc(TOPICS.find(t => t.id === topicFor(item)).title)} · ${esc(INTENTS[intentFor(item)])} · ${esc(item.brief?.scope || 'Unspecified scale')}</small></button><span class="row-end"><span class="badge ${item.derivedStatus}">${LANES[laneFor(item)]}</span><span class="grades">${gradeBadges(item)}</span></span></div>`).join('')}</div>` : '<p class="empty">Nothing in this slice. Choose another topic, grade or workflow stage.</p>') + '<div id="focus"></div>';
-    for (const button of content.querySelectorAll('[data-open]')) button.onclick = () => { state.focus = button.dataset.open; markCurrentRow(); renderFocus(); document.getElementById('focus').scrollIntoView({ block: 'start' }); };
+    for (const button of content.querySelectorAll('[data-open]')) button.onclick = () => { openQuestion(button.dataset.open); document.getElementById('focus').scrollIntoView({ block: 'start' }); };
     for (const checkbox of content.querySelectorAll('[data-pick]')) checkbox.onchange = () => { if (checkbox.checked) state.picked.add(checkbox.dataset.pick); else state.picked.delete(checkbox.dataset.pick); const button = document.getElementById('start-picked'); button.textContent = `Start selected (${state.picked.size})`; button.disabled = !state.picked.size || Boolean(state.batch); };
     if (!state.inBatch) {
       document.getElementById('batch-size').onchange = event => { state.size = Number(event.target.value); document.getElementById('start-batch').textContent = `Start next ${Math.min(state.size, actionable.length)}`; };
       document.getElementById('start-batch').onclick = () => startBatch(state.board.items.filter(visible).filter(item => ['pending', 'stale', 'parked'].includes(laneFor(item))).slice(0, state.size));
       document.getElementById('start-picked').onclick = () => startBatch(shown.filter(item => state.picked.has(item.id)));
     }
+    renderFocus();
+  }
+  // Opening a question records it in the address without a navigation, so a
+  // reload reopens it and the current slice is left as it is.
+  function openQuestion(id) {
+    state.focus = id;
+    try { history.replaceState(null, '', `#${id}`); } catch {}
+    markCurrentRow();
     renderFocus();
   }
   function markCurrentRow() { for (const row of document.querySelectorAll('.question-row')) row.classList.toggle('current', row.dataset.row === state.focus); }
@@ -731,7 +739,7 @@
     const shown = shownItems();
     const index = shown.findIndex(candidate => candidate.id === item.id);
     document.getElementById('next-question').disabled = index < 0 || index === shown.length - 1;
-    document.getElementById('next-question').onclick = () => { state.focus = shown[index + 1].id; markCurrentRow(); renderFocus(); panel.scrollIntoView({ block: 'start' }); };
+    document.getElementById('next-question').onclick = () => { openQuestion(shown[index + 1].id); panel.scrollIntoView({ block: 'start' }); };
   }
   // Decision records and other cataloged sources open in the Wiki section.
   function wikiLinks(item) {
@@ -748,7 +756,7 @@
       return `<span>${view}${github}</span>`;
     }).join('');
     const applied = item.applied ? `<div class="applied-box"><strong>Applied</strong> by ${esc(item.applied.by)} on ${new Date(item.applied.at).toLocaleString()}: ${esc(item.applied.where)}${item.applied.agentNote ? ` — ${esc(item.applied.agentNote)}` : ''}<br><small>Your answer then: ${esc(item.answerLabel || item.applied.verdict || '(note only)')}${item.applied.note ? ` — “${esc(item.applied.note)}”` : ''}</small></div>` : '';
-    const stale = status === 'stale' ? `<div class="stale-box">This question changed after you answered (now revision ${item.revision}; you answered revision ${answer.itemRevision}). Your earlier answer was <strong>${esc(item.answerLabel || '(note only)')}</strong>${answer.note ? `: “${esc(answer.note)}”` : ''}. Please answer again.</div>` : '';
+    const stale = staleNotice(item);
     const history = (item.history || []).filter(entry => entry.revision > 1 || /^applied|^withdrawn|^graded|^reassessed/.test(entry.reason || '')).map(entry => `${new Date(entry.at).toLocaleDateString()} · ${esc(entry.by)}: ${esc(entry.reason)}`);
     return `<article class="item" id="${item.id}" data-id="${item.id}" data-status="${status}" data-revision="${item.revision}">
       <div class="item-head"><h3>${esc(item.title)}<small class="identity">${item.id} · revision ${item.revision}</small></h3><span><span class="badge ${status}">${STATUS_LABEL[status]}</span><span class="kind">${esc(KIND_LABEL[item.kind] || item.kind)}</span></span></div>
@@ -763,6 +771,11 @@
       ${answerSection(item)}
       <div class="card-workflow" data-flow="${item.id}"></div>
     </article>`;
+  }
+  function staleNotice(item) {
+    if (item.derivedStatus !== 'stale' || !item.answer) return '';
+    const answer = item.answer;
+    return `<div class="stale-box" data-stale-notice>This question changed after you answered (now revision ${item.revision}; you answered revision ${answer.itemRevision}). Your earlier answer was <strong>${esc(item.answerLabel || '(note only)')}</strong>${answer.note ? `: “${esc(answer.note)}”` : ''}. Please answer again.</div>`;
   }
   function decisionBrief(item) {
     const b = item.brief;
@@ -861,6 +874,7 @@
         const badge = current.querySelector('.item-head .badge');
         badge.className = `badge ${body.derivedStatus}`; badge.textContent = STATUS_LABEL[body.derivedStatus];
         refreshAnswer(current, item);
+        if (!staleNotice(item)) current.querySelector('[data-stale-notice]')?.remove();
         // The workflow derives each card's state from the saved answer.
         await loadWorkflow();
         refreshCounts();
@@ -999,32 +1013,54 @@
     const current = item.answer.itemRevision === item.revision;
     return `<p>Confirmed snapshot · revision ${approval.itemRevision} · SHA-256 <code>${esc(approval.hash)}</code>. ${current ? 'This is the current revision.' : 'The question has changed since; it needs a fresh confirmation.'}</p><details><summary>Exactly what was confirmed</summary><div class="reader">${markdown(approval.draft || approval.proposal)}</div></details>`;
   }
-  function renderCardWorkflow(panel, item) {
-    if (!panel) return;
-    if (!state.workflow) { panel.innerHTML = `<h4>Comments and promotion</h4><p class="error-box">Unavailable: ${esc(state.workflowError || 'the owner workflow record is not loaded')}.</p>`; return; }
+  // Unsent comment or change-request text, kept in page state beside the
+  // unsaved answer edits, keyed by question and revision, so every re-render
+  // of the card restores it; it clears only when the comment is sent.
+  const commentKey = item => `${item.id}@${item.revision}`;
+  function rememberComment(item, text) { if (String(text)) state.comments.set(commentKey(item), String(text)); else state.comments.delete(commentKey(item)); }
+  function commentDraftFor(item) { return state.comments.get(commentKey(item)) || ''; }
+  function forgetComment(item) { state.comments.delete(commentKey(item)); }
+  function hasUnsavedWork() { return state.edits.size > 0 || [...state.comments.values()].some(text => String(text).trim()); }
+  // Why this card cannot be promoted now, in the owner's terms.
+  function promotionBlocker(item) {
+    if (state.edits.has(item.id)) return 'Save or finish your unsaved answer first.';
+    const change = (state.workflow?.comments || []).find(comment => comment.id === item.id && comment.kind === 'change' && comment.itemRevision === item.revision);
+    if (change) return `Your change request of ${change.at || 'this revision'} (“${change.text}”) is waiting: an agent must revise this question from it, and you must confirm the revised question, before it can be promoted.`;
+    return 'Only a card the workflow reports as confirmed can be promoted.';
+  }
+  function cardWorkflowHtml(item) {
+    if (!state.workflow) return `<h4>Comments and promotion</h4><p class="error-box">Unavailable: ${esc(state.workflowError || 'the owner workflow record is not loaded')}.</p>`;
     const comments = state.workflow.comments.filter(comment => comment.id === item.id);
     const requests = state.workflow.requests.filter(request => request.cards.some(card => card.id === item.id));
     const card = cardState(item);
     const promotable = confirmedItems().some(candidate => candidate.id === item.id);
-    const why = promotable ? '' : state.edits.has(item.id) ? 'Save or finish your unsaved answer first.' : 'Only a card the workflow reports as confirmed can be promoted.';
-    panel.innerHTML = `<h4>Comments, change requests and promotion</h4>
+    const why = promotable ? '' : promotionBlocker(item);
+    const draft = commentDraftFor(item);
+    const sendable = Boolean(draft.trim());
+    return `<h4>Comments, change requests and promotion</h4>
       <p>Workflow state: <strong>${esc(card?.label || 'unknown')}</strong></p>
       ${approvalSummary(item)}
       <label for="comment-${item.id}">Comment or change request</label>
-      <textarea id="comment-${item.id}" data-comment-text placeholder="Saved as its own file under workbench/grill-board/comments/"></textarea>
-      <div class="batch-actions"><button class="bulk" type="button" data-comment="comment" disabled>Save as a comment</button><button class="bulk" type="button" data-comment="change" disabled>Send a change request</button><small>Neither approves anything and neither starts an agent.</small></div>
+      <textarea id="comment-${item.id}" data-comment-text placeholder="Saved as its own file under workbench/grill-board/comments/">${esc(draft)}</textarea>
+      <div class="batch-actions"><button class="bulk" type="button" data-comment="comment" ${sendable ? '' : 'disabled'}>Save as a comment</button><button class="bulk" type="button" data-comment="change" ${sendable ? '' : 'disabled'}>Send a change request</button><small>Neither approves anything and neither starts an agent.</small></div>
       ${comments.map(comment => `<div class="request"><strong>${comment.kind === 'change' ? 'Change request' : 'Comment'} · revision ${comment.itemRevision}</strong><p>${esc(comment.text)}</p><small>${esc(comment.status || 'requested')} · ${esc(comment.at || '')}</small>${comment.recorded === false ? `<p class="stale-box">${esc(comment.recovery || 'Saved, but not yet recorded in the workflow.')} <button type="button" class="bulk" data-retry-comment="${esc(comment.actionId)}">Finish recording it</button></p>` : ''}</div>`).join('')}
       <div class="batch-actions"><button class="primary" type="button" data-promote ${promotable ? '' : 'disabled'}>Start promotion for this confirmed card</button><small>${esc(why)}</small></div>
       ${requests.map(request => dispositionTimeline(request, state.workflow.dispositions[item.id], card)).join('')}
       <p class="flow-result" role="status"></p>`;
+  }
+  function renderCardWorkflow(panel, item) {
+    if (!panel) return;
+    panel.innerHTML = cardWorkflowHtml(item);
+    if (!state.workflow) return;
+    const comments = state.workflow.comments.filter(comment => comment.id === item.id);
     const text = panel.querySelector('[data-comment-text]');
     const result = panel.querySelector('.flow-result');
-    text.oninput = () => { for (const button of panel.querySelectorAll('[data-comment]')) button.disabled = !text.value.trim(); };
+    text.oninput = () => { rememberComment(item, text.value); for (const button of panel.querySelectorAll('[data-comment]')) button.disabled = !text.value.trim(); };
     for (const button of panel.querySelectorAll('[data-comment]')) button.onclick = async () => {
       const words = text.value.trim();
       if (!words) return;
       button.disabled = true;
-      try { await runAction(`comment:${item.id}:${button.dataset.comment}:${words}`, '/api/comments', { id: item.id, itemRevision: item.revision, kind: button.dataset.comment, text: words }); renderCardWorkflow(panel, item); renderRoundPanel(); }
+      try { await runAction(`comment:${item.id}:${button.dataset.comment}:${words}`, '/api/comments', { id: item.id, itemRevision: item.revision, kind: button.dataset.comment, text: words }); forgetComment(item); renderCardWorkflow(panel, item); renderRoundPanel(); }
       catch (error) { actionError(result, error); button.disabled = false; }
     };
     // An interrupted comment is finished by resending its original action ID
@@ -1071,7 +1107,7 @@
       setView('grilling', 'grilling');
       const target = state.board.items.find(item => item.id === raw);
       if (target) {
-        if (!(state.inBatch && state.batch?.ids.includes(target.id))) { state.inBatch = false; resetSlice(); state.topic = topicFor(target); }
+        if (!visible(target)) { state.inBatch = false; resetSlice(); state.topic = topicFor(target); }
         state.focus = target.id; render();
         document.getElementById('focus')?.scrollIntoView({ block: 'start' });
       } else if (returning) window.scrollTo(0, state.questionScroll || 0);
@@ -1344,7 +1380,7 @@
   };
   document.getElementById('search').oninput = event => { state.query = event.target.value.trim().toLowerCase(); state.inBatch = false; state.focus = null; state.picked.clear(); render(); };
   document.getElementById('reset-slice').onclick = () => { resetSlice(); render(); };
-  document.getElementById('banner-reload').onclick = () => { if (!state.edits.size || confirm('You have unsaved notes. Reload anyway?')) location.reload(); };
+  document.getElementById('banner-reload').onclick = () => { if (!hasUnsavedWork() || confirm('You have unsaved notes or comments. Reload anyway?')) location.reload(); };
   document.getElementById('viewer-close').onclick = () => document.getElementById('viewer').close();
   document.getElementById('inspector-close').onclick = () => document.getElementById('inspector').close();
   document.getElementById('theme').onclick = () => {
@@ -1372,7 +1408,7 @@
     } catch {}
   }, 15000);
 
-  window.addEventListener('beforeunload', (event) => { if (state.edits.size) { event.preventDefault(); event.returnValue = ''; } });
+  window.addEventListener('beforeunload', (event) => { if (hasUnsavedWork()) { event.preventDefault(); event.returnValue = ''; } });
 
   Promise.all([load(), loadCatalog()]).then(async () => { await Promise.all([loadWorkflow(), loadGlossary()]); render(); return routePage(); }).catch((error) => { document.getElementById('content').innerHTML = `<div class="empty">Could not load the Dashboard: ${esc(error.message)}</div>`; });
 })();

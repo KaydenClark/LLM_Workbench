@@ -137,6 +137,21 @@ cards count and open only matching questions and show no grade of their own. A
 batch started from a P/V slice keeps its members and their revisions through
 saves, later filters, regrades and reloads.
 
+### Always open: the login service
+
+`tools/dashboard-service.mjs` prints or installs a macOS login service for one
+checkout and port, and `status --path ROOT --port N` reports it read-only. A
+configuration under the default label `com.kayden.workbench-dashboard` belongs
+to one checkout: `status` reads it and states what it serves (its `--path`, or
+its WorkingDirectory when it has none; its `--port`, or 4646), compares that
+with the request and prints an explicit MISMATCH line. The port probe is
+reported separately and is never attributed to the installed service unless
+that service uses the probed port. `install` refuses to replace an existing
+configuration; for another checkout use a distinct `--label` (status suggests
+one). The service runs a stable Node launcher (`--node`, else
+`/opt/homebrew/bin/node` or `/usr/local/bin/node` when it is the running Node)
+rather than a versioned Cellar path; `print` says which it chose.
+
 ## Agents: read this before touching anything here
 
 **You do not edit these files by hand, and you never edit the owner's file.**
@@ -232,9 +247,15 @@ identifiers only.
   definition on hover, when the server's sources module offers them; without
   them the page shows the board questions citing the file and no definitions.
 
+Opening a question puts its `#GB-####` in the address, so a reload reopens it.
+
 **Rounds and promotion.** Answering, confirming, commenting or ending a round
 never starts an agent. Each card can save a **comment** or send a **change
 request** (both need text; each becomes its own file under `comments/`).
+Unsent comment text stays with its question and revision while you visit the
+Wiki, search or another section, and clears only when it is sent. While a
+change request awaits an agent's revision and your fresh confirmation, the
+card says that is what blocks promotion.
 **End this round** records which cards are confirmed and starts nothing. Promotion
 is explicit: **Start promotion for this confirmed card**, or select confirmed
 cards in **Rounds and promotion** and start them together; unconfirmed cards
