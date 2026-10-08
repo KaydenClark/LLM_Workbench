@@ -546,3 +546,24 @@ test('a confirmation saved before snapshots existed asks to be confirmed again b
  assert.match(model.promotionBlocker(item),/Confirm it again/);
  assert.match(model.approvalSummary({...item,answer:null}),/No exact-wording confirmation/);
 });
+
+test('confirming again records a fresh snapshot for a confirmation that has none, and a true repeat stays idempotent',()=>{
+ const root=notepadRoom();
+ const legacy={verdict:'confirm',note:'',at:'2026-10-02T00:00:00.000Z',itemRevision:1,history:[]};
+ const mismatched={verdict:'confirm',note:'',at:'2026-10-02T00:00:00.000Z',itemRevision:1,history:[],approval:{hash:'0'.repeat(64),itemRevision:1,verdict:'confirm',note:'',confirmedAt:'2026-10-02T00:00:00.000Z'}};
+ fs.writeFileSync(board.boardPaths(root).answers,JSON.stringify({schema:board.ANSWERS_SCHEMA,owner:'Kayden',answers:{'GB-0001':legacy,'GB-0002':mismatched}}));
+ const flow=board.workflow(root);
+ assert.equal(flow.read().cards['GB-0001'].state,'in-grilling');
+ for (const [id,previous] of [['GB-0001',legacy],['GB-0002',mismatched]]){
+  const again=board.recordAnswer(root,id,{verdict:'confirm',note:'',itemRevision:1,expectedAnswerAt:previous.at});
+  assert.notEqual(again.at,previous.at,`${id}: a new answer is recorded`);
+  assert.match(again.approval.hash,/^[a-f0-9]{64}$/);
+  assert.notEqual(again.approval.hash,'0'.repeat(64));
+  assert.equal(again.history.length,1,`${id}: the earlier confirmation stays in history`);
+  assert.equal(flow.read().cards[id].state,'confirmed');
+  const repeat=board.recordAnswer(root,id,{verdict:'confirm',note:'',itemRevision:1,expectedAnswerAt:again.at});
+  assert.equal(repeat.at,again.at,`${id}: a repeat of a current snapshot is idempotent`);
+ }
+ const promoted=flow.promote({ids:['GB-0001','GB-0002'],revisions:{'GB-0001':1,'GB-0002':1},actionId:'p-reconfirm',expectedRevision:flow.read().revision});
+ assert.equal(promoted.request.cards.length,2);
+});

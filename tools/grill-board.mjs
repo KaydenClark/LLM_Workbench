@@ -40,8 +40,10 @@ export const ANSWERS_FILE = 'answers.json';
 export const PAGE_FILE = 'index.html';
 export const KINDS = Object.freeze(['approve-spec', 'owner-decision', 'confirm-dqc', 'confirm-ddr', 'confirm-text', 'choice']);
 export const STATUSES = Object.freeze(['pending', 'stale', 'answered', 'applied', 'withdrawn']);
-// The words the owner answers with (Lexicon, Workbench Dashboard). Confirm
-// means confirmed; the other three send the item back and need his note.
+// The words the owner answers with; their meanings are owned by the
+// Workbench Dashboard Spec's Decisions And Contracts
+// (workbench/specs/S-004D-shared-interactive-board/SPEC.md). Confirm means
+// confirmed; the other three send the item back and need his note.
 export const SEND_BACK_OPTIONS = Object.freeze([
   Object.freeze({ value: 'rework', label: 'Rework wording', hint: 'Mostly correct; it needs to be restated better. Your note says how.', requiresNote: true }),
   Object.freeze({ value: 'change_why', label: 'Change the why', hint: 'Something is correct, but the underlying reason is wrong. Your note joins the Whys list.', requiresNote: true }),
@@ -569,7 +571,12 @@ export function recordAnswer(root, id, { verdict, note, itemRevision, expectedAn
   const answers = readAnswers(root);
   const previous = answers.answers[id];
   if (expectedAnswerAt !== undefined && expectedAnswerAt !== (previous?.at ?? null)) throw new BoardError('stale-answer', `${id}: stale answer; reload before saving`);
-  if (previous && previous.verdict === verdict && previous.note === note && previous.itemRevision === itemRevision) return { ...previous, derivedStatus: itemStatus(item, previous) };
+  // An identical repeat is idempotent, except a confirmation whose saved
+  // answer has no snapshot of the current wording (a confirmation saved before
+  // snapshots, or one frozen from other bytes): confirming again records it.
+  const snapshotCurrent = !isConfirmation(item, verdict)
+    || (previous?.approval?.itemRevision === item.revision && previous.approval.hash === approvalHash(item, { root }));
+  if (previous && previous.verdict === verdict && previous.note === note && previous.itemRevision === itemRevision && snapshotCurrent) return { ...previous, derivedStatus: itemStatus(item, previous) };
   const entry = { verdict, note, at: new Date(Math.max(Date.now(), previous ? Date.parse(previous.at) + 1 : 0)).toISOString(), itemRevision };
   // Only a confirmation freezes the exact wording it confirmed, with source
   // paths normalized to the room so no absolute path is stored.
