@@ -3,13 +3,13 @@
 **Task ID:** TK-00JA
 **Spec ID:** S-004J
 **Slice:** Ship the adapted domain-modeling skill in every room's lane
-**Status:** in-progress
+**Status:** done
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: A fresh clone discovers `domain-modeling` through both adapters; the manifest, layout bundle, catalog and count-bearing documents agree.
 **Planned verification:** A scoped source test (`tools/test-domain-modeling-skill.mjs`) red on the absent lane source, then green; catalog, layout and skills-lane tests red on the undeclared skill, then green; runbook-index check; full RUNBOOK suite on a committed candidate; self-drift pre/post.
 **Claimed by:** claude-s004j-worker-ja, claude-s004j-worker-fix, claude-s004j-worker-fix2
-**Proof:** Correction pass: in-directory MIT NOTICE.md installed into rooms; scoped 11/11 with each new assertion failing on its mutation; full RUNBOOK suite 54/54 on clean e30df561; fast-forward into claude/s004j-corrections verified
+**Proof:** Review-fix run: each Workbench adapter bullet bound to its own reason; the reviewer's mutation passes the old test 11/11 and fails the new 10/11; scoped 11/11 green; full RUNBOOK suite 54/54 on clean 7499d6bd
 
 ## Scope and authority
 
@@ -32,6 +32,7 @@ Both adapters resolve the lane source; the scoped source test proves the operati
 | 3 | claude/s004j-corrections | e30df561619ead0bf7a59acf592affac3ec19645 | ahead 0 behind 0 | 0 | Correction run: RED 6/11 on the unchanged skill (NOTICE absent, format note link, capture timing, description adapter, file set). GREEN at e30df561: scoped 11/11, catalog, skills-lane 6/6, runbook-index 62/62, doctor ok. Twenty mutations on scratch copies: old test passed six of the review's seven, each new assertion fails on its mutation. Room install copies NOTICE.md byte-identical through both adapters. Full RUNBOOK suite 54/54 on clean e30df561. Self-drift 23 pre and post, same set. Guardrail 73/100 unchanged. Fast-forward into claude/s004j-corrections verified. | Skill NOTICE.md with full MIT text and pin, SKILL.md credit and complete adapter list with unrelated policy removed and capture timing restored, GLOSSARY-FORMAT adapter note, scoped test. THIRD_PARTY_NOTICES checked; no update needed. | Scenario 1 rerun and promotion qualification (TK-00JB); Wiki adapter section and scenario 4 limit (TK-00JC); fresh assembled review. | dac0aa86c8d98a616aaf2fd8bf63d563f4bc30d33a1a1e477cdedaa87c868791 |
 | 4 | claude/s004j-corrections | 91a606e0c7455ca44a775d0c8919fc80a7b0d539 | ahead 0 behind 0 | 0 | Correction pass: in-directory MIT NOTICE.md installed into rooms; scoped 11/11 with each new assertion failing on its mutation; full RUNBOOK suite 54/54 on clean e30df561; fast-forward into claude/s004j-corrections verified | Skill notice, credit, adapter list and format note; scoped test; THIRD_PARTY_NOTICES checked, no update needed | TK-00JB scenario 1 rerun and promotion qualification; TK-00JC Wiki; fresh assembled review | 364c5e1963b8e5d33483727bed6a6739ac539f365d66660653b217241041d60b |
 | 5 | claude/s004j-corrections | 7499d6bda98529a0005eb2f4bb89d52215679231 | ahead 0 behind 0 | 0 | Review-fix run: RED - the old scoped test passes the reviewer's mutation (lazy-creation adapter reason deleted) 11/11; the new per-bullet test fails it 10/11 and is red 10/11 on the unchanged skill because the Form adapter states no reason. GREEN at 7499d6bd: scoped 11/11 after the Form adapter gains its reason; dropping the which-test-failed bullet, stripping the Form reason and stripping the companion reason each turn it red. catalog 3/3, skills-lane 6/6, layout 82/82, runbook-index 62/62. Full RUNBOOK suite 54/54 on clean 7499d6bd with integration 45d79a45 merged. | Skill Workbench adapters Form bullet reason; scoped test parses the adapter bullets and binds each named change to its own reason. THIRD_PARTY_NOTICES checked; no update needed. | Scenario 1 trace rerun and the open promotion acceptance line (TK-00JB); Wiki reconciliation (TK-00JC); fresh assembled review | 1ec32f59c0886fc148cfbd78bdfe1adc9ce6a3ff809eb9025d7c370911d85ae4 |
+| 6 | claude/s004j-corrections | 44b9baf243ba96b394f2c07cfa040bbe142b2e5d | ahead 0 behind 0 | 0 | Review-fix run: each Workbench adapter bullet bound to its own reason; the reviewer's mutation passes the old test 11/11 and fails the new 10/11; scoped 11/11 green; full RUNBOOK suite 54/54 on clean 7499d6bd | Skill Form adapter reason and scoped test; THIRD_PARTY_NOTICES checked, no update needed | TK-00JB scenario 1 rerun and open promotion line; TK-00JC Wiki; fresh assembled review | 6756c6f656370bd5f20bafa9437d7a8113dcefc1f3cb5628dec4294c4501ca31 |
 
 ## Continuation
 
