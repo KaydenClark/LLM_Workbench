@@ -104,3 +104,38 @@ test('installer refuses multiply linked snapshot files before writing any snapsh
     assert.deepEqual(fs.readFileSync(path.join(f.dir, '.git/config')), beforeConfig);
   } finally { clean(f.dir); }
 });
+
+
+test('installed hook honors JavaScript extensions and staged nearest package context', () => {
+  const f = fixture();
+  try {
+    assert.equal(f.install().status, 0);
+    const stage = (file, bytes) => {
+      fs.mkdirSync(path.dirname(path.join(f.dir, file)), { recursive: true });
+      fs.writeFileSync(path.join(f.dir, file), bytes);
+      assert.equal(f.git('add', '--', file).status, 0);
+    };
+    stage('ordinary.js', 'return;\n');
+    stage('implicit-module.js', 'export const value = 1;\n');
+    let commit = f.git('commit', '-qm', 'Accept default CommonJS and detected module source');
+    assert.equal(commit.status, 0, commit.stderr);
+    stage('package.json', '{"type":"module"}\n');
+    stage('explicit-common.cjs', 'return;\n');
+    stage('nested/package.json', '{"type":"commonjs"}\n');
+    stage('nested/common.js', 'return;\n');
+    // Working-tree metadata must not override the staged package context.
+    fs.writeFileSync(path.join(f.dir, 'package.json'), '{"type":"commonjs"}\n');
+    fs.writeFileSync(path.join(f.dir, 'nested/package.json'), '{"type":"module"}\n');
+    commit = f.git('commit', '-qm', 'Honor staged package scope and explicit cjs');
+    assert.equal(commit.status, 0, commit.stderr);
+    stage('invalid-module.js', 'return;\n');
+    commit = f.git('commit', '-qm', 'Reject CommonJS-only source in staged module context');
+    assert.notEqual(commit.status, 0);
+    assert.match(commit.stderr, /invalid-module\.js/);
+    f.git('reset', '-q', '--', 'invalid-module.js');
+    stage('explicit-module.mjs', 'return;\n');
+    commit = f.git('commit', '-qm', 'Reject CommonJS-only source in explicit mjs');
+    assert.notEqual(commit.status, 0);
+    assert.match(commit.stderr, /explicit-module\.mjs/);
+  } finally { clean(f.dir); }
+});

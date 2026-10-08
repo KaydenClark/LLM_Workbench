@@ -1248,6 +1248,7 @@ for (const kind of ['adr', 'ddr']) test(`accept and deprecate preserve ${kind.to
       '[Wiki directory](../../../wiki/)',
       '[angle](<../../../wiki/reference%20notes.md?view=source#details>)',
       '[title](../../../wiki/reference%20notes.md?view=source#details "Title (unchanged)")',
+      '[Reference\nnotes](../../../wiki/reference%20notes.md)',
       '[same page](#decision)',
       '[web](https://example.com/reference)',
       '[network](//example.com/reference)',
@@ -1268,7 +1269,8 @@ for (const kind of ['adr', 'ddr']) test(`accept and deprecate preserve ${kind.to
     assert.ok(content.includes('[Wiki directory](../../wiki/)'), 'directory-route syntax is preserved');
     assert.ok(content.includes('[angle](<../../wiki/reference%20notes.md?view=source#details>)'), 'angle wrappers and URL suffixes are preserved');
     assert.ok(content.includes('[title](../../wiki/reference%20notes.md?view=source#details "Title (unchanged)")'), 'link titles remain separate and byte-identical');
-    for (const link of links.split('\n').slice(6)) assert.ok(content.includes(link), `non-relative target remains unchanged: ${link}`);
+    assert.ok(content.includes('[Reference\nnotes](../../wiki/reference%20notes.md)'), 'multiline link labels remain supported and unchanged');
+    for (const link of links.split('\n').slice(8)) assert.ok(content.includes(link), `non-relative target remains unchanged: ${link}`);
     assert.ok(content.endsWith(evidence), 'append-only evidence stays byte-identical');
     assert.equal(accepted.historicalReferencesLeft[accepted.to], 1);
     assert.equal(fs.readFileSync(path.join(dir, 'GLOSSARY.md'), 'utf8'), glossary, 'moving a record never authors vocabulary');

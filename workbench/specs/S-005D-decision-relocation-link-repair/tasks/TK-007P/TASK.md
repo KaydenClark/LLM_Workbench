@@ -3,7 +3,7 @@
 **Task ID:** TK-007P
 **Spec ID:** S-005D
 **Slice:** Decision Relocation Link Repair
-**Status:** done
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: S-005D Acceptance Criteria
@@ -27,3 +27,4 @@ Deliver the scoped behavior, maintained owners and checkable proof. Preserve the
 | Run | Date | Answers | Adjusted handoff |
 |---|---|---|---|
 | 1 | 2026-10-08 | evidence row 2 (fail verdict at b5571bf8ec6bbc9a4f5918e942ca3aa5f248dbc0 on 2026-10-08) | Separate Markdown destination wrappers and titles before rebasing, preserving the path target and exact wrapper/title bytes, with narrow regressions. |
+| 2 | 2026-10-08 | evidence row 5 (fail verdict at 30d211102c28ab0c55e94b910c4e4949541eaec7 on 2026-10-08) | Builder QA reproduced a regression where multiline link labels are skipped, restore their previously supported relocation and add narrow lifecycle regression. |

@@ -677,7 +677,7 @@ export function rewriteAdrLinks(content, oldDir, newDir, locations, { directoryT
   let copied = 0;
   let updated = '';
   let consumed = 0;
-  const links = /\[[^\]\n]*\]\(/g;
+  const links = /\[[^\]]*\]\(/g;
   for (const match of content.matchAll(links)) {
     // Do not parse bracket text inside a link title as another link.
     if (match.index < consumed) continue;

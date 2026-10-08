@@ -355,7 +355,9 @@ repository share it. Other projects and provider homes are untouched. A later
 reviewed snapshot uses the same command with `--update`.
 
 At commit, staged whitespace and staged `.js`, `.mjs` and `.cjs` syntax are
-checked offline. Partially staged files are checked from the index, not from
+checked offline. The explicit `.mjs`/`.cjs` modes and nearest staged
+`package.json` type govern parsing; ordinary `.js` is checked as CommonJS,
+then as a module if needed, when that scope has no explicit type. Partially staged files are checked from the index, not from
 their working-tree bytes. Node must be available. Manual check from the target
 worktree: `node "$(git rev-parse --path-format=absolute --git-common-dir)/workbench-hooks/pre-commit.mjs"`.
 The full suite stays at the candidate gate, not in every commit.
