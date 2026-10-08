@@ -157,3 +157,63 @@ test('legacy answers still read with their original words and status semantics',
  assert.equal(board.answerLabel({kind:'owner-decision',options:null},'defer'),'Not now');
  assert.deepEqual(board.pendingForAgents(root).map(item=>[item.id,item.verdictLabel]),[[ids.flagged,'Decline'],[ids.unclear,'Answer now (note)'],[ids.spec,'Send back']]);
 });
+
+async function serve(root,options){
+ const server=board.createServer(root,options);
+ await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
+ return {base:`http://127.0.0.1:${server.address().port}`,close:()=>new Promise(resolve=>server.close(resolve))};
+}
+
+test('search, backlinks and glossary routes delegate to the sources module and 404 without it',async()=>{
+ const root=controlsRoom();
+ fs.writeFileSync(path.join(root,'README.md'),'# Readme\n');
+ const calls=[];
+ const route=(rootDir,url,context)=>{
+  calls.push({rootDir,path:url.pathname,q:url.searchParams.get('q'),items:context.items.length,read:context.readSource(rootDir,'README.md')});
+  if(url.pathname==='/api/search')return{results:[{kind:'question',id:'GB-0001',title:'Standard question',snippet:'Which?',status:'pending'}]};
+  if(url.pathname==='/api/glossary')return{source:null,terms:[]};
+  return null;
+ };
+ const wired=await serve(root,{dashboardRoute:route});
+ try{
+  const search=await fetch(`${wired.base}/api/search?q=standard`);
+  assert.equal(search.status,200);
+  assert.equal((await search.json()).results[0].id,'GB-0001');
+  assert.deepEqual((await (await fetch(`${wired.base}/api/glossary`)).json()),{source:null,terms:[]});
+  assert.equal((await fetch(`${wired.base}/api/backlinks?path=README.md`)).status,404,'a null route result is not found');
+  assert.equal(calls[0].q,'standard');
+  assert.equal(calls[0].items,5,'the route receives the board items');
+  assert.equal(calls[0].read,'# Readme\n','the route receives the board safe reader');
+ }finally{await wired.close();}
+ const absent=await serve(root,{dashboardRoute:null});
+ try{
+  for (const route of ['/api/search?q=x','/api/backlinks?path=README.md','/api/glossary']) assert.equal((await fetch(absent.base+route)).status,404);
+ }finally{await absent.close();}
+});
+
+test('Drafts to approve groups drafts by target file, lists approvals without drafts and shows stale approval',async()=>{
+ const root=controlsRoom([
+  {key:'ddr',kind:'confirm-ddr',title:'Review a decision record',proposal:'Confirm the record.',draft:'# Decision\n\nProposed words.',sources:[{label:'Record',path:'docs/ddr/000A.md',ref:'abc'},{label:'Register',path:'docs/ddr/REGISTER.md'}]},
+  {key:'dqc',kind:'confirm-dqc',title:'Confirm a destination question',proposal:'Confirm the understanding.'},
+  {key:'withdrawn',kind:'confirm-text',title:'Withdrawn draft',proposal:'Gone.',draft:'Old words.'}
+ ]);
+ board.withdrawItem(root,'GB-0008',{by:'fixture',reason:'superseded'});
+ board.recordAnswer(root,'GB-0006',{verdict:'confirm',note:'',itemRevision:1});
+ let drafts=board.draftsToApprove(root);
+ const target=drafts.groups.find(group=>group.target==='docs/ddr/000A.md');
+ assert.ok(target,'a full-text review is grouped under its target file');
+ assert.deepEqual(target.items.map(item=>[item.id,item.draftKind,item.approval.state]),[['GB-0006','full-text','current']]);
+ assert.match(target.items[0].approval.hash,/^[a-f0-9]{64}$/);
+ const undetermined=drafts.groups.find(group=>group.target===null);
+ assert.deepEqual(undetermined.items.map(item=>item.id),['GB-0001'],'proposed wording without a determinable target file stays listed');
+ assert.deepEqual(drafts.withoutDraft.map(item=>item.id),['GB-0005','GB-0007'],'approval questions without a draft are listed, never given an invented one');
+ assert.ok(!JSON.stringify(drafts).includes('GB-0008'),'withdrawn items are not offered for approval');
+ board.reviseItem(root,'GB-0006',{draft:'# Decision\n\nRevised words.'},{by:'agent',reason:'critique'});
+ drafts=board.draftsToApprove(root);
+ const stale=drafts.groups.find(group=>group.target==='docs/ddr/000A.md').items[0];
+ assert.equal(stale.approval.state,'stale','an approval of earlier wording is visibly stale');
+ assert.notEqual(stale.approval.hash,stale.approval.currentHash);
+ const served=await serve(root,{dashboardRoute:null});
+ try{assert.deepEqual(await (await fetch(`${served.base}/api/drafts`)).json(),JSON.parse(JSON.stringify(board.draftsToApprove(root))));}
+ finally{await served.close();}
+});

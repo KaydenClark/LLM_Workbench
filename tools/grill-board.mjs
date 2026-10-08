@@ -25,8 +25,10 @@ import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { appendEntry, createNote, readNote } from '../workbench/tools/notepads.mjs';
-import { dashboardSources } from './dashboard-sources.mjs';
-import { createWorkflow, approvalSnapshot } from './dashboard-workflow.mjs';
+// A namespace import, so a sources module without the optional
+// dashboardRoute export still loads; its routes then answer 404.
+import * as sources from './dashboard-sources.mjs';
+import { createWorkflow, approvalSnapshot, approvalHash } from './dashboard-workflow.mjs';
 import { listAdrs } from '../workbench/tools/adr.mjs';
 
 export const ITEMS_SCHEMA = 'grill-board/items@1';
@@ -587,7 +589,7 @@ export function artifactCatalog(root) {
       }
     }
   }
-  const extra = dashboardSources(root, { readSource: readSourceFile, catalogOnly: true });
+  const extra = sources.dashboardSources(root, { readSource: readSourceFile, catalogOnly: true });
   return { groups: [...groups, ...extra.groups.filter(group => !groups.some(g => g.id === group.id))], artifacts: [...artifacts.filter(a => fs.existsSync(path.join(root,a.path))), ...extra.artifacts.filter(a => !artifacts.some(existing => existing.path === a.path))], errors: extra.errors };
 }
 
@@ -610,6 +612,43 @@ export function readArtifact(root, requested) {
     itemUpdatedAt: item.history.at(-1)?.at || board.generatedAt
   }));
   return { ...artifact, text, revision: createHash('sha256').update(text).digest('hex'), tree, readAt: new Date().toISOString(), related };
+}
+
+// Kinds whose question is approving wording, a record or a delivery.
+const APPROVAL_KINDS = Object.freeze(['approve-spec', 'confirm-text', 'confirm-ddr', 'confirm-dqc']);
+
+// The exact wording a confirmation froze, against the item's current wording.
+function approvalState(item, answer) {
+  const currentHash = approvalHash(item);
+  const latest = answer?.approval ? answer.approval : [...(answer?.history ?? [])].reverse().find((entry) => entry.approval)?.approval;
+  if (!latest) return { state: 'none', currentHash, hash: null };
+  const base = { currentHash, hash: latest.hash, itemRevision: latest.itemRevision, confirmedAt: latest.confirmedAt, verdict: latest.verdict };
+  if (!answer.approval) return { ...base, state: 'superseded' };
+  return { ...base, state: latest.hash === currentHash && latest.itemRevision === item.revision ? 'current' : 'stale' };
+}
+
+// Drafts to approve: every open item carrying proposed wording, grouped by the
+// file it would replace when that is determinable (a full-text review names
+// its record first), plus the approval questions that have no draft at all.
+export function draftsToApprove(root) {
+  const view = mergeBoard(root);
+  const open = view.items.filter((item) => item.status === 'open');
+  const groups = new Map();
+  for (const item of open.filter((candidate) => isString(candidate.draft) && candidate.draft.trim())) {
+    const first = item.sources[0]?.path;
+    const fullText = ['confirm-text', 'confirm-ddr'].includes(item.kind) && first && !path.isAbsolute(first);
+    const target = fullText ? first : null;
+    if (!groups.has(target)) groups.set(target, { target, items: [] });
+    groups.get(target).items.push({
+      id: item.id, title: item.title, kind: item.kind, revision: item.revision, derivedStatus: item.derivedStatus,
+      question: item.question, draft: item.draft, draftKind: fullText ? 'full-text' : 'excerpt', sources: item.sources,
+      answerLabel: item.answerLabel, approval: approvalState(item, item.answer)
+    });
+  }
+  const ordered = [...groups.values()].sort((a, b) => (a.target === null) - (b.target === null) || String(a.target).localeCompare(String(b.target)));
+  const withoutDraft = open.filter((item) => APPROVAL_KINDS.includes(item.kind) && !(isString(item.draft) && item.draft.trim()))
+    .map((item) => ({ id: item.id, title: item.title, kind: item.kind, revision: item.revision, derivedStatus: item.derivedStatus, sources: item.sources }));
+  return { schema: 'workbench-dashboard/drafts@1', groups: ordered, withoutDraft };
 }
 
 function sendJson(response, status, body) {
@@ -636,8 +675,11 @@ function readBody(request) {
   });
 }
 
-export function createServer(root) {
+// options.dashboardRoute replaces the sources module's optional route
+// (tests pass a stub, or null for a sources module without it).
+export function createServer(root, options = {}) {
   const paths = boardPaths(root);
+  const dashboardRoute = 'dashboardRoute' in options ? options.dashboardRoute : sources.dashboardRoute;
   const flows = () => workflow(root);
   return http.createServer(async (request, response) => {
     const url = new URL(request.url, 'http://localhost');
@@ -652,10 +694,22 @@ export function createServer(root) {
         sendJson(response, 200, mergeBoard(root));
         return;
       }
-      if (request.method === 'GET' && url.pathname === '/api/dashboard') { sendJson(response,200,dashboardSources(root,{readSource:readSourceFile})); return; }
+      if (request.method === 'GET' && url.pathname === '/api/dashboard') { sendJson(response,200,sources.dashboardSources(root,{readSource:readSourceFile})); return; }
+      if (request.method === 'GET' && url.pathname === '/api/drafts') { sendJson(response, 200, draftsToApprove(root)); return; }
+      if (request.method === 'GET' && ['/api/search', '/api/backlinks', '/api/glossary'].includes(url.pathname)) {
+        const routed = typeof dashboardRoute === 'function' ? await dashboardRoute(root, url, { readSource: readSourceFile, items: readItems(root).items }) : null;
+        if (routed === null || routed === undefined) sendJson(response, 404, { error: { code: 'not-found', message: `${url.pathname} is not available from this sources module` } });
+        else sendJson(response, 200, routed);
+        return;
+      }
       if (request.method === 'GET' && url.pathname === '/api/workflow') { sendJson(response,200,flows().read()); return; }
       if (request.method === 'POST' && ['/api/comments','/api/rounds','/api/promotions'].includes(url.pathname)) {
-        const body = JSON.parse(await readBody(request));
+        let body;
+        try {
+          body = JSON.parse(await readBody(request));
+        } catch (error) {
+          throw new BoardError('invalid-json', `request body is not JSON: ${error.message}`);
+        }
         const result = url.pathname === '/api/comments' ? flows().comment(body) : url.pathname === '/api/rounds' ? flows().endRound(body) : flows().promote(body);
         sendJson(response,200,result); return;
       }
