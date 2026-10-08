@@ -600,3 +600,17 @@ test('the page shows an answer conflict and asks the owner to answer again',()=>
  assert.match(html,/2026-10-08T10:00:00Z[\s\S]*2026-10-08T10:01:00Z/);
  assert.equal(model.conflictNotice({...item,answerConflict:undefined}),'');
 });
+
+test('the served page refuses to be framed by another page',async()=>{
+ const root=notepadRoom();
+ fs.copyFileSync(new URL('../workbench/grill-board/index.html',import.meta.url),board.boardPaths(root).page);
+ const served=await serve(root,{dashboardRoute:null});
+ try{
+  for (const route of ['/','/index.html']){
+   const response=await fetch(served.base+route);
+   assert.equal(response.status,200);
+   assert.equal(response.headers.get('x-frame-options'),'DENY');
+   assert.match(response.headers.get('content-security-policy')||'',/frame-ancestors 'none'/);
+  }
+ }finally{await served.close();}
+});

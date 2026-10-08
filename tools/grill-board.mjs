@@ -793,7 +793,8 @@ export function createServer(root, options = {}) {
     try {
       if (request.method === 'GET' && (url.pathname === '/' || url.pathname === '/index.html')) {
         const html = fs.readFileSync(paths.page);
-        response.writeHead(200, { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' });
+        // No other page may frame the board (clickjacking on Confirm).
+        response.writeHead(200, { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store', 'x-frame-options': 'DENY', 'content-security-policy': "frame-ancestors 'none'" });
         response.end(html);
         return;
       }
