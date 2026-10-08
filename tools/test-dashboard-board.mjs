@@ -6,6 +6,7 @@ import path from 'node:path';
 import vm from 'node:vm';
 import http from 'node:http';
 import * as board from './grill-board.mjs';
+import { createWorkflow } from './dashboard-workflow.mjs';
 function room() {
  const root=fs.mkdtempSync(path.join(os.tmpdir(),'dashboard-board-test-'));
  fs.mkdirSync(path.join(root,board.BOARD_DIR),{recursive:true});
@@ -226,7 +227,7 @@ function element() {
 }
 function pageModel({storage={},history=[]}={}) {
  const html=fs.readFileSync(new URL('../workbench/grill-board/index.html',import.meta.url),'utf8');
- const script=html.match(/<script>([\s\S]*?)<\/script>/)[1].replace('Promise.all([load()','window.model={state,matchesSlice,topicSummaries,sliceTitle,startBatch,batchProgress,resetSlice,gradeBadges,gradeDetail,answerModel,whysList,confirmedItems,dispositionTimeline,laneFor,rememberComment,commentDraftFor,forgetComment,cardWorkflowHtml,staleNotice,promotionBlocker,openQuestion,hasUnsavedWork,approvalSummary}; Promise.all([load()');
+ const script=html.match(/<script>([\s\S]*?)<\/script>/)[1].replace('Promise.all([load()','window.model={state,matchesSlice,topicSummaries,sliceTitle,startBatch,batchProgress,resetSlice,gradeBadges,gradeDetail,answerModel,whysList,confirmedItems,dispositionTimeline,laneFor,rememberComment,commentDraftFor,forgetComment,cardWorkflowHtml,staleNotice,promotionBlocker,openQuestion,hasUnsavedWork,approvalSummary,conflictNotice}; Promise.all([load()');
  const elements=new Map();
  const localStorage={getItem:key=>storage[key]??null,setItem:(key,value)=>{storage[key]=String(value);},removeItem:key=>{delete storage[key];}};
  const ctx=vm.createContext({document:{getElementById:id=>{if(!elements.has(id))elements.set(id,element());return elements.get(id);},querySelectorAll:()=>[],documentElement:{dataset:{}}},window:{addEventListener(){},scrollTo(){},scrollY:0},history:{replaceState:(_state,_title,url)=>history.push(url)},localStorage,setInterval(){},setTimeout,clearTimeout,URL,URLSearchParams,location:{hash:''},fetch:()=>new Promise(()=>{})});
@@ -566,4 +567,36 @@ test('confirming again records a fresh snapshot for a confirmation that has none
  }
  const promoted=flow.promote({ids:['GB-0001','GB-0002'],revisions:{'GB-0001':1,'GB-0002':1},actionId:'p-reconfirm',expectedRevision:flow.read().revision});
  assert.equal(promoted.request.cards.length,2);
+});
+
+test('an answer that does not follow the one it names surfaces as a conflict; the newest stays current and none is dropped',()=>{
+ const root=notepadRoom();
+ const first=board.recordAnswer(root,'GB-0001',{verdict:'confirm',note:'',itemRevision:1});
+ // An older server, still writing answers.json, records a newer answer.
+ const newer={verdict:'rework',note:'Plainer words, from the old service',at:new Date(Date.parse(first.at)+60000).toISOString(),itemRevision:1,history:[]};
+ fs.writeFileSync(board.boardPaths(root).answers,JSON.stringify({schema:board.ANSWERS_SCHEMA,owner:'Kayden',answers:{'GB-0001':newer}}));
+ const answer=board.readAnswers(root).answers['GB-0001'];
+ assert.equal(answer.verdict,'rework','the newest answer by time stays current');
+ assert.equal(answer.conflict.answers.length,2);
+ assert.deepEqual(JSON.parse(JSON.stringify(answer.conflict.answers.map(entry=>entry.verdict))).sort(),['confirm','rework'],'both answers stay visible');
+ assert.ok(answer.history.some(entry=>entry.verdict==='confirm'),'the other answer is kept in history');
+ const view=board.mergeBoard(root).items[0];
+ assert.equal(view.answerConflict.answers.length,2);
+ assert.match(view.answerConflict.message,/answer again/i);
+ assert.throws(()=>board.recordAnswer(root,'GB-0001',{verdict:'confirm',note:'',itemRevision:1,expectedAnswerAt:first.at}),/stale/,'a write against the older answer is refused');
+ const resolved=board.recordAnswer(root,'GB-0001',{verdict:'confirm',note:'Settled',itemRevision:1,expectedAnswerAt:newer.at});
+ assert.equal(board.readAnswers(root).answers['GB-0001'].conflict,undefined,'answering again resolves the conflict');
+ assert.equal(board.readAnswers(root).answers['GB-0001'].at,resolved.at);
+ // The workflow's own fallback reader chains the same way.
+ const fallback=createWorkflow(root,{readItems:board.readItems}).read();
+ assert.equal(fallback.cards['GB-0001'].state,'confirmed');
+});
+
+test('the page shows an answer conflict and asks the owner to answer again',()=>{
+ const {model}=pageModel();
+ const item={id:'GB-0001',revision:1,derivedStatus:'answered',answerConflict:{message:'Two answers were saved without one following the other. Answer again to settle it.',answers:[{verdict:'confirm',note:'',at:'2026-10-08T10:00:00Z'},{verdict:'rework',note:'Plainer',at:'2026-10-08T10:01:00Z'}]}};
+ const html=model.conflictNotice(item);
+ assert.match(html,/Answer again/);
+ assert.match(html,/2026-10-08T10:00:00Z[\s\S]*2026-10-08T10:01:00Z/);
+ assert.equal(model.conflictNotice({...item,answerConflict:undefined}),'');
 });

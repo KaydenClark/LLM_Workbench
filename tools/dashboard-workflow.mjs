@@ -97,6 +97,47 @@ export function normalizeSources(sources, root) {
   });
 }
 
+// ---- Owner answer history (shared with grill-board.mjs's readAnswers). ----
+// An answer without its history, as a dashboard-answer@2 notepad entry
+// stores it, and the hash by which a later entry names it as superseded.
+export function answerOnly(answer) {
+  return Object.fromEntries(Object.entries(answer).filter(([key]) => key !== 'history'));
+}
+export function answerRecordHash(answer) {
+  return hash(answerOnly(answer));
+}
+export const ANSWER_CONFLICT_MESSAGE = 'Two answers to this question were saved without one following the other (for example by two board servers). The newer one is shown as current and both are kept. Answer again to settle it.';
+
+// Owner answers rebuilt from the legacy answers.json answers (`base`, id to
+// answer with history) and the notepad answer entries in order. A current
+// entry holds only its own answer and names the answer it supersedes; when
+// that is not the answer it actually follows, the two are in conflict: the
+// newer by time stays current, both stay visible (the other in history and in
+// `conflict`), and nothing is dropped. Entries in the earlier full format
+// replace the answer as before.
+export function chainAnswers(base, entries) {
+  const answers = { ...base };
+  for (const saved of entries) {
+    if (saved.schema !== 'dashboard-answer@2') { answers[saved.id] = saved.answer; continue; }
+    const previous = answers[saved.id];
+    const expected = saved.supersedes ?? null;
+    const follows = !previous || (expected && previous.at === expected.at && answerRecordHash(previous) === expected.hash);
+    if (follows) {
+      answers[saved.id] = { ...saved.answer, history: previous ? [...(previous.history ?? []), answerOnly(previous)] : [] };
+      continue;
+    }
+    const incoming = { ...saved.answer };
+    const [older, newer] = Date.parse(incoming.at) >= Date.parse(previous.at) ? [answerOnly(previous), incoming] : [incoming, answerOnly(previous)];
+    const { conflict: _ignored, ...current } = newer;
+    answers[saved.id] = {
+      ...current,
+      history: [...(previous.history ?? []), older],
+      conflict: { message: ANSWER_CONFLICT_MESSAGE, answers: [older, current].map(answer => { const { conflict: _c, ...plain } = answer; return plain; }) }
+    };
+  }
+  return answers;
+}
+
 function approvalContent(item, root) {
   return { id: item.id, itemRevision: item.revision, question: item.question, current: item.current, proposal: item.proposal, draft: item.draft ?? null, sources: normalizeSources(item.sources, root), evidence: clone(item.evidence ?? item.brief?.artifacts ?? null) };
 }
@@ -220,18 +261,19 @@ export function createWorkflow(root, readers = {}) {
   const readAnswers = readers.readAnswers ?? (() => {
     const file = safePath(root, 'workbench/grill-board/answers.json');
     const legacy = fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, 'utf8')) : { answers: {} };
-    const answers = { ...legacy.answers };
+    // The same history chaining as the board's readAnswers (chainAnswers).
     const answerNote = `${notepads}/grilling/dashboard-answers.json`;
+    const entries = [];
     if (fs.existsSync(safePath(root, answerNote))) {
       const native = checkResult(readNote(root, { note: answerNote, topic: 'dashboard-answer' }));
       for (const entry of native.entries) {
         let saved;
         try { saved = JSON.parse(entry.content); } catch { fail('invalid-notepad', `Native answer entry ${entry.id} has invalid JSON`); }
         if (!saved?.id || !saved.answer || typeof saved.answer !== 'object' || Array.isArray(saved.answer)) fail('invalid-notepad', `Native answer entry ${entry.id} is incomplete`);
-        answers[saved.id] = saved.answer;
+        entries.push(saved);
       }
     }
-    return { ...legacy, answers };
+    return { ...legacy, answers: chainAnswers(legacy.answers ?? {}, entries) };
   });
 
   function read() {
