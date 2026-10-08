@@ -151,17 +151,78 @@ function makeCard({ title, priority, content, assignee, dependencies, sourceLink
   };
 }
 
+// Every field name a source parser reads from a Spec, Task or landmark
+// record, plus the card fields read below. The parsers are whole-document and
+// (for Specs and landmarks) last-wins, so a repeat of any of these anywhere in
+// the document could change a derived card; the preview refuses it.
+// tools/test-taskboard-json.mjs scans the parsers so this set cannot drift.
+export const TASKBOARD_SOURCE_FIELDS = Object.freeze(new Set([
+  'Spec ID', 'Landmark ID', 'Task ID', 'Former ID',
+  'Status', 'Priority', 'Owner', 'Updated', 'Catalog description', 'Blockers',
+  'Latest event', 'Next gate', 'Baseline',
+  'Slice', 'Destination', 'Capabilities', 'Missing capabilities', 'Proof',
+  'Planned verification', 'Claimed by', 'Close pending',
+  'Assignee', 'Approver', 'Next action', 'Start date', 'Due date'
+]));
+
+// A Spec's slice descriptions: each `###` subsection of its
+// `## Vertical Implementation Slices` section (the section parseSpecPacket
+// reads its slice rows from), running until the next heading of level three
+// or above. Real Specs head them `### TK-...`, `### Scoped Ticket: TK-...`,
+// `### First slice - ...` or a dated completion note.
+const SLICES_HEADING = /^##[ \t]+Vertical Implementation Slices[ \t]*\r?$/;
+const SECTION_HEADING = /^#{1,2}[ \t]/;
+const SUBSECTION_HEADING = /^###[ \t]/;
+
+// The slice subsection (its starting offset) or null for document scope, for
+// every line start in the content.
+function sliceScopes(content) {
+  const scopes = [];
+  let offset = 0, inSlices = false, scope = null;
+  for (const line of content.split('\n')) {
+    if (SECTION_HEADING.test(line)) {
+      inSlices = SLICES_HEADING.test(line);
+      scope = null;
+    } else if (SUBSECTION_HEADING.test(line)) {
+      scope = inSlices ? offset : null;
+    }
+    scopes.push({ offset, scope });
+    offset += line.length + 1;
+  }
+  return scopes;
+}
+
+function scopeAt(scopes, index) {
+  let low = 0, high = scopes.length - 1;
+  while (low < high) {
+    const middle = (low + high + 1) >> 1;
+    if (scopes[middle].offset <= index) low = middle;
+    else high = middle - 1;
+  }
+  return scopes[low].scope;
+}
+
 function sourceFields(content = '', rejectDuplicates = true) {
   // Match the exact whole-document field extraction used by parseSpecPacket
   // and parseTaskRecord: same regex, key/value trim, and case-sensitive names.
   // Spec parsing currently last-wins; preview publication must instead refuse
-  // duplicates of card metadata before replacing source-derived output. Repeated
-  // narrative labels (e.g. Stance in slice descriptions) are not card metadata.
+  // an ambiguous source before replacing source-derived output:
+  // - a parsed field (TASKBOARD_SOURCE_FIELDS) is unique in the whole document;
+  // - any other label is unique at document scope, and unique within each
+  //   slice subsection, whose narrative labels (such as a per-slice Stance)
+  //   belong to that slice and are read by no parser.
   const fields = {};
-  const cardFields = new Set(['Spec ID','Landmark ID','Task ID','Priority','Assignee','Approver','Next action','Start date','Due date']);
+  const seen = new Map();
+  const scopes = rejectDuplicates ? sliceScopes(content) : null;
   for (const match of content.matchAll(/^\*\*([^*]+):\*\*\s*(.+)$/gm)) {
     const key = match[1].trim();
-    if (rejectDuplicates && cardFields.has(key) && Object.hasOwn(fields, key)) throw new Error(`taskboard-source: duplicated source field ${key}`);
+    if (rejectDuplicates) {
+      const scope = TASKBOARD_SOURCE_FIELDS.has(key) ? 'document' : scopeAt(scopes, match.index) ?? 'document';
+      const keys = seen.get(scope) ?? new Set();
+      if (keys.has(key)) throw new Error(`taskboard-source: duplicated source field ${key}`);
+      keys.add(key);
+      seen.set(scope, keys);
+    }
     fields[key] = match[2].trim();
   }
   return fields;
