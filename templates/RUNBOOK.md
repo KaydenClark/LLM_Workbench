@@ -25,7 +25,7 @@ Contract change.
 |---|---|---|
 | Write agent instructions | You create or edit skills, steering files or references agents reach through pointers. | [writing-for-agents](workbench/skills/writing-for-agents/SKILL.md) |
 | Retrospect on a session | The owner explicitly requests a retrospective on a named session or the current one. | [retro](workbench/skills/retro/SKILL.md) |
-| Find a workflow | You need the existing verb sequence, scenario and skill route. | [Workflows](#workflows) |
+| Find a workflow | You need the existing verb sequence, scenario and skill route, or the repeatable draft workflow. | [Workflows](#workflows); [Draft → Critique → Revise → Confirm](#draft--critique--revise--confirm) |
 | Enter a session | Every session start or resume: check root, branch and dirty state, run doctor and load the assigned Spec. | [Ordinary Entry](#ordinary-entry) |
 | Find the owner of a question | You need the file that owns a permission, meaning, work state, proof or procedure. | [Finding The Owner Of A Question](#finding-the-owner-of-a-question) |
 | Route a truth to its owner | Work changed a durable truth and its owner must be updated, or nothing changed and that must be recorded. | [to-docs](workbench/skills/to-docs/SKILL.md#to-docs) |
@@ -146,6 +146,29 @@ Off-path arrivals use [genesis](workbench/skills/genesis/SKILL.md),
 A room-local readback may support Align → Confirm without adding an invocation
 gate. Maintain the project's confirmed reference here; do not duplicate verb
 definitions or weaken its owner's endpoint.
+
+### Draft → Critique → Revise → Confirm
+
+Use this workflow when the owner needs to inspect proposed artifact wording:
+show the actual draft with its context and sources, invite critique, revise it,
+and ask for confirmation of the exact wording shown. Critique and revision are
+repeatable as needed before Confirm. A comment or change request is not approval
+or confirmation. Preserve exactly what was confirmed; a later revision needs
+its own confirmation before it can replace the approved text.
+
+```mermaid
+flowchart LR
+  draft("Draft") --> critique("Critique") --> revise("Revise")
+  revise -->|Repeat as needed| critique
+  revise -->|Owner confirms exact wording| draftConfirm("Confirm")
+  draft -->|No changes needed: owner confirms exact wording| draftConfirm
+```
+
+This is not a mandatory extra gate for every trivial interaction. Explore still
+ends in Confirm and can contain different workflows; this addition does not
+settle their taxonomy or change the five parent workflows above. The Workbench
+owner confirmed this workflow and its three new verbs on 2026-10-08. Confirm
+already existed. Definitions live in the [Lexicon](LEXICON.md#core-terms).
 
 ## Ordinary Entry
 
