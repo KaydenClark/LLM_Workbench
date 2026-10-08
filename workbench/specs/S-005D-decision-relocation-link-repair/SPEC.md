@@ -8,7 +8,7 @@
 **Updated:** 2026-10-08
 **Catalog description:** Decision lifecycle moves preserve outgoing relative targets and repair incoming Grill Board references without rewriting historical evidence.
 **Blockers:** none
-**Latest event:** TK-007P claimed by codex-confirmed-followup.
+**Latest event:** Independent round-one review failed; bounded correction underway. Earlier event: TK-007P claimed by codex-confirmed-followup.
 **Next gate:** Close TK-007P with verification and documentation proof.
 
 > **Citation anchors.** pre=`45d79a453cf21520317ff7ec48e2d299a2f6a0ad` post=`45d79a453cf21520317ff7ec48e2d299a2f6a0ad`.
@@ -80,6 +80,8 @@ Owning files: workbench/tools/adr.mjs; tools/test-adr.mjs; workbench/skills/to-d
 ## Completion Result
 
 Implementation verified locally at `ffa941905c0667c92065d58894f78f35302b31be`. The canonical RUNBOOK suite passed all 55 commands in 849.3 seconds, with focused red/green and source checks. Native Codex discovered readback and produced the three bounded outputs recorded in the Reusable Readback Skill proof. Mandatory self-drift findings remained unchanged at 23; score remained 73, so no globally clean Workbench or agent-outcome claim is made. Independent review and integration delivery are the next gates. Hosted CI and canonical hook installation will be observed after delivery; owner Human QA and main remain separate later gates.
+
+Current correction: the separate review findings are implemented under the same continued Task. Focused and final verification, fresh assembled review and reviewed integration delivery remain pending; the earlier local pass above is bounded to its named candidate.
 
 ## Remaining Limitations Or Follow-Up Specs
 

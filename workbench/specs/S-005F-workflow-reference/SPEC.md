@@ -8,7 +8,7 @@
 **Updated:** 2026-10-08
 **Catalog description:** RUNBOOK.md is the easy-to-reference home for existing workflows expressed as ordered verbs, with scenario and skill pointers.
 **Blockers:** none
-**Latest event:** TK-007R claimed by codex-confirmed-followup.
+**Latest event:** Independent round-one review failed; bounded correction underway. Earlier event: TK-007R claimed by codex-confirmed-followup.
 **Next gate:** Close TK-007R with verification and documentation proof.
 
 > **Citation anchors.** pre=`45d79a453cf21520317ff7ec48e2d299a2f6a0ad` post=`45d79a453cf21520317ff7ec48e2d299a2f6a0ad`.
@@ -78,10 +78,13 @@ Owning files: RUNBOOK.md; templates/RUNBOOK.md; the existing Workflow Verbs and 
 |---|---|---|---|---|---|
 | 2026-10-08 | TK-007R | Task closed | code ffa941905c0667c92065d58894f78f35302b31be; canonical 55/55 commands pass in 849.3s; focused ADR/Wiki/Board, catalog/lane, workflow pointers and staged-hook regressions pass; fresh native readback 3 synthetic cases; unchanged 23 drift findings and 73 score | RUNBOOK.md; templates/RUNBOOK.md | none in implementation Git state at close: dirty-tree (13 files: workbench/specs/S-005D-decision-relocation-link-repair/SPEC.md, workbench/specs/S-005D-decision-relocation-link-repair/tasks/TK-007P/TASK.md, workbench/specs/S-005E-readback-skill/SPEC.md, workbench/specs/S-005E-readback-skill/proof/native-readback.txt, workbench/specs/S-005E-readback-skill/tasks/TK-007Q/TASK.md, workbench/specs/S-005F-workflow-reference/SPEC.md, workbench/specs/S-005F-workflow-reference/tasks/TK-007R/TASK.md, workbench/specs/S-005G-repository-ci-and-fast-hooks/proof/followup-guardrail-post.json.gz, workbench/specs/S-005G-repository-ci-and-fast-hooks/proof/followup-guardrail-pre.json.gz, workbench/specs/S-005G-repository-ci-and-fast-hooks/proof/followup-self-drift-post.json.gz, and 3 more) and unpushed (ahead 4 behind 0 of origin/integration); recorded reason: Owner requires independent review before publication; this is a local verified completion checkpoint, not remote recovery or owner Human QA |
 | 2026-10-08 | review | Review verdict: fail at b5571bf8ec6bbc9a4f5918e942ca3aa5f248dbc0 [ae5318386ee6] #1 | continue TK-007R: Route the Blueprint semantic assertion to the canonical Runbook and retain a Wiki-link check, then pass mandatory verification; continue TK-007R: Reconcile the current Wiki paragraph that says Review Verify Approve placement is undecided, retaining dated history and separate carrier ownership. | OpenAI Codex CLI 0.159.3; fresh thread 01a11ac6-b41b-74c0-a8b4-b326021cae37; configured gpt-6.1-sol/high; read-only ephemeral | 2 |
+| 2026-10-08 | TK-007R | Owner-confirmed parent map and first review | Candidate b5571bf8 expresses the final map; focused Runbook 62/62 and committed citation checks 16/16 pass, but final full suite stops at 10/55 on the prior Wiki sequence assertion; independent review findings return to the same Task | Root/template Runbooks and Wiki accounts; [round-one review](proof/review-round-one.md) and [failed suite](proof/full-suite-workflow-red.txt) | Canonical-home assertion and current Wiki paragraph corrected; fresh final verification and review pending |
 
 ## Completion Result
 
 Implementation verified locally at `ffa941905c0667c92065d58894f78f35302b31be`. The canonical RUNBOOK suite passed all 55 commands in 849.3 seconds, with focused red/green and source checks. Native Codex discovered readback and produced the three bounded outputs recorded in the Reusable Readback Skill proof. Mandatory self-drift findings remained unchanged at 23; score remained 73, so no globally clean Workbench or agent-outcome claim is made. The later owner-confirmed five-parent map and diagram replace the earlier unresolved reference; their verification is recorded separately below. Independent review and integration delivery are the next gates. Hosted CI and canonical hook installation will be observed after delivery; owner Human QA and main remain separate later gates.
+
+Current correction: the separate review findings are implemented under the same continued Task. Focused and final verification, fresh assembled review and reviewed integration delivery remain pending; the earlier local pass above is bounded to its named candidate.
 
 ## Remaining Limitations Or Follow-Up Specs
 

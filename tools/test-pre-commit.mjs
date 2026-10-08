@@ -66,3 +66,41 @@ test('installer preserves existing hooks and refuses another repository without 
     } finally { clean(f.dir); }
   }
 });
+
+
+test('installed hook syntax-checks ordinary staged files and skips script symlink blobs', () => {
+  const f = fixture();
+  try {
+    assert.equal(f.install().status, 0);
+    fs.mkdirSync(path.join(f.dir, 'tools'));
+    fs.writeFileSync(path.join(f.dir, 'tools/valid.mjs'), 'export const value = 1;\n');
+    fs.symlinkSync('./tools/valid.mjs', path.join(f.dir, 'linked script.mjs'));
+    assert.equal(f.git('add', 'tools/valid.mjs', 'linked script.mjs').status, 0);
+    const committed = f.git('commit', '-qm', 'Commit ordinary script and its symlink');
+    assert.equal(committed.status, 0, committed.stderr);
+    assert.match(committed.stdout + committed.stderr, /1 JavaScript syntax check/);
+  } finally { clean(f.dir); }
+});
+
+test('installer refuses multiply linked snapshot files before writing any snapshot or config bytes', () => {
+  const f = fixture();
+  try {
+    const installed = f.install();
+    assert.equal(installed.status, 0, installed.stderr);
+    const { hookDir } = JSON.parse(installed.stdout);
+    const checker = path.join(hookDir, 'pre-commit.mjs');
+    const protectedFile = path.join(f.dir, 'protected-file.mjs');
+    fs.writeFileSync(protectedFile, 'protected fixture bytes\n');
+    fs.unlinkSync(checker);
+    fs.linkSync(protectedFile, checker);
+    const beforeConfig = fs.readFileSync(path.join(f.dir, '.git/config'));
+    const beforeWrapper = fs.readFileSync(path.join(hookDir, 'pre-commit'));
+    const update = f.install('--update');
+    assert.notEqual(update.status, 0, 'a hard-linked checker cannot be updated');
+    assert.match(update.stderr, /linked/);
+    assert.equal(fs.readFileSync(protectedFile, 'utf8'), 'protected fixture bytes\n');
+    assert.equal(fs.readFileSync(checker, 'utf8'), 'protected fixture bytes\n');
+    assert.deepEqual(fs.readFileSync(path.join(hookDir, 'pre-commit')), beforeWrapper);
+    assert.deepEqual(fs.readFileSync(path.join(f.dir, '.git/config')), beforeConfig);
+  } finally { clean(f.dir); }
+});

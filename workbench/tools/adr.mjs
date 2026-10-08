@@ -632,16 +632,66 @@ function splitLinkSuffix(target) {
 // Unmapped targets stay at their existing absolute paths; moved referrers
 // still need their relative routes rebased. Unchanged referrers only repair
 // mapped moves. Shared with Spec and Task directory moves.
+// Locate only the destination path of an inline Markdown link. Wrappers,
+// whitespace and optional quoted/parenthesized titles stay outside that span.
+function markdownDestinationAt(content, start) {
+  let cursor = start;
+  while (/[ \t]/.test(content[cursor] ?? '')) cursor += 1;
+  const wrapped = content[cursor] === '<';
+  const from = wrapped ? ++cursor : cursor;
+  let depth = 0;
+  for (; cursor < content.length; cursor += 1) {
+    const char = content[cursor];
+    if (char === '\\') { cursor += 1; continue; }
+    if (char === '\n' || char === '\r') return null;
+    if (wrapped) { if (char === '>') break; }
+    else {
+      if (/\s/.test(char)) break;
+      if (char === '(') depth += 1;
+      if (char === ')') { if (depth === 0) break; depth -= 1; }
+    }
+  }
+  const to = cursor;
+  if (cursor === content.length || depth !== 0 || from === to) return null;
+  if (wrapped) cursor += 1;
+  while (/[ \t]/.test(content[cursor] ?? '')) cursor += 1;
+  if (content[cursor] !== ')') {
+    const opener = content[cursor];
+    if (!['"', "'", '('].includes(opener)) return null;
+    const closer = opener === '(' ? ')' : opener;
+    cursor += 1;
+    for (; cursor < content.length; cursor += 1) {
+      if (content[cursor] === '\\') { cursor += 1; continue; }
+      if (content[cursor] === '\n' || content[cursor] === '\r') return null;
+      if (content[cursor] === closer) break;
+    }
+    if (cursor === content.length) return null;
+    cursor += 1;
+    while (/[ \t]/.test(content[cursor] ?? '')) cursor += 1;
+  }
+  return content[cursor] === ')' ? { from, to, end: cursor + 1 } : null;
+}
+
 export function rewriteAdrLinks(content, oldDir, newDir, locations, { directoryTargets = new Set() } = {}) {
   let count = 0;
-  const updated = content.replace(/(\[[^\]]*\]\()([^)]+)(\))/g, (whole, open, target, close) => {
-    if (/^(?:[a-z][a-z0-9+.-]*:|\/)/i.test(target)) return whole;
+  let copied = 0;
+  let updated = '';
+  let consumed = 0;
+  const links = /\[[^\]\n]*\]\(/g;
+  for (const match of content.matchAll(links)) {
+    // Do not parse bracket text inside a link title as another link.
+    if (match.index < consumed) continue;
+    const span = markdownDestinationAt(content, match.index + match[0].length);
+    if (!span) continue;
+    consumed = span.end;
+    const target = content.slice(span.from, span.to);
+    if (/^(?:[a-z][a-z0-9+.-]*:|\/)/i.test(target)) continue;
     const [rawPath, suffix] = splitLinkSuffix(target);
-    if (!rawPath) return whole;
+    if (!rawPath) continue;
     let decoded;
-    try { decoded = decodeURIComponent(rawPath); } catch { return whole; }
+    try { decoded = decodeURIComponent(rawPath.replace(/\\([\\()<> ])/g, '$1')); } catch { continue; }
     const oldAbsolute = path.resolve(oldDir, decoded);
-    if (!locations.has(oldAbsolute) && newDir === oldDir) return whole;
+    if (!locations.has(oldAbsolute) && newDir === oldDir) continue;
     const newAbsolute = locations.get(oldAbsolute) ?? oldAbsolute;
     // S-00I TK-003 corrective (round 2): a link needs recomputing only when
     // something in its own resolution actually changed - the target's
@@ -654,26 +704,28 @@ export function rewriteAdrLinks(content, oldDir, newDir, locations, { directoryT
     // differently-spelled one than the author wrote - a real-room dry run
     // renormalized an active Spec's own untouched `../S-050-.../SPEC.md`
     // self-link down to `SPEC.md` this way. Leave it exactly as written.
-    if (newAbsolute === oldAbsolute && newDir === oldDir) return whole;
+    if (newAbsolute === oldAbsolute && newDir === oldDir) continue;
     // Moving between sibling directories can leave a route valid as written.
     // Preserve that spelling rather than shorten an already-correct link.
-    if (path.resolve(newDir, decoded) === newAbsolute) return whole;
+    if (path.resolve(newDir, decoded) === newAbsolute) continue;
     const relative = path.relative(newDir, newAbsolute).split(path.sep).join('/');
     // Preserve directory-route syntax and URI encoding when recomputing a
     // moved target or referrer. In particular ./ names a directory; # alone
     // would instead name a fragment in the referencing document.
     const directory = directoryTargets.has(oldAbsolute) || rawPath.endsWith('/');
     const directoryRelative = relative || '.';
-    const encoded = /%[0-9a-f]{2}/i.test(rawPath)
+    const encoded = /%[0-9a-f]{2}|\\[ ()<>]/i.test(rawPath)
       ? directoryRelative.split('/').map(part => encodeURIComponent(part)
         // encodeURIComponent leaves parentheses raw; Markdown uses them as delimiters.
         .replaceAll('(', '%28').replaceAll(')', '%29')).join('/') : directoryRelative;
     const route = directory ? `${encoded}${rawPath.endsWith('/') ? '/' : ''}` : encoded;
     const rebuilt = `${route}${suffix}`;
-    if (rebuilt === target) return whole;
+    if (rebuilt === target) continue;
     count += 1;
-    return `${open}${rebuilt}${close}`;
-  });
+    updated += content.slice(copied, span.from) + rebuilt;
+    copied = span.to;
+  }
+  updated += content.slice(copied);
   return { content: updated, count };
 }
 

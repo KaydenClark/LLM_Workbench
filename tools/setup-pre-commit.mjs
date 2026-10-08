@@ -49,7 +49,7 @@ try {
   if (fs.existsSync(hookDir)) {
     if (!fs.lstatSync(hookDir).isDirectory()) throw new Error('The managed hook path is not an ordinary directory.');
     const existing = fs.readdirSync(hookDir).sort();
-    if (JSON.stringify(existing) !== JSON.stringify([...names].sort()) || names.some(name => !fs.lstatSync(path.join(hookDir, name)).isFile())) {
+    if (JSON.stringify(existing) !== JSON.stringify([...names].sort()) || names.some(name => { const stat = fs.lstatSync(path.join(hookDir, name)); return !stat.isFile() || stat.nlink !== 1; })) {
       throw new Error('The managed hook directory contains unknown or linked files; preserve it.');
     }
     const different = names.some(name => !fs.readFileSync(path.join(hookDir, name)).equals(contents.get(name)));

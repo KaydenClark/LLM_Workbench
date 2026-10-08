@@ -19,6 +19,11 @@ try {
   let checked = 0;
   for (const file of changed.stdout.split('\0').filter(Boolean)) {
     if (!/\.(?:mjs|cjs|js)$/i.test(file)) continue;
+    const index = git('ls-files', '--stage', '-z', '--', `:(literal)${file}`);
+    if (index.status !== 0) throw new Error(`Cannot read index mode for ${file}: ${index.stderr.trim()}`);
+    // Symlink blobs contain the target path, not script source. Submodules
+    // likewise contain no ordinary file bytes to syntax-check.
+    if (!/^(?:100644|100755) [0-9a-f]+ 0\t/.test(index.stdout)) continue;
     const staged = git('show', `:${file}`);
     if (staged.status !== 0) throw new Error(`Cannot read staged ${file}: ${staged.stderr.trim()}`);
     const mode = /\.cjs$/i.test(file) ? 'commonjs' : 'module';

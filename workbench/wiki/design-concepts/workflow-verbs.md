@@ -106,9 +106,11 @@ The owner's workflow map of 2026-09-24 no longer sits on the Blueprint: it
 moved to [the workflow page](idea-to-delivery-workflow.md), written in the
 verbs. The Landmark Tracker still prints the earlier step names and its Specs and tests
 use them, and the [landmark tracker page](landmark-tracker.md) describes the
-tool as it is. Which skill owns which verb, and where separate-context review
-(the Lexicon's Automated review), owner Human QA and promotion to main sit among
-Review, Verify and Approve, are not yet decided beyond what the Lexicon rows say.
+tool as it is. The current
+[Runbook reference](../../../RUNBOOK.md#workflows) names the confirmed skill
+routes and the placement of independent Review, integration Verify and owner
+Approve. The separately owned carrier rewrite still reconciles the Runbook's
+accepted reference-only home with the binding procedures currently in force.
 The Lexicon rows changed no command, status, folder or gate: the `complete`
 command and status and the `S-###:delivered` blocker qualifier keep their names,
 and renaming them is the owner's call.

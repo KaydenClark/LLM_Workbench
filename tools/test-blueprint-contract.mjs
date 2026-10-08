@@ -161,6 +161,7 @@ assert.ok(templateClaims.some(c => c.disposition === 'gap'), 'a template claim w
 // The two Wiki pages that hold the workflow and the altitudes exist, and the rewritten workflow no longer
 // carries the owner's brace-and-arrow map verbatim.
 const workflowPage = fs.readFileSync(path.join(root, 'workbench/wiki/design-concepts/idea-to-delivery-workflow.md'), 'utf8');
+assert.match(workflowPage, /\[Runbook reference and diagram\]\(\.\.\/\.\.\/\.\.\/RUNBOOK\.md#workflows\)/, 'the Wiki routes to the canonical workflow reference');
 assert.doesNotMatch(workflowPage, /Spec branch \{|Pick up a hot non-conflicting Task\n/, 'the Wiki workflow is rewritten in the workflow verbs, not the verbatim map');
 for (const verb of ['Idea', 'Align', 'Confirm', 'Map', 'Plan', 'Implement', 'Review', 'Verify']) {
   assert.match(workflowPage, new RegExp(`\\b${verb}\\b`), `the Wiki workflow names the verb ${verb}`);
@@ -186,7 +187,7 @@ const DDR_M = D + '000M-working-artifacts-are-scaffolding-cleared-away-once-thei
 const C = (label, owner, re) => ({ label, owner, re });
 const R = (label, reason) => ({ label, retired: reason });
 const workflowChecks = [
- C('rung: an owner idea opens Align', WF, /Idea -> Align -> Confirm/),
+ C('rung: an owner idea opens Align', 'RUNBOOK.md', /\| Explore \| Idea → Align → Confirm \|/),
  C('rung: an owner may explore an idea before Align', WF, /explore it in conversation/),
  C('rung: Align proceeds through grilling', WF, /grilling supports it/),
  C('rung: grill-me, brainstorming and wayfinding can open Align', WF, /brainstorming, wayfinding and research can open it/),
