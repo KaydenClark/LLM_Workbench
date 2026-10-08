@@ -3,12 +3,13 @@
 **Task ID:** TK-007L
 **Spec ID:** S-004D
 **Slice:** An agent grades one board question and the Owner opens its P/V badges and reasons
-**Status:** in-progress
+**Status:** done
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: Numbered red P and amber V badges appear on the right of question cards; clicking each reveals its own rationale without replacing or answering the question. Opening the question centrally shows all information, P/V and reasons.
 **Planned verification:** Red first in `tools/test-grill-board.mjs`: the validator refuses an item carrying Priority/Value fields today (unknown field), and a `grade` operation does not exist. Green: valid P1–P4 / V1–V4 grades with nonempty reasons pass; P5, V0, a grade without a reason, a combined score field and an unknown grade field are refused with the prior `items.json` bytes unchanged; a stale grade write is refused; the grade write never creates or changes `answers.json`; an ungraded item still validates and the page model reports it unclassified; the page model renders both badges on the row, opens each reason separately without opening the question, and the central view shows P, V and both reasons beside the unchanged question, proposal, sources, history and answer controls. Then a disposable-copy browser check of one graded real item, `node tools/grill-board.mjs validate` on the live board and the full Runbook suite on the committed candidate.
 **Claimed by:** claude-dashboard-director
+**Proof:** Grade schema and validated grade operation (gradeItems, grade CLI; P1-P4/V1-V4 with reasons, stale gradeRevision refused, revision and answers untouched); red P and amber V badges opening only their own reason; central view with both reasons. tools/test-dashboard-board.mjs 38/38, tools/test-grill-board.mjs 18/18; graded real item checked in the browser on a disposable copy (proof/owner-flow-demo-a857b658.json). Full suite 60/60 on clean candidate 07429c50; separate-context review #4 pass at 07429c50 (Spec evidence)
 
 ## Scope
 
@@ -66,3 +67,9 @@ this Spec's evidence.
 P/V filters and batches (TK-007M), the real inventory grades (TK-007N), the
 answer-to-card-update cycle (TK-007O), DQC P/V, an automatic recommended batch
 and any summed score.
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | claude/workbench-dashboard-first-pass | 0c8a9d18acd4d37181648dce69e4d6a630afee33 | ahead 0 behind 0 | 0 | Grade schema and validated grade operation (gradeItems, grade CLI; P1-P4/V1-V4 with reasons, stale gradeRevision refused, revision and answers untouched); red P and amber V badges opening only their own reason; central view with both reasons. tools/test-dashboard-board.mjs 38/38, tools/test-grill-board.mjs 18/18; graded real item checked in the browser on a disposable copy (proof/owner-flow-demo-a857b658.json). Full suite 60/60 on clean candidate 07429c50; separate-context review #4 pass at 07429c50 (Spec evidence) | workbench/grill-board/README.md: grade fields, grade command and why a grade change keeps revision | none | 65b63743ac2a9c43aa442f87b040ac9338adedfdb72aa96ad62ba96a5c4fb594 |
