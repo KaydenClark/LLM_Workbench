@@ -8,8 +8,8 @@
 **Updated:** 2026-10-08
 **Catalog description:** The owner can invoke /readback at any time to confirm or correct how an answer, concept or direction is understood.
 **Blockers:** none
-**Latest event:** Independent review passed; [Workbench follow-up delivery evidence](https://github.com/KaydenClark/LLM_Workbench/pull/438) is maintained in PR #438.
-**Next gate:** Owner Human QA after reviewed integration delivery; main promotion remains owner-only.
+**Latest event:** Reviewed feature delivery is contained in integration `e0586aa37f91f61848ef6171a6b321f05cd1eead`; [delivery evidence](https://github.com/KaydenClark/LLM_Workbench/pull/438) and the Repository CI And Fast Hooks proof record the observed checks.
+**Next gate:** Owner Human QA on delivered integration content; main promotion remains owner-only.
 
 > **Citation anchors.** pre=`45d79a453cf21520317ff7ec48e2d299a2f6a0ad` post=`45d79a453cf21520317ff7ec48e2d299a2f6a0ad`.
 
@@ -84,6 +84,8 @@ Owning files: workbench/skills/readback/SKILL.md; workbench/manifest.json; workb
 | 2026-10-08 | delivery | Draft PR publication | Four native assembled gates pass; submitted e21e5e8a20a219cccb7c52e4ff64da80b3a4753f | [Maintained hosted CI, integration containment and hook observations](https://github.com/KaydenClark/LLM_Workbench/pull/438) | No hosted CI or integration/hook success claimed at this publication snapshot; owner Human QA and main remain separate |
 | 2026-10-08 | review | Review verdict: pass at a739f8af03b1c5841cb14a631824f5776288a0c8 [b371782fc939] #4 | none | OpenAI Codex fresh independent Director thread 01a11b3a-89c6-77f2-95fd-1dd5870b7d97, read-only ephemeral CLI 0.159.3, configured gpt-6.1-sol/high, exact model not independently exposed in reviewer context | none |
 | 2026-10-08 | review | Review verdict: pass at f46f29e0a4821d46e5ad183879fa4ceb4e7c6449 [b371782fc939] #5 | none | OpenAI Codex fresh independent Director thread 01a11b4f-5ff6-7153-8e8b-744baf3e37f8, read-only ephemeral CLI 0.159.3, configured gpt-6.1-sol/high, exact model not independently exposed in reviewer context | none |
+| 2026-10-08 | delivery | Reviewed feature integrated in [PR #438](https://github.com/KaydenClark/LLM_Workbench/pull/438) | [Observed delivery proof](../S-005G-repository-ci-and-fast-hooks/proof/integration-delivery.json): submitted 7684af89 hosted 55/55 in 884.2s; integration e0586aa3 contains reviewed f46f29e0, submitted head and observed remote tip; main unchanged | Current delivery headers reconciled; evidence preserved | Owner Human QA and main remain separate |
+| 2026-10-08 | review | Review verdict: pass at 78e7f660cac5130781fad5450285af33cc9ee26e [b371782fc939] #6 | none | OpenAI Codex fresh independent Director thread 01a11b6c-3656-7850-b3c3-f41992375a08, read-only ephemeral CLI 0.159.3, configured gpt-6.1-sol/high, exact runtime model not independently exposed | none |
 
 ## Completion Result
 
