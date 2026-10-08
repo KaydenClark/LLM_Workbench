@@ -7,7 +7,7 @@ import test from 'node:test';
 import { createHash } from 'node:crypto';
 import { captureQuestion } from '../workbench/tools/landmark-tracker.mjs';
 import { readSourceFile } from './grill-board.mjs';
-import { dashboardSources } from './dashboard-sources.mjs';
+import { dashboardRoute, dashboardSources } from './dashboard-sources.mjs';
 
 function put(root, file, text) {
   fs.mkdirSync(path.dirname(path.join(root, file)), { recursive: true });
@@ -156,4 +156,108 @@ test('a Taskboard source refusal is returned as the reader error, never a substi
   assert.ok(view.errors.some(error => error.source === 'taskboard'));
   assert.equal(view.tracker.status, 'available', 'the Tracker keeps its own semantics and availability');
   assert.match(view.tracker.semantics, /does not establish delivery completion/);
+});
+
+// --- dashboardRoute: glossary, backlinks and search -------------------------
+
+const route = (root, href, items = []) => dashboardRoute(root, new URL(href, 'http://127.0.0.1'), { readSource: readSourceFile, items });
+const GLOSSARY = '# Fixture Room\n\nThis glossary is the canonical vocabulary.\n\n## Language\n\n### Workflow verbs\n\n**Confirm**:\nThe owner\'s agreement to a readback that names the concept.\n\n**Map**:\nThe direction to a destination,\nat two scales: see [Landmarks](workbench/landmarks/README.md) and `Spec`.\n_Avoid_: route\n\n**Long term**:\n' + 'word '.repeat(400) + '\n';
+const LEXICON = '# Fixture - Lexicon\n\n## Task Routing\n\n| Need | Route to the owner |\n|---|---|\n| Accepted terminology | This Lexicon |\n\n## Core Terms\n\n| Term | Definition | Notes |\n|---|---|---|\n| **Spec** | A PRD-shaped scoped objective owned by [its record](workbench/specs/CATALOG.md) with `SPEC.md`. | Notes. |\n| **Task** | One bounded executable slice \\| with an escaped pipe. | Notes. |\n| **Spec** | A later duplicate row. | Notes. |\n| **Model** ([dictionary](https://example.com/model)) | The trained parameters on their own. | Notes. |\n\n### Priority And Value\n\n| Return / investment | Low | High |\n|---|---|---|\n| **P1 — Interrupt:** stop normal work | **V1 — Quick Win:** high return | x |\n';
+
+test('glossary reads GLOSSARY.md when present, else the Lexicon term tables, else reports no source', t => {
+  const root = room(); t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  put(root, 'GLOSSARY.md', GLOSSARY);
+  put(root, 'LEXICON.md', LEXICON);
+  const before = snapshot(root);
+  const glossary = route(root, '/api/glossary');
+  assert.equal(glossary.source, 'GLOSSARY.md');
+  assert.deepEqual(glossary.terms.map(term => term.term), ['Confirm', 'Map', 'Long term']);
+  const map = glossary.terms[1];
+  assert.deepEqual(map, { term: 'Map', anchor: 'map', definition: 'The direction to a destination, at two scales: see Landmarks and Spec.', path: 'GLOSSARY.md' });
+  assert.ok(glossary.terms[2].definition.length <= 600, 'definitions are bounded');
+  assert.match(glossary.terms[2].definition, /…$/);
+
+  fs.rmSync(path.join(root, 'GLOSSARY.md'));
+  const lexicon = route(root, '/api/glossary');
+  assert.equal(lexicon.source, 'LEXICON.md');
+  assert.deepEqual(lexicon.terms, [
+    { term: 'Spec', anchor: 'spec', definition: 'A PRD-shaped scoped objective owned by its record with SPEC.md.', path: 'LEXICON.md' },
+    { term: 'Task', anchor: 'task', definition: 'One bounded executable slice | with an escaped pipe.', path: 'LEXICON.md' },
+    { term: 'Model', anchor: 'model', definition: 'The trained parameters on their own.', path: 'LEXICON.md' }
+  ]);
+
+  fs.rmSync(path.join(root, 'LEXICON.md'));
+  assert.deepEqual(route(root, '/api/glossary'), { source: null, terms: [] });
+  const after = snapshot(root); delete before['GLOSSARY.md']; delete before['LEXICON.md'];
+  assert.deepEqual(after, before, 'the glossary route writes nothing');
+});
+
+test('backlinks name the questions and cataloged Markdown artifacts that link to a path', t => {
+  const root = room(); t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  const target = 'workbench/specs/S-000A-fixture/SPEC.md';
+  put(root, 'workbench/wiki/design-concepts/linker.md', '# Linking page\n\nSee [the Spec](../../specs/S-000A-fixture/SPEC.md#acceptance-criteria) and [elsewhere](https://example.com/workbench/specs/S-000A-fixture/SPEC.md).\n');
+  put(root, 'workbench/skills/example/REFERENCE.md', '# Reference page\n\n[spec]: ./../../specs/S-000A-fixture/SPEC.md\n');
+  put(root, 'workbench/wiki/design-concepts/unrelated.md', '# Unrelated\n\n[Another](../../specs/S-000B-fixture/SPEC.md)\n');
+  put(root, 'workbench/sessions/notepads/private.md', '# Private\n\n[the Spec](../../specs/S-000A-fixture/SPEC.md)\n');
+  const items = [
+    { id: 'GB-0001', title: 'Source-linked question', sources: [{ path: target }], brief: {}, status: 'open' },
+    { id: 'GB-0002', title: 'Brief-linked question', sources: [{ path: '/Users/someone/private.json' }], brief: { artifacts: 'Read [the Spec](./workbench/specs/S-000A-fixture/SPEC.md#outcome).' }, status: 'open' },
+    { id: 'GB-0003', title: 'Unrelated question', sources: [{ path: 'AGENTS.md' }], brief: { why: 'No link here.' }, status: 'open' }
+  ];
+  const result = route(root, `/api/backlinks?path=${encodeURIComponent('./' + target + '#outcome')}`, items);
+  assert.equal(result.path, target);
+  assert.deepEqual(result.links.filter(link => link.kind === 'question'), [
+    { kind: 'question', id: 'GB-0001', title: 'Source-linked question' },
+    { kind: 'question', id: 'GB-0002', title: 'Brief-linked question' }
+  ]);
+  assert.deepEqual(result.links.filter(link => link.kind === 'artifact').map(link => [link.path, link.title]), [
+    ['workbench/skills/example/REFERENCE.md', 'Reference page'],
+    ['workbench/wiki/design-concepts/linker.md', 'Linking page']
+  ]);
+  assert.ok(!JSON.stringify(result).includes('/Users/'), 'private absolute source paths never leave the board');
+  assert.ok(!JSON.stringify(result).includes('notepads'), 'private collections are not backlink sources');
+  assert.throws(() => route(root, '/api/backlinks?path=../outside.md'), error => error.code === 'unsafe-path');
+  assert.throws(() => route(root, '/api/backlinks'), error => error.code === 'unsafe-path');
+});
+
+test('search is case-insensitive, bounded and never reads private collections', t => {
+  const root = room(); t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  for (let index = 0; index < 210; index += 1) put(root, `workbench/wiki/bulk/page-${String(index).padStart(3, '0')}.md`, `# Bulk page ${index}\n\nThe Zebra marker appears here. ${'filler '.repeat(80)}\n`);
+  put(root, 'workbench/sessions/notepads/secret.md', '# Secret\n\nzebra private words\n');
+  put(root, 'workbench/wiki/.hidden.md', '# Hidden\n\nzebra hidden words\n');
+  const items = [{ id: 'GB-0009', title: 'Choose the ZEBRA crossing', question: 'Which way?', proposal: 'Agent proposal: stripes.', brief: { recommendation: 'Paint stripes.' }, sources: [], status: 'open' }];
+  const defaults = route(root, '/api/search?q=zebra', items);
+  assert.equal(defaults.query, 'zebra');
+  assert.equal(defaults.results.length, 50, 'default limit');
+  assert.deepEqual(defaults.results[0], { kind: 'question', id: 'GB-0009', title: 'Choose the ZEBRA crossing', snippet: 'Choose the ZEBRA crossing', status: 'open' });
+  assert.equal(route(root, '/api/search?q=ZEBRA&limit=1000', items).results.length, 200, 'limit is capped');
+  assert.equal(route(root, '/api/search?q=zebra&limit=3', items).results.length, 3);
+  assert.equal(route(root, '/api/search?q=zebra&limit=nonsense', items).results.length, 50);
+  const all = route(root, '/api/search?q=zebra&limit=200', items).results;
+  for (const result of all) {
+    assert.ok(result.snippet.length <= 240, 'snippet is bounded');
+    assert.ok(!/notepads|hidden|secret/i.test(JSON.stringify(result)), 'private and hidden files are never searched');
+  }
+  const page = all.find(result => result.path === 'workbench/wiki/bulk/page-000.md');
+  assert.equal(page.kind, 'wiki'); assert.equal(page.title, 'Bulk page 0'); assert.match(page.snippet, /Zebra marker/);
+  assert.ok(route(root, '/api/search?q=agent%20proposal%20STRIPES', items).results.some(result => result.id === 'GB-0009'), 'every term must match, in any field');
+  assert.deepEqual(route(root, '/api/search?q=%20%20', items), { query: '', results: [] });
+  // Root controls and decision records are searchable beside the catalog.
+  put(root, 'AGENTS.md', '# AGENTS\n\nThe quokka rule.\n');
+  assert.ok(route(root, '/api/search?q=quokka').results.some(result => result.path === 'AGENTS.md'), 'a change invalidates the cached index');
+  assert.equal(route(root, '/api/search?q=quokka').errors, undefined);
+  // A partial catalog says so rather than presenting a silently smaller index.
+  fs.symlinkSync(path.join(root, 'workbench/sessions/notepads/secret.md'), path.join(root, 'workbench/wiki/linked.md'));
+  for (const href of ['/api/search?q=zebra', '/api/backlinks?path=AGENTS.md']) {
+    const partial = route(root, href);
+    assert.ok(partial.errors.some(error => error.code === 'unsafe-path' && error.path === 'workbench/wiki/linked.md'), href);
+    assert.ok(!JSON.stringify(partial).includes('private words'));
+  }
+});
+
+test('dashboardRoute answers only its own paths and requires the board reader', t => {
+  const root = room(); t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  assert.equal(route(root, '/api/board'), null);
+  assert.equal(route(root, '/api/glossaryx'), null);
+  assert.throws(() => dashboardRoute(root, new URL('http://127.0.0.1/api/search?q=x'), { items: [] }), TypeError);
 });
