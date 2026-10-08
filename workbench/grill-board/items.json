@@ -3134,6 +3134,13 @@
           "changes": [
             "brief"
           ]
+        },
+        {
+          "revision": 3,
+          "gradeRevision": 1,
+          "at": "2026-10-08T17:03:09.814Z",
+          "by": "claude-worker-d",
+          "reason": "graded: TK-007N confirm-text batch: Priority and Value from the Blueprint Short Page Spec and decision records"
         }
       ],
       "brief": {
@@ -3145,7 +3152,16 @@
         "changes": "The complete text below is the proposed artifact you are reviewing. Your correction becomes the new draft; its earlier text and answers remain in the record.",
         "artifacts": "**Blueprint Short Page (S-004H)** — `BLUEPRINT.md` is the short page the owner confirmed on 2026-10-03: what LLM Workbench is, who it serves, the outcomes it promises and what it is not, in 607 words by `wc -w` once the withheld hosted-service non-goal is left out (631 with it).",
         "history": "### Existing source account\n\nBLUEPRINT.md at integration d3e29216 is the four-part short page (What it is / Who it serves / Promised outcomes / Non-goals), 607 words by wc -w. It landed through the Blueprint Short Page Spec (Blueprint Short Page (S-004H)), Task TK-008C, PR #310 (merge 25733f3b), closed 2026-10-03 after a separate-context review passed. The Spec's Dependencies And Blockers withholds one line from the page as an open owner item: the hosted-service non-goal (\"Not a hosted service, database or paid service of its own: it lives in the project's repository and coordinates through its Git host.\"), because no accepted decision record carries it; with it the page would be 631 words. The current page's earlier \"network access for ordinary local work\" non-goal was dropped because you called it wrong in round 1 of the teardown. The other four non-goals stay, each carried by an accepted record or your confirmed draft 6 wording.\n\nNo exact source-question link was recovered for this item from the ledger or linked card. The source account is evidence; it is not a newly confirmed owner answer."
-      }
+      },
+      "priority": {
+        "grade": "P3",
+        "reason": "Secondary: Blueprint Short Page (S-004H, workbench/specs/S-004H-blueprint-short-page/SPEC.md) acceptance is unchecked and its next gate is the agents' acceptance confirmation; BLUEPRINT.md has also changed in three commits after the 2026-10-03 swap (2026-10-05 to 2026-10-07), so agents should reconcile the page against draft 6 before you compare."
+      },
+      "value": {
+        "grade": "V1",
+        "reason": "Quick Win: the Blueprint is the page every agent opens to learn the product (S-004H rationale), so a faithful page is high return; confirming changes nothing and a correction is a scoped passage edit (low investment)."
+      },
+      "gradeRevision": 1
     },
     {
       "id": "GB-0032",
@@ -3202,6 +3218,13 @@
           "changes": [
             "brief"
           ]
+        },
+        {
+          "revision": 3,
+          "gradeRevision": 1,
+          "at": "2026-10-08T17:03:09.815Z",
+          "by": "claude-worker-d",
+          "reason": "graded: TK-007N confirm-text batch: Priority and Value from the Blueprint Short Page Spec and decision records"
         }
       ],
       "brief": {
@@ -3213,7 +3236,16 @@
         "changes": "The complete text below is the proposed artifact you are reviewing. Your correction becomes the new draft; its earlier text and answers remain in the record.",
         "artifacts": "**Blueprint Short Page (S-004H)** — `BLUEPRINT.md` is the short page the owner confirmed on 2026-10-03: what LLM Workbench is, who it serves, the outcomes it promises and what it is not, in 607 words by `wc -w` once the withheld hosted-service non-goal is left out (631 with it).",
         "history": "### Existing source account\n\ntemplates/BLUEPRINT.md at integration d3e29216 is the bracketed four-part placeholder page (98 words), landed with the root swap in PR #310 (merge 25733f3b) under the Blueprint Short Page Spec (Blueprint Short Page (S-004H)). The teardown left the template's placeholder wording as an open owner item: the Spec's Non-Goals say you confirmed the four-part shape for every room, not the template's wording, so this text is agent-written placeholder prose. Every room generated from the Template starts from this page.\n\nNo exact source-question link was recovered for this item from the ledger or linked card. The source account is evidence; it is not a newly confirmed owner answer."
-      }
+      },
+      "priority": {
+        "grade": "P4",
+        "reason": "Backlog: Blueprint Short Page (S-004H) records that you confirmed the four-part shape, not the template's placeholder wording, and no Task waits on a wording review of templates/BLUEPRINT.md."
+      },
+      "value": {
+        "grade": "V3",
+        "reason": "Fill-In: generic bracketed prompts are replaced when a room's Blueprint is drafted at setup, Setup drafts everything it can and grilling confirms it (DDR-000S) (low return); the recommended confirmation leaves the template unchanged (low investment)."
+      },
+      "gradeRevision": 1
     },
     {
       "id": "GB-0033",
