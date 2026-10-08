@@ -228,7 +228,7 @@ function element() {
 }
 function pageModel({storage={},history=[]}={}) {
  const html=fs.readFileSync(new URL('../workbench/grill-board/index.html',import.meta.url),'utf8');
- const script=html.match(/<script>([\s\S]*?)<\/script>/)[1].replace('Promise.all([load()','window.model={state,matchesSlice,topicSummaries,sliceTitle,startBatch,batchProgress,resetSlice,gradeBadges,gradeDetail,answerModel,whysList,confirmedItems,dispositionTimeline,laneFor,rememberComment,commentDraftFor,forgetComment,cardWorkflowHtml,staleNotice,promotionBlocker,openQuestion,hasUnsavedWork,approvalSummary,conflictNotice,saveFailureMessage,autoSaveBlock,noteRefused}; Promise.all([load()');
+ const script=html.match(/<script>([\s\S]*?)<\/script>/)[1].replace('Promise.all([load()','window.model={state,matchesSlice,topicSummaries,sliceTitle,startBatch,batchProgress,resetSlice,gradeBadges,gradeDetail,answerModel,whysList,confirmedItems,dispositionTimeline,laneFor,rememberComment,commentDraftFor,forgetComment,cardWorkflowHtml,staleNotice,promotionBlocker,openQuestion,hasUnsavedWork,approvalSummary,conflictNotice,saveFailureMessage,autoSaveBlock,noteRefused,markdown,wikiLinks,namedDecisionIds,card,itemBase}; Promise.all([load()');
  const elements=new Map();
  const localStorage={getItem:key=>storage[key]??null,setItem:(key,value)=>{storage[key]=String(value);},removeItem:key=>{delete storage[key];}};
  const ctx=vm.createContext({document:{getElementById:id=>{if(!elements.has(id))elements.set(id,element());return elements.get(id);},querySelectorAll:()=>[],documentElement:{dataset:{}}},window:{addEventListener(){},scrollTo(){},scrollY:0},history:{replaceState:(_state,_title,url)=>history.push(url)},localStorage,setInterval(){},setTimeout,clearTimeout,URL,URLSearchParams,location:{hash:''},fetch:()=>new Promise(()=>{})});
@@ -759,4 +759,55 @@ test('a malformed answer-notepad entry is a clear invalid-notepad error naming t
    assert.equal((await response.json()).error.code,'invalid-notepad');
   }finally{await served.close();}
  }
+});
+
+// ---- Decision records named in question text link to their Wiki pages. ----
+const RECORD_CATALOG={groups:[{id:'adrs',title:'ADRs'},{id:'ddrs',title:'DDRs'},{id:'specs',title:'Specs'}],artifacts:[
+ {group:'adrs',id:'ADR-000B',title:'Stable names stay stable',path:'workbench/docs/adr/000B-stable-names.md',status:'accepted'},
+ {group:'ddrs',id:'DDR-000A',title:'The Workbench aligns to the concept',path:'workbench/docs/ddr/000A-aligns.md',status:'accepted'},
+ {group:'specs',id:'S-0001',title:'A Spec',path:'workbench/specs/S-0001/SPEC.md',status:'planned'}]};
+
+test('decision-record IDs in question text link to their cataloged Wiki page, never in code or inside a link',()=>{
+ const {model}=pageModel();
+ model.state.catalog=RECORD_CATALOG;
+ const html=model.markdown('Read ADR-000B, `ADR-000B` and [the decision](../adr/000B-stable-names.md); DDR-0ZZZ is not cataloged.\n\n```\nADR-000B in a block\n```','workbench/docs/ddr/000A-aligns.md');
+ const recordLinks=html.match(/<a [^>]*class="record-link"[^>]*>ADR-000B<\/a>/g)||[];
+ assert.equal(recordLinks.length,1,'the plain-text ID is linked once');
+ assert.match(recordLinks[0],/href="#artifact=workbench%2Fdocs%2Fadr%2F000B-stable-names.md"/);
+ assert.match(recordLinks[0],/title="Stable names stay stable · ADR-000B"/,'title first, ID second');
+ assert.match(html,/<code>ADR-000B<\/code>/,'code spans stay code');
+ assert.match(html,/<pre>ADR-000B in a block<\/pre>/,'code blocks stay code');
+ assert.match(html,/<a href="#artifact=workbench%2Fdocs%2Fadr%2F000B-stable-names.md">the decision<\/a>/,'a relative Markdown link resolves against the base source');
+ assert.doesNotMatch(html,/<a [^>]*>[^<]*<a /,'no link inside a link');
+ assert.match(html,/<span class="unavailable-link" title="No cataloged decision record DDR-0ZZZ">DDR-0ZZZ<\/span>/);
+});
+
+test('a question lists every decision record it names beside its sources and renders drafts against its source',()=>{
+ const {model}=pageModel();
+ model.state.catalog=RECORD_CATALOG;
+ const item={id:'GB-0023',title:'Q',question:'Does ADR-000B still hold?',current:'See DDR-000A.',proposal:'Keep it.',draft:'Links: [aligned](000A-aligns.md)',options:[{value:'a',label:'Supersede ADR-000B'}],brief:{scope:'SPEC',summary:'Mentions DDR-0ZZZ.',why:'w',recommendation:'r',impact:'i',changes:'c',history:'h',artifacts:'a'},sources:[{label:'Spec',path:'workbench/docs/ddr/000A-aligns.md'},{label:'Spec',path:'workbench/specs/S-0001/SPEC.md'}],revision:1,history:[],derivedStatus:'pending',status:'open',controls:board.answerControls({kind:'owner-decision',options:null})};
+ assert.deepEqual([...model.namedDecisionIds(item)],['ADR-000B','DDR-000A','DDR-0ZZZ']);
+ const links=model.wikiLinks(item);
+ assert.match(links,/Decision records:[\s\S]*ADRs · Stable names stay stable \(ADR-000B\)/);
+ assert.equal((links.match(/000A-aligns\.md/g)||[]).length,1,'a record that is also a source is listed once');
+ assert.match(links,/DDR-0ZZZ[^<]*not in the Wiki/);
+ assert.equal(model.itemBase(item),'workbench/docs/ddr/000A-aligns.md');
+ assert.equal(model.itemBase({sources:[{path:'/Users/x/y.md'},{path:'../outside.md'}]}),'','no base outside the room');
+});
+
+test('on the real board every named, cataloged decision record in an open question is linked',()=>{
+ const {model}=pageModel();
+ model.state.catalog=JSON.parse(JSON.stringify(board.artifactCatalog(new URL('..',import.meta.url).pathname)));
+ const records=new Map(model.state.catalog.artifacts.filter(a=>/^(ADR|DDR|CDR)-/.test(a.id||'')).map(a=>[a.id,a]));
+ let checked=0;
+ for (const item of board.readItems(new URL('..',import.meta.url).pathname).items.filter(i=>i.status==='open')) {
+  const links=model.wikiLinks(item);
+  for (const id of model.namedDecisionIds(item)) {
+   const record=records.get(id);
+   if (!record) { assert.match(links,new RegExp(`${id}[^<]*not in the Wiki`)); continue; }
+   assert.ok(links.includes(`href="${model.state.catalog&&('#'+new URLSearchParams({artifact:record.path}))}`)||links.includes(encodeURIComponent(record.path)),`${item.id} links ${id}`);
+   checked+=1;
+  }
+ }
+ assert.ok(checked>=100,`checked ${checked} named records`);
 });
