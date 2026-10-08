@@ -68,7 +68,7 @@ Future goals, outside current scope:
 Consequences: the Workbench Dashboard Spec records the Dashboard, its five
 sections and its answer words until the Glossary that replaces the Lexicon
 reaches this room (routing corrected 2026-10-08 at the owner's direction). The
-[Workbench Dashboard Spec](../../../specs/S-004D-shared-interactive-board/SPEC.md)
+[Workbench Dashboard Spec](../../specs/S-004D-shared-interactive-board/SPEC.md)
 carries the sections, answer controls, self-contained package, Drafts to
 approve and always-open service as planned requirements and acceptance; none
 of it is delivered by this record. Hosting stays local and small: always open
