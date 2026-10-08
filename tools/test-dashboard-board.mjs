@@ -226,7 +226,7 @@ function element() {
 }
 function pageModel({storage={},history=[]}={}) {
  const html=fs.readFileSync(new URL('../workbench/grill-board/index.html',import.meta.url),'utf8');
- const script=html.match(/<script>([\s\S]*?)<\/script>/)[1].replace('Promise.all([load()','window.model={state,matchesSlice,topicSummaries,sliceTitle,startBatch,batchProgress,resetSlice,gradeBadges,gradeDetail,answerModel,whysList,confirmedItems,dispositionTimeline,laneFor,rememberComment,commentDraftFor,forgetComment,cardWorkflowHtml,staleNotice,promotionBlocker,openQuestion,hasUnsavedWork}; Promise.all([load()');
+ const script=html.match(/<script>([\s\S]*?)<\/script>/)[1].replace('Promise.all([load()','window.model={state,matchesSlice,topicSummaries,sliceTitle,startBatch,batchProgress,resetSlice,gradeBadges,gradeDetail,answerModel,whysList,confirmedItems,dispositionTimeline,laneFor,rememberComment,commentDraftFor,forgetComment,cardWorkflowHtml,staleNotice,promotionBlocker,openQuestion,hasUnsavedWork,approvalSummary}; Promise.all([load()');
  const elements=new Map();
  const localStorage={getItem:key=>storage[key]??null,setItem:(key,value)=>{storage[key]=String(value);},removeItem:key=>{delete storage[key];}};
  const ctx=vm.createContext({document:{getElementById:id=>{if(!elements.has(id))elements.set(id,element());return elements.get(id);},querySelectorAll:()=>[],documentElement:{dataset:{}}},window:{addEventListener(){},scrollTo(){},scrollY:0},history:{replaceState:(_state,_title,url)=>history.push(url)},localStorage,setInterval(){},setTimeout,clearTimeout,URL,URLSearchParams,location:{hash:''},fetch:()=>new Promise(()=>{})});
@@ -535,4 +535,14 @@ test('a notepad answer stores only itself, so an old note the privacy guard refu
  const view=board.mergeBoard(root).items[0];
  assert.equal(view.answer.history.length,2);
  assert.equal(board.workflow(root).read().cards['GB-0001'].state,'in-grilling');
+});
+
+test('a confirmation saved before snapshots existed asks to be confirmed again before promotion',()=>{
+ const {model}=pageModel();
+ const item={id:'GB-0007',revision:2,title:'T',status:'open',controls:board.answerControls({kind:'owner-decision',options:null}),answer:{verdict:'confirm',note:'',itemRevision:2,at:'2026-10-02T00:00:00Z'}};
+ model.state.board={items:[item]};
+ model.state.workflow={comments:[],requests:[],cards:{'GB-0007':{state:'in-grilling'}}};
+ assert.match(model.approvalSummary(item),/saved before .*exact wording.*Confirm it again/);
+ assert.match(model.promotionBlocker(item),/Confirm it again/);
+ assert.match(model.approvalSummary({...item,answer:null}),/No exact-wording confirmation/);
 });
