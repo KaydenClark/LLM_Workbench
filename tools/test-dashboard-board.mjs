@@ -223,12 +223,12 @@ function element() {
  return {value:'',textContent:'',innerHTML:'',hidden:false,disabled:false,dataset:{},style:{},classList:{toggle(){},add(){},remove(){}},
   querySelector:()=>null,querySelectorAll:()=>[],setAttribute(){},removeAttribute(){},scrollIntoView(){},focus(){},addEventListener(){}};
 }
-function pageModel({storage={}}={}) {
+function pageModel({storage={},history=[]}={}) {
  const html=fs.readFileSync(new URL('../workbench/grill-board/index.html',import.meta.url),'utf8');
- const script=html.match(/<script>([\s\S]*?)<\/script>/)[1].replace('Promise.all([load()','window.model={state,matchesSlice,topicSummaries,sliceTitle,startBatch,batchProgress,resetSlice,gradeBadges,gradeDetail,answerModel,whysList,confirmedItems,dispositionTimeline,laneFor}; Promise.all([load()');
+ const script=html.match(/<script>([\s\S]*?)<\/script>/)[1].replace('Promise.all([load()','window.model={state,matchesSlice,topicSummaries,sliceTitle,startBatch,batchProgress,resetSlice,gradeBadges,gradeDetail,answerModel,whysList,confirmedItems,dispositionTimeline,laneFor,rememberComment,commentDraftFor,forgetComment,cardWorkflowHtml,staleNotice,promotionBlocker,openQuestion,hasUnsavedWork}; Promise.all([load()');
  const elements=new Map();
  const localStorage={getItem:key=>storage[key]??null,setItem:(key,value)=>{storage[key]=String(value);},removeItem:key=>{delete storage[key];}};
- const ctx=vm.createContext({document:{getElementById:id=>{if(!elements.has(id))elements.set(id,element());return elements.get(id);},querySelectorAll:()=>[],documentElement:{dataset:{}}},window:{addEventListener(){},scrollTo(){},scrollY:0},localStorage,setInterval(){},setTimeout,clearTimeout,URL,URLSearchParams,location:{hash:''},fetch:()=>new Promise(()=>{})});
+ const ctx=vm.createContext({document:{getElementById:id=>{if(!elements.has(id))elements.set(id,element());return elements.get(id);},querySelectorAll:()=>[],documentElement:{dataset:{}}},window:{addEventListener(){},scrollTo(){},scrollY:0},history:{replaceState:(_state,_title,url)=>history.push(url)},localStorage,setInterval(){},setTimeout,clearTimeout,URL,URLSearchParams,location:{hash:''},fetch:()=>new Promise(()=>{})});
  vm.runInContext(script,ctx);
  return {model:ctx.window.model,storage};
 }
@@ -377,4 +377,47 @@ test('promotion readiness and the disposition timeline come from the workflow ca
  assert.match(timeline,/No Spec or Task: the Wiki owns it/);
  assert.match(timeline,/class="next"><strong>Plan/);
  assert.doesNotMatch(timeline,/Implemented/,'a knowledge-only card shows no implementation step');
+});
+
+test('an unsent comment draft survives every re-render of its card and clears only after sending',()=>{
+ const {model}=pageModel();
+ const item={id:'GB-0034',revision:5,title:'T',status:'open',answer:null,controls:board.answerControls({kind:'owner-decision',options:null})};
+ model.state.board={items:[item]};
+ model.state.workflow={revision:1,comments:[],requests:[],cards:{'GB-0034':{state:'in-grilling',label:'In grilling'}},dispositions:{}};
+ assert.equal(model.commentDraftFor(item),'');
+ model.rememberComment(item,'Say which file owns this.');
+ const html=model.cardWorkflowHtml(item);
+ assert.match(html,/<textarea id="comment-GB-0034"[^>]*>Say which file owns this\.<\/textarea>/,'a re-rendered card restores the unsent text');
+ assert.doesNotMatch(html,/data-comment="comment" disabled/,'the send buttons are enabled for restored text');
+ assert.equal(model.hasUnsavedWork(),true,'leaving the page warns about an unsent comment');
+ assert.equal(model.commentDraftFor({...item,revision:6}),'','a draft belongs to the revision it was written against');
+ model.forgetComment(item);
+ assert.equal(model.commentDraftFor(item),'');
+ assert.match(model.cardWorkflowHtml(item),/data-comment="comment" disabled/);
+ assert.equal(model.hasUnsavedWork(),false);
+});
+
+test('a confirmed re-answer clears the changed-question notice and a pending Change request is named as the blocker',()=>{
+ const {model}=pageModel();
+ const item={id:'GB-0034',revision:6,derivedStatus:'stale',answerLabel:'Confirm',answer:{verdict:'confirm',note:'',itemRevision:5}};
+ assert.match(model.staleNotice(item),/now revision 6; you answered revision 5/);
+ assert.equal(model.staleNotice({...item,derivedStatus:'answered',answer:{...item.answer,itemRevision:6}}),'');
+ model.state.board={items:[item]};
+ model.state.workflow={comments:[{id:'GB-0034',kind:'change',itemRevision:6,text:'Explain the source context.',at:'2026-10-08T17:30:00Z',status:'awaiting revision'}],requests:[],cards:{'GB-0034':{state:'in-grilling'}}};
+ const blocker=model.promotionBlocker(item);
+ assert.match(blocker,/change request/i);
+ assert.match(blocker,/Explain the source context\./);
+ assert.match(blocker,/agent .*revis.*fresh confirmation|revise.*confirm/i);
+ model.state.workflow.comments=[];
+ assert.match(model.promotionBlocker(item),/Only a card the workflow reports as confirmed/);
+});
+
+test('opening a question from the list records it in the address so a reload reopens it',()=>{
+ const history=[];
+ const {model}=pageModel({history});
+ const item=pvInventory()[0];
+ model.state.board={items:[item]};
+ model.openQuestion(item.id);
+ assert.equal(model.state.focus,item.id);
+ assert.deepEqual(history,['#GB-0001']);
 });
