@@ -152,8 +152,12 @@ empty reason. Each move drops a leftover `status` key (the folder is the
 lifecycle), refuses a dirty Git tree so the candidate shows only the move,
 records the move as a `git mv` rename (a plain rename outside Git), rewrites
 live Markdown links to the moved record across the root controls, Wiki, skills,
-team templates, both decision-record collections and every Spec and Task
-record while leaving and counting references inside append-only evidence
+team templates, Grill Board README, both decision-record collections and every
+Spec and Task record. When the record's directory changes, its outgoing relative
+links are rebased too, including links to an unmoved `GLOSSARY.md`, Spec or Wiki
+page; query strings, fragments and URI encoding are preserved. Root reference
+repair includes `GLOSSARY.md` when present and `LEXICON.md` in unmigrated rooms.
+Each move leaves and counts references inside append-only evidence
 sections, regenerates both registers and stages the result. A refused move
 writes nothing. No separate approval ceremony is added.
 

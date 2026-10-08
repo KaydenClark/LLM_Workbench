@@ -621,32 +621,28 @@ export function localLinks(content) {
 // folder cannot express what location does not distinguish.
 const STATUS_TO_FOLDER = Object.freeze({ proposed: 'proposed', superseded: 'archive', deprecated: 'archive', accepted: null });
 
-function splitLinkFragment(target) {
-  const index = target.indexOf('#');
-  return index === -1 ? [target, undefined] : [target.slice(0, index), target.slice(index + 1)];
+function splitLinkSuffix(target) {
+  const index = target.search(/[?#]/);
+  return index === -1 ? [target, ''] : [target.slice(0, index), target.slice(index)];
 }
 
-// Rewrites every Markdown link in `content` - a file read from `oldDir`
-// before this migration, now living at `newDir` - that resolves (via
-// `oldDir`, so a moved referencing file's own stale relative text is
-// interpreted correctly) to a path this migration tracks in `locations`
-// (old absolute path -> current absolute path, including every entry that
-// did not move, mapped to itself). A link to anything else - another spec, a
-// wiki note, a target this migration never touched - is never matched and
-// never rewritten. Exported for reuse: the logic is folder-move-generic (it
-// carries no ADR-specific assumption), and S-00I TK-003 reuses this exact
-// function for Spec directory moves rather than writing a second one.
+// Preserve each relative Markdown link's target when its referrer or its
+// target moves. Resolve against the referrer's old directory, then substitute
+// an old absolute -> current absolute path from `locations` when present.
+// Unmapped targets stay at their existing absolute paths; moved referrers
+// still need their relative routes rebased. Unchanged referrers only repair
+// mapped moves. Shared with Spec and Task directory moves.
 export function rewriteAdrLinks(content, oldDir, newDir, locations, { directoryTargets = new Set() } = {}) {
   let count = 0;
   const updated = content.replace(/(\[[^\]]*\]\()([^)]+)(\))/g, (whole, open, target, close) => {
-    if (/^(?:https?:|mailto:)/.test(target)) return whole;
-    const [rawPath, fragment] = splitLinkFragment(target);
+    if (/^(?:[a-z][a-z0-9+.-]*:|\/)/i.test(target)) return whole;
+    const [rawPath, suffix] = splitLinkSuffix(target);
     if (!rawPath) return whole;
     let decoded;
     try { decoded = decodeURIComponent(rawPath); } catch { return whole; }
     const oldAbsolute = path.resolve(oldDir, decoded);
-    if (!locations.has(oldAbsolute)) return whole;
-    const newAbsolute = locations.get(oldAbsolute);
+    if (!locations.has(oldAbsolute) && newDir === oldDir) return whole;
+    const newAbsolute = locations.get(oldAbsolute) ?? oldAbsolute;
     // S-00I TK-003 corrective (round 2): a link needs recomputing only when
     // something in its own resolution actually changed - the target's
     // absolute location (`newAbsolute !== oldAbsolute`, a moved entry) or the
@@ -663,16 +659,14 @@ export function rewriteAdrLinks(content, oldDir, newDir, locations, { directoryT
     // Preserve directory-route syntax and URI encoding when recomputing a
     // moved target or referrer. In particular ./ names a directory; # alone
     // would instead name a fragment in the referencing document.
-    // The option is supplied only by lifecycle moves: ADR migration and
-    // identity widening retain their existing file-link formatting.
-    const directory = directoryTargets.has(oldAbsolute);
+    const directory = directoryTargets.has(oldAbsolute) || rawPath.endsWith('/');
     const directoryRelative = relative || '.';
     const encoded = /%[0-9a-f]{2}/i.test(rawPath)
       ? directoryRelative.split('/').map(part => encodeURIComponent(part)
         // encodeURIComponent leaves parentheses raw; Markdown uses them as delimiters.
         .replaceAll('(', '%28').replaceAll(')', '%29')).join('/') : directoryRelative;
-    const route = directory ? `${encoded}${rawPath.endsWith('/') ? '/' : ''}` : relative;
-    const rebuilt = fragment !== undefined ? `${route}#${fragment}` : route;
+    const route = directory ? `${encoded}${rawPath.endsWith('/') ? '/' : ''}` : encoded;
+    const rebuilt = `${route}${suffix}`;
     if (rebuilt === target) return whole;
     count += 1;
     return `${open}${rebuilt}${close}`;
@@ -680,14 +674,23 @@ export function rewriteAdrLinks(content, oldDir, newDir, locations, { directoryT
   return { content: updated, count };
 }
 
+// The board's maintained entry page carries live decision links. Do not scan
+// its answer store or generated assets, and do not follow a linked page.
+function grillBoardReferenceFiles(root) {
+  const file = path.join(root, 'workbench', 'grill-board', 'README.md');
+  if (!fs.existsSync(file) || !fs.lstatSync(file).isFile()) return [];
+  assertSafeReadPath(root, file);
+  return [file];
+}
+
 // Every live Markdown surface this migration must repair a moved reference
 // in, outside the ADR collection itself (handled separately, since its own
 // records' directories change): root controls, the Wiki, every Spec's
-// `SPEC.md`, `skills/`, and `team templates/`. `templates/` (the blank
+// `SPEC.md`, the Grill Board README, `skills/`, and `team templates/`. `templates/` (the blank
 // product mirror) is deliberately excluded.
 function collectExternalMarkdownFiles(root) {
-  const files = [];
-  for (const name of ['AGENTS.md', 'RUNBOOK.md', 'LEXICON.md', 'BLUEPRINT.md', 'TASKBOARD.md', 'README.md', 'CLAUDE.md']) {
+  const files = grillBoardReferenceFiles(root);
+  for (const name of ['AGENTS.md', 'RUNBOOK.md', 'GLOSSARY.md', 'LEXICON.md', 'BLUEPRINT.md', 'TASKBOARD.md', 'README.md', 'CLAUDE.md']) {
     const file = path.join(root, name);
     if (fs.existsSync(file) && fs.statSync(file).isFile()) files.push(file);
   }
@@ -775,6 +778,7 @@ export function migrateLifecycleFolders(root) {
 
   const stripped = [];
   const referencesRewritten = {};
+  const historicalReferencesLeft = {};
   for (const adr of adrs) {
     const currentPath = locations.get(adr.filePath);
     let content = fs.readFileSync(currentPath, 'utf8');
@@ -783,16 +787,14 @@ export function migrateLifecycleFolders(root) {
       const result = stripFrontmatterKey(content, 'status');
       if (result.removed) { content = result.content; changed = true; stripped.push(adr.relativePath); }
     }
-    const rewritten = rewriteAdrLinks(content, oldDirOf.get(adr.filePath), path.dirname(currentPath), locations);
-    if (rewritten.count > 0) {
-      content = rewritten.content;
+    const rewritten = planReferenceRewrite(root, currentPath, content, oldDirOf.get(adr.filePath), path.dirname(currentPath), locations, { referencesRewritten, historicalReferencesLeft });
+    if (rewritten !== null) {
+      content = rewritten;
       changed = true;
-      referencesRewritten[path.relative(root, currentPath).split(path.sep).join('/')] = rewritten.count;
     }
     if (changed) { assertSafeWritePath(root, currentPath); writeSafeFile(root, currentPath, content); }
   }
 
-  const historicalReferencesLeft = {};
   for (const file of collectExternalMarkdownFiles(root)) {
     const original = fs.readFileSync(file, 'utf8');
     const { prefix, evidence, suffix } = splitEvidenceSection(original);
@@ -835,11 +837,11 @@ export function resolveRecord(root, id) {
 // Every live Markdown surface a decision-record move repairs a reference in:
 // the root controls, the Wiki, the skills lane (and a pre-lane root
 // `skills/`), `team templates/`, both decision-record collections and every
-// Spec and Task record at every Spec home, plus each LANDMARK.md. Generated registers are regenerated, not rewritten;
+// Spec and Task record at every Spec home, plus each LANDMARK.md and the Grill Board README. Generated registers are regenerated, not rewritten;
 // `templates/` is the blank product and never names this room's records.
 export function collectRecordReferenceFiles(root) {
-  const files = [];
-  for (const name of ['AGENTS.md', 'RUNBOOK.md', 'LEXICON.md', 'BLUEPRINT.md', 'TASKBOARD.md', 'README.md', 'CLAUDE.md']) {
+  const files = grillBoardReferenceFiles(root);
+  for (const name of ['AGENTS.md', 'RUNBOOK.md', 'GLOSSARY.md', 'LEXICON.md', 'BLUEPRINT.md', 'TASKBOARD.md', 'README.md', 'CLAUDE.md']) {
     const file = path.join(root, name);
     if (fs.existsSync(file) && fs.lstatSync(file).isFile()) files.push(file);
   }
