@@ -8,8 +8,8 @@
 **Updated:** 2026-10-07
 **Catalog description:** Orchestrate one confirmed decision through delegated Record, Map, Plan and verified stage publication to integration.
 **Blockers:** none
-**Latest event:** TK-007K claimed by codex-promote.
-**Next gate:** Close TK-007K with verification and documentation proof, then independently review the assembled candidate and publish to integration.
+**Latest event:** TK-007K source and bounded fixture acceptance recorded; Task remains in progress for the delivery handoff.
+**Next gate:** Root checkpoints and closes TK-007K with its receipts, obtains fresh independent assembled review, then publishes the reviewed source to integration and proves containment and owner read-back.
 
 ## Outcome
 
@@ -79,12 +79,12 @@ Task records own the scoped delivery work; the generated board projects them.
 
 ## Acceptance Criteria
 
-- [ ] The tracked maintainer skill is reachable through the declared lane adapters and coordinates one confirmed decision through delegated Record, Map, Plan and stage publication, within its endpoint.
-- [ ] Its cold-start source contract and board/grill-me entry routes retain decision identity, confirmed revision, rationale, corrections, scope, pending state, dependency ordering and recovery from live owners/PRs/containment.
-- [ ] Existing selected-note reconciliation safeguards and caller scope remain available without recursive save/promote composition.
-- [ ] A disposable Git-remote scenario publishes docs, then a planned Spec, then unclaimed Task records; a separate clone reads every stage while unfinished code stays off integration. It exercises a docs-only endpoint and retry after an interrupted publication.
-- [ ] Skills, catalog, Wiki routes and relevant shared definitions agree; the Workbench-only template exemption, required checks and before/after room checks are recorded with their actual limits.
-- [ ] The publication contract requires fresh per-stage integration containment and changed-owner read-back before dependent work; local application or branch push alone never releases a stage.
+- [x] The tracked maintainer skill is reachable through the declared lane adapters and coordinates one confirmed decision through delegated Record, Map, Plan and stage publication, within its endpoint.
+- [x] Its cold-start source contract and board/grill-me entry routes retain decision identity, confirmed revision, rationale, corrections, scope, pending state, dependency ordering and recovery from live owners/PRs/containment.
+- [x] Existing selected-note reconciliation safeguards and caller scope remain available without recursive save/promote composition.
+- [x] A disposable Git-remote scenario publishes docs, then a planned Spec, then unclaimed Task records; a separate clone reads every stage while unfinished code stays off integration. It exercises a docs-only endpoint and retry after an interrupted publication.
+- [x] Skills, catalog, Wiki routes and relevant shared definitions agree; the Workbench-only template exemption, required checks and before/after room checks are recorded with their actual limits.
+- [x] The publication contract requires fresh per-stage integration containment and changed-owner read-back before dependent work; local application or branch push alone never releases a stage.
 
 ## Testing Seams
 
@@ -121,6 +121,26 @@ Runbook operation; shared Lexicon verb definitions and matching generic
 definitions. Restore the original core primitive and safe save composition.
 Retain prior decision history and S-01B's existing owner QA records.
 
+## Completion Result
+
+The Workbench-only maintainer skill routes one confirmed decision through
+delegated Record, Map and Plan, with publication and changed-owner read-back
+between dependent stages. The original selected-claim `promote` primitive and
+its `save` composition remain available. Source and lane checks cover the
+declared routes, Core exclusion, caller bounds and template exemption.
+
+The public-runtime fixture covers sequential publication, a docs-only endpoint,
+pending and correction retention, unfinished-code isolation and publication
+retry. One separate cold-start trial observed the coordinator dispatch distinct
+Record, Map and Plan Workers and a publisher, then read each stage from a local
+simulated integration branch. The complete Runbook suite passed at the source
+candidate named in the append-only evidence.
+
+These observations do not establish ordinary-prompt skill discovery, repeated
+agent reliability, live GitHub stage gates or owner Human QA. Existing unrelated
+room drift remains. Read the header's next gate and append-only evidence for
+current source delivery state and actual integration proof.
+
 ## Append-Only Evidence And Execution Log
 
 | Date | Task | Event | Verification | Docs | Remaining gap |
@@ -133,3 +153,7 @@ Retain prior decision history and S-01B's existing owner QA records.
 | 2026-10-07 | TK-007K | Corrected the fixture's CLI output contract and clarified the delivery gate | Rerun at aad172c8 used show without --json; inspected showSpec/publicSpec and native activation before correcting its JSON read | Product acceptance now checks truthful stage publication; actual source integration remains the later delivery endpoint | Affected scenario rerun, full suite, assembled review and actual integration proof remain |
 | 2026-10-07 | TK-007K | Corrected the proposed ADR source link before full verification | Core-composition rerun at cccdf5000016e072fffaa388003391d99fc9b0dc passed 3/3; full-suite attempt interrupted during its first command after a bounded source-link finding | Proposed ADR now resolves the Spec from its nested folder; added local Markdown targets read back and resolve | The final corrected committed candidate still needs a complete full-suite run, assembled review and integration publication |
 | 2026-10-07 | TK-007K | Ran all 54 Runbook commands and reconciled the two ADR failures | Candidate 0b60c49ac3df30ed914d183c42eeeccb834324ad: 52/54 passed; ADR corpus expected 48 carrying records/120 edges but actual 49/121, all literal targets resolving; governance check rejected direct skill canonicalized_in | Re-count evidence supports 49/121 with one new confirmation-DDR edge; canonicalized_in routes through Runbook/Lexicon and body links the skill; router now names maintainer operations; S-01B QA record contradiction reported without changing that Spec | Focused affected checks and a complete full run on the corrected candidate remain; no clean-first-pass claim |
+| 2026-10-07 | TK-007K | Completed the corrected committed-source verification | Candidate 10e69cbb86c7a0c8f103dbde411139bd58b6fe6d: all 54 current Runbook commands passed in exact order, 893.18 seconds total; append-only test 264.24 seconds. Corrected ADR/governance/source-route checks, Wiki validation and touched-page lint passed | Six acceptance criteria and this stable Completion Result summarize bounded source and fixture evidence; later edits are limited to Spec/Task evidence and lifecycle projections | Native Task close, fresh independent assembled review and actual source publication to integration remain; prior failed and interrupted checks stay recorded |
+| 2026-10-07 | TK-007K | Observed one separate cold-start delegated decision promotion | Explicit-path same-provider trial used unchanged skill SHA256 6409e1786c321ed1f7b10e1c903ed8fe42ae380b50c53abd71390ce24a010648 with d9 runtime. Separate Record, Map and Plan Workers plus publisher produced contained stage candidates d306c6deb2d69e38c8602f97a532f0176e6734a5, 6ba468bc7a9ace9427e55bc92be903d4cf42ac38 and 630b4fb8dd67d2339d46593bdaf16a34e79d8f06; independent reader and root read back owner bytes at final local integration 0fa03d444df75e6d4956bf86b714f2a39e17821a | Decision decision-001 / REPORT-NAME revision 6 retained its date-first correction and unrelated pending question; planned Spec preceded unclaimed ready Task; code commit a5dc29ffe92f38d1579c67f46097fa2a20873ddb stayed excluded | Local bare-remote merge authority was simulated. Fixture board scaffolding and native Priority repair were needed; this is one bounded observation, not ordinary discovery, repeated reliability, live GitHub gates, implementation or owner QA proof |
+| 2026-10-07 | TK-007K | Compared final clean source room against pinned integration | Final source 10e69cbb86c7a0c8f103dbde411139bd58b6fe6d: self-drift exits 1, machine blocked, cleanUpdate false and 20 findings; exact code/artifact/claim comparison introduces none against the 21 baseline findings, removing only the inspection clone's detached-head. Skills, managed-tools and layout checks passed at 0b60c49ac3df30ed914d183c42eeeccb834324ad with unchanged skill/manifest/runtime bytes afterward | Bounded owner/route comparison reconciles this capability; templates+controls evaluator remains 106.6/113 and template guardrail audit 43.9/100 evidence-poor before/after | Unrelated blocked slices, stale claims, seeds and historical provenance remain under their existing owners; static scores and room checks do not prove coordinator outcomes or a clean overall Workbench |
+| 2026-10-07 | TK-007K | Checked the final evidence and lifecycle handoff | After the full-tested 10e69cbb86c7a0c8f103dbde411139bd58b6fe6d source, only this Spec, TK-007K and its generated Taskboard row changed. Native receipt/render/report/doctor, Wiki validation, citation anchors, source contract, direct append-only and diff checks passed; report reads 6/6 acceptance, a non-placeholder Completion Result and Task Decisions coverage none | Stable capability/check outcome and bounded evidence recorded; in-progress receipts retain actual Git state and the Next gate names root's remaining delivery work | Report's sole completion gap is the intentionally in-progress Task; root owns its close, fresh assembled review and real integration proof |
