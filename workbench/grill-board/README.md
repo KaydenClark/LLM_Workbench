@@ -3,7 +3,8 @@
 The Grill Board is the first working form of the **Workbench Dashboard**: one
 local site with five sections, **Destination Tracker**, **Taskboard**,
 **Grilling Board**, **Drafts to approve** and **Wiki** (the
-[Lexicon](../../LEXICON.md#workbench-dashboard) owns those names). The tool and
+[Workbench Dashboard Spec](../specs/S-004D-shared-interactive-board/SPEC.md#decisions-and-contracts)
+owns those names). The tool and
 its files keep the `grill-board` name. The Grilling Board section is the
 review package described below; the other sections read their existing owners
 and store nothing of their own.
@@ -48,7 +49,7 @@ record texts, page texts), answers them as a package, and saves as he goes.
 Claude and Codex share it: both read the owner's answers, both carry them into
 their durable owners, and both update the board through the same tool. It is
 the first working form of the
-[Shared Interactive Workbench Board (S-004D)](../specs/S-004D-shared-interactive-board/SPEC.md):
+[Workbench Dashboard (S-004D)](../specs/S-004D-shared-interactive-board/SPEC.md):
 that Spec is the destination this page grows into (the owner, 2026-10-04), and
 its Current Verified State maps what the page already delivers and what is
 still to come. There is one board, not two.
@@ -56,7 +57,8 @@ still to come. There is one board, not two.
 ## Answer controls
 
 The owner answers with four words (the
-[Lexicon](../../LEXICON.md#workbench-dashboard) owns their meanings):
+[Workbench Dashboard Spec](../specs/S-004D-shared-interactive-board/SPEC.md#decisions-and-contracts)
+owns their meanings):
 **Confirm** (confirmed, nothing needs changing), **Rework wording** (verdict
 `rework`), **Change the why** (`change_why`) and **Change** (`change`, including
 dropping it). Every answer except confirming the recommended one needs a typed
@@ -89,7 +91,13 @@ absolute path inside the room is stored relative to it, and one outside the
 room keeps its label and ref but stores the marker `(outside this room)` and a
 SHA-256 of the original path, so no absolute path reaches the answer notepad.
 The promotion workflow counts the same confirmations, including a confirmed
-alternative, as confirmed. Answers saved with the earlier words (`correct`,
+alternative, as confirmed.
+
+**Confirmations saved before snapshots existed must be confirmed again.** A
+`confirm` or `approve` answer saved before the board froze approval snapshots
+carries no snapshot of the wording it confirmed, so it cannot be promoted as it
+stands. The card says so; confirming it again records the exact wording and
+makes it promotable. Answers saved with the earlier words (`correct`,
 `decline`, `defer`, `finding`, `destination_change`, `drop`, `answer`...) still
 read with their original labels and keep their meaning (an earlier Not now
 stays pending); new answers cannot use those words.
@@ -160,7 +168,7 @@ rather than a versioned Cellar path; `print` says which it chose.
 |---|---|---|
 | `items.json` | agents | only through `node tools/grill-board.mjs add / revise / grade / apply / withdraw` |
 | owner answers | the owner | only through the served page; **agents never write them**. In a room whose manifest declares the `notepads` collection they are appended to the git-ignored notepad `<notepads>/grilling/dashboard-answers.json`; otherwise to the untracked `answers.json`. Earlier `answers.json` answers stay readable. |
-| `comments/` | the owner | one file per comment or change request, written by the served page through `tools/dashboard-workflow.mjs`; neither approves anything |
+| `comments/` | the owner | one file per comment or change request, written by the served page through `tools/dashboard-workflow.mjs`; neither approves anything. These files are the durable owner of board discussion (owner decision, 2026-10-06) and are tracked in Git: an agent that processes a comment commits the comment file with the change it led to |
 | `index.html` | agents, rarely | the page; change it only when the owner asks for a page change |
 
 Rules that keep the board trustworthy across sessions:
@@ -431,7 +439,9 @@ carries the applied verdicts into Git.
    never the item `revision` or any owner answer. An ungraded card is graded
    with `grade` first. There is no periodic sweep and no DQC work.
 4. The dispatcher retains the board's `apply` bookkeeping for each current
-   answer and commits `items.json` with the work it records. Local application
+   answer and commits `items.json` with the work it records. A comment or
+   change request you process is committed too: its file under `comments/`
+   goes in the same commit as the change it led to. Local application
    does not prove publication: each promotion returns its own integration
    containment and owner read-back. Run `node tools/test-grill-board.mjs` before
    pushing. This routing adds no background scheduler or agent-refresh service.
