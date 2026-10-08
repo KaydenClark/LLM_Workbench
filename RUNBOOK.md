@@ -485,6 +485,11 @@ node tools/test-self-drift.mjs
 node tools/test-feedback-inventory.mjs
 node tools/test-grilling-ledger.mjs
 node tools/test-grill-board.mjs
+node tools/test-dashboard-board.mjs
+node tools/test-dashboard-sources.mjs
+node tools/test-dashboard-workflow.mjs
+node tools/test-dashboard-workflow-docs.mjs
+node tools/test-dashboard-service.mjs
 node tools/test-pre-commit.mjs
 python3 tools/test-check-append-only.py
 python3 evals/tasks/task_b_path_safety/test_grade.py
