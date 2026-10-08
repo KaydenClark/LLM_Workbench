@@ -5,9 +5,11 @@
 //   install        owner action: save the property list under
 //                  ~/Library/LaunchAgents and bootstrap it; refuses to replace
 //                  an existing configuration
-//   status         read-only: is the property list there, what does launchd
-//                  report, does 127.0.0.1:<port> answer; prints the exact
-//                  install, restart, uninstall and inspect commands
+//   status         read-only: is the property list there and what checkout,
+//                  port and Node it serves (compared with the request), what
+//                  launchd reports, and, separately, whether 127.0.0.1:<port>
+//                  answers; prints the exact install, restart, uninstall and
+//                  inspect commands
 //   restart-check  start the board on a disposable room, kill it, start it
 //                  again and compare workflow state and answers (no launchd)
 //
@@ -62,21 +64,83 @@ export function servicePlist({ root, node = process.execPath, port = DEFAULT_POR
   ].join('\n');
 }
 
-export function serviceInstructions({ root, port = DEFAULT_PORT, label = DEFAULT_LABEL, uid = process.getuid?.(), home = os.homedir() }) {
+// A label for another checkout's service: the default label plus the
+// checkout's folder name, so two checkouts never share one configuration.
+export function distinctLabel(root, label = DEFAULT_LABEL) {
+  const slug = path.basename(root).toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-+|-+$/g, '') || 'room';
+  return `${label}.${slug}`;
+}
+
+// status (optional) is a serviceStatus result: when a configuration already
+// exists under the label, the instructions say install refuses to replace
+// it, show how to inspect it, and suggest a distinct label when it serves a
+// different checkout or port.
+export function serviceInstructions({ root, port = DEFAULT_PORT, label = DEFAULT_LABEL, uid = process.getuid?.(), home = os.homedir(), status = null }) {
   const plist = shellQuote(plistPath(label, home));
   const tool = shellQuote(path.join(root, 'tools/dashboard-service.mjs'));
   const flags = `--path ${shellQuote(root)} --port ${port} --label ${label}`;
-  return [
-    'Owner actions (this tool never runs them for you):',
+  const lines = ['Owner actions (this tool never runs them for you):'];
+  if (status?.plist?.exists) {
+    lines.push(
+      `  A configuration already exists at ${plist}; install refuses to replace it.`,
+      `  Inspect it first: cat ${plist}`,
+      `                    launchctl print gui/${uid}/${label}`
+    );
+    if (status.match && !status.match.matches) {
+      const other = distinctLabel(root, label);
+      lines.push(`  It serves a different checkout or port. For this checkout use a distinct label:`,
+        `              node ${tool} install --path ${shellQuote(root)} --port ${port} --label ${other}`);
+    }
+  }
+  // Under an existing label the same-label install lines are omitted: install
+  // would refuse, and the configuration there is the installed service's.
+  const install = status?.plist?.exists ? [] : [
     `  Install:    node ${tool} install ${flags}`,
-    `              equivalent: node ${tool} print ${flags} > ${plist}`,
-    `                          launchctl bootstrap gui/${uid} ${plist}`,
+    `              equivalent (refuses an existing file): (set -o noclobber; node ${tool} print ${flags} > ${plist})`,
+    `                          launchctl bootstrap gui/${uid} ${plist}`
+  ];
+  if (status?.plist?.exists) lines.push('  The commands below act on the service installed under this label:');
+  return [
+    ...lines,
+    ...install,
     `  Restart:    launchctl kickstart -k gui/${uid}/${label}`,
     `  Uninstall:  launchctl bootout gui/${uid}/${label}`,
     `              rm ${plist}`,
     `  Inspect:    launchctl print gui/${uid}/${label}`,
     `  Open:       http://${HOST}:${port}/`
   ].join('\n');
+}
+
+const unxml = value => value.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&amp;/g, '&');
+
+// What an installed property list actually serves. Without --path the
+// server finds the room from its WorkingDirectory; without --port it serves
+// the default port.
+export function installedTarget(text) {
+  const value = key => { const found = text.match(new RegExp(`<key>${key}</key>\\s*<string>([\\s\\S]*?)</string>`)); return found ? unxml(found[1]) : null; };
+  const array = text.match(/<key>ProgramArguments<\/key>\s*<array>([\s\S]*?)<\/array>/);
+  const args = array ? [...array[1].matchAll(/<string>([\s\S]*?)<\/string>/g)].map(found => unxml(found[1])) : [];
+  const flag = name => { const index = args.indexOf(name); return index >= 0 && index + 1 < args.length ? args[index + 1] : null; };
+  const pathFlag = flag('--path'), portFlag = flag('--port');
+  return {
+    label: value('Label'), node: args[0] ?? null, script: args[1] ?? null,
+    root: pathFlag ?? value('WorkingDirectory'), rootFrom: pathFlag ? '--path' : 'WorkingDirectory',
+    port: portFlag ? Number(portFlag) : DEFAULT_PORT, portFrom: portFlag ? '--port' : 'default',
+    stdout: value('StandardOutPath'), stderr: value('StandardErrorPath')
+  };
+}
+
+// The Node the service should run: --node when given, else a stable launcher
+// (not a versioned Cellar path a Homebrew upgrade removes) that resolves to
+// the running Node, else the running Node's own path.
+export const STABLE_NODES = Object.freeze(['/opt/homebrew/bin/node', '/usr/local/bin/node']);
+export function resolveNode({ flag, execPath = process.execPath, exists = fs.existsSync, realpath = fs.realpathSync } = {}) {
+  if (flag) return { node: flag, reason: 'chosen with --node' };
+  const running = realpath(execPath);
+  for (const candidate of STABLE_NODES) {
+    try { if (exists(candidate) && realpath(candidate) === running) return { node: candidate, reason: `stable launcher ${candidate} resolves to the running Node` }; } catch {}
+  }
+  return { node: execPath, reason: 'no stable launcher resolves to the running Node; using its own path' };
 }
 
 // The top-level fields of `launchctl print gui/<uid>/<label>`; nested blocks
@@ -99,17 +163,32 @@ function probePort(port) {
 }
 
 export async function serviceStatus({
+  root = null,
+  node = null,
   label = DEFAULT_LABEL,
   port = DEFAULT_PORT,
   platform = process.platform,
   uid = process.getuid?.(),
   home = os.homedir(),
   exists = fs.existsSync,
+  read = file => fs.readFileSync(file, 'utf8'),
   run = (command, args) => spawnSync(command, args, { encoding: 'utf8' }),
   probe = probePort
 } = {}) {
   const file = plistPath(label, home);
   const plist = { path: file, exists: Boolean(exists(file)) };
+  let installed = null;
+  if (plist.exists) {
+    try { installed = installedTarget(read(file)); }
+    catch (error) { plist.readError = error.message; }
+  }
+  const requested = { root, port, node };
+  const match = installed ? {
+    root: root === null ? null : path.resolve(installed.root ?? '') === path.resolve(root),
+    port: installed.port === port,
+    node: node === null ? null : installed.node === node
+  } : null;
+  if (match) match.matches = match.root !== false && match.port && match.node !== false;
   let launchd;
   if (platform !== 'darwin') launchd = { checked: false, detail: 'launchd is macOS only' };
   else {
@@ -117,24 +196,39 @@ export async function serviceStatus({
     if (result.status === 0) launchd = { checked: true, loaded: true, ...parseLaunchctlPrint(result.stdout ?? '') };
     else launchd = { checked: true, loaded: false, detail: `${result.stderr ?? ''}${result.stdout ?? ''}`.trim() || `launchctl exited ${result.status}` };
   }
-  return { plist, launchd, port: { host: HOST, port, ...(await probe(port)) } };
+  return { requested, plist, installed, match, launchd, port: { host: HOST, port, ...(await probe(port)) } };
 }
 
+// The installed service (from its configuration and launchd) and the port
+// probe are reported separately: something answering on the requested port
+// is never presented as the installed service unless it uses that port.
 export function formatStatus(status, instructions) {
-  const { plist, launchd, port } = status;
+  const { plist, launchd, port, installed, match, requested = {} } = status;
+  const where = target => `${target.root ?? '(unknown checkout)'} on port ${target.port}`;
+  const lines = ['Dashboard login service'];
+  if (requested.root) lines.push(`  requested      ${requested.root} on port ${requested.port}${requested.node ? ` with ${requested.node}` : ''}`);
+  lines.push(`  configuration  ${plist.path} (${plist.exists ? 'installed' : 'not installed'})${plist.readError ? `; unreadable: ${plist.readError}` : ''}`);
+  if (installed) {
+    lines.push(`  installed      serves ${where(installed)} with ${installed.node ?? '(unknown Node)'} (checkout from ${installed.rootFrom}, port from ${installed.portFrom})`);
+    if (match?.matches) lines.push('  match          the installed service matches the request');
+    else {
+      const parts = [];
+      if (match.root === false || match.port === false) parts.push(`installed service serves ${where(installed)}, not the requested ${requested.root ?? '(this checkout)'} on port ${requested.port}`);
+      if (match.node === false) parts.push(`it runs ${installed.node}, not ${requested.node}`);
+      lines.push(`  MISMATCH       the ${parts.join('; ')}`);
+    }
+  }
+  const owner = installed ? ` (the installed service: ${where(installed)})` : '';
   const launchdLine = !launchd.checked ? `not checked (${launchd.detail})`
     : !launchd.loaded ? `not loaded (${launchd.detail.split('\n').filter(Boolean).at(-1) ?? ''})`
-    : `loaded, state ${launchd.state ?? 'unknown'}${launchd.pid ? `, pid ${launchd.pid}` : ''}${launchd.lastExitCode ? `, last exit ${launchd.lastExitCode}` : ''}`;
-  const portLine = port.answers ? `${port.host}:${port.port} answers (HTTP ${port.statusCode})` : `${port.host}:${port.port} does not answer (${port.error ?? 'no response'})`;
-  return [
-    'Dashboard login service',
-    `  configuration  ${plist.path} (${plist.exists ? 'installed' : 'not installed'})`,
-    `  launchd        ${launchdLine}`,
-    `  http           ${portLine}`,
-    '',
-    instructions,
-    ''
-  ].join('\n');
+    : `loaded, state ${launchd.state ?? 'unknown'}${launchd.pid ? `, pid ${launchd.pid}` : ''}${launchd.lastExitCode ? `, last exit ${launchd.lastExitCode}` : ''}${owner}`;
+  lines.push(`  launchd        ${launchdLine}`);
+  const answer = port.answers ? `${port.host}:${port.port} answers (HTTP ${port.statusCode})` : `${port.host}:${port.port} does not answer (${port.error ?? 'no response'})`;
+  const attribution = !installed ? (port.answers ? '; no service is installed under this label, so this is some other process' : '')
+    : installed.port === port.port ? '; the installed service uses this port'
+    : `; this probes the requested port only and is not the installed service, which uses port ${installed.port}`;
+  lines.push(`  http           ${answer}${attribution}`);
+  return [...lines, '', instructions, ''].join('\n');
 }
 
 // A free port in the test range 4700-4799 on 127.0.0.1 (never 4646).
@@ -254,7 +348,7 @@ function parseFlags(args) {
   return flags;
 }
 
-const USAGE = 'Usage: dashboard-service.mjs print|install|status --path ROOT [--port 4646] [--label com.kayden.workbench-dashboard] [--json] | restart-check --port 47xx [--keep]';
+const USAGE = 'Usage: dashboard-service.mjs print|install|status --path ROOT [--port 4646] [--label com.kayden.workbench-dashboard] [--node PATH] [--json] | restart-check --port 47xx [--keep]';
 
 if (process.argv[1] && path.resolve(process.argv[1]) === SERVICE_SCRIPT) {
   try {
@@ -263,29 +357,34 @@ if (process.argv[1] && path.resolve(process.argv[1]) === SERVICE_SCRIPT) {
     const root = path.resolve(typeof flags.path === 'string' ? flags.path : process.cwd());
     const label = typeof flags.label === 'string' ? flags.label : DEFAULT_LABEL;
     const port = Number(flags.port ?? DEFAULT_PORT);
+    const chosen = resolveNode({ flag: typeof flags.node === 'string' ? flags.node : undefined });
     if (command === 'print') {
-      process.stdout.write(servicePlist({ root, port, label }));
+      process.stderr.write(`Node: ${chosen.node} (${chosen.reason})\n`);
+      process.stdout.write(servicePlist({ root, port, label, node: chosen.node }));
     } else if (command === 'status') {
-      checkConfig({ root, node: process.execPath, port, label });
-      const status = await serviceStatus({ label, port });
-      const instructions = serviceInstructions({ root, port, label });
-      process.stdout.write(flags.json ? `${JSON.stringify({ ...status, instructions }, null, 2)}\n` : formatStatus(status, instructions));
+      checkConfig({ root, node: chosen.node, port, label });
+      const status = await serviceStatus({ root, node: chosen.node, label, port });
+      const instructions = serviceInstructions({ root, port, label, status });
+      process.stdout.write(flags.json ? `${JSON.stringify({ ...status, nodeChoice: chosen, instructions }, null, 2)}\n` : formatStatus(status, instructions));
     } else if (command === 'restart-check') {
       if (flags.port === undefined) throw new Error('restart-check needs --port in 4700-4799');
       const result = await restartCheck({ port, keep: Boolean(flags.keep) });
       process.stdout.write(`${JSON.stringify({ port: result.port, bound: result.bound, persisted: result.persisted, differences: result.differences, room: flags.keep ? result.room : '(removed)' }, null, 2)}\n`);
       if (!result.persisted) process.exitCode = 1;
     } else if (command === 'install') {
-      const text = servicePlist({ root, port, label });
+      const text = servicePlist({ root, port, label, node: chosen.node });
       if (process.platform !== 'darwin') throw new Error('Login service installation requires macOS; use grill-board.mjs serve on other hosts');
       if (!fs.existsSync(path.join(root, 'tools/grill-board.mjs'))) throw new Error('The selected checkout has no Dashboard server');
       const destination = plistPath(label);
-      if (fs.existsSync(destination)) throw new Error(`Existing service configuration preserved: ${destination}. Inspect it before replacing it.\n${serviceInstructions({ root, port, label })}`);
+      if (fs.existsSync(destination)) {
+        const status = await serviceStatus({ root, node: chosen.node, label, port });
+        throw new Error(`Existing service configuration preserved: ${destination}. Inspect it before replacing it.\n${formatStatus(status, serviceInstructions({ root, port, label, status }))}`);
+      }
       fs.mkdirSync(path.dirname(destination), { recursive: true });
       fs.writeFileSync(destination, text, { flag: 'wx' });
       const result = spawnSync('launchctl', ['bootstrap', `gui/${process.getuid()}`, destination], { encoding: 'utf8' });
       if (result.status !== 0) throw new Error(`Service configuration saved at ${destination}; bootstrap failed: ${result.stderr.trim()}`);
-      console.log(`Dashboard login service installed: ${destination}\n${serviceInstructions({ root, port, label })}`);
+      console.log(`Dashboard login service installed: ${destination} (Node: ${chosen.node}, ${chosen.reason})\n${serviceInstructions({ root, port, label })}`);
     } else throw new Error(USAGE);
   } catch (error) {
     console.error(error.message);
