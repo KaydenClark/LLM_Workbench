@@ -440,7 +440,10 @@ export function gradeItems(root, grades, { by, reason }) {
   validateItems(board); writeJsonAtomic(boardPaths(root).items,board); return grades.map(row => findItem(board,row.id));
 }
 
-export function workflow(root) { return createWorkflow(root, { readItems, readAnswers }); }
+// The workflow reads confirmations by the same answerControls rule the
+// board enforces (injected, since this module imports the workflow).
+function confirmsAnswer(item, answer) { return isConfirmation(item, answer?.verdict); }
+export function workflow(root) { return createWorkflow(root, { readItems, readAnswers, isConfirmation: confirmsAnswer }); }
 
 export function applyAnswer(root, id, { by, where, note }) {
   if (!by || !where) throw new BoardError('invalid-invocation', '--by NAME and --where TEXT are required');
@@ -492,13 +495,9 @@ export function recordAnswer(root, id, { verdict, note, itemRevision, expectedAn
   if (expectedAnswerAt !== undefined && expectedAnswerAt !== (previous?.at ?? null)) throw new BoardError('stale-answer', `${id}: stale answer; reload before saving`);
   if (previous && previous.verdict === verdict && previous.note === note && previous.itemRevision === itemRevision) return { ...previous, derivedStatus: itemStatus(item, previous) };
   const entry = { verdict, note, at: new Date(Math.max(Date.now(), previous ? Date.parse(previous.at) + 1 : 0)).toISOString(), itemRevision };
-  // Only a confirmation freezes the exact wording it confirmed. The workflow
-  // snapshot helper names the confirm/approve words; a confirmed alternative
-  // keeps its own value as the snapshot verdict.
-  if (isConfirmation(item, verdict)) {
-    const snapshotVerdict = verdict === 'approve' ? 'approve' : 'confirm';
-    entry.approval = { ...approvalSnapshot(item, { ...entry, verdict: snapshotVerdict }), verdict };
-  }
+  // Only a confirmation freezes the exact wording it confirmed, with source
+  // paths normalized to the room so no absolute path is stored.
+  if (isConfirmation(item, verdict)) entry.approval = approvalSnapshot(item, entry, { root, isConfirmation: confirmsAnswer });
   const history = previous ? [...previous.history, Object.fromEntries(Object.entries(previous).filter(([key]) => key !== 'history'))] : [];
   answers.answers[id] = { ...entry, history };
   const nativeNote = answerNote(root);
@@ -618,8 +617,8 @@ export function readArtifact(root, requested) {
 const APPROVAL_KINDS = Object.freeze(['approve-spec', 'confirm-text', 'confirm-ddr', 'confirm-dqc']);
 
 // The exact wording a confirmation froze, against the item's current wording.
-function approvalState(item, answer) {
-  const currentHash = approvalHash(item);
+function approvalState(root, item, answer) {
+  const currentHash = approvalHash(item, { root });
   const latest = answer?.approval ? answer.approval : [...(answer?.history ?? [])].reverse().find((entry) => entry.approval)?.approval;
   if (!latest) return { state: 'none', currentHash, hash: null };
   const base = { currentHash, hash: latest.hash, itemRevision: latest.itemRevision, confirmedAt: latest.confirmedAt, verdict: latest.verdict };
@@ -642,7 +641,7 @@ export function draftsToApprove(root) {
     groups.get(target).items.push({
       id: item.id, title: item.title, kind: item.kind, revision: item.revision, derivedStatus: item.derivedStatus,
       question: item.question, draft: item.draft, draftKind: fullText ? 'full-text' : 'excerpt', sources: item.sources,
-      answerLabel: item.answerLabel, approval: approvalState(item, item.answer)
+      answerLabel: item.answerLabel, approval: approvalState(root, item, item.answer)
     });
   }
   const ordered = [...groups.values()].sort((a, b) => (a.target === null) - (b.target === null) || String(a.target).localeCompare(String(b.target)));
