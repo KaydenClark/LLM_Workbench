@@ -34,6 +34,7 @@ The acceptance below defines this bounded follow-up. Existing claims, source own
 ## Decisions And Contracts
 
 - Owner confirmation: Slack T0C7LRB65JS / C0C7HJCEJ13, thread 1791443132.516449; readback 1791445519.027649, owner answer 1791446326.652929: "Yes that matches. you are confirmed for 1-3". The parent relayed reviewed integration delivery authorization; the ADR fix was approved earlier.
+- Owner clarification and full-map confirmation: Slack assistant 1791450115.371499; Kayden 1791450156.611449: "Yes. correct the diagram too. this is great progress!" Explore is Idea → Align → Confirm; Promote consumes confirmation and is Record → Publish → Map → Publish → Plan → Publish; Journey is Implement → Check → QA → Submit; Judge is Review → Verify → Approve; Complete is Delivered → Clean Up. Publish is stage availability on integration; owner gates remain. This supersedes the earlier pending grouping in the bounded baseline.
 - Main promotion remains an owner act. Confirmation adds no design commitments beyond the requested endpoint.
 - One writer, `codex-confirmed-followup`, owns these follow-up records and shared projection updates.
 
@@ -41,7 +42,7 @@ The acceptance below defines this bounded follow-up. Existing claims, source own
 
 - No disposable-fixture/shared-fixture-builder proposal or wider harness redesign.
 - No glossary-retirement or domain-modeling lane changes.
-- No finalized outer workflow ordering, new approval ceremony, paid billing, credentials, security settings, repository permissions, branch protection or other-project hooks.
+- No new approval ceremony, paid billing, credentials, security settings, repository permissions, branch protection or other-project hooks.
 
 ## Dependencies And Blockers
 
@@ -55,7 +56,7 @@ One complete-path Task, [TK-007R - RUNBOOK.md](tasks/TK-007R/TASK.md), owns this
 ## Acceptance Criteria
 
 - [x] One reference points to existing authoritative definitions and procedures rather than duplicating them.
-- [x] Confirmed stages and unresolved outer ordering remain distinguishable.
+- [x] The reference and diagram express the owner-confirmed Explore, Promote, Journey, Judge and Complete map, including Confirm ending Explore and the three Promote publications.
 - [x] QA inside Journey and owner approval, delivery, main verification and cleanup remain visible.
 - [x] Root and generic Runbook references agree while the separate S-004C carrier rewrite remains unchanged.
 
@@ -69,7 +70,7 @@ Use the named focused seams while editing, then the one full suite listed in RUN
 
 ## Documentation Impact
 
-Owning files: RUNBOOK.md; templates/RUNBOOK.md. Update existing owners, preserve evidence and avoid copied procedures.
+Owning files: RUNBOOK.md; templates/RUNBOOK.md; the existing Workflow Verbs and Idea To Delivery Wiki accounts route to the canonical map without duplicating it. Update existing owners, preserve evidence and avoid copied procedures.
 
 ## Append-Only Evidence And Execution Log
 
@@ -79,7 +80,7 @@ Owning files: RUNBOOK.md; templates/RUNBOOK.md. Update existing owners, preserve
 
 ## Completion Result
 
-Implementation verified locally at `ffa941905c0667c92065d58894f78f35302b31be`. The canonical RUNBOOK suite passed all 55 commands in 849.3 seconds, with focused red/green and source checks. Native Codex discovered readback and produced the three bounded outputs recorded in the Reusable Readback Skill proof. Mandatory self-drift findings remained unchanged at 23; score remained 73, so no globally clean Workbench or agent-outcome claim is made. Independent review and integration delivery are the next gates. Hosted CI and canonical hook installation will be observed after delivery; owner Human QA and main remain separate later gates.
+Implementation verified locally at `ffa941905c0667c92065d58894f78f35302b31be`. The canonical RUNBOOK suite passed all 55 commands in 849.3 seconds, with focused red/green and source checks. Native Codex discovered readback and produced the three bounded outputs recorded in the Reusable Readback Skill proof. Mandatory self-drift findings remained unchanged at 23; score remained 73, so no globally clean Workbench or agent-outcome claim is made. The later owner-confirmed five-parent map and diagram replace the earlier unresolved reference; their verification is recorded separately below. Independent review and integration delivery are the next gates. Hosted CI and canonical hook installation will be observed after delivery; owner Human QA and main remain separate later gates.
 
 ## Remaining Limitations Or Follow-Up Specs
 

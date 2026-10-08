@@ -89,22 +89,63 @@ Maintain this reference with the project's confirmed workflows. It lines up
 verbs, scenarios and skill pointers; definitions and governing decisions stay
 with their existing owners. The reference adds no authority or new gate.
 
-| Scenario | Route | Skills and procedures |
+| Parent workflow | Ordered verbs | Scenario and skills |
 |---|---|---|
-| Take a new direction from idea to delivery | Idea → Align → Confirm → Map → Plan → Journey → Review → Verify → Approve → Delivered → Clean Up | [grilling](workbench/skills/grilling/SKILL.md), [to-docs](workbench/skills/to-docs/SKILL.md), [to-spec](workbench/skills/to-spec/SKILL.md), [to-tasks](workbench/skills/to-tasks/SKILL.md), [implement](workbench/skills/implement/SKILL.md), [dispatcher](workbench/skills/dispatcher/SKILL.md), [director](workbench/skills/director/SKILL.md) |
-| Build an assigned Task or resume an authorized handoff | Journey: Implement → Check → QA → Submit | [implement](workbench/skills/implement/SKILL.md#4-review-at-the-relevant-boundary), [handoff](workbench/skills/handoff/SKILL.md), [carry](workbench/skills/carry/SKILL.md) |
-| Correct a failed assembled review | Review fails → Map → Plan → Journey → Review → Verify | [corrective return](workbench/skills/dispatcher/SKILL.md#assembled-review-and-corrective-return) |
-| Promote confirmed claims | Promote to the requested endpoint | [promote](workbench/skills/promote/SKILL.md) |
-| Finish after reviewed integration delivery | Approve → Delivered → Clean Up | [owner closure](workbench/skills/director/SKILL.md#owner-closure-and-reconciliation) |
+| Explore | Idea → Align → Confirm | Reach a shared concept and endpoint with [grilling](workbench/skills/grilling/SKILL.md). Confirm ends Explore. |
+| Promote | Record → Publish → Map → Publish → Plan → Publish | Consume the confirmed concept: Record uses [to-docs](workbench/skills/to-docs/SKILL.md), Map uses [to-spec](workbench/skills/to-spec/SKILL.md), Plan uses [to-tasks](workbench/skills/to-tasks/SKILL.md). [promote](workbench/skills/promote/SKILL.md) carries supported claims to their owners. |
+| Journey | Implement → Check → QA → Submit | Build an assigned Task or authorized handoff using [implement](workbench/skills/implement/SKILL.md#4-review-at-the-relevant-boundary), [handoff](workbench/skills/handoff/SKILL.md) and [carry](workbench/skills/carry/SKILL.md). |
+| Judge | Review → Verify → Approve | Independent [code-review](workbench/skills/code-review/SKILL.md) judges the assembled Spec, landmark or Workbench. A passing Review permits integration merge; Verify checks the reviewed work on integration; Approve is the owner's viability judgment. [dispatcher](workbench/skills/dispatcher/SKILL.md#dispatcher-and-separate-director-assembled-review) and [director](workbench/skills/director/SKILL.md#owner-human-qa-and-main-before-complete) preserve the actual gates. |
+| Complete | Delivered → Clean Up | Delivered requires the owner's approval and main promotion. [Owner closure](workbench/skills/director/SKILL.md#owner-closure-and-reconciliation) retains main containment, completion and knowledge reconciliation before cleanup. |
+
+```mermaid
+flowchart TB
+  subgraph Explore
+    direction LR
+    idea[Idea] --> align[Align] --> confirm[Confirm]
+  end
+  subgraph Promote
+    direction LR
+    record[Record] --> pubRecord[Publish] --> map[Map] --> pubMap[Publish] --> plan[Plan] --> pubPlan[Publish]
+  end
+  subgraph Journey
+    direction LR
+    implement[Implement] --> check[Check] --> qa[QA] --> submit[Submit]
+  end
+  subgraph Judge
+    direction LR
+    review[Review]
+    verify[Verify] --> approve[Approve]
+  end
+  subgraph Complete
+    direction LR
+    delivered[Delivered] --> cleanup[Clean Up]
+  end
+  confirm --> record
+  pubPlan --> implement
+  submit --> review
+  review -->|Pass: merge to integration| verify
+  review -->|Fail: return to Map and Plan| map
+  approve -->|Owner approves and promotes to main| delivered
+  approve -->|Owner sends back| align
+```
+
+Promote begins with an already-confirmed concept. A nearer authorized endpoint
+limits the run; unclear or changed scope returns for clarification. Each Publish
+makes that stage's records available from integration before the next stage
+depends on them. It implies neither Spec completion nor main promotion.
+Review applies to an assembled destination, never a Task. A failed Review
+returns to Map, Plan and Journey under the still-open Spec through the existing
+[corrective return](workbench/skills/dispatcher/SKILL.md#assembled-review-and-corrective-return).
+Owner Human QA, owner-only main promotion, main verification and cleanup remain
+in force. These parent labels relax no safeguard.
 
 Off-path arrivals use [genesis](workbench/skills/genesis/SKILL.md),
 [adoption](workbench/skills/adoption/SKILL.md),
 [update-harness](workbench/skills/update-harness/SKILL.md) or
 [version-control recovery](#version-control-procedures) for the actual scenario.
-Review judges the assembled Spec, landmark or Workbench, never a Task.
-Owner Human QA, owner-only main promotion, main verification and cleanup remain
-visible. An outer grouping involving Explore and Promote is unresolved; an
-abbreviation cannot replace these confirmed steps or authorize their removal.
+A room-local readback may support Align → Confirm without adding an invocation
+gate. Maintain the project's confirmed reference here; do not duplicate verb
+definitions or weaken its owner's endpoint.
 
 ## Ordinary Entry
 
