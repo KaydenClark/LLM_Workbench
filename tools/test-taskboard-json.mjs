@@ -837,6 +837,27 @@ if (process.argv.includes('--demo')) {
     assert.deepEqual(missing, [], 'every parsed field stays document-unique under the preview guard');
   });
 
+  test('the source-qualified reader scopes legacy numeric labels and refuses an identity it would otherwise overwrite', async () => {
+    const { readTaskboard } = await import('../workbench/tools/spec-workbench.mjs');
+    withRoom(root => {
+      const a = spec(root, { id: 'S-000A' }); const fileA = task(root, a, { id: 'TK-001', status: 'done' }); task(root, a, { id: 'TK-002' });
+      const b = spec(root, { id: 'S-000B', priority: 1 }); const fileB = task(root, b, { id: 'TK-001' });
+      const before = sourceSnapshot(root);
+      const board = readTaskboard(root, { qualified: true });
+      assert.equal(board.identity, 'source-qualified');
+      assert.deepEqual(Object.keys(board.lanes), lanes);
+      assert.deepEqual(board.lanes.complete['S-000A/TK-001'].sourceLinks, [fileA, a.file]);
+      assert.deepEqual(board.lanes.toDo['S-000B/TK-001'].sourceLinks, [fileB, b.file]);
+      assert.equal(board.lanes.toDo['S-000B/TK-001'].specId, 'S-000B');
+      assert.deepEqual(Object.keys(board.lanes.toDo), ['S-000B', 'S-000B/TK-001', 'S-000A', 'S-000A/TK-002'], 'Spec cards keep their own identity and all cards keep the shared priority/title order across Specs');
+      assert.deepEqual(sourceSnapshot(root), before, 'the reader writes nothing');
+      // A second record with the same Spec identity (active and retired copies)
+      // must refuse naming both owners, never keep only the last one read.
+      const retired = spec(root, { id: 'S-000A', retired: true, status: 'complete' }); task(root, retired, { id: 'TK-001', status: 'done' });
+      assert.throws(() => readTaskboard(root, { qualified: true }), error => /taskboard-collision/.test(error.message) && error.message.includes(a.file) && error.message.includes(retired.file));
+    });
+  });
+
   test('single normalized metadata fields follow source whitespace and whole-document semantics', () => withRoom(root => {
     const a = spec(root, { id: 'S-000A' }); const file = task(root, a, { id: 'TK-000A' });
     const source = fs.readFileSync(path.join(root, file), 'utf8');
