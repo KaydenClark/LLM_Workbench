@@ -102,6 +102,15 @@ makes it promotable. Answers saved with the earlier words (`correct`,
 read with their original labels and keep their meaning (an earlier Not now
 stays pending); new answers cannot use those words.
 
+**Notes the answer store refuses.** Answers are saved to a privacy-checked
+notepad, so a note containing a home-folder path (`/Users/...`), an email
+address or token-like text (`token: ...`) is refused (`secret-like-content`).
+The guard is deliberate and the owner's words are never altered: the card says
+what was refused and why, keeps the text, and does not resend it until it
+changes. Use a room-relative path such as `workbench/...` instead. While an
+answer conflict is open, typing a note never saves it; choose an answer to
+settle the conflict.
+
 **Whys list**: every Change the why answer, title first and ID second, with the
 owner's note, the revision answered and its status, filterable by text and
 status. Open it from the Grilling Board's left panel (`#section=whys`). An agent
@@ -216,8 +225,13 @@ Rules that keep the board trustworthy across sessions:
 ### Where the live board is
 
 The owner serves and answers the copy in the main checkout,
-`/Users/kayden/LLM_Workbench/workbench/grill-board/`. `answers.json` exists only
-there. If you work in a worktree, read his answers from that path:
+`/Users/kayden/LLM_Workbench/workbench/grill-board/`. His answers exist only
+there: new answers in the git-ignored answer notepad
+`workbench/sessions/notepads/grilling/dashboard-answers.json` (this room
+declares a `notepads` collection), and older ones in the untracked legacy
+`answers.json`, which the board reads first and new code never writes in a room
+with a notepads collection. If you work in a worktree, read his answers from
+that path:
 
 ```bash
 node /Users/kayden/LLM_Workbench/tools/grill-board.mjs pending --path /Users/kayden/LLM_Workbench
@@ -392,8 +406,17 @@ When you have answered a batch, tell any Claude or Codex session:
 
 Items that an agent applied show "Applied by … : where". Items whose proposal
 an agent changed after you answered show "Re-answer". Nothing you typed is
-ever lost: `answers.json` keeps the history of each answer, and `items.json`
-carries the applied verdicts into Git.
+ever lost: each new answer is appended to the answer notepad naming the answer
+it replaces, the board rebuilds each answer's history from the legacy
+`answers.json` and those entries, and `items.json` carries the applied verdicts
+into Git.
+
+**After updating.** The owner's always-open login service keeps running the
+board code it started with until it is restarted, while `index.html` is read
+fresh on every page load, so new page code can meet an old server. After
+pulling new board code into the served checkout, restart the service:
+`launchctl kickstart -k gui/$(id -u)/<label>` (the default label is
+`com.kayden.workbench-dashboard`).
 
 ## Agents: how to process a batch
 
@@ -423,11 +446,16 @@ carries the applied verdicts into Git.
    | any | Change the why | correct the rationale in the owning decision record from his note; it appears in the Whys list |
    | any | Change (legacy Correct) | the Record Worker carries **his note's words** and the corrected confirmed revision; Change may mean dropping it |
    | `confirm-dqc` | Confirm | the `landmark-tracker.mjs revise` command the proposal spells out (check `--expect-revision` against a fresh `show`) |
-   | `confirm-dqc` | Correct | the same `revise` with `--answer`/`--correction` carrying his words |
+   | `confirm-dqc` | Rework wording / Change the why / Change | the same `revise` with `--answer`/`--correction` carrying his words: reworded understanding, a corrected reason (listed in the Whys list), or a changed or dropped question |
    | `confirm-ddr` | Confirm | nothing changes; `apply` with where "accepted record unchanged" |
-   | `confirm-ddr` | Correct | `adr.mjs new --kind ddr` with his words, `accept`, then `adr.mjs supersede DDR-#### --by DDR-####` (an ADR uses the same verbs with its own prefix) |
-   | `confirm-ddr` | Decline | `adr.mjs deprecate ID --reason "<his note>"` |
-   | `confirm-text` | Correct | the page's owning Spec gets a corrective Task carrying his words; the page changes through that Task |
+   | `confirm-ddr` | Rework wording | restate the record from his note (`adr.mjs new --kind ddr`, `accept`, `adr.mjs supersede DDR-#### --by DDR-####`) with the decision unchanged |
+   | `confirm-ddr` | Change the why | fix the rationale in that decision record from his note the same way; it is listed in the Whys list |
+   | `confirm-ddr` | Change | the decision itself changes: supersede it with a new record carrying his words, or `adr.mjs deprecate ID --reason "<his note>"` when he drops it (an ADR uses the same verbs with its own prefix) |
+   | `confirm-text` | Rework wording / Change the why / Change | the page's owning Spec gets a corrective Task carrying his words (wording, rationale or substance, including dropping the change); the page changes through that Task |
+   | `confirm-dqc` | legacy Correct | the same `revise` with `--answer`/`--correction` carrying his words |
+   | `confirm-ddr` | legacy Correct | `adr.mjs new --kind ddr` with his words, `accept`, then `adr.mjs supersede DDR-#### --by DDR-####` (an ADR uses the same verbs with its own prefix) |
+   | `confirm-ddr` | legacy Decline | `adr.mjs deprecate ID --reason "<his note>"` |
+   | `confirm-text` | legacy Correct | the page's owning Spec gets a corrective Task carrying his words; the page changes through that Task |
    | any | legacy Not now | leave it; do not `apply` |
    | any | legacy Decline | record the decline where the item would have landed (evidence row, DQC correction, Spec note), then `apply` |
 
@@ -486,8 +514,13 @@ These are answer statuses. Promotion has its own per-card workflow states
 planned, implemented), reported by `tools/dashboard-workflow.mjs`.
 
 `status`, `pending`, `show`, `validate`, `handoffs` are read-only. `serve`
-writes owner answers only through a PUT from the page it serves on 127.0.0.1,
-and comments, rounds and promotion requests only through the page's POSTs;
-nothing checks who sent them, so the owner-only rule for answers is a rule
-agents follow, not one the server enforces. `tools/test-grill-board.mjs` and
+listens on 127.0.0.1 only and writes owner answers only through a PUT, and
+comments, rounds and promotion requests only through POSTs. Every request must
+be addressed to the board's own local address (Host `127.0.0.1:<port>` or
+`localhost:<port>`, against DNS rebinding), and every write must be
+`application/json`, carry no Origin but the board's own and not be a cross-site
+fetch, so another web page cannot write through the owner's browser and no
+response grants cross-origin reads. A process running locally on this machine
+can still send such a request, so the owner-only rule for answers is a rule
+agents follow, not one the server can enforce. `tools/test-grill-board.mjs` and
 `tools/test-dashboard-board.mjs` lock these seams.

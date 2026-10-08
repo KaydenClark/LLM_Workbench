@@ -137,7 +137,14 @@ export function readAnswers(root) {
   const note = answerNote(root);
   if (note && fs.existsSync(path.join(root,note))) {
     const loaded = notepadResult(readNote(root,{note}));
-    const entries = loaded.entries.filter((entry) => entry.topic === 'dashboard-answer').map((entry) => JSON.parse(entry.content));
+    // Validated like the workflow reader: a malformed entry is a named
+    // invalid-notepad error, never a crash.
+    const entries = loaded.entries.filter((entry) => entry.topic === 'dashboard-answer').map((entry) => {
+      let saved;
+      try { saved = JSON.parse(entry.content); } catch { throw new BoardError('invalid-notepad', `Answer notepad entry ${entry.id} in ${note} is not JSON`); }
+      if (!saved || typeof saved !== 'object' || Array.isArray(saved) || !ID_PATTERN.test(saved.id ?? '') || !saved.answer || typeof saved.answer !== 'object' || Array.isArray(saved.answer)) throw new BoardError('invalid-notepad', `Answer notepad entry ${entry.id} in ${note} is incomplete; it needs an item id and an answer`);
+      return saved;
+    });
     answers.answers = chainAnswers(answers.answers, entries);
   }
   validateAnswers(answers);
