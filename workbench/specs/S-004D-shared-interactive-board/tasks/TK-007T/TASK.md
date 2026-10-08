@@ -3,11 +3,12 @@
 **Task ID:** TK-007T
 **Spec ID:** S-004D
 **Slice:** The Owner reads connected native sources and exact proposed drafts across the five Dashboard sections
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: The five sections open from one site, each reading its existing owners; every question that uses a decision record links to it in the Wiki section. Drafts to approve shows exact current and proposed wording per file, tagged with its owning question. Every term, ID and link on a sampled question path resolves to a page or a labeled carried excerpt with provenance; hover definitions, search and backlinks work.
 **Planned verification:** Red first in `tools/test-dashboard-sources.mjs` and `tools/test-taskboard-json.mjs`: the read-only Taskboard reader refuses the live room on a repeated narrative label while every existing duplicate-refusal test must still pass; no glossary, backlink or search route exists. Green: source-qualified Taskboard identities with legacy `TK-001` duplicates kept apart, Tracker semantics kept distinct, source errors returned without a substitute projection, glossary from `GLOSSARY.md` or the existing `LEXICON.md` route, backlinks from questions and artifacts, bounded search that never reads private collections. Then the page model and a disposable-copy browser check of each section and one Drafts to approve comparison; then the Full Runbook suite on the committed candidate.
+**Claimed by:** claude-dashboard-director
 
 ## Scope
 
