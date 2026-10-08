@@ -278,8 +278,15 @@ identifiers only.
   available**; none is invented.
 - **Wiki**: the catalog groups (root controls, ADRs, DDRs, Landmarks, Specs,
   Tasks, DQCs, Wiki pages, skills, and architecture or glossary files when
-  present), titles first. A question whose sources are cataloged, including
-  every ADR or DDR it uses, links to that page. Each page shows **Linked from**
+  present), titles first. A question links to the Wiki page of each cataloged
+  source and of every decision record it uses: one among its sources, or one
+  it names by identifier (ADR-, DDR- or CDR-) anywhere in its question, context,
+  proposal, brief, draft or options. Those identifiers are also linked where
+  they appear in the question's text (never inside code), with the record's
+  title on hover; an identifier with no cataloged record is shown as
+  unavailable, not as a dead link. Relative Markdown links in a question's
+  text resolve against its first in-room source, and link only to cataloged
+  pages. Each page shows **Linked from**
   (questions and pages that link to it) and glossary terms show their
   definition on hover, when the server's sources module offers them; without
   them the page shows the board questions citing the file and no definitions.

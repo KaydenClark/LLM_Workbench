@@ -472,12 +472,33 @@
     });
   }
 
+  // Decision-record identifiers (ADR, DDR and CDR) named in text link to
+  // their cataloged Wiki page; an identifier without a cataloged record is
+  // shown as unavailable, never as a dead link.
+  const DECISION_ID = /(?<![\w-])(?:ADR|DDR|CDR)-[0-9A-Za-z]{4}(?![\w-])/g;
+  function decisionRecord(id) { return state.catalog?.artifacts.find(artifact => artifact.id === id && ['adrs', 'ddrs', 'cdrs'].includes(artifact.group)) || null; }
+  function withRecords(value, terms) {
+    let html = '', start = 0;
+    const text = String(value);
+    const rest = segment => terms ? withTerms(esc(segment)) : esc(segment);
+    for (const match of text.matchAll(DECISION_ID)) {
+      html += rest(text.slice(start, match.index));
+      const record = decisionRecord(match[0]);
+      html += record
+        ? `<a class="record-link" href="${esc(artifactHref(record.path))}" title="${esc(record.title)} · ${esc(record.id)}">${esc(match[0])}</a>`
+        : `<span class="unavailable-link" title="No cataloged decision record ${esc(match[0])}">${esc(match[0])}</span>`;
+      start = match.index + match[0].length;
+    }
+    return html + rest(text.slice(start));
+  }
   // A deliberately small Markdown renderer: paragraphs, headings, lists,
   // quotes, tables, fenced code, inline code, bold and links. Everything else is text.
   function inline(text, source = '') {
     const token = /`([^`]+)`|\[([^\]]+)\]\(([^\s)]+)\)/g;
     let result = '', start = 0;
-    const plain = (value, terms = true) => (terms ? withTerms(esc(value)) : esc(value)).replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+    // Plain text gets glossary terms and decision-record links; a link label
+    // gets neither, so a link never nests inside another.
+    const plain = (value, terms = true) => (terms ? withRecords(value, true) : esc(value)).replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
     for (const match of String(text).matchAll(token)) {
       result += plain(String(text).slice(start, match.index));
       if (match[1] !== undefined) result += `<code>${esc(match[1])}</code>`;
@@ -742,10 +763,26 @@
     document.getElementById('next-question').onclick = () => { openQuestion(shown[index + 1].id); panel.scrollIntoView({ block: 'start' }); };
   }
   // Decision records and other cataloged sources open in the Wiki section.
+  // The relative-link base for an item's text: its first in-room source.
+  function itemBase(item) {
+    const source = (item.sources || []).find(candidate => candidate.path && !candidate.path.startsWith('/') && !candidate.path.startsWith('..') && !/^[a-z][a-z\d+.-]*:/i.test(candidate.path));
+    return source ? source.path : '';
+  }
+  // Every decision-record identifier the question names in its text.
+  function namedDecisionIds(item) {
+    const text = [item.title, item.question, item.current, item.proposal, item.draft || '', ...Object.values(item.brief || {}), ...(item.options || []).flatMap(option => [option.label, option.hint || ''])].join('\n');
+    return [...new Set(text.match(DECISION_ID) || [])];
+  }
+  // Cataloged sources and the decision records the question names, each once.
   function wikiLinks(item) {
-    const links = (item.sources || []).map(source => ({ source, artifact: catalogArtifact(source.path) })).filter(entry => entry.artifact);
-    if (!links.length) return '';
-    return `<div class="wiki-links"><span>Read in the Wiki:</span>${links.map(({ source, artifact }) => `<a href="${esc(artifactHref(source.path, '', item.id))}">${esc(groupTitle(artifact.group))} · ${esc(artifact.title)}</a>`).join('')}</div>`;
+    const seen = new Set();
+    const sources = (item.sources || []).map(source => catalogArtifact(source.path)).filter(Boolean).filter(artifact => !seen.has(artifact.path) && seen.add(artifact.path));
+    const named = namedDecisionIds(item);
+    const records = named.map(decisionRecord).filter(Boolean).filter(artifact => !seen.has(artifact.path) && seen.add(artifact.path));
+    const missing = named.filter(id => !decisionRecord(id));
+    if (!sources.length && !records.length && !missing.length) return '';
+    const link = artifact => `<a href="${esc(artifactHref(artifact.path, '', item.id))}">${esc(groupTitle(artifact.group))} · ${esc(artifact.title)}${artifact.id ? ` (${esc(artifact.id)})` : ''}</a>`;
+    return `<div class="wiki-links">${sources.length ? `<span>Read in the Wiki:</span>${sources.map(link).join('')}` : ''}${records.length || missing.length ? `<span>Decision records:</span>${records.map(link).join('')}${missing.map(id => `<span class="unavailable-link" title="No cataloged decision record ${esc(id)}">${esc(id)} (not in the Wiki)</span>`).join('')}` : ''}</div>`;
   }
   function card(item) {
     const status = item.derivedStatus;
@@ -761,11 +798,11 @@
     return `<article class="item" id="${item.id}" data-id="${item.id}" data-status="${status}" data-revision="${item.revision}">
       <div class="item-head"><h3>${esc(item.title)}<small class="identity">${item.id} · revision ${item.revision}</small></h3><span><span class="badge ${status}">${STATUS_LABEL[status]}</span><span class="kind">${esc(KIND_LABEL[item.kind] || item.kind)}</span></span></div>
       ${gradeDetail(item)}
-      <p class="q">${esc(item.question)}</p>
+      <p class="q">${inline(item.question, itemBase(item))}</p>
       ${wikiLinks(item)}
-      ${item.brief ? decisionBrief(item) : `<div class="block"><h4>Context · current</h4>${markdown(item.current)}</div><div class="recommendation"><h4>Recommended answer · agent proposal</h4>${markdown(item.proposal)}</div>`}
-      ${item.draft ? `<details class="draft" open><summary>Proposed wording · draft at revision ${item.revision}</summary><div class="block">${markdown(item.draft)}</div></details>` : ''}
-      ${sources ? `<details class="draft"><summary>Evidence and source links</summary><div class="sources">${sources}</div><div class="block"><h4>Current</h4>${markdown(item.current)}</div><div class="block"><h4>Proposal</h4>${markdown(item.proposal)}</div></details>` : ''}
+      ${item.brief ? decisionBrief(item) : `<div class="block"><h4>Context · current</h4>${markdown(item.current, itemBase(item))}</div><div class="recommendation"><h4>Recommended answer · agent proposal</h4>${markdown(item.proposal, itemBase(item))}</div>`}
+      ${item.draft ? `<details class="draft" open><summary>Proposed wording · draft at revision ${item.revision}</summary><div class="block">${markdown(item.draft, itemBase(item))}</div></details>` : ''}
+      ${sources ? `<details class="draft"><summary>Evidence and source links</summary><div class="sources">${sources}</div><div class="block"><h4>Current</h4>${markdown(item.current, itemBase(item))}</div><div class="block"><h4>Proposal</h4>${markdown(item.proposal, itemBase(item))}</div></details>` : ''}
       ${history.length ? `<div class="sources"><span>History:</span>${history.map(entry => `<span>${entry}</span>`).join('')}</div>` : ''}
       ${conflictNotice(item)}${stale}${applied}
       ${answerSection(item)}
@@ -786,16 +823,17 @@
   }
   function decisionBrief(item) {
     const b = item.brief;
+    const base = itemBase(item);
     const history = b.history.split(/(?=^### )/m).filter(part => part.trim()).map(part => {
       const lines = part.split('\n');
-      return `<details class="history-entry"><summary>${esc(lines.shift().replace(/^### /, ''))}</summary>${markdown(lines.join('\n'))}</details>`;
+      return `<details class="history-entry"><summary>${esc(lines.shift().replace(/^### /, ''))}</summary>${markdown(lines.join('\n'), base)}</details>`;
     }).join('');
-    return `<div class="brief-summary">${markdown(b.summary)}</div>
-      <div class="block"><h4>What this concerns</h4>${markdown(b.artifacts)}</div>
-      <div class="block"><h4>Why this choice matters</h4>${markdown(b.why)}</div>
-      <div class="recommendation"><h4>Recommended answer · agent proposal</h4>${markdown(b.recommendation)}</div>
-      <div class="block"><h4>What would change</h4>${markdown(b.changes)}</div>
-      <div class="block"><h4>Consequences and tradeoffs</h4>${markdown(b.impact)}</div>
+    return `<div class="brief-summary">${markdown(b.summary, base)}</div>
+      <div class="block"><h4>What this concerns</h4>${markdown(b.artifacts, base)}</div>
+      <div class="block"><h4>Why this choice matters</h4>${markdown(b.why, base)}</div>
+      <div class="recommendation"><h4>Recommended answer · agent proposal</h4>${markdown(b.recommendation, base)}</div>
+      <div class="block"><h4>What would change</h4>${markdown(b.changes, base)}</div>
+      <div class="block"><h4>Consequences and tradeoffs</h4>${markdown(b.impact, base)}</div>
       <details class="draft"><summary>Related Destination Question Cards and original grilling history</summary>${history}</details>`;
   }
   function answerButtonsHtml(model) {
@@ -1312,7 +1350,7 @@
   // ---- Wiki. ----
   function renderWiki(panel) {
     const groups = state.catalog.groups.map(group => ({ ...group, count: state.catalog.artifacts.filter(artifact => artifact.group === group.id).length })).filter(group => group.count);
-    panel.innerHTML = `<h1>Wiki</h1><p class="semantics">Root controls, decision records, Wiki pages, skills, Specs, Tasks and maintained knowledge, read from their owners. Every question that uses a decision record links here. ${state.glossary ? `Glossary terms show their definition on hover (from ${esc(state.glossary.source || 'no glossary file')}).` : 'Hover definitions are unavailable from this server.'}</p>
+    panel.innerHTML = `<h1>Wiki</h1><p class="semantics">Root controls, decision records, Wiki pages, skills, Specs, Tasks and maintained knowledge, read from their owners. Every decision record a question uses, as a source or by its identifier in the question's text, links here; an identifier with no cataloged record is shown as unavailable. ${state.glossary ? `Glossary terms show their definition on hover (from ${esc(state.glossary.source || 'no glossary file')}).` : 'Hover definitions are unavailable from this server.'}</p>
       <div class="group-grid">${groups.map(group => `<a class="group-card" href="#artifacts=${esc(group.id)}"><strong>${esc(group.title)}</strong><small>${group.count} ${group.count === 1 ? 'document' : 'documents'}</small></a>`).join('')}</div>
       ${state.catalog.errors?.length ? `<details><summary>${state.catalog.errors.length} sources could not be cataloged</summary>${state.catalog.errors.map(error => `<p class="error-box">${esc(error.source)}${error.path ? ` · ${esc(error.path)}` : ''}: ${esc(error.message)}</p>`).join('')}</details>` : ''}`;
   }
