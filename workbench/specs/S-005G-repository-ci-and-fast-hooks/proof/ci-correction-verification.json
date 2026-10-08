@@ -1,0 +1,31 @@
+{
+  "implementationCandidate": "7d7c6e51f9a7b96f93090b64e58284602eb5a796",
+  "changesDuringSuite": "none",
+  "canonicalSuite": {
+    "passed": 55,
+    "commands": 55,
+    "seconds": 956.1,
+    "uncompressedLogSha256": "25d003fb4d14425e3a4667151eb3bf15b907f525e43408cb9e6cf021bd451851",
+    "log": "ci-correction-full-suite.txt.gz"
+  },
+  "environment": {
+    "GIT_CONFIG_COUNT": "1",
+    "GIT_CONFIG_KEY_0": "init.defaultBranch",
+    "GIT_CONFIG_VALUE_0": "main",
+    "localhostPermission": "provided for existing tests"
+  },
+  "focused": {
+    "realGitHooks": 5,
+    "CIEnvRegression": 1,
+    "totalPassingTests": 6
+  },
+  "guardrailScore": 73,
+  "selfDrift": {
+    "findings": 23,
+    "unchangedBaseline": true,
+    "cleanUpdate": false
+  },
+  "hostedCI": "previous published candidate failed fixture default, corrective hosted run not yet observed",
+  "integration": "not merged before corrective publication",
+  "canonicalHook": "reviewed308d0afb snapshot installed, unchanged source hashes and canonical source state verified"
+}

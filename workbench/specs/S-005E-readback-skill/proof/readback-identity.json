@@ -1,0 +1,15 @@
+{
+  "candidate": "7f6e28291b2f01b02d1dba5ece079850f2ae4324",
+  "nativeBehaviorCandidate": "ffa941905c0667c92065d58894f78f35302b31be",
+  "sourcePath": "workbench/skills/readback/SKILL.md",
+  "sha256": "06498d6a602cf63e219d1324d57e18db892c6f9952a19e93abec960b5182fa17",
+  "sourceUnchangedSinceNativeCheck": true,
+  "discoveryRoots": {
+    ".agents/skills": "../workbench/skills",
+    ".claude/skills": "../workbench/skills"
+  },
+  "installedSourceMatch": true,
+  "canonicalDirtyCheckoutInstalled": false,
+  "runtime": "native Codex CLI 0.159.3 as recorded, configured gpt-6.1-sol/high",
+  "limitation": "one native three-case demo, no repeated reliability or live owner confirmation claim"
+}

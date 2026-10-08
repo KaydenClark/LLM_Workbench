@@ -1,0 +1,32 @@
+{
+  "install": {
+    "status": "installed",
+    "repository": "/Users/kayden/LLM_Workbench",
+    "scope": "repository-local; shared by its linked worktrees",
+    "hookDir": "/Users/kayden/LLM_Workbench/.git/workbench-hooks",
+    "sourceCommit": "308d0afb083e5b14316f0eb73543759d5896087b"
+  },
+  "sourceStateUnchanged": true,
+  "sourceState": {
+    "head": "42431879fab3057db9e26ae661b4e92512c281f0",
+    "branch": "codex/agents-standing-brief",
+    "status": {
+      "sha256": "5c6be3e2e003ed094062b81c3cc02d7ab23760155bcae1f6f21c38e68f827d0c",
+      "bytes": 1570
+    },
+    "unstaged": {
+      "sha256": "f5e2a56ceacba7cb3909143d42320541c38b2088ad059ab494748dd6882a7d96",
+      "bytes": 1429267
+    },
+    "staged": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    }
+  },
+  "snapshotSha256": {
+    "pre-commit": "62c24aaa5ac14ba52df9d315123cfd8729279e50fc6805c84be79969dfe95aa3",
+    "pre-commit.mjs": "78076921b629c03d3f99396671af596d9a7372fee634b6f25901249abc210c62"
+  },
+  "configuredScope": "local common Git config, shared by linked worktrees of this repository only",
+  "verification": "snapshot bytes equal independently reviewed source; five real-Git hook tests pass; actual checker passes existing canonical index with zero staged JavaScript files"
+}

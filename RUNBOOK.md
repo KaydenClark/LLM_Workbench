@@ -22,6 +22,8 @@ Contract change.
 |---|---|---|
 | Write agent instructions | You create or edit skills, steering files or references agents reach through pointers. | [writing-for-agents](workbench/skills/writing-for-agents/SKILL.md) |
 | Retrospect on a session | The owner explicitly requests a retrospective on a named session or the current one. | [retro](workbench/skills/retro/SKILL.md) |
+| Read back a direction | The owner requests `/readback`, grilling is ending, or an implementation handoff needs its understanding checked. | [readback](workbench/skills/readback/SKILL.md) |
+| Find a workflow | You need the existing verb sequence, scenario and skill route, and confirmed parent groupings. | [Workflows](#workflows) |
 | Enter a session | Every session start or resume: check root, branch and dirty state, run doctor and load the assigned Spec. | [Ordinary Entry](#ordinary-entry) |
 | Find the owner of a question | You need the file that owns a permission, meaning, work state, proof or procedure. | [Finding The Owner Of A Question](#finding-the-owner-of-a-question) |
 | Route a truth to its owner | Work changed a durable truth and its owner must be updated, or nothing changed and that must be recorded. | [to-docs](workbench/skills/to-docs/SKILL.md#to-docs) |
@@ -35,6 +37,7 @@ Contract change.
 | Install | You set up a fresh clone. | [Install](#install) |
 | Run locally | You run the evaluator and self-tests by hand. | [Run Locally](#run-locally) |
 | Run the tests | A change to tools, templates, specs or root docs needs its fast check or the full suite. | [Test And Build](#test-and-build) |
+| Install or recover this repository's hook | LLM_Workbench needs its fast staged checks installed, updated or removed. | [CI And Local Hooks](#ci-and-local-hooks) |
 | Verify a behavior change | A behavior change needs its red/green test, its targeted test and the full suite before its result is claimed. | [implement](workbench/skills/implement/SKILL.md#engineering-and-verification); this room's suite: [Test And Build](#test-and-build) |
 | Prepare project evidence and Blueprint questions | Genesis or adoption needs evidence and Blueprint questions from a named evidence room. | [workbench-release](workbench/skills/workbench-release/SKILL.md#prepare-project-evidence-and-blueprint-questions) |
 | Derive a fresh room from recorded decisions | A release must prove a room regenerates from its recorded decisions. | [workbench-release](workbench/skills/workbench-release/SKILL.md#derive-a-fresh-room-from-recorded-decisions) |
@@ -108,6 +111,86 @@ Freezing a version label and changing the core bundle: a maintainer procedure of
 
 The real-room release gate that upgrades the reference Template: a maintainer procedure of this repository, in the
 [`workbench-release` skill](workbench/skills/workbench-release/SKILL.md#template-upgrade-release-gate).
+
+## Workflows
+
+Use this as the maintained workflow reference: verbs in order, next to the
+scenario and the skills that carry it. Definitions and explanations stay in
+the [workflow verbs](workbench/wiki/design-concepts/workflow-verbs.md) and
+[idea-to-delivery account](workbench/wiki/design-concepts/idea-to-delivery-workflow.md).
+This reference adds no authority and replaces no delivery safeguard. The
+existing procedures remain in force while the separate
+[carrier rewrite](workbench/specs/S-004C-contract-carrier-pointer-brief-rewrite/SPEC.md)
+reconciles the accepted [Runbook home decision](workbench/docs/ddr/001D-the-runbook-lines-the-workflow-verbs-up-next-to-their-scenarios-and-binds-nothing.md).
+
+| Parent workflow | Ordered verbs | Scenario and skills |
+|---|---|---|
+| Explore | Idea → Align → Confirm | Reach a shared concept and endpoint with [grilling](workbench/skills/grilling/SKILL.md). Confirm ends Explore. |
+| Promote | Record → Publish → Map → Publish → Plan → Publish | Consume the confirmed concept: Record uses [to-docs](workbench/skills/to-docs/SKILL.md), Map uses [to-spec](workbench/skills/to-spec/SKILL.md), Plan uses [to-tasks](workbench/skills/to-tasks/SKILL.md). [promote](workbench/skills/promote/SKILL.md) carries supported claims to their owners. |
+| Journey | Implement → Check → QA → Submit | Build an assigned Task or authorized handoff using [implement](workbench/skills/implement/SKILL.md#4-review-at-the-relevant-boundary), [handoff](workbench/skills/handoff/SKILL.md) and [carry](workbench/skills/carry/SKILL.md). |
+| Judge | Review → Verify → Approve | Independent [code-review](workbench/skills/code-review/SKILL.md) judges the assembled Spec, landmark or Workbench. A passing Review permits integration merge; Verify checks the reviewed work on integration; Approve is the owner's viability judgment. [dispatcher](workbench/skills/dispatcher/SKILL.md#dispatcher-and-separate-director-assembled-review) and [director](workbench/skills/director/SKILL.md#owner-human-qa-and-main-before-complete) preserve the actual gates. |
+| Complete | Delivered → Clean Up | Delivered requires the owner's approval and main promotion. [Owner closure](workbench/skills/director/SKILL.md#owner-closure-and-reconciliation) retains main containment, completion and knowledge reconciliation before cleanup. |
+
+```mermaid
+flowchart TB
+  subgraph Explore
+    direction LR
+    idea("Idea") --> align("Align") --> confirm("Confirm")
+  end
+  subgraph Promote
+    direction LR
+    record("Record") --> pubRecord("Publish") --> map("Map") --> pubMap("Publish") --> plan("Plan") --> pubPlan("Publish")
+  end
+  subgraph Journey
+    direction LR
+    implement("Implement") --> check("Check") --> qa("QA") --> submit("Submit")
+  end
+  subgraph Judge
+    direction LR
+    review("Review")
+    verify("Verify") --> approve("Approve")
+  end
+  subgraph Complete
+    direction LR
+    delivered("Delivered") --> cleanup("Clean Up")
+  end
+  confirm --> record
+  pubPlan --> implement
+  submit --> review
+  review -->|Pass: merge to integration| verify
+  review -->|Fail: return to Map and Plan| map
+  approve -->|Owner approves and promotes to main| delivered
+  approve -->|Owner sends back| align
+```
+
+Promote begins with an already-confirmed concept. A nearer authorized endpoint
+limits the run; unclear or changed scope returns for clarification. Each Publish
+makes that stage's records available from integration before the next stage
+depends on them. It implies neither Spec completion nor main promotion.
+Review applies to an assembled destination, never a Task. A failed Review
+returns to Map, Plan and Journey under the still-open Spec through the existing
+[corrective return](workbench/skills/dispatcher/SKILL.md#assembled-review-and-corrective-return).
+Owner Human QA, owner-only main promotion, main verification and cleanup remain
+in force. These parent labels relax no safeguard.
+
+[readback](workbench/skills/readback/SKILL.md) can support Align → Confirm and
+remains callable anywhere, including the start of an authorized handoff. It is
+not a new mandatory invocation or approval gate; confirming a readback adds no
+scope. This room's [promote-decision](workbench/skills/promote-decision/SKILL.md)
+composes a single confirmed decision's staged publication.
+
+Off-path arrivals use the existing scenario procedures: a new room uses
+[genesis](workbench/skills/genesis/SKILL.md); a project without a Workbench uses
+[adoption](workbench/skills/adoption/SKILL.md); an installed room uses
+[update-harness](workbench/skills/update-harness/SKILL.md). A branch that will
+not merge uses [version-control recovery](#version-control-procedures).
+An observed harness gap uses [improve-harness](workbench/skills/improve-harness/SKILL.md).
+These routes do not invent another outer verb sequence.
+
+The owner confirmed this five-parent map on 2026-10-08. Its source and scope
+are recorded in the [Maintained Workflow Reference Spec](workbench/specs/S-005F-workflow-reference/SPEC.md#decisions-and-contracts).
+Maintain this reference when an owner-confirmed workflow changes; link the
+source and owning skills instead of maintaining another definition or diagram.
 
 ## Ordinary Entry
 
@@ -246,6 +329,52 @@ node tools/evaluate-workbench.mjs --path templates --include-controls
 Expected result: a Markdown score table where the templates beat both control
 candidates.
 
+## CI And Local Hooks
+
+The CI step supplies an ephemeral Git `init.defaultBranch=main`, which existing
+lifecycle fixtures require. Setting this default writes no Git configuration and
+changes no GitHub setting.
+
+`.github/workflows/verify.yml` runs one standard Linux job on PRs targeting
+`integration` and pushes to `integration`, with read-only contents permission,
+concurrency cancellation and a 30-minute limit. It uses the existing full-suite
+list below through `node tools/verify.mjs`; `--list` prints that list. There is
+no second CI suite definition, package install, artifact upload or cache.
+Standard hosted runners are free for this public repository
+([GitHub billing](https://docs.github.com/en/billing/concepts/product-billing/github-actions)).
+If visibility, runner type or access changes, recheck cost and permission before
+enabling a different configuration. This setup changes no repository settings.
+
+After the candidate has been reviewed and delivered, install from that checkout:
+
+```bash
+node tools/setup-pre-commit.mjs --repo /absolute/path/to/LLM_Workbench
+```
+
+The installer accepts only this repository's canonical origin, refuses existing
+native hooks or another `core.hooksPath`, and copies the reviewed `.githooks/`
+snapshot into the repository's common Git directory at `workbench-hooks/`.
+It sets only repository-local `core.hooksPath`; linked worktrees of that same
+repository share it. Other projects and provider homes are untouched. A later
+reviewed snapshot uses the same command with `--update`.
+
+At commit, staged whitespace and staged `.js`, `.mjs` and `.cjs` syntax are
+checked offline. The explicit `.mjs`/`.cjs` modes and nearest staged
+`package.json` type govern parsing; ordinary `.js` is checked as CommonJS,
+then as a module if needed, when that scope has no explicit type. Partially staged files are checked from the index, not from
+their working-tree bytes. Node must be available. Manual check from the target
+worktree: `node "$(git rev-parse --path-format=absolute --git-common-dir)/workbench-hooks/pre-commit.mjs"`.
+The full suite stays at the candidate gate, not in every commit.
+
+Fix a rejected staged change and stage the correction. For an explicitly
+justified one-command bypass, use `git -c core.hooksPath=/dev/null commit ...`
+and record that the hook was bypassed; stored configuration stays unchanged.
+Recovery is `git config --local --unset core.hooksPath` in LLM_Workbench, after
+confirming its value names this managed snapshot. Keep the snapshot for recovery;
+neither recovery nor installation replaces another hook. Pending
+[setup-pre-commit alignment](workbench/specs/S-002R-setup-pre-commit-skill-alignment/SPEC.md)
+remains separate from this repository configuration.
+
 ## Test And Build
 
 Fast check (run for any change to `tools/`, `templates/`, or root docs):
@@ -313,6 +442,7 @@ node tools/test-self-drift.mjs
 node tools/test-feedback-inventory.mjs
 node tools/test-grilling-ledger.mjs
 node tools/test-grill-board.mjs
+node tools/test-pre-commit.mjs
 python3 tools/test-check-append-only.py
 python3 evals/tasks/task_b_path_safety/test_grade.py
 node tools/evaluate-workbench.mjs --path templates --include-controls
