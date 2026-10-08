@@ -332,6 +332,7 @@ test('the CLI exposes no command that writes answers.json and reports with exit 
   const unknown = cli(dir, ['answer', 'GB-0001']);
   assert.equal(unknown.status, 1);
   assert.equal(unknown.json.error.code, 'invalid-invocation');
+  for (const command of ['grade --file', 'reassess --file', 'handoffs', 'disposition --file']) assert.ok(unknown.json.error.message.includes(command), `usage names ${command}`);
   const status = cli(dir, ['status', '--json']);
   assert.equal(status.json.counts.pending, 1);
   const validate = cli(dir, ['validate']);
