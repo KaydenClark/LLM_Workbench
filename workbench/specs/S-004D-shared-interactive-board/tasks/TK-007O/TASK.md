@@ -3,12 +3,13 @@
 **Task ID:** TK-007O
 **Spec ID:** S-004D
 **Slice:** Agents reassess P/V when updating cards from Owner answers, shown on the real board
-**Status:** in-progress
+**Status:** done
 **Stance:** Builder
 **Blockers:** TK-007M, TK-007N
 **Destination:** spec-acceptance: A demonstrated answer-to-card-update cycle shows the agent assessing whether each affected grade's basis changed, retaining grades when it did not and recording justified revisions when it did. No periodic DQC work is needed.
 **Planned verification:** Red first in `tools/test-grill-board.mjs`: a fixture cycle (Owner answer saved through the page path, agent `apply`/`revise`, then the P/V assessment) fails while the reassessment is not recorded or a retained grade cannot be told from an unassessed one. Green: that cycle for one retained and one revised grade, with identity, history and the Owner's answer preserved and `answers.json` untouched by agent operations; then the browser scenario on a disposable copy of the real inventory recorded in a proof receipt; then the full Runbook suite on the committed candidate.
 **Claimed by:** claude-dashboard-director
+**Proof:** reassess operation records a retained or revised P/V assessment with its basis and the answer it followed, using the stale gradeRevision check and never touching revision or answers; fixture cycle with one retained and one revised grade in tools/test-grill-board.mjs; real-inventory P3V1 -> reason -> central question -> answer -> apply -> reassess scenario on a disposable copy (proof/owner-flow-demo-a857b658.json step 10, repeated by the fourth reviewer). Full suite 60/60 on clean candidate 07429c50; separate-context review #4 pass at 07429c50 (Spec evidence)
 
 ## Scope
 
@@ -48,3 +49,9 @@ between answering questions and updating question cards from those answers
 
 DQC P/V and DQC maintenance, a periodic regrading system, an automatic
 recommended batch, and Owner Human QA.
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | claude/workbench-dashboard-first-pass | bd4ad2481c0577ec7d29fe105b874c9e7764d045 | ahead 0 behind 0 | 0 | reassess operation records a retained or revised P/V assessment with its basis and the answer it followed, using the stale gradeRevision check and never touching revision or answers; fixture cycle with one retained and one revised grade in tools/test-grill-board.mjs; real-inventory P3V1 -> reason -> central question -> answer -> apply -> reassess scenario on a disposable copy (proof/owner-flow-demo-a857b658.json step 10, repeated by the fourth reviewer). Full suite 60/60 on clean candidate 07429c50; separate-context review #4 pass at 07429c50 (Spec evidence) | workbench/grill-board/README.md: answer-processing step to reassess P/V on every card an answer updates | none | 686081702d11d95f69a9e7da6a8fc597047f745d340d9fdb42e0d2e79271b245 |
