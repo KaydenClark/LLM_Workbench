@@ -52,12 +52,17 @@ Grading details must be available without distracting from the question.
 The Blueprint carries the promised outcome, the Lexicon owns shared meanings,
 and [Shared Interactive Workbench Board — S-004D](../../specs/S-004D-shared-interactive-board/SPEC.md#priority-and-value-for-answering-questions)
 owns requirements, acceptance and future delivery proof. Existing board
-identity, answer ownership, revision history and approval boundaries remain.
+identity, answer ownership, revision history and approval boundaries remain,
+as S-004D states in its [Priority and Value requirement 5](../../specs/S-004D-shared-interactive-board/SPEC.md#priority-and-value-for-answering-questions)
+(question identity, revision history and saved answers preserved; agents never
+write `answers.json`) and [Desired Behavior items 5 and 6](../../specs/S-004D-shared-interactive-board/SPEC.md#desired-behavior)
+(approval evidence stays distinct, no gate bypass, identity preserved).
 The only maintenance requested here is within the answer-to-card-update cycle.
 
-Revisit the application if the board proof shows misleading classifications or
-filters that fail to help the Owner choose questions. Broader DQC use and CIC's
-possible final-call authority remain separate future choices.
+The purpose confirmed in PV-02 is to prove on the Grill Board that P/V helps
+the Owner choose which questions to answer. Revisit the application if the
+board proof shows that it does not. Broader DQC use and CIC's possible
+final-call authority remain separate future choices.
 
 ## Destination Level
 
