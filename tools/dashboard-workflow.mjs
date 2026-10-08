@@ -28,6 +28,7 @@ const RECEIPT_STATES = Object.freeze(['handoff-requested', 'recorded', 'record-p
 export const CARD_STATES = Object.freeze({
   withdrawn: 'Withdrawn',
   'in-grilling': 'In grilling',
+  'answer-conflict': 'Answer conflict: answer again to settle it',
   confirmed: 'Confirmed; promotion not requested',
   'handoff-requested': 'Handoff requested',
   recorded: 'Recorded',
@@ -115,24 +116,49 @@ export const ANSWER_CONFLICT_MESSAGE = 'Two answers to this question were saved 
 // newer by time stays current, both stay visible (the other in history and in
 // `conflict`), and nothing is dropped. Entries in the earlier full format
 // replace the answer as before.
+export const MISSING_PREDECESSOR_MESSAGE = 'This answer names an earlier answer that is missing from the answer store (for example after the answer notepad was trimmed). It is shown as current but not trusted. Answer again to settle it.';
+
+function plainAnswer(answer) {
+  const { conflict: _conflict, history: _history, ...plain } = answer;
+  return plain;
+}
+
+// Whether an entry follows `previous`: a dashboard-answer@2 entry by its
+// supersedes {at, hash}; an earlier full-format entry by the last answer in
+// the history it carries.
+function followsPrevious(saved, previous) {
+  if (saved.schema === 'dashboard-answer@2') {
+    const expected = saved.supersedes ?? null;
+    if (!previous) return expected ? 'missing' : true;
+    return Boolean(expected && previous.at === expected.at && answerRecordHash(previous) === expected.hash);
+  }
+  const last = (saved.answer.history ?? []).at(-1);
+  if (!previous) return last ? 'missing' : true;
+  return Boolean(last && last.at === previous.at && answerRecordHash(last) === answerRecordHash(plainAnswer(previous)));
+}
+
 export function chainAnswers(base, entries) {
   const answers = { ...base };
   for (const saved of entries) {
-    if (saved.schema !== 'dashboard-answer@2') { answers[saved.id] = saved.answer; continue; }
+    const legacyFormat = saved.schema !== 'dashboard-answer@2';
     const previous = answers[saved.id];
-    const expected = saved.supersedes ?? null;
-    const follows = !previous || (expected && previous.at === expected.at && answerRecordHash(previous) === expected.hash);
-    if (follows) {
-      answers[saved.id] = { ...saved.answer, history: previous ? [...(previous.history ?? []), answerOnly(previous)] : [] };
+    const follows = followsPrevious(saved, previous);
+    if (follows === true) {
+      answers[saved.id] = legacyFormat ? saved.answer : { ...saved.answer, history: previous ? [...(previous.history ?? []), answerOnly(previous)] : [] };
       continue;
     }
-    const incoming = { ...saved.answer };
+    if (follows === 'missing') {
+      // Never trusted silently: the answer it followed is gone.
+      answers[saved.id] = { ...plainAnswer(saved.answer), history: saved.answer.history ?? [], conflict: { kind: 'missing-predecessor', message: MISSING_PREDECESSOR_MESSAGE, answers: [plainAnswer(saved.answer)] } };
+      continue;
+    }
+    const incoming = plainAnswer(saved.answer);
     const [older, newer] = Date.parse(incoming.at) >= Date.parse(previous.at) ? [answerOnly(previous), incoming] : [incoming, answerOnly(previous)];
-    const { conflict: _ignored, ...current } = newer;
+    const current = plainAnswer(newer);
     answers[saved.id] = {
       ...current,
-      history: [...(previous.history ?? []), older],
-      conflict: { message: ANSWER_CONFLICT_MESSAGE, answers: [older, current].map(answer => { const { conflict: _c, ...plain } = answer; return plain; }) }
+      history: [...(previous.history ?? []), plainAnswer(older)],
+      conflict: { kind: 'unchained', message: ANSWER_CONFLICT_MESSAGE, answers: [plainAnswer(older), current] }
     };
   }
   return answers;
@@ -152,6 +178,7 @@ export function approvalSnapshot(item, answer, { root, isConfirmation = defaultI
 // Why an answer is not a current exact confirmation of the item, or null.
 // policy = { root, isConfirmation } from the workflow that asks.
 function confirmationProblem(item, answer, policy) {
+  if (answer?.conflict) return { code: 'answer-conflict', message: `${item.id} has two conflicting answers; the owner must answer again before it counts as confirmed` };
   if (!policy.isConfirmation(item, answer)) return { code: 'not-confirmed', message: `${item.id} needs an explicit confirmed answer before promotion` };
   if (answer.itemRevision !== item.revision) return { code: 'stale-approval', message: `${item.id} answer is stale` };
   const snapshot = answer.approval;
@@ -242,6 +269,10 @@ function cardStates(items, answers, state, policy) {
     const answer = answers[item.id];
     const confirmed = !confirmationProblem(item, answer, policy) && !changeAwaitingRevision(state.comments, item);
     const disposition = state.dispositions[item.id];
+    if (answer?.conflict && !disposition) {
+      cards[item.id] = { ...base, state: 'answer-conflict', label: CARD_STATES['answer-conflict'], conflict: clone(answer.conflict) };
+      continue;
+    }
     if (disposition && !(confirmed && answer.approval.hash !== disposition.approval.hash)) cards[item.id] = dispositionCard(item, disposition, base);
     else if (confirmed) cards[item.id] = { ...base, state: 'confirmed', label: CARD_STATES.confirmed, approvalHash: answer.approval.hash };
     else cards[item.id] = { ...base, state: 'in-grilling', label: CARD_STATES['in-grilling'] };

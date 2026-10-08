@@ -6,7 +6,7 @@ import path from 'node:path';
 import vm from 'node:vm';
 import http from 'node:http';
 import * as board from './grill-board.mjs';
-import { createWorkflow } from './dashboard-workflow.mjs';
+import { createWorkflow, chainAnswers } from './dashboard-workflow.mjs';
 function room() {
  const root=fs.mkdtempSync(path.join(os.tmpdir(),'dashboard-board-test-'));
  fs.mkdirSync(path.join(root,board.BOARD_DIR),{recursive:true});
@@ -613,4 +613,96 @@ test('the served page refuses to be framed by another page',async()=>{
    assert.match(response.headers.get('content-security-policy')||'',/frame-ancestors 'none'/);
   }
  }finally{await served.close();}
+});
+
+// ---- An open answer conflict is visible to agents and blocks every action. ----
+function conflictedRoom() {
+ const root=notepadRoom();
+ const change=board.recordAnswer(root,'GB-0001',{verdict:'change',note:'Drop it entirely',itemRevision:1});
+ // An old server, still writing answers.json, records a newer Confirm.
+ const confirm={verdict:'confirm',note:'',at:new Date(Date.parse(change.at)+60000).toISOString(),itemRevision:1,history:[]};
+ fs.writeFileSync(board.boardPaths(root).answers,JSON.stringify({schema:board.ANSWERS_SCHEMA,owner:'Kayden',answers:{'GB-0001':confirm}}));
+ return {root,change,confirm};
+}
+
+test('an open answer conflict is reported to agents and refused by apply, rounds and promotion',()=>{
+ const {root,change,confirm}=conflictedRoom();
+ const pending=board.pendingForAgents(root).find(item=>item.id==='GB-0001');
+ assert.ok(pending.conflict,'pending carries the conflict');
+ assert.deepEqual(JSON.parse(JSON.stringify(pending.conflict.answers.map(answer=>answer.verdict))),['change','confirm']);
+ assert.match(board.statusSummary(root).conflicts.join(','),/GB-0001/);
+ assert.ok(board.mergeBoard(root).items[0].answerConflict,'show includes the conflict');
+ assert.throws(()=>board.applyAnswer(root,'GB-0001',{by:'agent',where:'nowhere'}),e=>e.code==='answer-conflict');
+ // A conflicted confirmation that otherwise carries a valid snapshot is still not confirmed.
+ const answers=JSON.parse(fs.readFileSync(board.boardPaths(root).answers,'utf8'));
+ const item=board.readItems(root).items[0];
+ answers.answers['GB-0001'].approval=JSON.parse(JSON.stringify(board.mergeBoard(notepadRoomWithConfirm(item)).items[0].answer.approval));
+ answers.answers['GB-0001'].approval.confirmedAt=confirm.at;
+ fs.writeFileSync(board.boardPaths(root).answers,JSON.stringify(answers));
+ const flow=board.workflow(root);
+ const state=flow.read();
+ assert.equal(state.cards['GB-0001'].state,'answer-conflict');
+ assert.match(state.cards['GB-0001'].label,/answer again/i);
+ const round=flow.endRound({actionId:'r-conflict',expectedRevision:state.revision});
+ assert.deepEqual(JSON.parse(JSON.stringify(round.round.confirmed)),[],'a round does not count a contested confirmation');
+ assert.throws(()=>flow.promote({ids:['GB-0001'],revisions:{'GB-0001':1},actionId:'p-conflict',expectedRevision:round.revision}),/answer-conflict/);
+ assert.ok(change);
+});
+function notepadRoomWithConfirm(item) {
+ const other=notepadRoom();
+ board.recordAnswer(other,'GB-0001',{verdict:'confirm',note:'',itemRevision:item.revision});
+ return other;
+}
+
+test('re-saving the current answer settles an open conflict over the HTTP path',async()=>{
+ const root=notepadRoom();
+ const served=await serve(root,{dashboardRoute:null});
+ const put=body=>fetch(`${served.base}/api/answers/GB-0002`,{method:'PUT',headers:{'content-type':'application/json'},body:JSON.stringify(body)});
+ try{
+  const rework=await (await put({verdict:'rework',note:'Plainer',itemRevision:1})).json();
+  const change={verdict:'change',note:'Narrow it',at:new Date(Date.parse(rework.at)+60000).toISOString(),itemRevision:1,history:[]};
+  fs.writeFileSync(board.boardPaths(root).answers,JSON.stringify({schema:board.ANSWERS_SCHEMA,owner:'Kayden',answers:{'GB-0002':change}}));
+  assert.ok(board.readAnswers(root).answers['GB-0002'].conflict);
+  const again=await put({verdict:'change',note:'Narrow it',itemRevision:1,expectedAnswerAt:change.at});
+  assert.equal(again.status,200);
+  const body=await again.json();
+  assert.notEqual(body.at,change.at,'a fresh entry is recorded');
+  assert.equal(body.conflict,undefined);
+  assert.equal(board.readAnswers(root).answers['GB-0002'].conflict,undefined,'the conflict is settled');
+  assert.equal(board.readAnswers(root).answers['GB-0002'].verdict,'change');
+ }finally{await served.close();}
+});
+
+test('a legacy full-history notepad entry never silently overrides a newer answer',()=>{
+ const base={'GB-0001':{verdict:'rework',note:'newer, from answers.json',at:'2026-10-08T12:00:00.000Z',itemRevision:1,history:[]}};
+ const legacyEntry={id:'GB-0001',answer:{verdict:'confirm',note:'older full-format entry',at:'2026-10-08T11:00:00.000Z',itemRevision:1,history:[]}};
+ const chained=chainAnswers(base,[legacyEntry])['GB-0001'];
+ assert.equal(chained.verdict,'rework','the newer answer stays current');
+ assert.ok(chained.conflict);
+ assert.ok(chained.history.some(entry=>entry.verdict==='confirm'),'the older answer is kept');
+ // A legacy entry that does follow the answer before it chains as before.
+ const follows={id:'GB-0001',answer:{verdict:'confirm',note:'next',at:'2026-10-08T13:00:00.000Z',itemRevision:1,history:[{...base['GB-0001'],history:undefined}].map(({history,...rest})=>rest)}};
+ const ok=chainAnswers(base,[follows])['GB-0001'];
+ assert.equal(ok.verdict,'confirm');
+ assert.equal(ok.conflict,undefined);
+});
+
+test('an entry whose superseded answer is missing (a trimmed notepad) is reported, never silently chained',()=>{
+ const entry={schema:'dashboard-answer@2',id:'GB-0001',answer:{verdict:'confirm',note:'',at:'2026-10-08T12:00:00.000Z',itemRevision:1},supersedes:{at:'2026-10-08T11:00:00.000Z',hash:'a'.repeat(64)}};
+ const chained=chainAnswers({},[entry])['GB-0001'];
+ assert.equal(chained.verdict,'confirm');
+ assert.match(chained.conflict.message,/missing|not found/i);
+ const after={schema:'dashboard-answer@2',id:'GB-0001',answer:{verdict:'rework',note:'x',at:'2026-10-08T13:00:00.000Z',itemRevision:1},supersedes:{at:'2026-10-08T11:30:00.000Z',hash:'b'.repeat(64)}};
+ const two=chainAnswers({},[entry,after])['GB-0001'];
+ assert.equal(two.verdict,'rework');
+ assert.ok(two.conflict,'an entry that does not follow the answer before it is a conflict');
+});
+
+test('the page names an open answer conflict as the reason promotion is unavailable',()=>{
+ const {model}=pageModel();
+ const item={id:'GB-0001',revision:1,status:'open',controls:board.answerControls({kind:'owner-decision',options:null}),answer:{verdict:'confirm',note:'',itemRevision:1,approval:{hash:'x'}},answerConflict:{message:'conflict',answers:[]}};
+ model.state.board={items:[item]};
+ model.state.workflow={comments:[],requests:[],cards:{'GB-0001':{state:'answer-conflict',label:'Answer conflict: answer again to settle it'}}};
+ assert.match(model.promotionBlocker(item),/conflict.*Answer again/i);
+ assert.deepEqual(model.confirmedItems().map(entry=>entry.id),[]);
 });

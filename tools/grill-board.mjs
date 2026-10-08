@@ -518,6 +518,7 @@ export function applyAnswer(root, id, { by, where, note }) {
   const answers = readAnswers(root);
   const item = findItem(board, id);
   const answer = answers.answers[id];
+  if (answer?.conflict) throw new BoardError('answer-conflict', `${id}: ${answer.conflict.message}`);
   if (answer && (!answer.verdict.trim() || answer.verdict === 'defer')) throw new BoardError('no-decision', `${id}: saved notes or a deferred answer are not an applicable decision`);
   if (needsOwnerWords(answer)) throw new BoardError('missing-owner-words', `${id}: this verdict needs the owner's correction or finding in the note`);
   const status = itemStatus(item, answer);
@@ -565,7 +566,9 @@ export function recordAnswer(root, id, { verdict, note, itemRevision, expectedAn
   // snapshots, or one frozen from other bytes): confirming again records it.
   const snapshotCurrent = !isConfirmation(item, verdict)
     || (previous?.approval?.itemRevision === item.revision && previous.approval.hash === approvalHash(item, { root }));
-  if (previous && previous.verdict === verdict && previous.note === note && previous.itemRevision === itemRevision && snapshotCurrent) return { ...previous, derivedStatus: itemStatus(item, previous) };
+  // A repeat never settles silently over an open conflict: it records a fresh
+  // answer that supersedes the current one.
+  if (previous && !previous.conflict && previous.verdict === verdict && previous.note === note && previous.itemRevision === itemRevision && snapshotCurrent) return { ...previous, derivedStatus: itemStatus(item, previous) };
   const entry = { verdict, note, at: new Date(Math.max(Date.now(), previous ? Date.parse(previous.at) + 1 : 0)).toISOString(), itemRevision };
   // Only a confirmation freezes the exact wording it confirmed, with source
   // paths normalized to the room so no absolute path is stored.
@@ -599,7 +602,8 @@ export function pendingForAgents(root) {
     answeredAt: item.answer.at,
     proposal: item.proposal,
     brief: item.brief,
-    sources: item.sources
+    sources: item.sources,
+    conflict: item.answerConflict ?? null
   }));
 }
 
@@ -610,7 +614,8 @@ export function statusSummary(root) {
     for (const item of view.items) if (item.group === group.id) counts[item.derivedStatus] += 1;
     return { id: group.id, title: group.title, ...counts, total: view.items.filter((item) => item.group === group.id).length };
   });
-  return { integration: view.integration, generatedAt: view.generatedAt, itemsMtime: view.itemsMtime, total: view.items.length, counts: view.counts, groups };
+  const conflicts = view.items.filter((item) => item.answerConflict).map((item) => item.id);
+  return { integration: view.integration, generatedAt: view.generatedAt, itemsMtime: view.itemsMtime, total: view.items.length, counts: view.counts, conflicts, groups };
 }
 
 function safeRelative(root, requested) {
@@ -892,13 +897,14 @@ export async function main(argv) {
     case 'status': {
       const summary = statusSummary(root);
       const lines = [`Grill Board at integration ${summary.integration}: ${summary.total} items; pending ${summary.counts.pending}, re-answer ${summary.counts.stale}, answered (awaiting an agent) ${summary.counts.answered}, applied ${summary.counts.applied}, withdrawn ${summary.counts.withdrawn}`];
+      if (summary.conflicts.length) lines.push(`  answer conflicts (the owner must answer again; do not apply): ${summary.conflicts.join(', ')}`);
       for (const group of summary.groups) lines.push(`  ${group.title}: ${group.total} items; pending ${group.pending}, re-answer ${group.stale}, answered ${group.answered}, applied ${group.applied}, withdrawn ${group.withdrawn}`);
       out(flags, summary, lines.join('\n'));
       return;
     }
     case 'pending': {
       const pending = pendingForAgents(root);
-      const lines = pending.length ? pending.map((item) => `${item.id}  [${item.verdictLabel}]  ${item.title}\n    answered ${item.answeredAt} at item revision ${item.revision}${item.note ? `\n    note: ${item.note}` : ''}`) : ['No owner answers are waiting for an agent.'];
+      const lines = pending.length ? pending.map((item) => `${item.id}  [${item.verdictLabel}]  ${item.title}\n    answered ${item.answeredAt} at item revision ${item.revision}${item.note ? `\n    note: ${item.note}` : ''}${item.conflict ? `\n    ANSWER CONFLICT, do not apply: ${item.conflict.message}\n    ${item.conflict.answers.map((answer) => `${answer.at} ${answer.verdict}${answer.note ? `: ${answer.note}` : ''}`).join('\n    ')}` : ''}`) : ['No owner answers are waiting for an agent.'];
       out(flags, pending, lines.join('\n'));
       return;
     }
