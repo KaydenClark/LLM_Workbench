@@ -20,3 +20,7 @@ research papers/
 
 # Grill Board owner answers: written by the served page only, local to the owner
 workbench/grill-board/answers.json
+
+# Local Dashboard login service output
+workbench/grill-board/service.log
+workbench/grill-board/service-error.log

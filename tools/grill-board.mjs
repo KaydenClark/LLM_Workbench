@@ -24,6 +24,9 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
+import { appendEntry, createNote, readNote } from '../workbench/tools/notepads.mjs';
+import { dashboardSources } from './dashboard-sources.mjs';
+import { createWorkflow, approvalSnapshot } from './dashboard-workflow.mjs';
 import { listAdrs } from '../workbench/tools/adr.mjs';
 
 export const ITEMS_SCHEMA = 'grill-board/items@1';
@@ -45,12 +48,12 @@ export const DEFAULT_OPTIONS = Object.freeze({
   ],
   default: [
     { value: 'confirm', label: 'Confirm', hint: 'the proposal stands as written' },
-    { value: 'correct', label: 'Correct', hint: 'your note replaces the proposal; write the words you want' },
-    { value: 'decline', label: 'Decline', hint: 'drop it; say why if it matters' },
-    { value: 'defer', label: 'Not now', hint: 'stays open; nothing recorded' }
+    { value: 'correct', label: 'Change', hint: 'request a revised question or concept; your note is required' },
+    { value: 'decline', label: 'Rework wording', hint: 'request clearer wording; your note is required' },
+    { value: 'defer', label: 'Change the why', hint: 'request revised rationale; your note is required' }
   ]
 });
-const ITEM_KEYS = Object.freeze(['id', 'key', 'group', 'kind', 'title', 'question', 'current', 'proposal', 'draft', 'options', 'sources', 'tags', 'revision', 'status', 'applied', 'history', 'brief']);
+const ITEM_KEYS = Object.freeze(['id', 'key', 'group', 'kind', 'title', 'question', 'current', 'proposal', 'draft', 'options', 'sources', 'tags', 'revision', 'status', 'applied', 'history', 'brief', 'priority', 'value', 'gradeRevision']);
 const BRIEF_FIELDS = ['summary', 'why', 'recommendation', 'impact', 'changes', 'history', 'artifacts'];
 const ID_PATTERN = /^GB-\d{4}$/;
 const MAX_FILE_BYTES = 2 * 1024 * 1024;
@@ -113,8 +116,20 @@ export function readItems(root) {
   return items;
 }
 
+function answerNote(root) {
+  const manifest = readJson(path.join(root,'workbench/manifest.json'),{});
+  return manifest.collections?.notepads ? `${manifest.collections.notepads}/grilling/dashboard-answers.json` : null;
+}
+function notepadResult(result) { if (result.status === 'blocked') throw new BoardError(result.error?.code ?? 'notepad',result.error?.message ?? 'Notepad refused'); return result; }
 export function readAnswers(root) {
   const answers = readJson(boardPaths(root).answers, emptyAnswers());
+  const note = answerNote(root);
+  if (note && fs.existsSync(path.join(root,note))) {
+    const loaded = notepadResult(readNote(root,{note}));
+    for (const entry of loaded.entries) if (entry.topic === 'dashboard-answer') {
+      const saved = JSON.parse(entry.content); answers.answers[saved.id] = saved.answer;
+    }
+  }
   validateAnswers(answers);
   return answers;
 }
@@ -150,6 +165,11 @@ export function validateItem(item, seen = new Set()) {
     else for (const field of ['verdict', 'note', 'answerAt', 'itemRevision', 'by', 'where', 'at']) if (!(field in applied)) problems.push(`${item.id}: applied.${field} missing`);
   }
   if (!Array.isArray(item.history)) problems.push(`${item.id}: history must be an array`);
+  for (const field of ['priority', 'value']) if (item[field] !== undefined) {
+    const grade = item[field];
+    if (!grade || Object.keys(grade).some(key => !['grade','reason'].includes(key)) || !new RegExp(`^${field === 'priority' ? 'P' : 'V'}[1-4]$`).test(grade.grade) || !isString(grade.reason) || !grade.reason.trim()) problems.push(`${item.id}: invalid ${field} grade or reason`);
+  }
+  if (item.gradeRevision !== undefined && (!Number.isInteger(item.gradeRevision) || item.gradeRevision < 1)) problems.push(`${item.id}: invalid gradeRevision`);
   if (item.brief !== undefined) {
     if (!item.brief || typeof item.brief !== 'object' || Array.isArray(item.brief)) problems.push(`${item.id}: brief must be an object`);
     else {
@@ -196,7 +216,7 @@ export function hasContent(answer) {
 }
 
 function needsOwnerWords(answer) {
-  return ['correct', 'finding', 'destination_change', 'answer', 'return_reworded'].includes(answer?.verdict) && !answer.note.trim();
+  return ['correct', 'finding', 'destination_change', 'answer', 'return_reworded', 'rework', 'change_why', 'change'].includes(answer?.verdict) && !answer.note.trim();
 }
 
 // The one place the five statuses are derived, so page, CLI and tests agree.
@@ -216,6 +236,7 @@ export function itemStatus(item, answer) {
 
 export function optionsFor(item) {
   if (item.options) return item.options;
+  if (item.kind !== 'approve-spec') return DEFAULT_OPTIONS.default;
   return DEFAULT_OPTIONS[item.kind] ?? DEFAULT_OPTIONS.default;
 }
 
@@ -308,10 +329,11 @@ function findItem(board, id) {
   return item;
 }
 
-export function reviseItem(root, id, changes, { by, reason }) {
+export function reviseItem(root, id, changes, { by, reason, expectedRevision }) {
   if (!by || !reason) throw new BoardError('invalid-invocation', '--by NAME and --reason TEXT are required');
   const board = readItems(root);
   const item = findItem(board, id);
+  if (expectedRevision !== undefined && expectedRevision !== item.revision) throw new BoardError('stale-item', `${id}: stale revision; read ${item.revision} before revising`);
   const changed = [];
   for (const field of ['title', 'question', 'current', 'proposal', 'draft', 'options', 'brief']) {
     if (changes[field] === undefined) continue;
@@ -325,6 +347,25 @@ export function reviseItem(root, id, changes, { by, reason }) {
   writeJsonAtomic(boardPaths(root).items, board);
   return item;
 }
+
+
+export function gradeItems(root, grades, { by, reason }) {
+  if (!by || !reason || !Array.isArray(grades) || !grades.length) throw new BoardError('invalid-grades', 'grades[], --by and --reason required');
+  const board = readItems(root); const seen = new Set();
+  for (const row of grades) {
+    if (Object.keys(row).some(key => !['id','expectedGradeRevision','priority','value'].includes(key))) throw new BoardError('invalid-grades', 'unknown grade field');
+    const item = findItem(board, row.id);
+    if (seen.has(row.id)) throw new BoardError('invalid-grades', 'duplicate grade identity');
+    seen.add(row.id);
+    if (row.expectedGradeRevision !== (item.gradeRevision ?? 0)) throw new BoardError('stale-grade', `${row.id}: stale grade revision`);
+    if (!row.priority || !row.value) throw new BoardError('invalid-grades','priority and value required');
+    item.priority = row.priority; item.value = row.value; item.gradeRevision = (item.gradeRevision ?? 0) + 1;
+    item.history.push({revision:item.revision,gradeRevision:item.gradeRevision,at:now(),by,reason:`graded: ${reason}`});
+  }
+  validateItems(board); writeJsonAtomic(boardPaths(root).items,board); return grades.map(row => findItem(board,row.id));
+}
+
+export function workflow(root) { return createWorkflow(root, { readItems, readAnswers }); }
 
 export function applyAnswer(root, id, { by, where, note }) {
   if (!by || !where) throw new BoardError('invalid-invocation', '--by NAME and --where TEXT are required');
@@ -358,7 +399,7 @@ export function withdrawItem(root, id, { by, reason }) {
 
 // The only write path for answers.json. It is called by the page through the
 // server; the CLI exposes no answer-writing command on purpose.
-export function recordAnswer(root, id, { verdict, note, itemRevision }) {
+export function recordAnswer(root, id, { verdict, note, itemRevision, expectedAnswerAt }) {
   const board = readItems(root);
   const item = findItem(board, id);
   if (!isString(verdict) || !isString(note)) throw new BoardError('invalid-answer', 'verdict and note must be strings');
@@ -366,10 +407,19 @@ export function recordAnswer(root, id, { verdict, note, itemRevision }) {
   if (itemRevision !== item.revision) throw new BoardError('stale-item', `${id} is at revision ${item.revision}; reload the page and answer again`);
   const answers = readAnswers(root);
   const previous = answers.answers[id];
-  const entry = { verdict, note, at: now(), itemRevision };
-  const history = previous ? [...previous.history, { verdict: previous.verdict, note: previous.note, at: previous.at, itemRevision: previous.itemRevision }] : [];
+  if (expectedAnswerAt !== undefined && expectedAnswerAt !== (previous?.at ?? null)) throw new BoardError('stale-answer', `${id}: stale answer; reload before saving`);
+  if (previous && previous.verdict === verdict && previous.note === note && previous.itemRevision === itemRevision) return { ...previous, derivedStatus: itemStatus(item, previous) };
+  const entry = { verdict, note, at: new Date(Math.max(Date.now(), previous ? Date.parse(previous.at) + 1 : 0)).toISOString(), itemRevision };
+  if (['confirm','approve'].includes(verdict)) entry.approval = approvalSnapshot(item, entry);
+  const history = previous ? [...previous.history, Object.fromEntries(Object.entries(previous).filter(([key]) => key !== 'history'))] : [];
   answers.answers[id] = { ...entry, history };
-  writeJsonAtomic(boardPaths(root).answers, answers);
+  const nativeNote = answerNote(root);
+  if (nativeNote) {
+    let loaded;
+    if (fs.existsSync(path.join(root,nativeNote))) loaded=notepadResult(readNote(root,{note:nativeNote}));
+    else loaded=notepadResult(createNote(root,{note:nativeNote,type:'grilling',objective:'dashboard-answers',title:'Dashboard owner answers',focus:'Exact owner words and approved snapshots',state:'Local owner working context; legacy answers preserved','next-action':'Owner confirms or requests revision; explicit promotion is separate'}));
+    notepadResult(appendEntry(root,{note:nativeNote,revision:loaded.revision,kind:['confirm','approve'].includes(verdict)?'decision':'source_record',topic:'dashboard-answer',content:JSON.stringify({id,answer:answers.answers[id]})}));
+  } else writeJsonAtomic(boardPaths(root).answers, answers);
   return { ...answers.answers[id], derivedStatus: itemStatus(item, answers.answers[id]) };
 }
 
@@ -451,7 +501,8 @@ export function artifactCatalog(root) {
       }
     }
   }
-  return { groups, artifacts };
+  const extra = dashboardSources(root, { readSource: readSourceFile, catalogOnly: true });
+  return { groups: [...groups, ...extra.groups.filter(group => !groups.some(g => g.id === group.id))], artifacts: [...artifacts.filter(a => fs.existsSync(path.join(root,a.path))), ...extra.artifacts.filter(a => !artifacts.some(existing => existing.path === a.path))], errors: extra.errors };
 }
 
 export function readArtifact(root, requested) {
@@ -501,6 +552,7 @@ function readBody(request) {
 
 export function createServer(root) {
   const paths = boardPaths(root);
+  const flows = () => workflow(root);
   return http.createServer(async (request, response) => {
     const url = new URL(request.url, 'http://localhost');
     try {
@@ -513,6 +565,13 @@ export function createServer(root) {
       if (request.method === 'GET' && url.pathname === '/api/board') {
         sendJson(response, 200, mergeBoard(root));
         return;
+      }
+      if (request.method === 'GET' && url.pathname === '/api/dashboard') { sendJson(response,200,dashboardSources(root,{readSource:readSourceFile})); return; }
+      if (request.method === 'GET' && url.pathname === '/api/workflow') { sendJson(response,200,flows().read()); return; }
+      if (request.method === 'POST' && ['/api/comments','/api/rounds','/api/promotions'].includes(url.pathname)) {
+        const body = JSON.parse(await readBody(request));
+        const result = url.pathname === '/api/comments' ? flows().comment(body) : url.pathname === '/api/rounds' ? flows().endRound(body) : flows().promote(body);
+        sendJson(response,200,result); return;
       }
       if (request.method === 'GET' && url.pathname === '/api/status') {
         sendJson(response, 200, statusSummary(root));
@@ -548,7 +607,7 @@ export function createServer(root) {
       sendJson(response, 404, { error: { code: 'not-found', message: `${request.method} ${url.pathname}` } });
     } catch (error) {
       const code = error.code ?? 'internal';
-      const status = code === 'unknown-item' || code === 'missing-file' ? 404 : code === 'stale-item' ? 409 : code === 'internal' ? 500 : 400;
+      const status = code === 'unknown-item' || code === 'missing-file' ? 404 : /stale|conflict/.test(code) ? 409 : code === 'internal' ? 500 : 400;
       sendJson(response, status, { error: { code, message: error.message } });
     }
   });
@@ -629,9 +688,18 @@ export async function main(argv) {
       if (flags['clear-draft']) changes.draft = null;
       if (isString(flags['options-file'])) changes.options = readJson(path.resolve(flags['options-file']));
       if (isString(flags['brief-file'])) changes.brief = readJson(path.resolve(flags['brief-file']));
-      const item = reviseItem(root, id, changes, { by: flags.by, reason: flags.reason });
+      const item = reviseItem(root, id, changes, { by: flags.by, reason: flags.reason, expectedRevision: flags.revision ? Number(flags.revision) : undefined });
       out(flags, item, `${id} is now revision ${item.revision}; the owner's earlier answer, if any, shows as needing a fresh look`);
       return;
+    }
+    case 'grade': {
+      if (!flags.file) throw new BoardError('invalid-invocation','grade --file JSON --by NAME --reason TEXT');
+      const grades = readJson(path.resolve(flags.file)); out(flags,gradeItems(root,grades,{by:flags.by,reason:flags.reason})); return;
+    }
+    case 'handoffs': { out(flags,workflow(root).read()); return; }
+    case 'disposition': {
+      if (!flags.file) throw new BoardError('invalid-invocation','disposition --file JSON');
+      out(flags,workflow(root).disposition(readJson(path.resolve(flags.file)))); return;
     }
     case 'apply': {
       if (!id) throw new BoardError('invalid-invocation', USAGE);

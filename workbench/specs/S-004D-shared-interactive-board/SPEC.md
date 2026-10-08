@@ -1,4 +1,4 @@
-# S-004D - Shared Interactive Workbench Board
+# S-004D - Workbench Dashboard
 
 **Spec ID:** S-004D
 **Status:** active
@@ -6,7 +6,7 @@
 **Owner:** codex-dashboard-owner-flow
 **Stance:** Builder
 **Updated:** 2026-10-08
-**Catalog description:** The Grill Board's P/V-filtered answering queue, growing into connected Taskboard and Tracker cards, discussion and update requests with distinct source and progress semantics.
+**Catalog description:** The owner's local Dashboard: Destination Tracker, Taskboard, Grilling Board, Drafts to approve and Wiki, with progressive grilling, exact wording approvals and explicit promotion handoffs.
 **Release scope:** In scope since the owner's 2026-10-04 answer; no release is assigned.
 **Blockers:** none
 **Latest event:** TK-007L claimed by codex-dashboard-owner-flow.
@@ -22,12 +22,7 @@ request corrections or updates, and see what happened to those requests.
 Taskboard and Tracker share familiar card interactions and can appear together,
 with execution and understanding available as different views.
 
-The [Grill Board](../../grill-board/README.md) is this board's first working
-form, already in use: the owner answers pending items in a local browser page
-and agents carry the answers into their owners. This Spec is the destination it
-grows into. It was activated on 2026-10-07 for the bounded P/V proof below,
-whose four Tasks are cut and unclaimed; the rest of the path from the Grill
-Board to the outcome above has no Task yet.
+The **Workbench Dashboard** grows the existing [Grill Board](../../grill-board/README.md) into five connected sections: Destination Tracker, Taskboard, Grilling Board, Drafts to approve and Wiki. [DDR-001O — Workbench Dashboard](../../docs/ddr/001O-the-workbench-dashboard-is-the-owner-s-always-open-place-to-see-and-manage-the-workbench.md) carries the confirmed destination from 2026-10-07. The existing P/V Tasks remain the owners of their accepted slices; additional Dashboard Tasks cover the broader authorized outcome from live integration `47215ff10de711bf110c31f5a3f6ea2cf733b5e7`.
 
 The next confirmed board capability lets the Owner evaluate questions by
 Priority and Value and filter them into an answering queue of the Owner's
@@ -182,6 +177,15 @@ not promises about the baseline when Tasks are cut:
    operations. Agents need not browse rendered pages. Measure retrieval size
    and latency before claiming token or performance improvement.
 
+### Confirmed Dashboard behavior — 2026-10-08
+
+- Five sections read existing native sources, with scoped Task identities, separate execution lanes and understanding distributions, current source hashes, evidence, history and readable linked documents. The reader tolerates the future GLOSSARY/ARCHITECTURE route without taking over its migration.
+- Show actual proposed artifact drafts beside current text. Support Draft → Critique → Revise → Confirm, repeating critique/revision as needed. This workflow does not settle the taxonomy of workflows within Explore. Comment, Change and a request for revised wording or rationale never approve content. Typed context is required for requests; unanswered questions remain open.
+- Preserve exactly what the owner confirmed: item identity/revision, question, current context, proposed wording, full draft when available, source lineage, note, time and SHA-256. Stale browser actions and stale approvals cannot overwrite or promote newer content.
+- The owner can answer progressively, complete repeated grilling rounds, revise questions through Change and confirm one concept. Ending a round starts no agent. The owner separately starts promotion for selected confirmed cards or one confirmed card; unconfirmed cards stay in grilling.
+- Promotion creates a recoverable director handoff, with visible ordered Record → Publish → Map → Publish → Plan → Publish receipts, evidence and resulting native source links. Existing promotion and review procedures do the work; no dispatch daemon is implied. A knowledge-only Map/Plan records its existing owner and reason rather than inventing Specs or Tasks.
+- Keep the producer-room Dashboard local and available independently of a chat, with startup/restart and explicit service instructions. Disposable browser data is isolated from owner answers; no actual owner decision is executed for verification.
+
 ### Priority and Value for answering questions
 
 This is a bounded addition to the existing Grill Board, governed by
@@ -276,7 +280,7 @@ policies. Resolve them within the existing owners before adding executable work.
 
 ## Non-Goals
 
-- Task creation or implementation in this Map pass.
+- Automatic agent activation after answering or confirming, remote hosting, new credentials and unrelated implementation.
 - DQC P/V, automatic recommended batches, a summed grading score or a new
   periodic maintenance system in the first Grill Board P/V proof.
 - A second board beside the Grill Board.
@@ -445,3 +449,5 @@ names the README and test changes its delivery owns.
 | 2026-10-07 | P/V record carry verified | Committed candidate f5ce6c46fe21ea6d27d8f9bb57e554bf7aaafa65, clean tree: all 54 Runbook Full suite commands exit 0, including `node tools/test-evaluate-workbench.mjs`, `node tools/test-adr.mjs`, `node tools/test-grill-board.mjs`, `python3 tools/test-check-append-only.py` and `node workbench/tools/spec-workbench.mjs doctor` (no blocking finding; its attention findings equal those of integration d9a353590644f957ae24636d13ce9a41ef1987e9 apart from that worktree's detached HEAD). `node workbench/tools/adr.mjs validate` and `node workbench/tools/wiki.mjs validate` pass. The same 54 commands also pass on unmodified integration. These are documentation and record checks only; P/V behavior, the real-board proof and Owner Human QA remain undelivered. |
 | 2026-10-07 | Activated; bounded P/V proof planned | Plan stage of the DDR-001L `promote-decision` run on `claude/plan-ddr-001l-priority-value`, cut from integration 9edbed8a585a99a52368c3c09aa7eb91def6b7ef, under decision-005's authorization of implementation following the current request and its lifecycle. Live board re-read at that base (recorded under Current Verified State). Four Task records written with `next-id` labels confirmed free across every `origin/*` tip and local worktree: TK-007L tracer bullet (no blockers), TK-007M filters and batches and TK-007N inventory grades (each blocked by TK-007L), TK-007O answer-to-card-update cycle and real-board scenario (blocked by TK-007M and TK-007N); all `ready`, Builder, unclaimed. Header gained Priority 2 (this repository's default for an in-scope capability with no release assignment; the Owner's purpose is a board aid, not an interrupt or release gate) and Owner `unassigned` (no Dispatcher is assigned; whoever takes the Spec records themselves), then `convert-tasks S-004D --activate` set Status active. Readings recorded in the Tasks: AC1 covers every open board item including the 35 `confirm-dqc` items, with "deferred" applying to DQC records (TK-007N); requirement 4's decision-group navigation is the page's topic grouping, with no aggregate group P/V (TK-007M). Plan only: no claim, implementation, answer application or Owner Human QA. |
 | 2026-10-07 | P/V plan verified | Committed candidate e88cbec0585adecaa57d5b5782a89b3abe75492e, clean tree: all 54 Runbook Full suite commands exit 0, including `node tools/test-evaluate-workbench.mjs`, `node tools/test-spec-workbench.mjs`, `node tools/test-grill-board.mjs` (run with localhost socket permission), `python3 tools/test-check-append-only.py` and `node workbench/tools/spec-workbench.mjs doctor` (no blocking finding; its new findings are the expected `blocked-slice` dependency entries for TK-007M, TK-007N and TK-007O). `show S-004D --json` reads back Status active, Priority 2, Owner unassigned and all four Tasks `ready` with no claim. These are planning and record checks only: no P/V behavior, real-board proof or Owner Human QA is claimed. |
+
+| 2026-10-08 | Dashboard reconciliation and writer ownership | Authorized implementation from integration 47215ff10de711bf110c31f5a3f6ea2cf733b5e7. Selectively reuse confirmed DDR-001O and five-section design from claude/workbench-dashboard 35a27351; retain current P/V Tasks and completed PR438/439 work. Branch codex/dashboard-owner-flow published claim b3b87b43126c73f2b0192b08b1b78ca680676b04 for TK-007L. Parent is sole shared state writer; sources and workflow workers own distinct new modules. PR425 domain corrections and PR431 glossary migration remain separate. No owner answer or actual promotion executed. |

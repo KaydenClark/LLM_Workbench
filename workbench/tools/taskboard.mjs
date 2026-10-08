@@ -155,11 +155,13 @@ function sourceFields(content = '', rejectDuplicates = true) {
   // Match the exact whole-document field extraction used by parseSpecPacket
   // and parseTaskRecord: same regex, key/value trim, and case-sensitive names.
   // Spec parsing currently last-wins; preview publication must instead refuse
-  // every normalized duplicate before replacing source-derived output.
+  // duplicates of card metadata before replacing source-derived output. Repeated
+  // narrative labels (e.g. Stance in slice descriptions) are not card metadata.
   const fields = {};
+  const cardFields = new Set(['Spec ID','Landmark ID','Task ID','Priority','Assignee','Approver','Next action','Start date','Due date']);
   for (const match of content.matchAll(/^\*\*([^*]+):\*\*\s*(.+)$/gm)) {
     const key = match[1].trim();
-    if (rejectDuplicates && Object.hasOwn(fields, key)) throw new Error(`taskboard-source: duplicated source field ${key}`);
+    if (rejectDuplicates && cardFields.has(key) && Object.hasOwn(fields, key)) throw new Error(`taskboard-source: duplicated source field ${key}`);
     fields[key] = match[2].trim();
   }
   return fields;

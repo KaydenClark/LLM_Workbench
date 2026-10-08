@@ -175,20 +175,43 @@
   #focus { margin-top: 24px; scroll-margin-top: 80px; }
   .question-context { color: var(--muted); font-size: 13px; }
   @media (max-width: 650px) { .topic-grid { grid-template-columns: 1fr; } .question-row { align-items: flex-start; } }
+
+  .dashboard-tabs {display:flex;gap:8px;flex-wrap:wrap;padding:12px 24px;background:var(--panel);border-bottom:1px solid var(--line);position:sticky;top:56px;z-index:8;}
+  .dashboard-tabs a {padding:8px 14px;border-radius:8px;border:1px solid var(--line);text-decoration:none;font-weight:600;}
+  .round-workflow {padding:18px 22px;margin-bottom:22px;background:var(--panel);border:1px solid var(--line);border-radius:12px;}
+  .round-workflow h2 {margin-top:0;font-size:20px;}
+  .grades {display:flex;gap:8px;align-items:flex-start;}
+  .grade {font-size:13px;position:relative;min-width:38px;}
+  .grade summary {border-radius:8px;padding:7px 10px;cursor:pointer;font-weight:700;}
+  .grade.priority summary {background:#f9dbd9;color:#a42c28;}
+  .grade.value summary {background:#fff0cb;color:#805600;}
+  .grade p {max-width:300px;min-width:180px;background:var(--panel);padding:12px;border:1px solid var(--line);border-radius:8px;margin:8px 0;}
+  .unclassified {color:var(--muted);font-size:11px;}
+  .detail-grades {margin:16px 0;}
+  .card-workflow {padding:16px 0;border-top:1px solid var(--line);overflow-wrap:anywhere;}
+  .card-workflow pre {white-space:pre-wrap;font:12px/1.6 var(--mono);}
+  .request {padding:14px;margin:12px 0;border:1px solid var(--line);border-radius:8px;}
+  .draft-comparison {display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;}
+  .execution-lanes {display:grid;grid-template-columns:repeat(3,minmax(200px,1fr));gap:16px;}
+  .execution-lanes h2 {font-size:18px;}
+  .source-card {padding:16px;margin:10px 0;border:1px solid var(--line);background:var(--panel);border-radius:10px;}
+  .source-card small {display:block;color:var(--muted);margin:8px 0;}
+  .reader {max-width:82ch;}
+  @media(max-width:850px){.draft-comparison,.execution-lanes{grid-template-columns:1fr}.dashboard-tabs{position:static;}.page-header{flex-wrap:wrap;}}
 </style>
 </head>
 <body>
-<header class="page-header"><strong>Consequential Decision Record</strong><label for="page-select">Read</label><select id="page-select"><option value="questions">Questions</option><option value="agents">AGENTS</option><option value="runbook">RUNBOOK</option><option value="blueprint">BLUEPRINT</option><option value="lexicon">LEXICON</option><option value="landmarks">Landmarks</option><option value="adrs">ADRs</option><option value="ddrs">DDRs</option></select><a href="#questions">Return to questions</a></header>
+<header class="page-header"><strong>Workbench Dashboard</strong><label for="page-select">Read</label><select id="page-select"><option value="questions">Questions</option><option value="agents">AGENTS</option><option value="runbook">RUNBOOK</option><option value="blueprint">BLUEPRINT</option><option value="lexicon">LEXICON</option><option value="landmarks">Landmarks</option><option value="adrs">ADRs</option><option value="ddrs">DDRs</option></select><a href="#questions">Return to grilling</a></header><nav class="dashboard-tabs" aria-label="Dashboard sections"><a href="#section=tracker">Destination Tracker</a><a href="#section=taskboard">Taskboard</a><a href="#questions">Grilling Board</a><a href="#section=drafts">Drafts to approve</a><a href="#section=wiki">Wiki</a></nav>
 <div class="shell">
   <nav>
-    <h1>Grill Board</h1><div id="title" class="meta">Choose a manageable slice</div>
+    <h1>Grilling Board</h1><div id="title" class="meta">Choose a manageable slice</div>
     <div class="meta" id="meta">loading…</div>
     <div class="progress" id="progress" title="pending / re-answer / answered / applied"></div>
     <label class="slice-label" for="intent">What do you feel like doing?</label>
     <select id="intent"><option value="all">Anything</option><option value="unblock">Unblock / direct work</option><option value="explore">Explore / settle decisions</option><option value="review">Review existing work</option></select>
     <label class="slice-label" for="topic">Think about…</label><select id="topic"></select>
     <label class="slice-label" for="scope">At what scale?</label><select id="scope"><option value="all">Any scale</option><option value="BLUEPRINT">Blueprint · whole product</option><option value="LANDMARK">Landmark · a direction</option><option value="SPEC">Spec · one capability</option><option value="TASK">Task · one step</option></select>
-    <span class="slice-label">Where is it in the workflow?</span><div class="filters" id="filters"></div>
+    <label class="slice-label" for="priority-filter">Priority</label><select id="priority-filter"><option value="all">All Priorities</option><option>P1</option><option>P2</option><option>P3</option><option>P4</option><option value="unclassified">Unclassified</option></select><label class="slice-label" for="value-filter">Value</label><select id="value-filter"><option value="all">All Values</option><option>V1</option><option>V2</option><option>V3</option><option>V4</option><option value="unclassified">Unclassified</option></select><span class="slice-label">Where is it in the workflow?</span><div class="filters" id="filters"></div>
     <input type="search" id="search" placeholder="Search titles, questions, text…" aria-label="Search items">
     <button class="bulk" id="reset-slice">All topics</button>
     <button class="theme" id="theme">Toggle theme</button>
@@ -203,9 +226,9 @@
 <dialog id="viewer"><header><span id="viewer-path"></span><button class="bulk" onclick="document.getElementById('viewer').close()">Close</button></header><pre id="viewer-text"></pre></dialog>
 <script>
 (() => {
-  const STATUS_LABEL = { pending: 'Pending', stale: 'Re-answer', answered: 'Answered', applied: 'Applied', withdrawn: 'Withdrawn' };
+  const STATUS_LABEL = { pending: 'Pending', stale: 'Re-answer', answered: 'Confirmed / answered', applied: 'Applied', withdrawn: 'Withdrawn' };
   const STATUS_ORDER = ['pending', 'stale', 'answered', 'applied', 'withdrawn'];
-  const state = { drafts: new Map(), errors: new Map(), inflight: new Map(), board: null, query: '', timers: new Map(), catalog: null, artifact: null, route: 0, revisions: new Map(), topic: 'all', intent: 'all', scope: 'all', lane: 'all', focus: null, picked: new Set(), batch: null, inBatch: false, size: 5 };
+  const state = { drafts: new Map(), errors: new Map(), inflight: new Map(), board: null, query: '', timers: new Map(), catalog: null, artifact: null, route: 0, revisions: new Map(), topic: 'all', intent: 'all', scope: 'all', lane: 'all', focus: null, picked: new Set(), batch: null, inBatch: false, size: 5, priority: 'all', value: 'all', workflow: null, dashboard: null };
   try {
     const saved = JSON.parse(localStorage.getItem('grill-board-batch'));
     if (saved && Array.isArray(saved.ids) && saved.ids.length && saved.ids.every(id => typeof id === 'string') && saved.revisions && typeof saved.title === 'string') { state.batch = saved; state.inBatch = true; }
@@ -224,7 +247,7 @@
     { id: 'release', title: 'Releases, upgrades & proof', frame: 'what should ship, where it is proven, and what an upgrade preserves', outcome: 'A release demonstrated in a real project with remaining gaps visible.', numbers: [21,24,50,104,149,150,151,152,153] },
     { id: 'other', title: 'Other topics', frame: 'the context and consequence of a newly added question', outcome: 'New questions stay reachable while their topic is being organized.', numbers: [] }
   ];
-  const LANES = { all: 'All stages', pending: 'To answer', stale: 'Revisit', answered: 'With agents', applied: 'Applied', parked: 'Not now', withdrawn: 'Withdrawn' };
+  const LANES = { all: 'All stages', pending: 'To answer', stale: 'Revisit', answered: 'Answered · awaiting your next action', applied: 'Applied', parked: 'Not now', withdrawn: 'Withdrawn' };
   const INTENTS = { all: 'Any kind of decision', unblock: 'Unblock / direct work', explore: 'Explore / settle decisions', review: 'Review existing work' };
   function topicFor(item) { return TOPICS.find(topic => topic.numbers.includes(Number(item.id?.replace('GB-', ''))))?.id || 'other'; }
   function intentFor(item) {
@@ -240,6 +263,8 @@
     return counts;
   }
   function matchesSlice(item, slice = state) {
+    if (slice.priority && slice.priority !== 'all' && (item.priority?.grade || 'unclassified') !== slice.priority) return false;
+    if (slice.value && slice.value !== 'all' && (item.value?.grade || 'unclassified') !== slice.value) return false;
     if (slice.topic && slice.topic !== 'all' && topicFor(item) !== slice.topic) return false;
     if (slice.intent && slice.intent !== 'all' && intentFor(item) !== slice.intent) return false;
     if (slice.scope && slice.scope !== 'all' && item.brief?.scope !== slice.scope) return false;
@@ -412,15 +437,16 @@
     renderNavigation();
     renderBatchProgress();
     renderOverview();
-    document.getElementById('notice').innerHTML = '<strong>Choose your own slice.</strong> Filter by kind of decision, topic, scale or workflow stage. Pick a batch of 3, 5 or 10, or select your own questions. Each opens on its own. <strong>Answered</strong> means your saved decision is ready for an agent; <strong>Applied</strong> means it was carried into its owner. These counts track this review, not implementation progress.';
-    const overviewOnly = !state.inBatch && !state.focus && state.topic === 'all' && state.intent === 'all' && state.scope === 'all' && state.lane === 'all' && !state.query;
+    renderWorkflow();
+    document.getElementById('notice').innerHTML = '<strong>Work at your own pace.</strong> Save notes progressively, request a revision with Change, or Confirm the particular concept as written. End a round when ready; start promotion separately for confirmed cards. Answers and change requests never start an agent. Applied records show their durable homes; execution progress remains on the Taskboard.';
+    const overviewOnly = !state.inBatch && !state.focus && state.topic === 'all' && state.intent === 'all' && state.scope === 'all' && state.lane === 'all' && !state.query && state.priority === 'all' && state.value === 'all';
     const shown = state.inBatch ? state.batch.ids.map(id => state.board.items.find(item => item.id === id)).filter(Boolean) : state.board.items.filter(visible);
     const actionable = shown.filter(item => ['pending', 'stale', 'parked'].includes(laneFor(item)));
     const content = document.getElementById('content');
     if (overviewOnly) { content.innerHTML = ''; return; }
     if (state.inBatch && !state.focus) state.focus = shown.find(item => !['answered', 'applied', 'withdrawn'].includes(item.derivedStatus))?.id || shown[0]?.id;
     const toolbar = state.inBatch ? `<h2>Batch questions</h2><p>Choose any question below. The list stays fixed as you answer.</p>` : `<div class="slice-toolbar"><strong>${shown.length} in this slice</strong><label for="batch-size">Batch size</label><select id="batch-size">${[3,5,10].map(n => `<option value="${n}" ${state.size === n ? 'selected' : ''}>${n} questions</option>`).join('')}</select><button class="primary" id="start-batch" ${!actionable.length || state.batch ? 'disabled' : ''}>Start next ${Math.min(state.size, actionable.length)}</button><button class="bulk" id="start-picked" ${!state.picked.size || state.batch ? 'disabled' : ''}>Start selected (${state.picked.size})</button>${state.batch ? '<small>Resume or release your saved batch before starting another.</small>' : ''}</div>`;
-    content.innerHTML = toolbar + (shown.length ? `<div class="question-list">${shown.map(item => `<div class="question-row ${state.focus === item.id ? 'current' : ''}">${!state.inBatch ? `<input type="checkbox" data-pick="${item.id}" aria-label="Select ${esc(item.title)}" ${state.picked.has(item.id) ? 'checked' : ''}>` : ''}<button data-open="${item.id}">${esc(item.title)}<small>${esc(TOPICS.find(t => t.id === topicFor(item)).title)} · ${esc(INTENTS[intentFor(item)])} · ${esc(item.brief?.scope || 'Unspecified scale')} · ${item.id}</small></button><span class="badge ${item.derivedStatus}">${LANES[laneFor(item)]}</span></div>`).join('')}</div>` : '<p class="empty">Nothing in this slice. Choose another topic or workflow stage.</p>') + '<div id="focus"></div>';
+    content.innerHTML = toolbar + (shown.length ? `<div class="question-list">${shown.map(item => `<div class="question-row ${state.focus === item.id ? 'current' : ''}">${!state.inBatch ? `<input type="checkbox" data-pick="${item.id}" aria-label="Select ${esc(item.title)}" ${state.picked.has(item.id) ? 'checked' : ''}>` : ''}<button data-open="${item.id}">${esc(item.title)}<small>${esc(TOPICS.find(t => t.id === topicFor(item)).title)} · ${esc(INTENTS[intentFor(item)])} · ${esc(item.brief?.scope || 'Unspecified scale')} · ${item.id}</small></button><span class="grades">${gradeBadges(item)}</span><span class="badge ${item.derivedStatus}">${LANES[laneFor(item)]}</span></div>`).join('')}</div>` : '<p class="empty">Nothing in this slice. Choose another topic or workflow stage.</p>') + '<div id="focus"></div>';
     for (const button of content.querySelectorAll('[data-open]')) button.onclick = () => { state.focus = button.dataset.open; renderFocus(); document.getElementById('focus').scrollIntoView({ block: 'start' }); };
     for (const checkbox of content.querySelectorAll('[data-pick]')) checkbox.onchange = () => { if (checkbox.checked) state.picked.add(checkbox.dataset.pick); else state.picked.delete(checkbox.dataset.pick); const button = document.getElementById('start-picked'); button.textContent = `Start selected (${state.picked.size})`; button.disabled = !state.picked.size || Boolean(state.batch); };
     if (!state.inBatch) {
@@ -447,6 +473,9 @@
     document.getElementById('next-question').onclick = () => { state.focus = shown[index + 1].id; renderFocus(); panel.scrollIntoView({ block: 'start' }); };
   }
 
+  function gradeBadges(item) {
+    return ['priority','value'].map(field => item[field] ? `<details class="grade ${field}"><summary>${esc(item[field].grade)}</summary><p>${esc(item[field].reason)}</p></details>` : `<small class="unclassified">${field === 'priority' ? 'P' : 'V'} unclassified</small>`).join('');
+  }
   function card(item) {
     const status = item.derivedStatus;
     const answer = state.drafts.get(item.id) || item.answer || { verdict: '', note: '' };
@@ -462,19 +491,21 @@
     const history = (item.history || []).filter((h) => h.revision > 1 || /^applied|^withdrawn/.test(h.reason || '')).map((h) => `${new Date(h.at).toLocaleDateString()} · ${esc(h.by)}: ${esc(h.reason)}`);
     return `<article class="item" id="${item.id}" data-id="${item.id}" data-status="${status}" data-revision="${item.revision}">
       <div class="item-head"><h3>${esc(item.title)}<small class="identity">${item.id} · revision ${item.revision}</small></h3><span><span class="badge ${status}">${STATUS_LABEL[status]}</span><span class="kind">${esc({'approve-spec':'Delivery approval','confirm-dqc':'Confirm understanding','confirm-ddr':'Review existing decision','confirm-text':'Review draft text','choice':'Choose a direction','owner-decision':'Unblock work'}[item.kind] || item.kind)}</span></span></div>
+      <div class="grades detail-grades">${gradeBadges(item)}</div>
       <p class="q">${esc(item.question)}</p>
       <div class="sources">${(item.sources || []).filter(source => state.catalog?.artifacts.some(a => a.path === source.path)).map(source => `<a href="${esc(artifactHref(source.path, '', item.id))}">Read ${esc(source.label)} and its proposals</a>`).join('')}</div>
       ${item.brief ? decisionBrief(item) : `<div class="block"><h4>Context</h4>${markdown(item.current)}</div><div class="block"><h4>Agent recommendation</h4>${markdown(item.proposal)}</div>`}
-      ${item.draft ? `<details class="draft"><summary>Read proposed draft or review text</summary><div class="block">${markdown(item.draft)}</div></details>` : ''}
+      ${item.draft ? `<details class="draft" open><summary>Actual proposed artifact draft · revision ${item.revision}</summary><div class="block">${markdown(item.draft)}</div></details>` : ''}
       ${sources ? `<details class="draft"><summary>Evidence and source links</summary><div class="sources">${sources}</div><div class="block">${markdown(item.current)}</div><div class="block">${markdown(item.proposal)}</div></details>` : ''}
       ${history.length ? `<div class="sources"><span>History:</span>${history.map((h) => `<span>${h}</span>`).join('')}</div>` : ''}
       ${stale}${applied}
       <div class="answer">
         <div class="options">${options}</div>
         <div class="hint">${esc(item.options.find((o) => o.value === answer.verdict)?.hint || 'Pick a verdict, then add any notes. Saves as you type.')}</div>
-        <textarea class="${needsNote ? 'needs-note' : ''}" placeholder="Notes, corrections, the words you want used…">${esc(answer.note)}</textarea>
+        <label for="note-${item.id}">Your notes or requested changes</label><textarea id="note-${item.id}" class="${needsNote ? 'needs-note' : ''}" placeholder="Notes, corrections, the words you want used…">${esc(answer.note)}</textarea>
         <div class="save"><span class="status">${state.drafts.has(item.id) ? 'Not saved yet' : answer.at ? `Saved ${new Date(answer.at).toLocaleString()}` : 'Not answered yet'}</span><span class="err">${esc(state.errors.get(item.id) || '')}</span></div>
       </div>
+      <div class="card-workflow" data-flow="${item.id}"></div>
     </article>`;
   }
 
@@ -498,6 +529,11 @@
       const id = article.dataset.id;
       for (const opt of article.querySelectorAll('.opt')) {
         opt.onclick = () => {
+          if (['correct','decline','defer','change','rework','change_why','return_reworded','finding','destination_change'].includes(opt.dataset.value)) {
+            const text = article.querySelector('textarea').value.trim();
+            if (!text) { article.querySelector('.save .err').textContent = 'Write what you want changed before choosing this action.'; article.querySelector('textarea').focus(); return; }
+            postWorkflow('/api/comments',{id,itemRevision:Number(article.dataset.revision),kind:'change',text:`${opt.textContent}: ${text}`}).then(async () => { await loadWorkflow(); renderFocus(); }).catch(error => { article.querySelector('.save .err').textContent = error.message; }); return;
+          }
           const pressed = opt.getAttribute('aria-pressed') === 'true';
           for (const other of article.querySelectorAll('.opt')) other.setAttribute('aria-pressed', 'false');
           if (!pressed) opt.setAttribute('aria-pressed', 'true');
@@ -508,6 +544,7 @@
       article.querySelector('textarea').oninput = () => save(article, 700);
       for (const button of article.querySelectorAll('[data-view]')) button.onclick = () => viewFile(button.dataset.view);
     }
+    renderCardWorkflow();
     for (const button of document.querySelectorAll('[data-bulk]')) {
       button.onclick = async () => {
         const group = button.dataset.bulk;
@@ -535,7 +572,7 @@
       const errEl = article.querySelector('.save .err');
       statusEl.textContent = 'Saving…';
       try {
-        const response = await fetch(`/api/answers/${id}`, { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ verdict, note, itemRevision }) });
+        const response = await fetch(`/api/answers/${id}`, { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ verdict, note, itemRevision, expectedAnswerAt: state.board.items.find(item => item.id === id)?.answer?.at ?? null }) });
         const body = await response.json();
         if (!response.ok) throw new Error(body.error?.message || response.status);
         statusEl.textContent = `Saved ${new Date(body.at).toLocaleTimeString()}`;
@@ -557,7 +594,7 @@
         article.querySelector('.badge').textContent = STATUS_LABEL[body.derivedStatus];
         const needsNote = ['correct', 'finding', 'destination_change', 'answer', 'return_reworded'].includes(verdict) && !note.trim();
         article.querySelector('textarea').classList.toggle('needs-note', needsNote);
-        refreshCounts();
+        refreshCounts(); renderCardWorkflow();
       } catch (error) {
         statusEl.textContent = 'Not saved';
         const message = `Save failed: ${error.message}. Your unsaved text remains here; edit it again to retry.`;
@@ -620,12 +657,78 @@
     return typeof value === 'string' ? markdown(value, source) : `<p>${esc(value === null ? 'null' : value)}</p>`;
   }
 
+
+  function updateReaderMenu() {
+    const menu=document.getElementById('page-select');
+    menu.innerHTML='<option value="questions">Grilling Board</option>'+state.catalog.groups.map(group=>`<option value="${esc(group.id)}">${esc(group.title)}</option>`).join('');
+  }
+  async function loadWorkflow() {
+    const response=await fetch('/api/workflow',{cache:'no-store'});
+    const body=await response.json(); if(!response.ok) throw new Error(body.error?.message||response.status);
+    state.workflow=body;
+  }
+  async function postWorkflow(url,body) {
+    const response=await fetch(url,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({...body,actionId:crypto.randomUUID(),expectedRevision:state.workflow?.revision ?? 0})});
+    const result=await response.json();if(!response.ok) throw new Error(result.error?.message||response.status);
+    await loadWorkflow();return result;
+  }
+  function confirmedItems() {return state.board.items.filter(item=>!(state.workflow?.comments||[]).some(comment=>comment.id===item.id&&comment.kind==='change'&&comment.itemRevision===item.revision) && !(state.workflow?.requests||[]).some(request=>request.cards.some(card=>card.id===item.id&&card.hash===item.answer?.approval?.hash)) && item.status==='open' && ['confirm','approve'].includes(item.answer?.verdict) && item.answer?.itemRevision===item.revision && item.answer?.approval && !state.drafts.has(item.id) && item.derivedStatus !== 'applied');}
+  async function promoteItems(items) {
+    if(!items.length) return;
+    await postWorkflow('/api/promotions',{ids:items.map(item=>item.id),revisions:Object.fromEntries(items.map(item=>[item.id,item.revision]))});
+    renderWorkflow();renderCardWorkflow();
+  }
+  function renderWorkflow() {
+    let panel=document.getElementById('round-workflow');
+    if(!panel){panel=document.createElement('section');panel.id='round-workflow';panel.className='round-workflow';document.getElementById('questions-panel').prepend(panel);}
+    const confirmed=confirmedItems();
+    panel.innerHTML=`<h2>Your grilling rounds</h2><p>Finish as many rounds as needed. Confirmation preserves the wording you read. Promotion prepares a director handoff through Record → Publish → Map → Publish → Plan → Publish.</p><button class="bulk" id="end-round" ${state.drafts.size||!state.workflow?'disabled':''}>End this round</button> <button class="primary" id="promote-round" ${!confirmed.length||state.drafts.size||!state.workflow?'disabled':''}>Start promotion for confirmed cards (${confirmed.length})</button><p id="round-result" role="status">${(state.workflow?.rounds||[]).length} saved rounds · ${(state.workflow?.requests||[]).length} promotion handoffs. Unconfirmed cards remain in grilling.</p>`;
+    document.getElementById('end-round').onclick=async()=>{try{await postWorkflow('/api/rounds',{});renderWorkflow();}catch(error){document.getElementById('round-result').textContent=error.message;}};
+    document.getElementById('promote-round').onclick=async()=>{try{await promoteItems(confirmed);}catch(error){document.getElementById('round-result').textContent=error.message;}};
+  }
+  function renderCardWorkflow() {
+    for(const panel of document.querySelectorAll('[data-flow]')){
+      const id=panel.dataset.flow,item=state.board.items.find(item=>item.id===id);
+      const comments=(state.workflow?.comments||[]).filter(comment=>comment.id===id||comment.itemId===id);
+      const promotions=(state.workflow?.requests||[]).filter(request=>(request.ids||request.cards?.map(card=>card.id)||[]).includes(id));
+      panel.innerHTML=`<h4>Requests, confirmation and disposition</h4>${item.answer?.approval?`<p>Approved snapshot · revision ${item.answer.approval.itemRevision} · SHA-256 ${esc(item.answer.approval.hash)}. ${item.answer.itemRevision===item.revision?'This is the answered revision.':'A new revision needs confirmation.'}</p><details><summary>Exactly what was confirmed</summary><div class="reader">${markdown(item.answer.approval.draft||item.answer.approval.proposal)}</div></details>`:'<p>No exact-text approval recorded for this revision.</p>'}${comments.map(comment=>`<div class="request"><strong>${esc(comment.kind)} · revision ${comment.itemRevision}</strong><p>${esc(comment.text)}</p><small>${esc(comment.disposition?.status||comment.status||'awaiting revision')} · ${esc(comment.at||'')}</small></div>`).join('')}<button class="bulk" data-comment="${id}">Save note as a comment</button> <button class="primary" data-promote="${id}" ${confirmedItems().some(card=>card.id===id)&&state.workflow?'':'disabled'}>Start promotion for this confirmed card</button>${promotions.map(request=>{const disposition=state.workflow.dispositions[id];return `<details class="request" open><summary>Explicit promotion handoff · ${esc(disposition?.status||request.status)}</summary><p>Ready for a director to pick up. No agent starts automatically.</p><ol>${request.stages.map((stage,index)=>`<li>${esc(stage)} ${disposition?.receipts?.[index]?'✓':''}</li>`).join('')}</ol>${disposition?.implementationNeeded===false?'<p>Knowledge-only decision: existing owners used; no Spec or Task required.</p>':''}${(disposition?.receipts||[]).map(receipt=>`<p>${esc(receipt.stage)} · ${esc(receipt.reason)} ${(receipt.links||[]).map(link=>{const source=typeof link==='string'?link:link.path||link.url;return `<a href="${source.startsWith('https://')?esc(source):esc(artifactHref(source))}">Read resulting source</a>`;}).join(' ')}</p>`).join('')}<small>Handoff ${esc(request.id)} · ${esc(request.requestedAt)}</small></details>`;}).join('')}`;
+      panel.querySelector('[data-comment]').onclick=async()=>{const text=document.getElementById(id).querySelector('textarea').value.trim();if(!text)return;try{await postWorkflow('/api/comments',{id,itemRevision:item.revision,kind:'comment',text});renderCardWorkflow();}catch(error){document.getElementById(id).querySelector('.err').textContent=error.message;}};
+      panel.querySelector('[data-promote]').onclick=async()=>{try{await promoteItems([item]);}catch(error){document.getElementById(id).querySelector('.err').textContent=error.message;}};
+    }
+  }
+  async function renderDashboard(section,panel,serial) {
+    panel.innerHTML='<p>Reading current source records…</p>';
+    try{
+      if(section==='drafts'){
+        await loadWorkflow();
+        if(serial!==state.route)return;
+        const drafts=state.board.items.filter(item=>item.draft && item.status==='open');
+        panel.innerHTML=`<h1>Drafts to approve</h1><p>Read the actual proposed text alongside its authoritative source. Request a revision before confirming. A request or comment never approves the draft.</p><div class="artifact-list">${drafts.map(item=>`<a href="#${item.id}"><strong>${esc(item.title)}</strong><small>${esc(item.id)} · proposed revision ${item.revision} · ${esc(item.derivedStatus)}</small></a>`).join('')||'<p>No proposed artifact drafts are available. Missing drafts remain explicit.</p>'}</div>`;return;
+      }
+      if(section==='wiki'){
+        panel.innerHTML=`<h1>Wiki & source library</h1><p>Readable current documents, decision records, vocabulary and skills. Source revisions stay visible.</p><div class="artifact-list">${state.catalog.groups.map(group=>`<a href="#artifacts=${esc(group.id)}"><strong>${esc(group.title)}</strong><small>${state.catalog.artifacts.filter(artifact=>artifact.group===group.id).length} documents</small></a>`).join('')}</div>`;return;
+      }
+      const response=await fetch('/api/dashboard',{cache:'no-store'}),data=await response.json();if(!response.ok)throw new Error(data.error?.message||response.status);if(serial!==state.route)return;
+      state.dashboard=data;
+      const title=section==='taskboard'?'Taskboard':'Destination Tracker';
+      const model=section==='taskboard'?data.taskboard:data.tracker;
+      panel.innerHTML=`<h1>${title}</h1><p>${section==='taskboard'?'Execution lanes derived from current Spec and Task records. Task completion does not establish verified understanding.':'Understanding stages derived from Destination Question Cards and Landmarks. These distributions measure understanding, separately from execution.'}</p>${data.errors.map(error=>`<p class="stale-box">${esc(error.source)}: ${esc(error.message)}</p>`).join('')}<div id="source-cards"></div>`;
+      const target=panel.querySelector('#source-cards');
+      if(section==='taskboard'&&model.board){
+        target.innerHTML=`<div class="execution-lanes">${Object.entries(model.board.lanes).map(([lane,cards])=>`<section><h2>${esc({backlog:'Backlog',toDo:'To do',inProgress:'In progress',blocked:'Blocked',needsReview:'Needs review',complete:'Complete'}[lane]||lane)} <small>${Object.keys(cards).length}</small></h2>${Object.entries(cards).map(([identity,card])=>`<article class="source-card"><strong>${esc(card.title)}</strong><small>${esc(identity)} · ${esc((card.specId||card.landmarkId)?'task':'destination')}</small>${(card.sourceLinks||[]).map(source=>`<a href="${esc(artifactHref(source))}">Read source</a>`).join('')}<p>${esc(card.nextAction||'')}</p>${(card.dependencies||[]).length?`<small>Dependencies: ${esc(card.dependencies.join(', '))}</small>`:''}</article>`).join('')}</section>`).join('')}</div>`;
+      }else{
+        const artifacts=data.artifacts.filter(artifact=>['landmark','dqc','destination-question'].includes(artifact.kind));
+        target.innerHTML=`<div class="artifact-list">${artifacts.map(artifact=>`<a href="${esc(artifactHref(artifact.path))}"><strong>${esc(artifact.title)}</strong><small>${esc(artifact.identity||artifact.id)} · ${esc(artifact.status)}</small></a>`).join('')}</div><details><summary>Current understanding distributions & evidence</summary><div class="reader">${recordFields(model.tracker||model.projection||model,'')}</div></details>`;
+      }
+    }catch(error){panel.innerHTML=`<h1>Source unavailable</h1><p class="stale-box">${esc(error.message)}</p><button class="bulk" id="retry-source">Read sources again</button>`;document.getElementById('retry-source').onclick=()=>renderDashboard(section,panel,serial);}
+  }
+
   async function routePage() {
     if (!state.catalog) return;
     const serial = ++state.route;
     const params = new URLSearchParams(location.hash.slice(1));
-    const file = params.get('artifact'), group = params.get('artifacts');
-    const reading = Boolean(file || group);
+    const file = params.get('artifact'), group = params.get('artifacts'), section = params.get('section');
+    const reading = Boolean(file || group || section);
     if (reading && !state.reading) state.questionScroll = window.scrollY;
     const returning = !reading && state.reading;
     state.reading = reading;
@@ -645,6 +748,7 @@
       } else if (returning) window.scrollTo(0, state.questionScroll || 0);
       return;
     }
+    if (section) { await renderDashboard(section,panel,serial); return; }
     panel.innerHTML = '<p>Loading artifacts…</p>';
     try {
       const response = await fetch('/api/artifacts', { cache: 'no-store' });
@@ -652,6 +756,7 @@
       const catalog = await response.json();
       if (serial !== state.route) return;
       state.catalog = catalog;
+      updateReaderMenu();
       if (!file) {
         const selected = catalog.groups.find(candidate => candidate.id === group);
         if (!selected) throw new Error('Unknown artifact group');
@@ -672,7 +777,7 @@
       const itemId = params.get('item');
       const drafts = artifact.related.filter(item => item.draftKind === 'full-text');
       const related = artifact.related.map(item => `<section class="artifact-section" id="draft-${item.id}"><h2>${esc(item.title)}</h2><p class="reader-meta">${item.id} · item revision ${item.revision} · ${esc(item.status)} · package captured ${esc(item.snapshotAt)} · item updated ${esc(item.itemUpdatedAt)}<br>Source at ${item.sources.map(source => esc(source.ref || 'unrecorded revision')).join(', ')}</p><p>${esc(item.question)}</p><a href="#${item.id}">Read and answer this question</a><h3>${item.draftKind === 'full-text' ? 'Proposed draft / review snapshot · full text' : item.draftKind === 'excerpt' ? 'Proposed draft · excerpt only' : 'Proposed change · no complete draft'}</h3><p>Review material; displaying it does not accept a change.${item.draftKind !== 'full-text' ? ' No complete replacement artifact is supplied by this item.' : ''}</p><div class="reader">${item.draft ? markdown(item.draft, file) : ''}<h3>Proposed change</h3>${markdown(item.proposal, file)}</div></section>`).join('');
-      panel.innerHTML = `<a href="#artifacts=${esc(artifact.group)}">All ${esc(catalog.groups.find(g => g.id === artifact.group).title)}</a><h1>${esc(artifact.title)}</h1><p class="reader-meta">${esc(artifact.path)} · ${esc(artifact.status)}${artifact.id ? ` · ${esc(artifact.id)}` : ''}</p><div id="source-change" class="source-change" ${previous && previous !== artifact.revision ? '' : 'hidden'}>Source revision changed since your previous reading. This is the current text; review snapshots below retain their own revisions. <button class="bulk" id="refresh-artifact">Read latest source</button></div><div class="reader-tabs"><a href="${esc(artifactHref(file, 'current'))}">Current artifact</a><a href="${esc(artifactHref(file, 'proposals'))}">Drafts and proposed changes (${artifact.related.length})</a></div><section class="artifact-section" id="current-artifact"><h2>Current artifact</h2><p class="reader-meta">Current checkout · tree ${esc(artifact.tree || 'unavailable')}<br>Content SHA-256 ${esc(artifact.revision)} · read ${esc(artifact.readAt)}</p>${artifact.format === 'json' ? '<p>Current Landmark JSON record, including every field and its recorded history. The future LANDMARK.md model is not installed here.</p>' : ''}<div class="reader">${artifact.format === 'json' ? recordFields(JSON.parse(artifact.text), file) + `<details><summary>Complete source JSON</summary><pre>${esc(artifact.text)}</pre></details>` : markdown(artifact.text, file)}</div></section><section id="artifact-proposals"><h2>Available drafts and proposed changes</h2>${drafts.length ? '' : '<p>No complete draft is available for this artifact. Existing proposed changes are shown below without inventing a replacement.</p>'}${related || '<p>No linked proposals in the current review package.</p>'}</section>`;
+      panel.innerHTML = `<a href="#artifacts=${esc(artifact.group)}">All ${esc(catalog.groups.find(g => g.id === artifact.group).title)}</a><h1>${esc(artifact.title)}</h1><p class="reader-meta">${esc(artifact.path)} · ${esc(artifact.status)}${artifact.id ? ` · ${esc(artifact.id)}` : ''}</p><div id="source-change" class="source-change" ${previous && previous !== artifact.revision ? '' : 'hidden'}>Source revision changed since your previous reading. This is the current text; review snapshots below retain their own revisions. <button class="bulk" id="refresh-artifact">Read latest source</button></div><div class="reader-tabs"><a href="${esc(artifactHref(file, 'current'))}">Current artifact</a><a href="${esc(artifactHref(file, 'proposals'))}">Drafts and proposed changes (${artifact.related.length})</a></div><div class="draft-comparison"><section class="artifact-section" id="current-artifact"><h2>Current artifact</h2><p class="reader-meta">Current checkout · tree ${esc(artifact.tree || 'unavailable')}<br>Content SHA-256 ${esc(artifact.revision)} · read ${esc(artifact.readAt)}</p>${artifact.format === 'json' ? '<p>Current source record, including every field and recorded history.</p>' : ''}<div class="reader">${artifact.format === 'json' ? recordFields(JSON.parse(artifact.text), file) + `<details><summary>Complete source JSON</summary><pre>${esc(artifact.text)}</pre></details>` : markdown(artifact.text, file)}</div></section><section id="artifact-proposals"><h2>Available drafts and proposed changes</h2>${drafts.length ? '' : '<p>No complete draft is available for this artifact. Existing proposed changes are shown below without inventing a replacement.</p>'}${related || '<p>No linked proposals in the current review package.</p>'}</section></div>`;
       document.getElementById('refresh-artifact').onclick = routePage;
       const anchor = params.get('anchor');
       const target = itemId ? document.getElementById(`draft-${itemId}`) : anchor === 'current' ? document.getElementById('current-artifact') : anchor === 'proposals' ? document.getElementById('artifact-proposals') : [...panel.querySelectorAll('[data-anchor]')].find(element => element.dataset.anchor === anchor);
@@ -689,6 +794,7 @@
   };
   window.addEventListener('hashchange', routePage);
 
+  for (const [id,field] of [['priority-filter','priority'],['value-filter','value']]) document.getElementById(id).onchange=event=>{state[field]=event.target.value;state.inBatch=false;state.focus=null;render();};
   document.getElementById('search').oninput = (event) => { state.query = event.target.value.trim().toLowerCase(); state.inBatch = false; state.focus = null; state.picked.clear(); render(); };
   document.getElementById('theme').onclick = () => {
     const root = document.documentElement;
@@ -718,7 +824,7 @@
 
   window.addEventListener('beforeunload', (event) => { if (state.drafts.size) { event.preventDefault(); event.returnValue = ''; } });
 
-  Promise.all([load(), fetch('/api/artifacts', { cache: 'no-store' }).then(async response => { if (!response.ok) throw new Error(`inventory ${response.status}`); state.catalog = await response.json(); })]).then(() => { render(); return routePage(); }).catch((error) => { document.getElementById('content').innerHTML = `<div class="empty">Could not load the board: ${esc(error.message)}</div>`; });
+  Promise.all([load(), fetch('/api/artifacts', { cache: 'no-store' }).then(async response => { if (!response.ok) throw new Error(`inventory ${response.status}`); state.catalog = await response.json(); })]).then(async () => { updateReaderMenu(); await loadWorkflow(); render(); return routePage(); }).catch((error) => { document.getElementById('content').innerHTML = `<div class="empty">Could not load the board: ${esc(error.message)}</div>`; });
 })();
 </script>
 </body>

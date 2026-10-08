@@ -1108,8 +1108,15 @@ export function render(rootDir, options = {}) {
 }
 
 function renderJsonPreview(root) {
+  const board = readTaskboard(root);
   const output = path.join(root, 'TASKBOARD.preview.json');
   assertSafeWritePath(root, output);
+  writeSafeFile(root, output, JSON.stringify(board, null, 2)+'\n');
+  return { format: 'json-preview', path: 'TASKBOARD.preview.json', schemaVersion: board.schemaVersion, cards: Object.values(board.lanes).reduce((count, lane) => count + Object.keys(lane).length, 0) };
+}
+
+// Read-only source projection. Qualified view preserves legacy parent-scoped IDs.
+export function readTaskboard(root, { qualified = false } = {}) {
   assertSafeReadPath(root, path.join(root, 'workbench', 'manifest.json'));
   // Refuse linked sources before loaders can skip a symlinked directory or
   // read through it. Traverse only the existing Spec/Task ownership shapes.
@@ -1167,7 +1174,7 @@ function renderJsonPreview(root) {
   inspectLandmarks(collectionPath(root, 'landmarks'));
   const specs = [...loadSpecs(root), ...loadRetiredSpecs(root), ...loadLandmarkParents(root)];
   const completed = satisfiedBlockers(specs);
-  const board = buildTaskboard(specs, { resolveTask(spec, task) {
+  const options = { resolveTask(spec, task) {
     const slice = {
       ...task, declared: task.status, source: task.content ? 'record' : 'table', record: task,
       blockers: Array.isArray(task.blockers) ? task.blockers.join(', ') || 'none' : task.blockers,
@@ -1176,14 +1183,18 @@ function renderJsonPreview(root) {
     };
     const entry = taskboardEntryForSlice(spec, slice, satisfiedIds(spec, completed));
     return { resolvedStatus: entry.status, dependenciesMet: entry.dependenciesMet };
-  } });
+  } };
+  const board = qualified ? { schemaVersion: 1, identity: 'source-qualified', lanes: Object.fromEntries(['backlog','toDo','inProgress','blocked','needsReview','complete'].map(lane => [lane,{}])) } : buildTaskboard(specs, options);
+  if (qualified) for (const spec of specs) {
+    const part = buildTaskboard([spec], options);
+    for (const [lane, cards] of Object.entries(part.lanes)) for (const [id,card] of Object.entries(cards)) board.lanes[lane][id.startsWith('TK-') ? `${spec.id}/${id}` : id] = card;
+  }
   for (const lane of Object.values(board.lanes)) for (const card of Object.values(lane)) for (const source of card.sourceLinks) {
     const file = path.join(root, source);
     inspectFile(file);
     if (!fs.existsSync(file)) throw new Error(`taskboard-source: missing source link ${source}`);
   }
-  writeSafeFile(root, output, JSON.stringify(board, null, 2)+'\n');
-  return { format: 'json-preview', path: 'TASKBOARD.preview.json', schemaVersion: board.schemaVersion, cards: Object.values(board.lanes).reduce((count, lane) => count + Object.keys(lane).length, 0) };
+  return board;
 }
 
 export function doctor(rootDir, options = {}) {
