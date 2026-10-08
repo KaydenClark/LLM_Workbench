@@ -376,9 +376,9 @@ test('workflow counts partition items and a parked or unsaved answer never finis
   assert.equal(model.batchProgress().complete, false);
   items.at(-1).derivedStatus = 'answered';
   assert.equal(model.batchProgress().complete, true);
-  model.state.drafts.set('parked', { note: 'unsaved edit' });
+  model.state.edits.set('parked', { note: 'unsaved edit' });
   assert.equal(model.batchProgress().complete, false);
-  model.state.drafts.clear();
+  model.state.edits.clear();
   items.at(-1).derivedStatus = 'stale';
   assert.equal(model.batchProgress().complete, false);
   assert.equal(model.state.batch.ids.length, 3, 'saving never refills the fixed batch');
