@@ -151,7 +151,10 @@ test('CI step gives existing Git fixtures an ephemeral main default without chan
     fs.writeFileSync(globalFile, '[init]\n\tdefaultBranch = master\n');
     const before = fs.readFileSync(globalFile);
     const target = path.join(f.dir, 'ci-initialization');
-    const initialized = spawnSync('git', ['init', '--quiet', target], { env: { ...process.env, GIT_CONFIG_GLOBAL: globalFile, ...config }, encoding: 'utf8' });
+    const env = { ...process.env, GIT_CONFIG_GLOBAL: globalFile };
+    // Exercise only the workflow's override, even when this test runs in CI.
+    for (const key of Object.keys(env)) if (/^GIT_CONFIG_(?:COUNT|KEY_\d+|VALUE_\d+)$/.test(key)) delete env[key];
+    const initialized = spawnSync('git', ['init', '--quiet', target], { env: { ...env, ...config }, encoding: 'utf8' });
     assert.equal(initialized.status, 0, initialized.stderr);
     const branch = spawnSync('git', ['-C', target, 'symbolic-ref', '--short', 'HEAD'], { encoding: 'utf8' });
     assert.equal(branch.stdout.trim(), 'main', 'CI must provide the main default existing lifecycle fixtures require');
