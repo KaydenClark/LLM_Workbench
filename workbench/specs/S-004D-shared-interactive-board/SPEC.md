@@ -9,8 +9,8 @@
 **Catalog description:** The owner's local Dashboard: Destination Tracker, Taskboard, Grilling Board, Drafts to approve and Wiki, with progressive grilling, exact wording approvals and explicit promotion handoffs.
 **Release scope:** In scope since the owner's 2026-10-04 answer; no release is assigned.
 **Blockers:** none
-**Latest event:** TK-007L closed with proof.
-**Next gate:** Complete TK-007M.
+**Latest event:** TK-007M claimed by claude-dashboard-director.
+**Next gate:** Close TK-007M with verification and documentation proof.
 
 > **Citation anchors.** pre=`f6af4c339b543988a3212b1940581157f573818d` post=`f6af4c339b543988a3212b1940581157f573818d`.
 

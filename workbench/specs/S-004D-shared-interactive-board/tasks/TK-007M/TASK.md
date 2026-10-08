@@ -3,11 +3,12 @@
 **Task ID:** TK-007M
 **Spec ID:** S-004D
 **Slice:** The Owner filters board questions by P, V or both into a fixed answering batch
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** TK-007L
 **Destination:** spec-acceptance: P1V2, P3V1, P2 alone and V alone return exactly their matching questions. Clearing filters restores the wider inventory; other board filters still combine.
 **Planned verification:** Red first at the page's slice seam (`matchesSlice` and the batch model, loaded through the existing `sliceModel()` harness in `tools/test-grill-board.mjs`): a fixture of graded and unclassified items where P1V2, P3V1, P2 alone and V1 alone must return exactly their members fails before the filters exist. Green: those exact sets; P alone spans every Value and V alone every Priority; clearing restores the whole inventory; P/V combine with topic, intent, scope, workflow stage and search; unclassified items are reachable without an invented grade; a batch started from a P/V slice keeps its membership and revisions through saves, pause/resume and reload; selecting a slice changes no grade; topic navigation keeps matching members reachable and shows no per-topic P/V score. Then a disposable-copy browser check and the full Runbook suite on the committed candidate.
+**Claimed by:** claude-dashboard-director
 
 ## Scope
 
