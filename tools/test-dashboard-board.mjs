@@ -751,7 +751,7 @@ test('a malformed answer-notepad entry is a clear invalid-notepad error naming t
   const loaded=readNote(root,{note});
   const appended=appendEntry(root,{note,revision:loaded.revision,kind:'source_record',topic:'dashboard-answer',content});
   assert.equal(appended.status,'appended');
-  assert.throws(()=>board.readAnswers(root),e=>e.code==='invalid-notepad'&&new RegExp(appended.entry?.id??'entry').test(e.message));
+  assert.throws(()=>board.readAnswers(root),e=>e.code==='invalid-notepad'&&typeof appended.entry==='string'&&e.message.includes(`entry ${appended.entry} `));
   const served=await serve(root,{dashboardRoute:null});
   try{
    const response=await fetch(`${served.base}/api/board`);
