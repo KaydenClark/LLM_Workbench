@@ -1,0 +1,270 @@
+
+[1/55] node tools/test-spec-workbench.mjs
+ok - spec retirement preserves live directory links, immutable history and pre-move safety
+ok - task retirement preserves live directory links, immutable history and pre-move safety
+ok - landmark move preserves live directory links, immutable history and pre-move safety
+ok - a Task record names exactly one parent: a Spec ID or a Landmark ID
+ok - a Task's Blockers hold only S-, TK- and LMK- identifiers (or the existing owner decision grammar)
+ok - formatTaskRecord writes a landmark-direct record the reader accepts
+ok - a Task record carries its accumulated claimants in an optional Claimed by field
+ok - public close recovers interrupted publication without wrong-target selection or duplicate proof
+ok - close refuses a dirty or unpushed tree unless --git-state-reason records the state and reason
+ok - close refuses a Spec with no in-progress Task instead of closing an unclaimed ready one
+ok - spec workbench lifecycle, rendering, and doctor self-test passed
+ok - task receipt append-only per-run record passed
+ok - task packet assembly, required members, heading anchoring, optional labeling, cited-path filtering, and corrective wiki-claim case passed
+ok - updateFields writes a Spec header field literally, never expanding a $-pattern value against the line it replaces
+ok - repository-wide ticket-vocabulary sweep found no live vocabulary outside the allow-list
+ok - parseSpecPacket accepts both the Task and the historical Ticket slice-table header
+ok - a historical Ticket-header completed Spec is byte-identical after render, doctor, next, claim, close, render again, doctor, convert-tasks, claim and receipt
+ok - the hot board derives a per-Task run/branch/SHA/dirty signal from Receipt rows, never the full run table
+ok - the board lists every in-progress Task on a Spec, each with its own signal, and never mixes in a ready or blocked Task
+ok - close appends a Receipt row for a record-backed Task with live Git facts, and writes no Receipt for a table-backed Spec
+ok - the receipt verb appends one Receipt row to a named in-progress Task, touching neither its Status nor the Spec, and refuses a Task that is not in-progress
+ok - complete refuses without a passed review verdict bound to the current content digest, naming no verdict, a stale digest, or a failed latest verdict as the reason; and, once reviewed, still refuses without a recorded owner Human QA approval bound to the same content, naming no approval, a stale approval digest, or a finding as the latest owner-qa entry - a passed current verdict AND a recorded current owner approval together let it proceed unchanged
+ok - a naive Spec directory move disappears from the active roster, dangles a live reference, and leaves no historical route; only the new reference scan catches it
+ok - moveSpecDirectory moves a completed Spec directory and its Task records into retired/, rewrites every live reference, leaves historical evidence untouched, keeps the active roster and hot board silent about it, and stays reachable by show and the Retired catalog heading
+ok - doctor's identity checks (duplicate-id, unstable-path) and the new retired-not-complete finding cover retired Specs, which stay invisible to loadSpecs
+ok - moveSpecDirectory refuses a room with no Git working tree at all, since such a move could never be recovered
+ok - scanReferences finds a planted stale canonicalized_in frontmatter target
+ok - scanReferences finds a dead path in REGISTER.md's Canonicalized-in column, not only in Markdown links
+ok - a hand-moved Task directory disappears from listTaskRecords, slicesOf, show and the board with no finding, is reachable by listRetiredTaskRecords, and leaves an unrepaired live reference to its old path
+ok - moveTaskRecord moves a done Task directory into tasks/retired/, rewrites every live reference, keeps the active roster and hot board silent about it, refuses a folder outside the closed set, an unknown Spec/Task, a not-done Task, a Task with nothing to carry, a dirty tree and a second move, and stays reachable by show and listRetiredTaskRecords
+ok - moveTaskRecord refuses a room with no Git working tree at all, since such a move could never be recovered
+ok - doctor's duplicate-id check and the new retired-task-not-done finding cover retired Task records
+ok - moveSpecDirectory carries a Spec's still-active, never individually retired Task record along with it, reachable afterward as the retired Spec's own active roster
+ok - assembleSpecReport shows a retired Task as history, with its own Receipt, so a reviewer still sees its proof
+ok - moveTaskRecord's nothing-to-carry guard refuses only when both a Receipt run and a Proof are absent, not either alone
+ok - moveTaskRecord regenerates REGISTER.md/HISTORY.md after rewriting an accepted ADR's canonicalized_in target to the moved Task's real path
+ok - retireSpec refuses an unknown or incomplete Spec, an unfinished Task record even on a hand-completed header, a missing Wiki note, and a Wiki note with the wrong type, knowledge_role, missing historical route, or copied task state - all before any write
+ok - retireSpec refuses a complete, otherwise-ready Spec with no current owner Human QA approval, naming the digest, and retires once one is recorded
+ok - retireSpec carries a completed Spec's Task records with it into retired/, appends the evidence row into the moved file, runs render, and cleans up only the branches its Tasks' Receipt rows prove contained - leaving an unmerged branch alone, listing a remote-only branch for the closeout recipe, and reporting an already-gone branch as already cleaned up
+ok - retire-spec parses its --wiki option like every other lifecycle command
+ok - discardRetiredSpec refuses an unknown or still-active Spec, anything not literally under retired/ (proving discard never reaches archive), an unverifiable or unmet main-containment check, a live reference naming the record, a stale Wiki durable owner, and a dirty working tree - all before any write
+ok - discardRetiredSpec succeeds once every gate is satisfied: it removes the whole retired directory, records a Git-recoverable identity in the DISCARDS.md register, runs render, leaves one fully staged candidate, and its own printed recovery command actually restores the record from history
+ok - discardRetiredTask gates on an unknown Task, an unverifiable main-containment check, a live reference, and a dirty working tree, and succeeds once every gate is satisfied - archive is never reachable, since no Task can ever occupy it
+ok - discard parses a bare Spec ID or a Spec ID with --task like every other lifecycle command
+ok - retireSpec refuses a feature owner for a Spec that is not complete, a missing article, an invalid type, role or path, no historical route, a malformed or copied article, a missing MEMORY.md route, a symlinked feature, design-concept or guidebook note and an absent owner approval, each by name with the tree and index unchanged
+ok - retireSpec accepts a validated, routed features article on a complete, approved Spec and its receipt names the owner and the historical route
+ok - a Spec stays retirable through a design-concept article moved into the features collection
+ok - discard --task refuses by name, writing nothing, until the parent Spec has a captured features article; a legacy owner, an unrouted article or an article behind a symlinked features collection is not a capture
+ok - doctor reports a Spec completed under the closure-capture contract with no captured features article as attention, stays silent for a pre-contract complete Spec, never treats an article reached through a symlinked features collection or linked ancestor as a capture, and the Spec stays complete
+ok - S-00I TK-003L manifest skills and legacy skills share move, scan, discard and diagnostics coverage
+demo - S-00I TK-01V {"step":"baseline","head":"ab94dc731dabe88f7ba7dc4987bac303bf216e84","source":"11f03d6fce4060b31a879fe9f72bbda182e2ebcc","main":"ab94dc731dabe88f7ba7dc4987bac303bf216e84","integration":"ab94dc731dabe88f7ba7dc4987bac303bf216e84","base":"ab94dc731dabe88f7ba7dc4987bac303bf216e84"}
+demo - S-00I TK-01V {"step":"T0 reviewed delivery","head":"7fd4f3e679a1aaf4c4f88ea31992a48a75956ded","candidate":"d66d9623c243060c51a2e9cf73a2b6b6e5b7bdba","digest":"9d8ac462a720d01d94e346732ffa691a18669c3f4fd9da47b4dde7e8e45298b6","integration":"7fd4f3e679a1aaf4c4f88ea31992a48a75956ded"}
+demo - S-00I TK-01V {"step":"T1 owner approval","head":"5c5cee590495a9e699cb11dac6ff67bd5a408092","approvedCandidate":"7fd4f3e679a1aaf4c4f88ea31992a48a75956ded","digest":"9d8ac462a720d01d94e346732ffa691a18669c3f4fd9da47b4dde7e8e45298b6","scope":"S-620","owner":"Simulated fixture owner (S-620 only; not Kayden Human QA)"}
+demo - S-00I TK-01V {"step":"T2 main verification","head":"5c5cee590495a9e699cb11dac6ff67bd5a408092","observedMain":"b27c4a84669822509b6bc04bf970200b879bfcd2","approvedCandidate":"7fd4f3e679a1aaf4c4f88ea31992a48a75956ded","digest":"9d8ac462a720d01d94e346732ffa691a18669c3f4fd9da47b4dde7e8e45298b6"}
+demo - S-00I TK-01V {"step":"T3 complete","head":"021305b626f34407c2b344e47affdccc918a4bfb","observedMain":"b27c4a84669822509b6bc04bf970200b879bfcd2","approvedCandidate":"7fd4f3e679a1aaf4c4f88ea31992a48a75956ded","digest":"9d8ac462a720d01d94e346732ffa691a18669c3f4fd9da47b4dde7e8e45298b6"}
+demo - S-00I TK-01V {"step":"T4 features capture","head":"f39c0c7d5e97729c47c72589d57bf3dd3dd68f73","article":"workbench/wiki/features/label-normalization.md","type":"feature"}
+demo - S-00I TK-01V {"step":"T5 retirement","head":"44cd05bbb94fdef1b96107f3761563d74c01b9a6","retirementCommit":"44cd05bbb94fdef1b96107f3761563d74c01b9a6","historicalRoute":"workbench/specs/retired/S-620-label-normalization/SPEC.md"}
+demo - S-00I TK-01V {"step":"T6 final Task discard and recovery","head":"5e9a6da1606b63d6284097b4a00fd9e8f4b938d7","recoveryCommand":"git checkout 44cd05bbb94fdef1b96107f3761563d74c01b9a6 -- workbench/specs/retired/S-620-label-normalization/tasks/retired/TK-620","recoveredEntries":4}
+demo - S-00I TK-01V {"step":"T6 Spec discard and fresh-clone recovery","head":"63a431b0f6a2b6e1d8980d619b68cc80f0ac4d3f","disposalCommit":"63a431b0f6a2b6e1d8980d619b68cc80f0ac4d3f","recoveryCommand":"git checkout 5e9a6da1606b63d6284097b4a00fd9e8f4b938d7 -- workbench/specs/retired/S-620-label-normalization","recoveredEntries":7}
+demo - S-00I TK-01V {"step":"T6 post-discard Wiki-claim correction refused","head":"63a431b0f6a2b6e1d8980d619b68cc80f0ac4d3f","destination":"workbench/wiki/features/label-normalization.md#Limits"}
+demo - S-00I TK-01V reached T6 post-discard Wiki-claim correction refused in 27.07s; fixture-only, no production approval
+ok - createCorrectiveTasks against a retired Spec refuses, naming the new-Spec route, while a record an earlier release wrote there still selects, claims and closes without moving the Spec out of retired/ - S-00J's deferred retired-folder case
+ok - S-004F TK-005S: a Wiki-claim correction against a discarded Spec refuses naming the new-Spec route, and a standalone corrective record an earlier release wrote is never selected, claimed or closed
+ok - identity proposals reserve active, retired, corrective, discarded and remote-only IDs
+ok - next-id reserves IDs from a remote tip whose matched spec lines exceed 1 MiB
+ok - a room declares the landmarks collection, validates a template-authored LANDMARK.md, names malformed ones, and next-id reserves LMK identities from every source
+ok - a Task directly under an assigned landmark is offered, claimed, receipted, gated, closed into the landmark log, shown on the Taskboard and retired; unassigned and planned landmarks run nothing
+ok - the whole-landmark review reports in plain text, refuses verify while a nested child is open, and a fail verdict puts its corrective Task under the landmark on the Taskboard
+ok - a landmark-direct claim is committed and pushed on its task branch, and another instance skips it
+ok - a Spec nested in its landmark folder is rendered, shown, offered, claimed, receipted, gated, closed, reported, given a verdict and moved, and unstable-path judges it against its own home
+ok - move-spec --landmark moves a Spec into, between and out of landmarks through the link-safe move, and refuses by name
+ok - S-00J TK-01T: S-###:delivered is satisfied by reviewed integration delivery (T0) and fails closed otherwise
+ok - S-00J TK-002N: S-###:delivered containment reads origin/<integration> when it exists (a lagging local branch cannot hide delivery; an unpushed local branch is not delivery) and falls back to the local branch without a remote, never fetching
+ok - a Task naming an optional capability the session cannot establish is skipped by next, routed to blocked by claim and close with the capability recorded, named on the Taskboard, and claimable once a session establishes it
+ok - widened and case-variant Spec/Task selectors reach the one stored record through receipt, gate, move-task and the retired explicit lookup, reporting stored IDs and paths without renaming anything
+ok - S-00J TK-02J: a declared-blocked record stays blocked until a real blocker clears, doctor names one with no resolvable blocker, and owner:<decision> waits until removed
+ok - claim pushes the claim as the first commit of a task branch cut from integration, and next and claim in another instance fetch and skip a Task claimed on any remote tip
+ok - claim on an already-cut task branch commits and pushes the claim there without creating a second branch
+ok - claim cuts a branch from a detached HEAD, and a push failure, a fetch failure or uncommitted base changes fail the claim visibly with nothing left half-claimed
+ok - with no remote, claim and next keep today's local behavior and say so
+ok - remote coordination counts a Task claimed only on a tip at its current run, so a continued Task is claimable without --local while a same-run claim still takes it
+ok - widen-id widens an active Spec and Task once to width four with a Former ID field, rewrites live links, keeps evidence byte-identical and counted, resolves former IDs (also from a cold clone), is a no-op on repeat, stages without committing, and refuses complete, done, retired and dirty cases without mutation
+ok - S-004F TK-005R: a continued Task is selected, claimed and closed like any other, and each later close appends a distinct Task closed (run N) evidence row
+ok - S-003Z TK-008I: retire-landmark refuses by name a landmark not reached, with an open child, without a current pass verdict, on a dirty tree, with a page outside the Wiki lane or not naming the historical LANDMARK.md route, or without the owner approval approve LMK-### records; then moves the whole folder link-safely and show finds it by its historical route
+✔ minimal planned intent renders Backlog with unknown metadata and never enters dispatch (630.590458ms)
+✔ minimal Backlog preserves precut work but refuses invalid active conversion before writes (688.671208ms)
+✔ activation refuses duplicate Status fields without changing any source (7606.562375ms)
+✔ Spec delivered dependency resolves independently of unrelated Tasks and preserves child capability gates (1571.368125ms)
+✔ next --review lists source-qualified Spec and Task cards in shared order, separately from ordinary next (385.825ms)
+✔ review dependency and capability exclusions remain visible and cannot be bypassed through the parent (102.211209ms)
+✔ review preserves numeric Task scopes while preview still refuses flat collisions (62961.743584ms)
+✔ review excludes retired/planned owners and unfinished parents without rewriting source (105.231958ms)
+✔ review uses qualified dependency semantics and normalized completed identities (57098.121958ms)
+✔ empty review Spec cannot hide malformed priority behind an empty child set (103.851166ms)
+✔ source needs-review is visible and never offered or claimed as ordinary To-do (530.978875ms)
+✔ Spec review permits review-ready children but does not manufacture completion or approval (97.066875ms)
+✔ unfinished ready child prevents a Spec review lane (95.986416ms)
+✔ unfinished in-progress child prevents a Spec review lane (99.42225ms)
+✔ unfinished blocked child prevents a Spec review lane (102.828584ms)
+✔ unfinished deferred child prevents a Spec review lane (98.346209ms)
+✔ declared Complete with a review child stays out of Complete and retains contradictory-state diagnosis (315.191333ms)
+✔ direct Task completion adds no mandatory Task review ceremony (96.803625ms)
+✔ review requirements and failed Human QA next action stay visible without satisfying dependencies (199.04075ms)
+✔ new review vocabulary preserves typo refusal and prior preview bytes (363.186958ms)
+✔ ordinary next offers To-do rather than in-progress work without writing source or preview (196.441709ms)
+✔ ordinary next and scoped claim use projected Task priority, title and WBID order (345.27875ms)
+✔ every dependency-waiting To-do stays visible, unoffered and named by doctor; refused scoped claim writes nothing (571.910709ms)
+✔ cleared source dependency derives To-do consistently without changing the authored blocked status (638.378834ms)
+✔ source-qualified selection and scoped claims preserve duplicate numeric labels while flat preview still refuses without writes (442.828666ms)
+✔ capability gates overlay shared eligibility, remain visible, and route only through an authorized claim (650.474959ms)
+✔ no To-do work returns no ordinary offer and an unclaimed refusal preserves all bytes (325.555333ms)
+✔ equal source priority and title use WBID order across preview, next and scoped claim (350.388375ms)
+✔ invalid source priority is named by doctor and refuses preview, next and claim without writes (626.679625ms)
+✔ Git-backed doctor retains invalid-state and other findings for ready Priority invalid, with no writes (893.900541ms)
+✔ Git-backed doctor retains invalid-state and other findings for ready Priority -1, with no writes (899.360334ms)
+✔ Git-backed doctor retains invalid-state and other findings for ready Priority 1.5, with no writes (893.8265ms)
+✔ Git-backed doctor retains invalid-state and other findings for ready Priority Infinity, with no writes (886.1315ms)
+✔ Git-backed doctor retains invalid-state and other findings for in-progress Priority invalid, with no writes (893.75775ms)
+✔ Git-backed doctor retains invalid-state and other findings for in-progress Priority -1, with no writes (866.810083ms)
+✔ Git-backed doctor retains invalid-state and other findings for in-progress Priority 1.5, with no writes (956.3955ms)
+✔ Git-backed doctor retains invalid-state and other findings for in-progress Priority Infinity, with no writes (877.693583ms)
+✔ Git-backed doctor retains invalid legacy table status and unrelated findings while selection and preview refuse without writes (870.189292ms)
+✔ non-active priority remains diagnosed without hiding a valid integration candidate (735.5255ms)
+✔ non-active table-status remains diagnosed without hiding a valid integration candidate (729.725125ms)
+✔ active priority does not suppress another Spec's integration diagnostic (909.676458ms)
+✔ active table-status does not suppress another Spec's integration diagnostic (917.422166ms)
+✔ active slice-conflict does not suppress another Spec's integration diagnostic (935.305208ms)
+✔ a Task declaring a different existing Spec refuses preview, next and claim without writes (1007.772417ms)
+✔ doctor propagates unexpected shared-calculation faults rather than treating them as malformed source (307.940625ms)
+✔ competing remote claims exclude offers and claims without changing visible source lanes or integration (2811.48175ms)
+✔ public JSON preview has six lanes, both card grains, resolving sources, dependency visibility and derived cleanup (106.829916ms)
+✔ source edits regenerate, output edits are erased, bytes are deterministic and known metadata stays source-owned (376.651125ms)
+✔ priority then title then visible identity determine reproducible card order (101.308625ms)
+✔ a Spec cannot reach review or complete while a child is unfinished; active does not invent a review-ready claim (101.435208ms)
+✔ legacy numeric identity remains Spec-scoped in source; flat collision refuses without dropping either record or changing prior output (293.280125ms)
+✔ case and width aliases cannot silently become two JSON card keys (367.241417ms)
+✔ malformed source, parent mismatch, invalid metadata and unsupported format refuse before any write (447.966375ms)
+✔ duplicate Spec body field after a section refuses before replacing the existing preview (288.420791ms)
+✔ duplicate Spec normalized field name in the header refuses before replacing the existing preview (286.862ms)
+✔ preview duplicate guard matches whole-document key trimming and case-sensitive source extraction (860.383ms)
+✔ single normalized metadata fields follow source whitespace and whole-document semantics (199.352084ms)
+✔ linked outputs and linked source directories refuse without touching their targets (220.138917ms)
+✔ JSON rendering leaves the default Markdown and catalog projection byte-for-byte unchanged (295.538625ms)
+✔ a landmark-direct Task projects under its landmark and is offered only while the landmark is assigned (748.450458ms)
+ℹ tests 60
+ℹ suites 0
+ℹ pass 60
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 158496.745167
+
+[2/55] node tools/test-spec-assembly-selection.mjs
+✔ claim explicitly selects the second eligible Task without touching the first (125.503708ms)
+✔ unknown or blocked targeted claim never falls through to another ready Task (250.744875ms)
+✔ close explicitly completes the second claim and keeps the first untouched (191.095833ms)
+✔ unknown or unclaimed targeted close never closes another active Task (252.783083ms)
+✔ omitting task preserves first-eligible claim and first-active close (260.674916ms)
+✔ claim refuses an explicitly missing or empty Task ID before mutation (389.797625ms)
+✔ close refuses an explicitly missing or empty Task ID before mutation (371.506542ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1845.578583
+
+[3/55] node tools/test-skill-catalog.mjs
+ok - the portable 32-skill source bundle and retired discovery boundary are aligned
+✔ code-review fixed diff disables a hostile textconv driver (382.729292ms)
+✔ independence applies at integration, not every task close (1.055042ms)
+✔ notepad skills capture before interruption and preserve unresolved cleanup context (0.460375ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 387.526292
+
+[4/55] node tools/test-skill-inspection.mjs
+✔ a lane holding every required skill behind both adapters is clean, and inspection never writes (9.636916ms)
+✔ an uninstalled lane is one finding; a single missing skill is reported by name (1.844459ms)
+✔ an absent or misresolving discovery root is reported by root without blocking (3.341041ms)
+✔ a root skills/ shadow blocks everything, an unsafe lane entry is unreadable, and a .codex duplicate is diagnosed (3.677917ms)
+✔ a manifest without a skills lane, an unsafe lane, or an unsupported policy is reported and nothing is read further (1.77675ms)
+✔ an index pointer makes a lane skill binding for its operation and a room-added unpointed skill teaches only (3.421417ms)
+✔ only the lane copy of a pointed skill is read, so a drifted installed copy loses (2.714916ms)
+✔ a pointer to a skill missing from the lane is reported by name as attention that blocks nothing (2.185167ms)
+✔ a room without an operations index resolves no pointer and reports nothing (2.401541ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 34.592417
+
+[5/55] node tools/test-skills-lane.mjs
+✖ a scrubbed clone of the committed candidate resolves every required skill through both discovery roots inside the lane (3058.072833ms)
+✔ the release lays the lane into a fresh room with a receipt and adapters, verifies it, and doctor names a root skills shadow (1422.352333ms)
+✔ TK-008L: the skills update installs improve-harness into a room that lacks it and leaves a room-added skill untouched (1017.543125ms)
+✔ TK-005M: the skills update installs every skill the new index points to, and a room-added skill stays teaching (958.525583ms)
+✔ install refuses an adapter collision before copying anything, and rollback accepts only a backup the receipt recorded (412.065292ms)
+✔ every skill the root controls or a lane SKILL.md references ships in the lane or carries a recorded non-lane disposition (9.024458ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 5
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6881.690583
+
+✖ failing tests:
+
+test at tools/test-skills-lane.mjs:37:1
+✖ a scrubbed clone of the committed candidate resolves every required skill through both discovery roots inside the lane (3058.072833ms)
+  AssertionError [ERR_ASSERTION]: blocking (1) - doctor exits 1 until repaired
+    render-drift [blocks selection, error]: TASKBOARD.md generated region is stale
+  selected slice (12) - next excludes the slice and claim refuses it
+    blocked-slice [blocks selected-slice, error]: S-004D/TK-007M waits on TK-007L
+    blocked-slice [blocks selected-slice, error]: S-004D/TK-007N waits on TK-007L
+    blocked-slice [blocks selected-slice, error]: S-004D/TK-007O waits on TK-007M, TK-007N
+    blocked-slice [blocks selected-slice, error]: S-004E/TK-005Z waits on TK-005Y
+    blocked-slice [blocks selected-slice, error]: S-004L/TK-006W waits on TK-006V
+    blocked-slice [blocks selected-slice, error]: S-004M/TK-008W waits on TK-008V
+    blocked-slice [blocks selected-slice, error]: S-004M/TK-008X waits on TK-008W
+    blocked-slice [blocks selected-slice, error]: S-004O/TK-009D waits on TK-009C
+    blocked-slice [blocks selected-slice, error]: S-004O/TK-009E waits on TK-009C
+    blocked-slice [blocks selected-slice, error]: S-004O/TK-009F waits on TK-009B, TK-009C, TK-009D
+    blocked-slice [blocks selected-slice, error]: S-004O/TK-009G waits on TK-009B, TK-009C, TK-009F
+    blocked-slice [blocks selected-slice, error]: S-004O/TK-009H waits on TK-009E, TK-009G
+  informational (12) - reported only; nothing is blocked
+    stale-claim [blocks none, attention]: S-003W has an in-progress task last updated 2026-10-04
+    stale-claim [blocks none, attention]: S-00Q has an in-progress task last updated 2026-09-19
+    stale-claim [blocks none, attention]: S-01H has an in-progress task last updated 2026-10-03
+    stale-claim [blocks none, attention]: S-01P has an in-progress task last updated 2026-10-03
+    stale-claim [blocks none, attention]: S-01S has an in-progress task last updated 2026-10-03
+    stale-seed [blocks none, attention]: workbench/feedback/REPORT_FORMAT.md was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release
+    stale-seed [blocks none, attention]: workbench/sessions/notepads/templates/notepad.schema.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release
+    stale-seed [blocks none, attention]: workbench/sessions/notepads/templates/work.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release
+    stale-seed [blocks none, attention]: workbench/sessions/notepads/templates/grilling.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release
+    stale-seed [blocks none, attention]: workbench/sessions/notepads/templates/handoff.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release
+    unverified-provenance [blocks none, attention]: workbench/manifest.json provenance.source.release "v3.1.0" disagrees with workbenchVersion v3.2.1
+    integration-branch-missing [blocks none, error]: declared integration branch integration resolves neither as a local head nor on a remote; create it from main
+  
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (file:///Users/kayden/Documents/Codex/2026-10-08/task-2/confirmed-followup/tools/test-skills-lane.mjs:58:12)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+Full verification stopped: node tools/test-skills-lane.mjs (exit 1).

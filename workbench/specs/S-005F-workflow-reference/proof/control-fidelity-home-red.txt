@@ -1,0 +1,1037 @@
+
+[1/55] node tools/test-spec-workbench.mjs
+ok - spec retirement preserves live directory links, immutable history and pre-move safety
+ok - task retirement preserves live directory links, immutable history and pre-move safety
+ok - landmark move preserves live directory links, immutable history and pre-move safety
+ok - a Task record names exactly one parent: a Spec ID or a Landmark ID
+ok - a Task's Blockers hold only S-, TK- and LMK- identifiers (or the existing owner decision grammar)
+ok - formatTaskRecord writes a landmark-direct record the reader accepts
+ok - a Task record carries its accumulated claimants in an optional Claimed by field
+ok - public close recovers interrupted publication without wrong-target selection or duplicate proof
+ok - close refuses a dirty or unpushed tree unless --git-state-reason records the state and reason
+ok - close refuses a Spec with no in-progress Task instead of closing an unclaimed ready one
+ok - spec workbench lifecycle, rendering, and doctor self-test passed
+ok - task receipt append-only per-run record passed
+ok - task packet assembly, required members, heading anchoring, optional labeling, cited-path filtering, and corrective wiki-claim case passed
+ok - updateFields writes a Spec header field literally, never expanding a $-pattern value against the line it replaces
+ok - repository-wide ticket-vocabulary sweep found no live vocabulary outside the allow-list
+ok - parseSpecPacket accepts both the Task and the historical Ticket slice-table header
+ok - a historical Ticket-header completed Spec is byte-identical after render, doctor, next, claim, close, render again, doctor, convert-tasks, claim and receipt
+ok - the hot board derives a per-Task run/branch/SHA/dirty signal from Receipt rows, never the full run table
+ok - the board lists every in-progress Task on a Spec, each with its own signal, and never mixes in a ready or blocked Task
+ok - close appends a Receipt row for a record-backed Task with live Git facts, and writes no Receipt for a table-backed Spec
+ok - the receipt verb appends one Receipt row to a named in-progress Task, touching neither its Status nor the Spec, and refuses a Task that is not in-progress
+ok - complete refuses without a passed review verdict bound to the current content digest, naming no verdict, a stale digest, or a failed latest verdict as the reason; and, once reviewed, still refuses without a recorded owner Human QA approval bound to the same content, naming no approval, a stale approval digest, or a finding as the latest owner-qa entry - a passed current verdict AND a recorded current owner approval together let it proceed unchanged
+ok - a naive Spec directory move disappears from the active roster, dangles a live reference, and leaves no historical route; only the new reference scan catches it
+ok - moveSpecDirectory moves a completed Spec directory and its Task records into retired/, rewrites every live reference, leaves historical evidence untouched, keeps the active roster and hot board silent about it, and stays reachable by show and the Retired catalog heading
+ok - doctor's identity checks (duplicate-id, unstable-path) and the new retired-not-complete finding cover retired Specs, which stay invisible to loadSpecs
+ok - moveSpecDirectory refuses a room with no Git working tree at all, since such a move could never be recovered
+ok - scanReferences finds a planted stale canonicalized_in frontmatter target
+ok - scanReferences finds a dead path in REGISTER.md's Canonicalized-in column, not only in Markdown links
+ok - a hand-moved Task directory disappears from listTaskRecords, slicesOf, show and the board with no finding, is reachable by listRetiredTaskRecords, and leaves an unrepaired live reference to its old path
+ok - moveTaskRecord moves a done Task directory into tasks/retired/, rewrites every live reference, keeps the active roster and hot board silent about it, refuses a folder outside the closed set, an unknown Spec/Task, a not-done Task, a Task with nothing to carry, a dirty tree and a second move, and stays reachable by show and listRetiredTaskRecords
+ok - moveTaskRecord refuses a room with no Git working tree at all, since such a move could never be recovered
+ok - doctor's duplicate-id check and the new retired-task-not-done finding cover retired Task records
+ok - moveSpecDirectory carries a Spec's still-active, never individually retired Task record along with it, reachable afterward as the retired Spec's own active roster
+ok - assembleSpecReport shows a retired Task as history, with its own Receipt, so a reviewer still sees its proof
+ok - moveTaskRecord's nothing-to-carry guard refuses only when both a Receipt run and a Proof are absent, not either alone
+ok - moveTaskRecord regenerates REGISTER.md/HISTORY.md after rewriting an accepted ADR's canonicalized_in target to the moved Task's real path
+ok - retireSpec refuses an unknown or incomplete Spec, an unfinished Task record even on a hand-completed header, a missing Wiki note, and a Wiki note with the wrong type, knowledge_role, missing historical route, or copied task state - all before any write
+ok - retireSpec refuses a complete, otherwise-ready Spec with no current owner Human QA approval, naming the digest, and retires once one is recorded
+ok - retireSpec carries a completed Spec's Task records with it into retired/, appends the evidence row into the moved file, runs render, and cleans up only the branches its Tasks' Receipt rows prove contained - leaving an unmerged branch alone, listing a remote-only branch for the closeout recipe, and reporting an already-gone branch as already cleaned up
+ok - retire-spec parses its --wiki option like every other lifecycle command
+ok - discardRetiredSpec refuses an unknown or still-active Spec, anything not literally under retired/ (proving discard never reaches archive), an unverifiable or unmet main-containment check, a live reference naming the record, a stale Wiki durable owner, and a dirty working tree - all before any write
+ok - discardRetiredSpec succeeds once every gate is satisfied: it removes the whole retired directory, records a Git-recoverable identity in the DISCARDS.md register, runs render, leaves one fully staged candidate, and its own printed recovery command actually restores the record from history
+ok - discardRetiredTask gates on an unknown Task, an unverifiable main-containment check, a live reference, and a dirty working tree, and succeeds once every gate is satisfied - archive is never reachable, since no Task can ever occupy it
+ok - discard parses a bare Spec ID or a Spec ID with --task like every other lifecycle command
+ok - retireSpec refuses a feature owner for a Spec that is not complete, a missing article, an invalid type, role or path, no historical route, a malformed or copied article, a missing MEMORY.md route, a symlinked feature, design-concept or guidebook note and an absent owner approval, each by name with the tree and index unchanged
+ok - retireSpec accepts a validated, routed features article on a complete, approved Spec and its receipt names the owner and the historical route
+ok - a Spec stays retirable through a design-concept article moved into the features collection
+ok - discard --task refuses by name, writing nothing, until the parent Spec has a captured features article; a legacy owner, an unrouted article or an article behind a symlinked features collection is not a capture
+ok - doctor reports a Spec completed under the closure-capture contract with no captured features article as attention, stays silent for a pre-contract complete Spec, never treats an article reached through a symlinked features collection or linked ancestor as a capture, and the Spec stays complete
+ok - S-00I TK-003L manifest skills and legacy skills share move, scan, discard and diagnostics coverage
+demo - S-00I TK-01V {"step":"baseline","head":"ebad281831b8b6cab1487a92c891c242354d978a","source":"58f26928be03752fe353befe29026b9125d4e982","main":"ebad281831b8b6cab1487a92c891c242354d978a","integration":"ebad281831b8b6cab1487a92c891c242354d978a","base":"ebad281831b8b6cab1487a92c891c242354d978a"}
+demo - S-00I TK-01V {"step":"T0 reviewed delivery","head":"99f2c92bd2e6979a20b1bcb7ed73b00270fcdaa0","candidate":"0f98a675db873f8220ea9c1180ccff00d87a434e","digest":"9d8ac462a720d01d94e346732ffa691a18669c3f4fd9da47b4dde7e8e45298b6","integration":"99f2c92bd2e6979a20b1bcb7ed73b00270fcdaa0"}
+demo - S-00I TK-01V {"step":"T1 owner approval","head":"b683218236d7ce77ccd12d5e03097f79f1f9b1b0","approvedCandidate":"99f2c92bd2e6979a20b1bcb7ed73b00270fcdaa0","digest":"9d8ac462a720d01d94e346732ffa691a18669c3f4fd9da47b4dde7e8e45298b6","scope":"S-620","owner":"Simulated fixture owner (S-620 only; not Kayden Human QA)"}
+demo - S-00I TK-01V {"step":"T2 main verification","head":"b683218236d7ce77ccd12d5e03097f79f1f9b1b0","observedMain":"5ad0e06d7528a641a69c15d12c79de895a97fc1f","approvedCandidate":"99f2c92bd2e6979a20b1bcb7ed73b00270fcdaa0","digest":"9d8ac462a720d01d94e346732ffa691a18669c3f4fd9da47b4dde7e8e45298b6"}
+demo - S-00I TK-01V {"step":"T3 complete","head":"af8421b4d84f3a8137fedfe27ef09a32109a90ab","observedMain":"5ad0e06d7528a641a69c15d12c79de895a97fc1f","approvedCandidate":"99f2c92bd2e6979a20b1bcb7ed73b00270fcdaa0","digest":"9d8ac462a720d01d94e346732ffa691a18669c3f4fd9da47b4dde7e8e45298b6"}
+demo - S-00I TK-01V {"step":"T4 features capture","head":"e35006211b13c072348065b629af71ef3d6e261c","article":"workbench/wiki/features/label-normalization.md","type":"feature"}
+demo - S-00I TK-01V {"step":"T5 retirement","head":"43fb981bfafa6f04feb13f52bb34fe142c9a3569","retirementCommit":"43fb981bfafa6f04feb13f52bb34fe142c9a3569","historicalRoute":"workbench/specs/retired/S-620-label-normalization/SPEC.md"}
+demo - S-00I TK-01V {"step":"T6 final Task discard and recovery","head":"ca3bc3f813f3a3f85ac03b743dfc39ad8e5d1575","recoveryCommand":"git checkout 43fb981bfafa6f04feb13f52bb34fe142c9a3569 -- workbench/specs/retired/S-620-label-normalization/tasks/retired/TK-620","recoveredEntries":4}
+demo - S-00I TK-01V {"step":"T6 Spec discard and fresh-clone recovery","head":"78643163297e9f0f94d464739fe38cb360dc519f","disposalCommit":"78643163297e9f0f94d464739fe38cb360dc519f","recoveryCommand":"git checkout ca3bc3f813f3a3f85ac03b743dfc39ad8e5d1575 -- workbench/specs/retired/S-620-label-normalization","recoveredEntries":7}
+demo - S-00I TK-01V {"step":"T6 post-discard Wiki-claim correction refused","head":"78643163297e9f0f94d464739fe38cb360dc519f","destination":"workbench/wiki/features/label-normalization.md#Limits"}
+demo - S-00I TK-01V reached T6 post-discard Wiki-claim correction refused in 31.17s; fixture-only, no production approval
+ok - createCorrectiveTasks against a retired Spec refuses, naming the new-Spec route, while a record an earlier release wrote there still selects, claims and closes without moving the Spec out of retired/ - S-00J's deferred retired-folder case
+ok - S-004F TK-005S: a Wiki-claim correction against a discarded Spec refuses naming the new-Spec route, and a standalone corrective record an earlier release wrote is never selected, claimed or closed
+ok - identity proposals reserve active, retired, corrective, discarded and remote-only IDs
+ok - next-id reserves IDs from a remote tip whose matched spec lines exceed 1 MiB
+ok - a room declares the landmarks collection, validates a template-authored LANDMARK.md, names malformed ones, and next-id reserves LMK identities from every source
+ok - a Task directly under an assigned landmark is offered, claimed, receipted, gated, closed into the landmark log, shown on the Taskboard and retired; unassigned and planned landmarks run nothing
+ok - the whole-landmark review reports in plain text, refuses verify while a nested child is open, and a fail verdict puts its corrective Task under the landmark on the Taskboard
+ok - a landmark-direct claim is committed and pushed on its task branch, and another instance skips it
+ok - a Spec nested in its landmark folder is rendered, shown, offered, claimed, receipted, gated, closed, reported, given a verdict and moved, and unstable-path judges it against its own home
+ok - move-spec --landmark moves a Spec into, between and out of landmarks through the link-safe move, and refuses by name
+ok - S-00J TK-01T: S-###:delivered is satisfied by reviewed integration delivery (T0) and fails closed otherwise
+ok - S-00J TK-002N: S-###:delivered containment reads origin/<integration> when it exists (a lagging local branch cannot hide delivery; an unpushed local branch is not delivery) and falls back to the local branch without a remote, never fetching
+ok - a Task naming an optional capability the session cannot establish is skipped by next, routed to blocked by claim and close with the capability recorded, named on the Taskboard, and claimable once a session establishes it
+ok - widened and case-variant Spec/Task selectors reach the one stored record through receipt, gate, move-task and the retired explicit lookup, reporting stored IDs and paths without renaming anything
+ok - S-00J TK-02J: a declared-blocked record stays blocked until a real blocker clears, doctor names one with no resolvable blocker, and owner:<decision> waits until removed
+ok - claim pushes the claim as the first commit of a task branch cut from integration, and next and claim in another instance fetch and skip a Task claimed on any remote tip
+ok - claim on an already-cut task branch commits and pushes the claim there without creating a second branch
+ok - claim cuts a branch from a detached HEAD, and a push failure, a fetch failure or uncommitted base changes fail the claim visibly with nothing left half-claimed
+ok - with no remote, claim and next keep today's local behavior and say so
+ok - remote coordination counts a Task claimed only on a tip at its current run, so a continued Task is claimable without --local while a same-run claim still takes it
+ok - widen-id widens an active Spec and Task once to width four with a Former ID field, rewrites live links, keeps evidence byte-identical and counted, resolves former IDs (also from a cold clone), is a no-op on repeat, stages without committing, and refuses complete, done, retired and dirty cases without mutation
+ok - S-004F TK-005R: a continued Task is selected, claimed and closed like any other, and each later close appends a distinct Task closed (run N) evidence row
+ok - S-003Z TK-008I: retire-landmark refuses by name a landmark not reached, with an open child, without a current pass verdict, on a dirty tree, with a page outside the Wiki lane or not naming the historical LANDMARK.md route, or without the owner approval approve LMK-### records; then moves the whole folder link-safely and show finds it by its historical route
+✔ minimal planned intent renders Backlog with unknown metadata and never enters dispatch (691.9235ms)
+✔ minimal Backlog preserves precut work but refuses invalid active conversion before writes (632.96675ms)
+✔ activation refuses duplicate Status fields without changing any source (8226.051875ms)
+✔ Spec delivered dependency resolves independently of unrelated Tasks and preserves child capability gates (1538.823875ms)
+✔ next --review lists source-qualified Spec and Task cards in shared order, separately from ordinary next (408.135542ms)
+✔ review dependency and capability exclusions remain visible and cannot be bypassed through the parent (107.44225ms)
+✔ review preserves numeric Task scopes while preview still refuses flat collisions (73309.307125ms)
+✔ review excludes retired/planned owners and unfinished parents without rewriting source (110.705459ms)
+✔ review uses qualified dependency semantics and normalized completed identities (61389.882416ms)
+✔ empty review Spec cannot hide malformed priority behind an empty child set (108.01ms)
+✔ source needs-review is visible and never offered or claimed as ordinary To-do (567.782125ms)
+✔ Spec review permits review-ready children but does not manufacture completion or approval (109.257292ms)
+✔ unfinished ready child prevents a Spec review lane (102.005667ms)
+✔ unfinished in-progress child prevents a Spec review lane (99.1865ms)
+✔ unfinished blocked child prevents a Spec review lane (99.30325ms)
+✔ unfinished deferred child prevents a Spec review lane (100.553208ms)
+✔ declared Complete with a review child stays out of Complete and retains contradictory-state diagnosis (327.5595ms)
+✔ direct Task completion adds no mandatory Task review ceremony (102.858417ms)
+✔ review requirements and failed Human QA next action stay visible without satisfying dependencies (206.952458ms)
+✔ new review vocabulary preserves typo refusal and prior preview bytes (381.273458ms)
+✔ ordinary next offers To-do rather than in-progress work without writing source or preview (205.357541ms)
+✔ ordinary next and scoped claim use projected Task priority, title and WBID order (340.531542ms)
+✔ every dependency-waiting To-do stays visible, unoffered and named by doctor; refused scoped claim writes nothing (547.85025ms)
+✔ cleared source dependency derives To-do consistently without changing the authored blocked status (562.975292ms)
+✔ source-qualified selection and scoped claims preserve duplicate numeric labels while flat preview still refuses without writes (440.91125ms)
+✔ capability gates overlay shared eligibility, remain visible, and route only through an authorized claim (641.131667ms)
+✔ no To-do work returns no ordinary offer and an unclaimed refusal preserves all bytes (319.892542ms)
+✔ equal source priority and title use WBID order across preview, next and scoped claim (340.037584ms)
+✔ invalid source priority is named by doctor and refuses preview, next and claim without writes (629.02625ms)
+✔ Git-backed doctor retains invalid-state and other findings for ready Priority invalid, with no writes (899.919709ms)
+✔ Git-backed doctor retains invalid-state and other findings for ready Priority -1, with no writes (881.508334ms)
+✔ Git-backed doctor retains invalid-state and other findings for ready Priority 1.5, with no writes (895.902875ms)
+✔ Git-backed doctor retains invalid-state and other findings for ready Priority Infinity, with no writes (891.4885ms)
+✔ Git-backed doctor retains invalid-state and other findings for in-progress Priority invalid, with no writes (886.298291ms)
+✔ Git-backed doctor retains invalid-state and other findings for in-progress Priority -1, with no writes (887.59325ms)
+✔ Git-backed doctor retains invalid-state and other findings for in-progress Priority 1.5, with no writes (889.945ms)
+✔ Git-backed doctor retains invalid-state and other findings for in-progress Priority Infinity, with no writes (903.59325ms)
+✔ Git-backed doctor retains invalid legacy table status and unrelated findings while selection and preview refuse without writes (903.471917ms)
+✔ non-active priority remains diagnosed without hiding a valid integration candidate (737.694958ms)
+✔ non-active table-status remains diagnosed without hiding a valid integration candidate (722.607584ms)
+✔ active priority does not suppress another Spec's integration diagnostic (905.610958ms)
+✔ active table-status does not suppress another Spec's integration diagnostic (893.043375ms)
+✔ active slice-conflict does not suppress another Spec's integration diagnostic (902.788916ms)
+✔ a Task declaring a different existing Spec refuses preview, next and claim without writes (982.184375ms)
+✔ doctor propagates unexpected shared-calculation faults rather than treating them as malformed source (314.066708ms)
+✔ competing remote claims exclude offers and claims without changing visible source lanes or integration (2917.343708ms)
+✔ public JSON preview has six lanes, both card grains, resolving sources, dependency visibility and derived cleanup (107.525ms)
+✔ source edits regenerate, output edits are erased, bytes are deterministic and known metadata stays source-owned (390.47425ms)
+✔ priority then title then visible identity determine reproducible card order (102.726416ms)
+✔ a Spec cannot reach review or complete while a child is unfinished; active does not invent a review-ready claim (114.264041ms)
+✔ legacy numeric identity remains Spec-scoped in source; flat collision refuses without dropping either record or changing prior output (293.896375ms)
+✔ case and width aliases cannot silently become two JSON card keys (393.355375ms)
+✔ malformed source, parent mismatch, invalid metadata and unsupported format refuse before any write (447.732833ms)
+✔ duplicate Spec body field after a section refuses before replacing the existing preview (290.161083ms)
+✔ duplicate Spec normalized field name in the header refuses before replacing the existing preview (293.342084ms)
+✔ preview duplicate guard matches whole-document key trimming and case-sensitive source extraction (876.315875ms)
+✔ single normalized metadata fields follow source whitespace and whole-document semantics (199.270417ms)
+✔ linked outputs and linked source directories refuse without touching their targets (222.015542ms)
+✔ JSON rendering leaves the default Markdown and catalog projection byte-for-byte unchanged (320.305667ms)
+✔ a landmark-direct Task projects under its landmark and is offered only while the landmark is assigned (755.74725ms)
+ℹ tests 60
+ℹ suites 0
+ℹ pass 60
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 173878.416167
+
+[2/55] node tools/test-spec-assembly-selection.mjs
+✔ claim explicitly selects the second eligible Task without touching the first (128.5965ms)
+✔ unknown or blocked targeted claim never falls through to another ready Task (247.772083ms)
+✔ close explicitly completes the second claim and keeps the first untouched (191.798625ms)
+✔ unknown or unclaimed targeted close never closes another active Task (251.796334ms)
+✔ omitting task preserves first-eligible claim and first-active close (261.876792ms)
+✔ claim refuses an explicitly missing or empty Task ID before mutation (371.558875ms)
+✔ close refuses an explicitly missing or empty Task ID before mutation (377.0035ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1833.9435
+
+[3/55] node tools/test-skill-catalog.mjs
+ok - the portable 32-skill source bundle and retired discovery boundary are aligned
+✔ code-review fixed diff disables a hostile textconv driver (385.57125ms)
+✔ independence applies at integration, not every task close (2.065584ms)
+✔ notepad skills capture before interruption and preserve unresolved cleanup context (1.27ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 392.433
+
+[4/55] node tools/test-skill-inspection.mjs
+✔ a lane holding every required skill behind both adapters is clean, and inspection never writes (9.082041ms)
+✔ an uninstalled lane is one finding; a single missing skill is reported by name (1.647166ms)
+✔ an absent or misresolving discovery root is reported by root without blocking (2.904417ms)
+✔ a root skills/ shadow blocks everything, an unsafe lane entry is unreadable, and a .codex duplicate is diagnosed (3.607333ms)
+✔ a manifest without a skills lane, an unsafe lane, or an unsupported policy is reported and nothing is read further (1.51775ms)
+✔ an index pointer makes a lane skill binding for its operation and a room-added unpointed skill teaches only (3.228ms)
+✔ only the lane copy of a pointed skill is read, so a drifted installed copy loses (2.465458ms)
+✔ a pointer to a skill missing from the lane is reported by name as attention that blocks nothing (2.02125ms)
+✔ a room without an operations index resolves no pointer and reports nothing (2.168125ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 32.130667
+
+[5/55] node tools/test-skills-lane.mjs
+✔ a scrubbed clone of the committed candidate resolves every required skill through both discovery roots inside the lane (3035.33075ms)
+✔ the release lays the lane into a fresh room with a receipt and adapters, verifies it, and doctor names a root skills shadow (1402.972417ms)
+✔ TK-008L: the skills update installs improve-harness into a room that lacks it and leaves a room-added skill untouched (998.628666ms)
+✔ TK-005M: the skills update installs every skill the new index points to, and a room-added skill stays teaching (936.973625ms)
+✔ install refuses an adapter collision before copying anything, and rollback accepts only a backup the receipt recorded (419.997875ms)
+✔ every skill the root controls or a lane SKILL.md references ships in the lane or carries a recorded non-lane disposition (8.453166ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6806.509
+
+[6/55] node tools/test-domain-modeling-skill.mjs
+✔ the skill declares itself and joins the required bundle after improve-harness (1.566625ms)
+✔ both tracked discovery adapters resolve the lane source (0.170625ms)
+✔ an operations index row in the root and template Runbooks points to the skill (1.310917ms)
+✔ Matt's active moves are preserved under their upstream headings (0.421917ms)
+✔ Matt's glossary format is kept verbatim beneath a Workbench adapter note (0.324583ms)
+✔ upstream consequences are traced to named owners before a choice settles, bounded (0.168875ms)
+✔ pending meaning stays in the notepad; settled meaning reaches its owner only by promotion (0.343792ms)
+✔ decision records are offered sparingly and chosen as ADR or DDR by the scope test (0.137709ms)
+✔ the skill is a companion, keeps one vocabulary owner and records each adapter with its reason (0.597042ms)
+✔ no shadow terminology or decision store, and nothing that only this repository has (0.687125ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9.367625
+
+[7/55] node tools/test-core-composition.mjs
+✔ fresh core composes local save and selected promotion using only installed project runtime (1229.7065ms)
+✔ public runtime supports separate decision-record, Map and Plan publication with retry (3157.983083ms)
+✔ a save commit is proven by fresh remote containment while its unresolved note stays local (938.806583ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5329.810292
+
+[8/55] node tools/test-project-evidence.mjs
+ok - project evidence preparation self-test passed
+
+[9/55] node tools/test-genesis-from-decisions.mjs
+demo - installed source dcd5be0ce389abc3b3f7e24719bcc539be2649fc; record-backed pond claim
+demo - pond product RED: missing render and visitor response
+demo - pond product GREEN: {"view":"Pond: ~~~ puffer ~~~","response":"Puffer greets Kay."}
+demo - pond Task closed; report complete; stale/missing proof refused without writes; 3.387s (fixture mechanics only)
+ok - Genesis derives one source-linked room through release init/install and publishes atomically
+
+[10/55] node tools/test-blueprint-contract.mjs
+ok - four-part Blueprint shape for the root page and the template, what the root page states and does not, the paragraph inventories, and the retired workflow checks carried by their new owners; semantic fidelity needs independent review
+
+[11/55] node tools/test-session-transport.mjs
+✔ transport requires explicit acknowledgment and positively verified private metadata before configuration (421.590458ms)
+✔ push maps only the selected note, preserves checkout work and confirms exact remote bytes (899.855709ms)
+✔ privacy and path refusals preserve source and remote (472.818959ms)
+✔ fresh clone resumes selected continuity, later remote updates and competing edits remain explicit (2755.218542ms)
+✔ offline push keeps the newer local record and last confirmed remote SHA (1068.80975ms)
+✔ linked manifest is refused before its contents are read (272.785459ms)
+✔ project Git, its worktrees and clones cannot become the transport store (1100.961917ms)
+✔ namespace and selected ancestors reserve canonical case even when leaf names differ (1645.42475ms)
+✔ post-push descendant must retain the expected namespace before acknowledgment (993.943791ms)
+✔ invalid UTF-8 and privacy hidden in duplicate JSON keys never reach remote history (778.486625ms)
+✔ privacy scans each decoded string with its own boundaries in minified JSON (387.58475ms)
+✔ ignore verification cannot inherit another repository through Git routing variables (424.448083ms)
+✔ interrupted multi-note resume names partial application and preserves recovery bytes (1568.183709ms)
+✔ occupied operation locks refuse without touching notes or remote and recover only after deliberate removal (744.727625ms)
+✔ rejected pushes preserve last confirmation and local progress, then retry without force (1269.980917ms)
+✔ different notes from isolated room clones retain both revisions without force or checkout replacement (1423.754083ms)
+✔ failed acknowledgment after resume retains recovery and permits an explicit retry (1754.655334ms)
+✔ resume refuses re-included backup destinations before copying any private originals (1562.374875ms)
+ℹ tests 18
+ℹ suites 0
+ℹ pass 18
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 19549.866459
+
+[12/55] node tools/test-configured-host.mjs
+✔ actual probes preserve lanes and never promote file readability to native discovery (3179.066958ms)
+✔ missing writable lane affects only its dependent check and is never created (3063.486166ms)
+✔ invalid declarations fail before any probe writes (15.01175ms)
+✔ unavailable Node and missing skill stay operation scoped (46.301125ms)
+✔ relative cwd supports directory adapters (3017.153166ms)
+✔ linked records are refused before read and malformed ordinary records fail (20.973333ms)
+✔ linked manifest is rejected before the managed child can consume it (16.117166ms)
+✔ an ordinary non-Git directory cannot impersonate the pinned producer checkout (37.041583ms)
+✔ a producer checkout at the wrong commit cannot execute managed tools (46.919958ms)
+✔ a dirty producer checkout cannot execute modified managed tools (527.593042ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9973.479417
+
+[13/55] node tools/test-core-skill-installer.mjs
+✔ empty ancestor Git sentinels remain untouched through install update and rollback (502.761209ms)
+✔ an empty nested Git marker does not hide its real repository owner (661.022042ms)
+✔ malformed Git metadata stays fail-closed before any skill installation (643.052584ms)
+✔ a valid linked worktree remains a Git-owned provider home (705.010583ms)
+✔ explicit update preserves changed core bytes in a backup and rollback restores both content and adapter topology (468.938166ms)
+✔ rollback refuses a newer local skill change and preserves it (364.945833ms)
+✔ rollback validates the complete recorded destination set before changing any core (733.118ms)
+✔ explicit maintenance converges legacy copies and rollback restores each original implementation (404.789375ms)
+✔ explicit maintenance permits ignored managed core in personal Git and refuses tracked core without mutation (899.421958ms)
+✔ explicit update resolves provider-home ownership before creating backups (694.736666ms)
+✔ rollback refuses core paths newly tracked after the update (450.689416ms)
+✔ core replacement refuses tracked case aliases on a case-insensitive filesystem (1153.030875ms)
+✔ case-aliased discovery roots retain one physical core implementation through update and rollback (454.246959ms)
+✔ tracked core inventory preserves leading whitespace in a discovery path (537.843542ms)
+✔ normal setup preserves a deleted tracked case-alias discovery ancestor (516.276834ms)
+✔ normal setup preserves a deleted tracked case-alias adapter (582.814708ms)
+✔ normal setup installs only missing bundled core skills in both user discovery roots (127.029791ms)
+✔ a Git-owned discovery root installs the missing skills and leaves Git untouched (455.500834ms)
+✔ fresh installation stores one implementation and gives Claude an adapter that survives loss of the source checkout (143.281125ms)
+✔ linked Git exclusion metadata is refused before creating managed core (146.323625ms)
+✔ an existing empty core directory is preserved and reported before creating a broken adapter (95.881833ms)
+✔ a Git-owned parent of a missing discovery root installs into it just the same (365.070958ms)
+✔ a symlinked discovery root is resolved and installed into, never written over (122.41125ms)
+✔ a discovery root ancestor that is not a directory still blocks before anything is written (97.605042ms)
+✔ a dangling discovery root link blocks rather than being silently created (94.050666ms)
+✔ a same-named file collision blocks without installing any skill (94.945333ms)
+✔ all four stances are available through one-level discovery and a repeated install preserves them (225.104583ms)
+✔ a stance collision blocks before either discovery root is populated (101.682625ms)
+✔ an installed core skill carries a schema 2 marker naming the release, commit, and content hash it came from (130.247125ms)
+✔ a linked destination whose resolved target already holds the skill installs and reports the resolution (127.358459ms)
+✔ a linked destination still blocks when it resolves to a file, to nothing, or to a directory without the skill (338.946667ms)
+✔ a declared maintainer skill passes the closed-bundle source check and is never installed (1204.914125ms)
+✔ an undeclared extra lane skill or a malformed maintainer declaration still blocks before anything is written (2650.69375ms)
+ℹ tests 33
+ℹ suites 0
+ℹ pass 33
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 16299.032917
+
+[14/55] node tools/test-workbench-layout.mjs
+✔ copy-ready v3 templates route active spec authority through workbench/specs (5.034667ms)
+✔ the committed placeholder vocabulary exactly matches the shipped Genesis and record templates (1.018959ms)
+✔ a fresh Genesis fixture has the seven controls, manifest lanes, first spec, and no local skill shadow (1023.165375ms)
+✔ the sessions ignore denies the legacy grilling diary name, keeps project rules byte-for-byte, and older ignore files still validate (255.706708ms)
+✔ a six-lane schema 2 manifest gains the skills lane through migrate, after which the lane installs and migrate reports current (723.09625ms)
+✔ a schema 1 manifest reports upgrade-required and migrates losslessly once (341.741292ms)
+✔ the validator requires every declared collection, the sessions ignore file, and a known wiki profile (975.90275ms)
+✔ the additive features collection resolves, is created and seeded by init, and every pre-feature collection shape still validates and migrates additively (628.452042ms)
+✔ the additive ddr collection is created with its lifecycle folders by init, every earlier collection shape still validates, and migrate adds it without touching ADR records (878.580625ms)
+✔ the additive landmarks collection is declared last by init, every pre-landmark collection shape still validates, and migrate appends only it with its empty folder (759.57375ms)
+✔ the validator rejects a traversing manifest lane (205.357875ms)
+✔ the validator rejects a symlinked support lane (192.207791ms)
+✔ Genesis validation rejects symlinked and unfilled root controls (3489.949292ms)
+✔ Genesis validation rejects unstable and structurally incomplete first specs (3980.845708ms)
+✔ Genesis readiness requires a version-matched runtime tools receipt (925.661458ms)
+✔ a room whose managed runtime drifts from its receipt fails the doctor it carries (1379.770375ms)
+✔ a room names a managed file deleted together with its receipt key (1471.842334ms)
+✔ a room tells a foreign lane file apart from a receipt key it lost (2571.039917ms)
+✔ Genesis validation names the failing first-spec predicate and the stray lane entries (962.062208ms)
+✔ Genesis validation accepts legitimate filled Markdown bracket syntax (561.578333ms)
+✔ a relocated Genesis CLI retains its complete embedded placeholder vocabulary (752.545417ms)
+✔ legacy twelve-skill manifests remain readable but v3.1.1 requires all four stances (350.346333ms)
+✔ each listed legacy version validates only at the policy its release declared, and a malformed version is invalid-manifest (1660.196917ms)
+✔ the v3.1.1 legacy row is the frozen sixteen-skill bundle, not the live current policy (148.381833ms)
+✔ init preserves existing session ignore symlink content (63.714541ms)
+✔ init preserves existing session ignore ordinary content (139.869958ms)
+✔ migrate preserves existing session ignore symlink content (66.859875ms)
+✔ migrate preserves existing session ignore ordinary content (138.601041ms)
+✔ init refuses a linked workbench ancestor before creating outside lanes (63.475667ms)
+✔ init and migrate from the release checkout resolve HEAD and origin when the source flags are omitted (676.042083ms)
+✔ a relocated partial copy refuses init and migrate even when source strings are supplied (381.98525ms)
+✔ init refuses a dirty release template before mutating the target project (1311.396709ms)
+✔ the layout usage string lists both source flags for init and migrate (62.829166ms)
+✔ the template permission file grants Edit on every authorship lane the prose declares writable (2.059042ms)
+✔ Genesis readiness fails closed on a permission file that withholds a declared authorship lane (714.270541ms)
+✔ Genesis readiness requires version-matched wiki contract and room brain stamps (578.55775ms)
+✔ init declares the integration branch, the Genesis gate fails closed until it resolves, and a manifest without the block stays valid (1051.964291ms)
+✔ a Genesis room may declare the Landmark Tracker root additively; its directories are required and its shape is closed (1232.116083ms)
+✔ init and migrate default the declaration to origin/HEAD and an existing integration-named branch by its exact case (387.321625ms)
+✔ HEAD is not a branch name: init refuses it and a symref never satisfies the declaration (548.023083ms)
+✔ seed-documents records a verifiable generation and never rewrites an adjusted copy (596.478333ms)
+✔ record-source repairs placeholder provenance for an existing room and refuses what it cannot verify (755.9795ms)
+✔ classify reports a lifecycle verdict with its evidence and writes nothing (465.126667ms)
+✔ classify refuses to guess a support root that carries no readable manifest (66.811792ms)
+✔ classify corroborates the root tools/ shape before calling a room harness-shaped (134.606333ms)
+✔ classify refuses a workbench/manifest.json that is not a Workbench manifest (453.184667ms)
+✔ classify never reads a workbench/ symlink out of the room (196.757ms)
+✔ classify treats an unreadable root control as a room condition, not a crash (131.366959ms)
+✔ importing the classifier does not run its command line (64.952709ms)
+✔ classify reports the unfilled state of a straight template copy as evidence (63.478875ms)
+✔ classify treats a lane it cannot stat as a room condition, not a crash (326.7365ms)
+✔ classify never reports a borrowed lifecycle lane as this room's own (69.812084ms)
+✔ classify names the room's stamp state in both readings of an unreadable support root (129.001291ms)
+✔ classify offers the unfilled-template-copy reading from the adoption branch too (130.340917ms)
+✔ classify refuses a project path it cannot stat or that is not an ordinary directory (127.3555ms)
+✔ classify never reads a workbench/manifest.json symlinked out of the room (193.836584ms)
+✔ classify never reads a lifecycle lane borrowed below an ordinary support root (255.778791ms)
+✔ classify never counts a root tools/ lane borrowed from another room as this room's shape (133.153458ms)
+✔ classify answers every room condition its rule names, not only the two the fixtures reached (205.710042ms)
+✔ classify answers an EPERM lane at the stat seam the room conditions are declared over (93.020917ms)
+✔ operational recovery is local and separate from note history, and nine-collection layouts migrate without moving history (645.900583ms)
+✔ adding recovery refuses pre-existing unmanaged recovery contents before mutation (205.754625ms)
+✔ new notepad layout separates ignored typed notes from tracked examples and preserves legacy paths on migration (562.518709ms)
+✔ layout migration preflights the receipt before changing any project bytes (222.798584ms)
+✔ layout migration preflights the templates before changing any project bytes (191.464042ms)
+✔ seeding refuses an invented release and linked destination even when bytes match (307.868959ms)
+✔ seeding refuses a committed external source symlink before copying or receipting it (795.645417ms)
+✔ layout validation rejects effective ignored-template Git rules (261.361042ms)
+✔ layout validation rejects effective trackable-live Git rules (257.387458ms)
+✔ readContextUnit returns the declared value with its provenance and fails explicitly when the manifest declares none (125.038709ms)
+✔ readContextUnit(root) reads the shipped manifest.json declaration, proven non-vacuous by a red/green probe (0.367625ms)
+✔ Genesis accepts first spec and task suffix 00A without truncation or path changes (813.374042ms)
+✔ Genesis accepts first spec and task suffix 100A without truncation or path changes (1116.189208ms)
+✔ Genesis accepts first spec and task suffix 1000 without truncation or path changes (799.156542ms)
+✔ room updates preserve the runtime surface declaration and never inject one (942.959083ms)
+✔ the legibility block is additive: absent stays valid, six string entries validate, and a malformed block is invalid-manifest (736.458833ms)
+✔ declare-legibility writes the six entries into an existing manifest and changes nothing else (545.970458ms)
+✔ a generated room requires pr in its closed Core policy (130.780208ms)
+✔ prior28 v3.2.1 room stays readable and migratable at its exact 28-skill lane policy (466.111125ms)
+✔ prior29 pr room remains readable and migratable (478.541375ms)
+✔ prior29 domain-modeling room remains readable and migratable (459.006292ms)
+✔ the exact historical v3.2.1 transition cohorts validate and migrate unchanged (1531.473583ms)
+ℹ tests 82
+ℹ suites 0
+ℹ pass 82
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 47860.295333
+
+[15/55] node tools/test-workbench-adoption.mjs
+ok - adoption retains product/control bytes and original 08330e50; installed 58f26928 selects and claims a real Task (local fixture)
+ok - mixed v2 adoption preserves durable truth and blocks collisions
+ok - an adopted room installs skills that do not say Ticket
+ok - adoption writes room-brain frontmatter in the terminator the file already uses
+ok - one adoption refusal names every unreconciled control, the reconcile order, and the overwrite warning
+
+[16/55] node tools/test-workbench-upgrade.mjs
+ok - the one-time upgrade lays the skills lane down from the release and never touches the provider home
+✔ explicit upgrade migrates once, lays the skills lane and adapters down, and records a concrete rollback point (1068.519333ms)
+✔ layout-only upgrade lays the same lane down; the two modes are exclusive (862.302708ms)
+✔ the updater refuses to run without an explicit mode (162.657042ms)
+✔ the updater refuses a dirty project because HEAD alone is not a full recovery point (273.007625ms)
+✔ the updater validates every consumed source lane, including the skills lane, before touching the project (3944.948333ms)
+✔ a declared maintainer skill in the release passes the source check and is never laid into the room (2482.380792ms)
+✔ an undeclared extra skill in the release lane still blocks the upgrade before the project changes (1169.307708ms)
+✔ updating a room with no landmarks through the managed route leaves its work unchanged and installs the landmark runtime tool (2268.320958ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 12235.391917
+
+[17/55] node tools/test-workbench-tools.mjs
+✔ source identity requires a clean Git checkout with a concrete origin and commit (160.511792ms)
+✔ source identity requires the requested root to be the Git checkout root (62.658209ms)
+✔ the product tools lane is the canonical runtime source and holds exactly the runtime tools (93.712375ms)
+✔ install writes receipt-backed copies with hashes, source identity, and non-executable permissions, leaving root tools untouched (594.1955ms)
+✔ verify reports drift, update requires explicit authorization, backs up, and rollback restores the backup (841.084791ms)
+✔ a drift result separates a stale receipt from a modified runtime and names each remedy (440.707166ms)
+✔ a receipt that does not account for every managed file is refused, not read as valid (692.825791ms)
+✔ update --explicit-update restores a managed file removed together with its receipt key (459.109084ms)
+✔ v3.1.1 maintenance preserves project truth and historical provenance while managed tools update and roll back (420.602542ms)
+✔ the installed Landmark Tracker runtime captures and rebuilds in a room that declares its root (432.386291ms)
+✔ install refuses an unreceipted collision and a symlinked lane before mutating anything (352.113792ms)
+✔ no active root control or template names a root tools path for a runtime tool (10.438584ms)
+✔ runtime tools import safely when argv has no file and still run their main when invoked directly (133.160208ms)
+✔ update refuses a symlinked file before any writes (419.731083ms)
+✔ update refuses a symlinked lane before any writes (426.581041ms)
+✔ update refuses a symlinked ancestor before any writes (701.465875ms)
+✔ rollback refuses a symlinked file before any writes (415.353666ms)
+✔ rollback refuses a symlinked lane before any writes (404.279291ms)
+✔ rollback refuses a symlinked ancestor before any writes (397.568583ms)
+✔ growth rollback records original absence and restores the historical eleven-file generation (680.949375ms)
+✔ growth rollback recovers the recorded legacy nine-backed-up eleven-to-twenty-nine shape (655.179667ms)
+✔ growth rollback refuses unrecorded before any lane writes (509.307875ms)
+✔ growth rollback refuses modified-introduced before any lane writes (509.953167ms)
+✔ growth rollback refuses mode-introduced before any lane writes (530.813542ms)
+✔ growth rollback refuses modified-restored before any lane writes (520.525625ms)
+✔ growth rollback refuses deleted-restored before any lane writes (515.147583ms)
+✔ growth rollback refuses deleted-introduced before any lane writes (511.718666ms)
+✔ growth rollback refuses corrupt-backup before any lane writes (512.128292ms)
+✔ growth rollback refuses unsafe-backup before any lane writes (512.603583ms)
+✔ growth rollback refuses inconsistent-absence before any lane writes (521.259209ms)
+✔ growth rollback refuses missing-unchanged before any lane writes (521.816583ms)
+✔ growth rollback refuses unknown-legacy-source before any lane writes (516.29625ms)
+✔ growth rollback refuses pruned-legacy-current before any lane writes (510.829042ms)
+✔ growth rollback restores an originally present unreceipted managed name instead of deleting it (531.440208ms)
+ℹ tests 34
+ℹ suites 0
+ℹ pass 34
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 15523.503416
+
+[18/55] node tools/test-diagnostics.mjs
+✔ legibility findings name undeclared entries and pending confirmation without blocking work (2146.768209ms)
+✔ the registry rejects empty remediation text in a disposable module (1.931375ms)
+✔ the registry is closed, typed, and every emitted code is registered (0.607458ms)
+✔ attention findings stay visible and never change the doctor exit code or hide work (879.829125ms)
+✔ selection findings fail doctor and an unsafe manifest blocks everything (1802.540917ms)
+✔ a selected slice with an unmet dependency is reported, excluded by next, and refused by claim without failing doctor (2779.289833ms)
+✔ a row/record collision is a named row-record-collision finding, not malformed-spec, and does not hide an unrelated finding (695.021125ms)
+✔ a letter-bearing row/record collision is reported once, never doubled as a duplicate-id against itself (702.938292ms)
+✔ a corrupted Task Receipt is a named receipt-corrupt finding, never crashes render or doctor, and does not hide an unrelated finding (732.749833ms)
+✔ doctor reports the skills lane from the room, never reads or writes the provider home, and blocks only on a root skills shadow (1412.543375ms)
+✔ a drifted or unreadable managed runtime is a blocking tools finding in the room doctor (1973.597542ms)
+✔ permission-scope-drift names each withheld authorship lane without blocking doctor (3504.172792ms)
+✔ an unrouted room brain is an attention finding that names the control lacking the route (1486.709958ms)
+✔ the declared integration branch is checked by doctor as a git-scope error that never blocks selection (1582.118458ms)
+✔ a detached HEAD and untracked control, ADR and spec-lane files are git-scope attention findings that change neither doctor nor next (1942.565542ms)
+✔ untracked-controls names a long list by its first files and a count (520.739834ms)
+✔ an unknown repository state yields no git-state finding, never throws and never changes the doctor exit code (402.761375ms)
+✔ gitFindings only skips its candidate lookup for an active row/record collision, and no blanket catch remains around it (1694.181709ms)
+✔ a selected spec already complete at the declared integration ref is reported as attention and still dispatched (1498.55275ms)
+✔ a room outside any Git work tree is told so instead of being told to create the branch (194.165042ms)
+✔ the registered effect of every blocking code is pinned, and no attention code blocks (0.280375ms)
+✔ every registered diagnostic code is pinned, so registering one without a pin is red (0.077042ms)
+✔ doctor plain output groups findings by consequence, counts each group, and prints blocking findings first (0.179667ms)
+✔ doctor renders the same findings as grouped text and byte-unchanged --json (910.007458ms)
+✔ every registered diagnostic effect lands in exactly one doctor group (0.083667ms)
+✔ a seeded lane document whose recorded generation is behind the manifest is reported and never blocks (1086.121959ms)
+✔ placeholder and version-mismatched manifest provenance are reported without blocking (1175.348875ms)
+✔ the installed-state findings are emitted from a seam whose scope matches, not from the wiki validator (682.85875ms)
+✔ readRepositoryState reports branch, dirty tracked files, untracked lane files and upstream distance (314.675084ms)
+✔ readRepositoryState reports a detached HEAD, a branch with no upstream, and a gone upstream explicitly (482.388542ms)
+✔ readRepositoryState reports every other untracked file, the configured remotes, and whether any remote-tracking ref contains HEAD (982.882708ms)
+✔ readRepositoryState reports unknown, never throwing, outside a repository or where Git is absent (331.83525ms)
+✔ the host floor check reports every floor item with pass and its observed value (0.416292ms)
+✔ each missing floor item in turn raises the registered all finding, and doctor fails only in the --host invocation (1925.363958ms)
+✔ the floor thresholds are Node 18, Python 3.9, and gh push rights to a GitHub remote (0.275125ms)
+✔ plain doctor never calls a host probe, and a failing probe is a visible fail, never a crash (673.843625ms)
+✔ every code the host floor module emits is registered (0.19025ms)
+ℹ tests 37
+ℹ suites 0
+ℹ pass 37
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 34527.745084
+
+[19/55] node tools/test-adr.mjs
+✔ a valid corpus validates, registers deterministically, and reports a stale register as attention (262.587792ms)
+✔ records checked out with CRLF line endings parse, validate, and register (189.423333ms)
+✔ validation rejects unknown canonicalization targets, untracked provenance, missing frontmatter, and duplicate numbers (287.883917ms)
+✔ new allocates an unused letter-bearing label, lands in the folder its status implies, and carries no status key (234.988666ms)
+✔ new continues past 000Z to an uppercase width-four label and leaves legacy files byte-identical (187.921666ms)
+✔ new reserves ADR labels held only at a remote tip, in every spelling, without touching the local tree (651.810959ms)
+✔ new refuses a remote tip whose manifest declares an unsafe adr collection (dot) (553.700583ms)
+✔ new refuses a remote tip whose manifest declares an unsafe adr collection (dot-prefixed) (545.37825ms)
+✔ new refuses a remote tip whose manifest declares an unsafe adr collection (backslash) (587.190334ms)
+✔ new refuses a remote tip whose manifest declares an unsafe adr collection (whitespace) (559.541125ms)
+✔ new refuses a remote tip whose manifest declares an unsafe adr collection (non-workbench) (565.053584ms)
+✔ new refuses a remote tip whose manifest is malformed JSON (607.650917ms)
+✔ new refuses an unreadable remote tip: a tip that is not a commit and a commit whose tree is missing (621.060417ms)
+✔ the product corpus validates with a current register and no error findings (30.121084ms)
+✔ ADR register refuses linked collection before writing (251.071834ms)
+✔ ADR new refuses linked collection before writing (211.083958ms)
+✔ register never follows a pre-existing predictable temporary symlink (154.365917ms)
+✔ normalize inserts only the missing required frontmatter keys and leaves every body byte alone (221.358666ms)
+✔ normalize on an already folder-migrated corpus inserts no status key and changes nothing once dated (151.981417ms)
+✔ every accepted-ADR-to-spec reference in the real corpus resolves literally, and the re-counted totals are asserted (3.244666ms)
+✔ durable references distinguish tracked notepad templates from ignored live records (147.236166ms)
+✔ active register excludes historical decisions while explicit history preserves all records (147.181458ms)
+✔ lifecycle rejects missing, cyclic, partial and nonaccepted successor targets (229.6595ms)
+✔ a superseded record resolves a successor that lives in a lifecycle subfolder, and its row links to the real relative path (165.512667ms)
+✔ a successor named by a path or a fragment is still refused, never resolved (180.87725ms)
+✔ flat collections list identically to before: every record is untagged and listing order is unchanged (197.325125ms)
+✔ every intra-ADR link in the real corpus resolves literally, and the re-counted totals are asserted (3.010042ms)
+✔ an intra-ADR link whose literal relative path does not match where the target lives is reported unresolved, not accepted by identity (161.090708ms)
+✔ a link across lifecycle folders (archive linking up to the top level) still resolves literally when it is correct (149.60575ms)
+✔ history output safety is preflighted before either projection changes (151.688125ms)
+✔ a collection with lifecycle expressed by folder location, not frontmatter status, renders the same register and history as the flat frontmatter collection, and validates clean (342.99275ms)
+✔ a leftover status frontmatter that disagrees with its lifecycle folder is a visible, non-blocking finding (184.503792ms)
+✔ migrate-folders moves records by git mv, strips status, rewrites intra-collection and external references, and leaves an append-only evidence reference as counted history (283.148375ms)
+✔ migrate-folders refuses a dirty working tree (223.887375ms)
+✔ migrate-folders refuses a second run once the collection already reflects folder lifecycle (369.06525ms)
+✔ migrate-folders moves records without git when the collection is not inside a Git working tree (175.051709ms)
+✔ stripFrontmatterKey removes only the named scalar key and preserves a CRLF record's terminator (0.127458ms)
+✔ missing and stale history are reported without rewriting history (168.994166ms)
+✔ active workflow decisions and Lexicon meanings reconstruct the confirmed owner chain (11.541625ms)
+✔ workflow checks reject substantive and literal-route mutations with accepted status retained (56.27675ms)
+✔ new --kind ddr writes the next DDR into ddr/proposed with the DDR identifier and the three frontmatter keys, and never writes over an occupied identity (238.622833ms)
+✔ new --kind ddr refuses a room whose manifest does not declare the ddr collection and writes nothing (146.160458ms)
+✔ validation refuses a DDR whose canonicalized_in names the Wiki in any folder, applies the ADR rules to DDRs as invalid-ddr, and leaves ADR validation unchanged (309.977084ms)
+✔ register writes the DDR register and history beside the ADR ones, and doctor reports a stale DDR register until it runs (296.838584ms)
+✔ new --kind ddr reserves DDR labels held only at a remote tip without touching the local tree (469.912833ms)
+✔ accept moves a proposed ADR and DDR out of proposed/ by a Git rename, drops a leftover status key, repairs live links and regenerates both registers (330.469417ms)
+✔ accept and deprecate preserve ADR outgoing non-decision links without rewriting evidence or unrelated files (349.417958ms)
+✔ accept and deprecate preserve DDR outgoing non-decision links without rewriting evidence or unrelated files (340.808ms)
+✔ accept and deprecate repair Grill Board README incoming ADR references while preserving its evidence (339.121625ms)
+✔ accept and deprecate repair Grill Board README incoming DDR references while preserving its evidence (346.14425ms)
+✔ migrate-folders preserves outgoing non-decision targets and repairs the board without rewriting evidence (231.560167ms)
+✔ supersede archives an accepted ADR and DDR under exactly one accepted successor of the same kind, records both directions and leaves evidence rows as counted history (393.449334ms)
+✔ supersede repairs a live link in a Spec nested under a landmark, its Task record and the LANDMARK.md (310.881958ms)
+✔ deprecate archives an accepted record with its stated reason and no successor (323.071292ms)
+✔ every lifecycle refusal names its reason and leaves the tree byte-identical (534.708792ms)
+✔ a lifecycle move outside Git renames the record and still regenerates both registers (167.095417ms)
+✔ list names the records that exist for both kinds, narrows by kind and status, and refuses an unknown status (431.223667ms)
+✔ show returns one whole record, get is its synonym, and an unknown identifier fails visibly (691.512583ms)
+✔ search finds records by a literal case-insensitive query with their matching lines, status and a superseded hit's successor (425.911167ms)
+✔ history reports the lifecycle chain and the Git commits that touched a record across its lifecycle move, and says when Git is unavailable (584.221958ms)
+✔ inspect returns one field or a line range of a record and refuses an unknown field, an out-of-range span or a missing selector (499.513208ms)
+✔ every existing decision-record command keeps its name and refuses a stray positional argument (551.36375ms)
+ℹ tests 62
+ℹ suites 0
+ℹ pass 62
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 18546.175208
+
+[20/55] node tools/test-governance-core.mjs
+✔ root and template AGENTS separate instruction authority from state resolution (1.325ms)
+✔ root and template Lexicons carry the Governance Core terms and keep the owner definition of design concept (1.805292ms)
+✔ template Blueprint and Runbook route decision records, diagnostics, and the tools lane (0.843417ms)
+✔ the ADR corpus is reconciled: ADR-0008 is not ported and ADR-0025 records the supersession lineage (4.335125ms)
+✔ root and template AGENTS define branch completion and merged-branch cleanup (0.321625ms)
+✔ the safety rule exempts a provably merged branch from the ask-first gate (0.084375ms)
+✔ the Runbook carries the operational branch closeout commands (0.149125ms)
+✔ the Runbook closeout proves integration containment without a local integration checkout (0.1935ms)
+✔ feedback and transition docs preserve review ownership and harvest observed friction (0.808459ms)
+✔ controls, protocols, and core skills resolve the integration branch from the manifest declaration (0.544167ms)
+✔ Genesis, Adoption, and update-harness completion require a committed prefixed branch and a resolving declared integration branch (0.236542ms)
+✔ the Runbook closeout prunes linked worktrees and names where disposable review checkouts live (0.485833ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 14.692083
+
+[21/55] node tools/test-branch-closeout.mjs
+✔ closeout preserves branches when merge fail (799.716291ms)
+✔ closeout preserves branches when merge noop (657.853958ms)
+✔ closeout merges and cleans with integration held by another worktree (779.01825ms)
+✔ closeout honors owner-deferred cleanup (595.432167ms)
+✔ closeout tolerates branches already deleted after merge (672.67075ms)
+✔ closeout rejects a candidate differing from the reviewed commit (345.907084ms)
+✔ closeout gate refuses an incomplete Spec candidate and stops before the merge (759.874375ms)
+✔ closeout gate reports (never refuses) a Task PR, so the recipe proceeds (834.115834ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5450.335041
+
+[22/55] node tools/test-wiki.mjs
+✔ the wiki template set is lowercase and complete, and the retired capitalised directory is gone (1.47725ms)
+✔ init seeds the wiki contract files with placeholders filled and reports the seeding (343.002917ms)
+✔ Genesis readiness requires the filled router and wiki contract files (708.187125ms)
+✔ a seeded wiki validates cleanly with or without an Obsidian vault configuration (272.093416ms)
+✔ the validator rejects retired metadata, absolute sources, bad enums, copied task state, and secret-like content without blocking selection (255.20275ms)
+✔ design-concept articles need the authorized-operation shape and stale notes are attention only (222.260791ms)
+✔ the product wiki adopts the contract and both Lexicons route design questions to the collection (297.786417ms)
+✔ a wiki stamp naming a version other than the manifest is attention only, and a missing stamp is not a finding (192.314ms)
+✔ a routed Wiki page with no one-line summary beside its link is attention only, and the summary convention clears it (287.344708ms)
+✔ the router template shows the summary-line convention and the product router keeps every routed Wiki page summarized (285.256917ms)
+✔ this repository stamps its wiki contract files with its manifest version and routes to its room brain (3039.536208ms)
+✔ an unfilled placeholder stamp is reported as stale so a hand-copied template is not silent (198.45325ms)
+✔ normalize inserts only the missing required properties and leaves every note body alone (217.432375ms)
+✔ alphanumeric task tables remain forbidden copied live task state (147.393083ms)
+✔ a Spec's own Append-Only Evidence And Execution Log row pasted into a wiki note is copied task state (154.349334ms)
+✔ a feature article validates in the features collection, normalize infers its type, and a misplaced, malformed or copied one is refused (172.499209ms)
+✔ move-note retypes, renames and relocates one note, rewrites every live link, counts the historical one and leaves the wiki valid (157.75575ms)
+✔ move-note recomputes a moved note's outgoing links when it changes depth, and a dry run writes nothing (176.642916ms)
+✔ move-note refuses unsafe moves with a clear reason and writes nothing (160.2365ms)
+✔ move-note in a Git room records a rename and stages only the files it changed; the CLI reports JSON and refuses with exit 1 (679.375708ms)
+✔ a nested draft article validates in the skills-draft collection, and a misplaced, mis-grouped or wrongly scoped one is refused by name (202.909375ms)
+✔ the product wiki carries the skills-draft collection with every group folder tracked (0.206833ms)
+✔ a draft must carry the template sections and one well-formed finding per line, and every refusal names the rule (229.725167ms)
+✔ the collection TEMPLATE.md fixes the finding line and kinds, and the template it carries validates once filled (165.909916ms)
+✔ the skills-draft index lists 81 article slots, links delivered drafts, and routes through its owning collection (287.592667ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8861.46375
+
+[23/55] node tools/test-sessions.mjs
+✔ every preserved checkpoint still matches the pinned retirement inventory (2.191542ms)
+✔ operational recovery is excluded from note discovery (145.383625ms)
+✔ retired checkpoint invocation preserves source and frozen history without creating a copy (219.251083ms)
+✔ privacy scanning remains available after retiring copied checkpoints (142.034583ms)
+✔ a committed notepad and handoff stay privacy-checked (834.004042ms)
+✔ promotion into a Spec nested under a landmark is checked as a Spec owner (755.807167ms)
+✔ a durable citation naming a committed notepad or handoff is refused as non-durable (1056.860458ms)
+✔ a reference-style or angle-bracket link to a committed live record is refused like an inline one (906.4705ms)
+✔ removing a committed notepad and handoff leaves no dangling-evidence finding (978.811583ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5046.126459
+
+[24/55] node tools/test-notepads.mjs
+✔ create writes a valid note into the declared live collection and refuses a duplicate identity (136.455875ms)
+✔ basename-derived identity is privacy-scanned before write (130.379167ms)
+✔ append records a sourced finding and its correction under a revision check (132.455041ms)
+✔ read returns one topic with its correction context and excludes unrelated topics (132.60425ms)
+✔ a design inquiry keeps a pending answer, its correction and the confirmed decision apart on resume (135.240625ms)
+✔ read paginates explicitly and never truncates silently (135.195209ms)
+✔ a fresh reader resumes the objective from the current view alone (132.750459ms)
+✔ list discovers by objective and falls back to the most recently created note (135.827958ms)
+✔ trim removes reconciled material and refuses to strand a retained dependency (139.371875ms)
+✔ the runtime refuses malformed JSON, an invalid structure, a path escape, and secret-like content (136.0175ms)
+✔ a stored line the scanner matches does not refuse every later update (141.99125ms)
+✔ a blocked write leaves the previous valid note in place (131.24225ms)
+✔ trim refuses to remove a correction while keeping what it corrects (132.492583ms)
+✔ a generated entry id survives a trim (140.122959ms)
+✔ an oversized numeric entry-id suffix is rejected before sequence poisoning (129.294292ms)
+✔ no command publishes a record that would fail its own schema (131.050083ms)
+✔ the CLI refuses a flag it does not recognise instead of dropping it (436.486417ms)
+✔ a workflow field can be written into the current view and survives later updates (132.682375ms)
+✔ every free-text field is privacy-scanned, not only the content field (129.3895ms)
+✔ list observes the same live-collection boundary every other subcommand enforces (126.028541ms)
+✔ the interim scope-1 records read and migrate without regenerating their history (131.445292ms)
+✔ the CLI reports every result as JSON and fails closed on a refusal (437.48425ms)
+✔ the grilling skill's documented command produces the record it shows (189.065666ms)
+✔ the notepad runtime is a managed tool and its live records stay untracked (250.225208ms)
+✔ create scans decoded nested view values and preserves bytes on refusal (126.487708ms)
+✔ current scans decoded nested view values and preserves bytes on refusal (139.233ms)
+✔ discovery refuses an external symbolic-link file without exposing its metadata (130.949209ms)
+✔ discovery refuses an external symbolic-link collection without exposing its metadata (127.3425ms)
+✔ discovery uses creation chronology even when the older note was updated last (130.407958ms)
+✔ typed local notes are discoverable and tracked schema/examples cannot become live notes (129.116ms)
+✔ shipped examples satisfy the shared runtime and legacy bare-name lookup stays unchanged (128.803667ms)
+✔ the published schema accepts an existing valid entry without an optional topic (126.803625ms)
+✔ whole cleanup refuses unfinished context and deletes only an empty reconciled record (437.204167ms)
+✔ the runtime refuses JSON handoff creation and leaves the Markdown collection empty (245.298666ms)
+✔ tracked template boundaries use existing filesystem spelling for read (127.512166ms)
+✔ tracked template boundaries use existing filesystem spelling for create (126.778666ms)
+✔ visible ID allocation and lookup preserve existing note paths (417.523625ms)
+✔ width-three and lowercase legacy note IDs reserve their identities and stay readable after allocation (329.92675ms)
+✔ allocation refuses an inventory where two notes alias one visible identity (194.725459ms)
+✔ visible ID collision N-00A is refused without rewriting the existing note (126.56875ms)
+✔ visible ID collision N-00a is refused without rewriting the existing note (129.420458ms)
+✔ visible ID collision N-000A is refused without rewriting the existing note (127.728333ms)
+✔ visible ID allocation refuses ambiguous unreadable inventory before writing (185.881333ms)
+✔ new note publication preserves a file created after preflight (129.788958ms)
+✔ identity lookup and legacy filename lookup remain explicit and cannot shadow each other (507.361875ms)
+✔ allocation skips a legacy filename whose visible ID belongs to another record (197.489625ms)
+✔ allocation reserves visible destination aliases independently of filesystem sensitivity (191.169583ms)
+✔ safe sequences stay per prefix and arbitrary legacy entry IDs remain supported (132.101875ms)
+✔ all new handoff spellings refuse JSON without creating a file (441.418834ms)
+✔ legacy retained slice and unreadable handoffs still prevent premature cleanup (207.894541ms)
+✔ legacy whole-note retainer preserves case-aliased source identity (196.367292ms)
+✔ legacy entry retainer preserves case-aliased source identity (133.68725ms)
+✔ declared Markdown handoff dependency blocks cleanup until explicitly reconciled (135.943166ms)
+✔ barrier race: twelve appends at one revision keep exactly the entries whose writers were told appended (175.99025ms)
+✔ barrier race: mixed append, current and trim writers at one revision never report a success that is not in the note (177.544417ms)
+✔ a held publish token refuses the write as stale-revision and leaves the note byte-identical; an abandoned one is reclaimed (198.380042ms)
+✔ delete goes through the same guard: a held token refuses cleanup and the note survives (254.027ms)
+ℹ tests 57
+ℹ suites 0
+ℹ pass 57
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 10556.765375
+
+[25/55] node tools/test-visible-ids.mjs
+✔ base62 encoding has explicit alphabet and grows without truncation (0.722417ms)
+✔ allocation treats legacy labels as occupied strings, not an ordinal high-water mark (0.608416ms)
+✔ allocation skips case and leading-zero aliases, then grows past its minimum width (0.199292ms)
+✔ durable allocation can distinguish legacy numeric labels and sort independently of locale (0.244917ms)
+✔ artifact allocation starts at uppercase width four in an empty or numeric room (0.109584ms)
+✔ artifact allocations contain only 0-9A-Z, are letter-bearing and never shorter than four (457.084625ms)
+✔ short and widened spellings of one identity occupy each other (0.138625ms)
+✔ artifact allocation grows past its minimum width without truncating or recycling (0.145416ms)
+✔ the artifact policy leaves explicit-width base62 allocation for ADR and notepad callers unchanged (0.118209ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 9
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 463.11075
+
+[26/55] node tools/test-workbench-identity.mjs
+✔ independent rooms differ while clone, worktree, rename and migration preserve the same namespace (915.75525ms)
+✔ legacy room identity is assigned explicitly once and malformed identity never regenerates silently (877.24575ms)
+✔ identity assignment preserves occupied locks and refuses linked or shared manifests (448.350333ms)
+✔ connection allocation validates occupied namespace identities and keeps artifact labels separate (0.815667ms)
+✔ every legacy migration respects the existing identity writer before changing the manifest (961.046666ms)
+✔ concurrent lifecycle writers never report competing identities or erase an assigned namespace (423.994875ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3629.930959
+
+[27/55] node tools/test-visible-id-consumers.mjs
+✔ mixed visible spec/task IDs select, claim, close and render without moving legacy paths (420.897416ms)
+✔ new task allocation reserves repeated legacy labels across the whole Workbench (359.086209ms)
+✔ spec identity aliases refuse selection without rewriting history (197.097292ms)
+✔ task identity aliases refuse selection without rewriting history (212.337292ms)
+✔ ADR allocation, register and duplicate checks consume mixed labels without renaming old files (145.8555ms)
+✔ numeric task aliases in different legacy specs reserve one label without blocking a new proposal (290.675084ms)
+✔ nonordinary ADR name (symlink) is diagnosed and blocks allocation without following it (126.912209ms)
+✔ nonordinary ADR name (dangling-symlink) is diagnosed and blocks allocation without following it (126.362084ms)
+✔ nonordinary ADR name (directory) is diagnosed and blocks allocation without following it (126.942458ms)
+✔ nonordinary ADR name (hardlink) is diagnosed and blocks allocation without following it (131.025791ms)
+✔ next and claim agree for out-of-order mixed ready task labels (223.467167ms)
+✔ next-id proposes uppercase width-four Spec and Task labels in a numeric legacy room (358.702917ms)
+✔ ADR and notepad public allocation follow the artifact policy beside next-id, keeping legacy records and the connection identity (507.165542ms)
+✔ next-id treats a short legacy label as occupying every spelling of that identity (367.279459ms)
+✔ next-id treats a widened legacy label as occupying every spelling of that identity (363.033917ms)
+✔ next-id treats a lowercase legacy label as occupying its uppercase identity (360.933667ms)
+✔ next-id refuses duplicate spec records that alias one identity instead of choosing a winner (282.832375ms)
+✔ next-id refuses duplicate task records that alias one identity instead of choosing a winner (284.715ms)
+✔ widened, short and case-variant Spec selectors show, claim and close the one stored record (1010.601709ms)
+✔ a widened Spec blocker spelling is satisfied by the completed stored Spec (247.072875ms)
+✔ two active records sharing one collision key refuse show, claim and close by name (391.892625ms)
+✔ an active record and a retired record sharing one key refuse selection by name while allocation folds them as occupied (722.847208ms)
+✔ numeric historical Task labels keep Spec-qualified scope under widened selectors and blockers (617.933ms)
+✔ a standalone corrective Task is recognized by a widened spelling of its stored ID and its claim is refused (231.058875ms)
+✔ widen-id refuses a widened Spec alias already held by a retired record, naming both (309.350709ms)
+✔ widen-id refuses a widened Task alias already held by a record in another Spec (504.740333ms)
+✔ widen-id refuses an occupied Spec or Task destination path (514.012875ms)
+✔ widen-id refuses a symlinked Spec or Task record as an unsafe path (520.648583ms)
+✔ widen-id refuses a slice-table row and asks for --spec when a numeric Task label recurs (677.624709ms)
+✔ widen-id normalizes a width-four lowercase identity through a case-only rename (585.791291ms)
+✔ the Former ID field parses, formats and round-trips, and refuses a spelling of another identity (253.555417ms)
+ℹ tests 31
+ℹ suites 0
+ℹ pass 31
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 11477.269125
+
+[28/55] node tools/test-direct-promotion.mjs
+✔ public promotion reconciles selected material into an owner and returns verified hashes without cleanup (209.093208ms)
+✔ a mixed note promotes its confirmed decision while the pending answer stays unselected and unresolved in the note (135.689209ms)
+✔ promotion refuses stale-revision and preserves source, destination and draft (130.587125ms)
+✔ promotion refuses stale-destination and preserves source, destination and draft (131.649542ms)
+✔ promotion refuses missing-entry and preserves source, destination and draft (129.563583ms)
+✔ promotion refuses invalid-content and preserves source, destination and draft (132.232125ms)
+✔ promotion refuses private-content and preserves source, destination and draft (133.201708ms)
+✔ promotion refuses live-citation and preserves source, destination and draft (131.94625ms)
+✔ promotion refuses path-escape and preserves source, destination and draft (132.484417ms)
+✔ promotion refuses linked-destination and preserves source, destination and draft (138.204167ms)
+✔ promotion refuses hardlinked-destination and preserves source, destination and draft (133.902584ms)
+✔ promotion refuses linked-draft and preserves source, destination and draft (132.561083ms)
+✔ recoverable write failure leaves the original owner and source intact (132.47725ms)
+✔ recoverable read-back failure leaves the original owner and source intact (132.534458ms)
+✔ spec promotion validates candidate owner structure before publishing (164.638166ms)
+✔ adr promotion validates candidate owner structure before publishing (133.900959ms)
+✔ wiki promotion validates candidate owner structure before publishing (137.615584ms)
+✔ spec promotion cannot rewrite an existing append-only evidence row (141.577792ms)
+✔ unrecognized ADR filenames cannot bypass the ADR validator (133.150208ms)
+✔ invalid UTF-8 draft bytes are refused without lossy replacement (132.486417ms)
+✔ valid UTF-8 BOM draft preserves the exact authored bytes and hash (136.488167ms)
+✔ promotion refuses decoded-private-path before changing any file (130.194667ms)
+✔ promotion refuses project-placeholder before changing any file (131.871791ms)
+✔ promotion refuses version-placeholder before changing any file (131.11925ms)
+✔ promotion refuses reference-citation before changing any file (145.559041ms)
+✔ promotion refuses missing-live-citation before changing any file (133.409542ms)
+✔ a failed restoration retains a verified original backup and reports partial recovery (132.232333ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 27
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3724.808541
+
+[29/55] node tools/test-workbench-round-trip.mjs
+demo - reviewed integration delivery (fixture); HEAD 75e050a
+demo - main-verified complete; no production owner approval; HEAD 0388581
+demo - capture, link-safe retirement, discard and exact fresh-clone directory recovery; HEAD ebd1276
+demo - post-discard later gap carried by a new Spec; 26 documentation examples executed; HEAD 218d3bc
+ok - RUNBOOK.md documented lifecycle 36.612s; mechanical round trip: planning b8bd798 interrupted, resumed from a clean clone, proof 12d7420 read back with Foundry absent
+
+[30/55] node tools/test-cross-provider-fixture.mjs
+ok - cross-provider fixture plans a recoverable checkpoint and fails closed without a resume
+
+[31/55] node tools/test-portability-matrix.mjs
+✔ historical ledger proposals remain recoverable while active retired routes are rejected (1.083791ms)
+✔ historical markers never mask operational text surrounding a legacy path (0.483042ms)
+✔ tracked paths never differ only by case, and lanes must be lowercase without spaces or backslashes (10.13675ms)
+✔ a manifest with a backslash or capitalised lane is rejected before any lane is read (317.32975ms)
+✔ active surfaces carry no retired lane, private path, private catalog, or Foundry-dependent path (48.483625ms)
+✔ active surfaces contain no secret-like content by the shared privacy patterns (58.288292ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 439.246959
+
+[32/55] node tools/test-workbench-dogfood.mjs
+ok - LLM Workbench dogfoods its manifest-declared v3 support root
+
+[33/55] node tools/test-evaluate-workbench.mjs
+ok - evaluator self-test passed; local score 113, single-file baseline 2
+
+[34/55] node tools/test-guardrail-audit.mjs
+ok - guardrail audit self-test passed; local north-star score 68/100
+
+[35/55] node tools/test-context-tools.mjs
+ok - context tools self-test passed
+
+[36/55] node tools/test-outcome-trials.mjs
+ok - outcome trial harness self-test passed
+
+[37/55] node tools/test-eval-runner.mjs
+ok - provider-neutral eval runner passed without model usage
+
+[38/55] node tools/test-feedback-automation.mjs
+ok - feedback discovery, ranking, locking, injection resistance, and decisions passed
+
+[39/55] node tools/test-symlink-invocation.mjs
+error: Usage: spec-workbench.mjs next|next-id|show|claim|close|receipt|complete|convert-tasks|report|verdict|verify|gate|approve|move-spec|move-task|widen-id|retire-spec|retire-landmark|discard|render|doctor [S-###] [options] (show|claim|close|receipt|move-task LMK-### for a Task directly under a landmark; report|verdict|verify|approve LMK-### for the whole-landmark review; retire-landmark LMK-### --wiki PAGE; move-spec S-### --to retired|--landmark LMK-###|none; gate --task TK-### --spec S-###|--landmark LMK-###; widen-id S-###|TK-### [--spec S-###]; discard S-### [--task TK-###]; doctor [--host]; next|claim|close [--capabilities a,b]; next|claim [--local]; claim [--branch NAME])
+ERROR: usage: feedback-automation.mjs discover --projects-root PATH [--pending CSV] [--processed CSV] | decision --input FILE | run-outcome --input FILE
+--task is required
+At least one result file is required
+Provide --slug or a positional slug
+ok - CLI tools run their main entry through symlinked paths
+
+[40/55] node tools/test-control-fidelity.mjs
+✔ a filled room reports filled and unchanged lines only, with every placeholder line filled (36.450667ms)
+✔ a dropped qualifier is one changed entry naming the line that lost it and no dropped entry (43.64225ms)
+✔ a placeholder fill is changed when it reverses the fixed wording (0.108667ms)
+✔ a deleted Branch Completion paragraph produces dropped entries for each of its lines (25.562417ms)
+✔ room lines with no template origin are added, and a missing control is reported rather than thrown (25.426583ms)
+✔ CLAUDE.md is checked for exact equality with @AGENTS.md (25.039ms)
+✔ optional permission and wiki files are compared when present and reported absent otherwise (44.649417ms)
+✔ CRLF room controls compare line by line (24.761666ms)
+✔ a checkout-versus-manifest mismatch is labeled as a newer or older template generation (76.360292ms)
+✔ the CLI reports divergence with exit 0, filters by control, never writes to the room, and fails only on invocation errors (422.514708ms)
+✔ the product checkout reports against its own templates without throwing (184.5195ms)
+✔ the protocols run the report and route AGENTS.md divergences to a recorded decision (0.533084ms)
+✔ an unsafe manifest wiki lane is never joined: the report notes it and falls back to the default lane (29.63425ms)
+✔ the Markdown headline counts reconcile with the itemized list and name trivial lines separately (33.223375ms)
+✔ the retired AGENTS.md stable-path sentence is replaced by the folder-lifecycle sentence, mirrored generically in templates/AGENTS.md (0.250958ms)
+✔ an option whose value is another flag is an invocation error, and a closed stdout pipe prints no stack trace (447.659584ms)
+✔ feedback disposition vocabulary is closed and shared by root and template (0.458458ms)
+✔ feedback formats require a disposition and owning evidence route (0.172708ms)
+✔ AGENTS routes real Task records through assembled review, corrective return and owner closure (4.012916ms)
+✔ generic controls carry the delivered workflow without producer state or unrecognized placeholders (299.544458ms)
+✔ the Task workflow contract rejects removed obligations and regressed approval/command instructions (7.260167ms)
+✔ Runbook preserves digest binding, main-before-closure and authored feature capture (13.574791ms)
+✔ Runbook contract detects operationally consequential guidance regressions (15.878375ms)
+✔ the completion-claim mechanisms are documented in the root controls (18.12275ms)
+✔ the completion-claim mechanisms are mirrored in the generic controls (14.872666ms)
+✔ the completion-claim contract fails when a documented mechanism or Git-scope code is dropped (17.825666ms)
+✔ both Lexicons carry the installed decision-record vocabulary, and the generic one stays generic (7.145042ms)
+✔ both Lexicons define the Workbench terms once and use "controls" only for one-action tools (10.630542ms)
+✔ both Lexicons define every workflow verb once and state the delivery workflow with Journey as the build loop (8.046ms)
+✔ the Blueprint and Foundry rows carry the owner's confirmed answers and not the replaced ones (1.497042ms)
+✔ the workflow verbs decision carries the Journey correction and no active record states the replaced Journey (13.6305ms)
+✖ the workflow Wiki pages state the delivery workflow and Journey as the build loop (5.962583ms)
+✔ both Lexicons carry each adopted AI Coding Terms row exactly once with one dictionary link (11.081709ms)
+✔ accepted decision records carry the corrective-work rules and no longer state the replaced ones (10.401792ms)
+✔ neither Lexicon calls the Workbench a harness, and Chat is distinguished from a session (2.421709ms)
+✔ each AI Coding Dictionary Wiki entry is routed from MEMORY.md and links its row, its dictionary entry and its owners (1.998ms)
+✔ AGENTS, its template and the to-tasks skill state the corrective-work rules and not the replaced ones (2.872625ms)
+✔ TK-005M: an old-shape room is told which differences are a template generation difference and which are its own (470.615166ms)
+✔ TK-005N: both Lexicons and the README describe the delivered carrier shape and route operations through the Runbook index (3.616041ms)
+ℹ tests 39
+ℹ suites 0
+ℹ pass 38
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2368.513541
+
+✖ failing tests:
+
+test at tools/test-control-fidelity.mjs:888:1
+✖ the workflow Wiki pages state the delivery workflow and Journey as the build loop (5.962583ms)
+  AssertionError [ERR_ASSERTION]: workflow-verbs.md names the delivery workflow
+      at TestContext.<anonymous> (file:///Users/kayden/Documents/Codex/2026-10-08/task-2/confirmed-followup/tools/test-control-fidelity.mjs:892:12)
+      at Test.runInAsyncScope (node:async_hooks:226:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: "s-live-on.md - workbench/docs/adr/000Y-a-locked-and-confirmed-answer-is-promoted-without-further-ceremony.md parent: none authorized_by: the owner-confirmed workflow reference update of 2026-10-08; earlier source: the owner's promotion of the 2026-10-02 grilling last_verified: 2026-10-08 --- # The Workflow Verbs A workflow verb is a defined action or process that workflows are built from and that people use in ordinary language. The set is open: the owner defines verbs one at a time, each in its own row of the [Lexicon](../../../LEXICON.md), and workflows are composed from them. Idea, Align, Confirm, Map, Plan, Implement, Review and Verify were the first standardization, accepted on 2026-10-02; Prototype, Check, QA, Submit, Approve, Delivered and Clean Up and the Journey verb have been defined since. The owner had been calling the delivery sequence the workflow while it kept being called the ladder or the steps. This page explains the verbs and how they decide where a claim is written. It authorizes nothing; the Lexicon holds the definitions. ## The delivery workflow The maintained [Runbook reference and diagram](../../../RUNBOOK.md#workflows) line up the owner-confirmed parent workflows and their verbs. Confirm ends Explore; Promote starts from that confirmed concept and publishes Record, Map and Plan in sequence. Judge retains independent Review, verification on integration and owner approval; Complete retains owner-approved main delivery and cleanup. The reference is the home for ordering and skill routes, while this page explains the verbs and their history. A send-back at Approve returns to Align at the scope the failure implicates. ## Promoting a confirmed decision The [Promote Decision skill](../../skills/promote-decision/SKILL.md) carries one confirmed decision through Record, Map and Plan, with each stage published before the next depends on it. Record is the `to-docs` operation. A nearer endpoint limits the run; pending questions remain in their working source. The [proposed Promote Decision record](../../docs/adr/proposed/001A-promote-publishes-confirmed-documentation-specs-and-task-plans-before-implementation.md) records this design and its rationale. This Workbench maintainer operation prepares shared decisions and plans; implementation follows its own workflow. ## The loop Journey is the build loop: Implement, Check, QA and Submit, run for each Task. Check is the deterministic verification the building agent runs in the environment; QA is its self-judgement of its own work; Submit is the merge request that carries the Task's merge answers into its parent branch. Map and Plan come before the Journey. Review comes after it, on the assembled Spec (and sometimes a landmark or the whole Workbench), never on a Task, and decides whether another Journey is needed: a failed Review goes back to Map, Plan and Journey before the work can be verified. The owner set this on 2026-10-05, adding QA and Submit and moving Review out of the Journey, because review on every Task was spending his tokens and doing no work. Earlier, the 2026-10-02 decision put Map and Plan inside the Journey (corrected 2026-10-03), and the 2026-10-03 loop was Implement, Check, Review and Verify. Journey is itself a workflow verb, but only the loop-level name, so a Destination Question Card cannot sit at Journey as a stage. A verb can be passed through. When there is nothing to map, the workflow moves from Confirm to Plan. Review and Verify are not as clean a cut as the other verbs, because when everything is good to go there is nothing to write beyond saying so. ## Which verb writes what The [Governance Planes](../../../LEXICON.md) are the lens. The owner assigned planes to the first eight verbs only; Prototype, Check, QA, Submit, Journey, Approve, Delivered and Clean Up have none assigned. Applied claim by claim as work moves through the workflow, most of the time: | Verbs | Plane | What they write | |---|---|---| | Idea, Align | Intent | the request: what the owner wants | | Confirm | Enduring Context | Destination Question Cards and Wiki pages: it declares something should be durable without making it a source of truth | | Map, Plan | Grounding | landmarks, Specs and decision records at Map, Tasks at Plan: claims about Canon and Actuality and what they should look like | | Implement | Canon or Actuality | the source of truth, such as the Blueprint, or what the project is working on | | Review, Verify | Grounding | evidence about whether the work is right; nothing is written when it passes | It is not black and white and varies a lot, so the table says what is true most of the time, not what is always true. For example, the Blueprint is mostly Canon, so it is written at Implement. It needs the verbs before it: confirm what is wanted, map out the change, make the plan, then implement. It goes through those verbs and not through a Spec and Tasks, because the workflow is not ceremony; it is process, a means to an end. A landmark, a Spec or a Task is different. They are architecture artifacts and transient scaffolding, so they need only confirmed enduring context behind them and not the whole process. ## What is not delivered yet The owner's workflow map of 2026-09-24 no longer sits on the Blueprint: it moved to [the workflow page](idea-to-delivery-workflow.md), written in the verbs. The Landmark Tracker still prints the earlier step names and its Specs and tests use them, and the [landmark tracker page](landmark-tracker.md) describes the tool as it is. The current [Runbook reference](../../../RUNBOOK.md#workflows) names the confirmed skill routes and the placement of independent Review, integration Verify and owner Approve. The separately owned carrier rewrite still reconciles the Runbook's accepted reference-only home with the binding procedures currently in force. The Lexicon rows changed no command, status, folder or gate: the `complete` command and status and the `S-###:delivered` blocker qualifier keep their names, and renaming them is the owner's call. ## Evidence and Sources - [ADR-000X, The workflow is eight verbs and each verb writes the plane its claims live on](../../docs/adr/000X-the-workflow-is-eight-verbs-and-each-verb-writes-the-plane-its-claims-live-on.md): the decision this page explains, amended on 2026-10-03 for the open verb set and the Journey correction. - [Workbench Terms And Workflow Verb Rows](../../specs/S-004G-workbench-terms-and-workflow-verbs/SPEC.md): the Spec that put the verb rows in the Lexicon. - [ADR-000Y, A locked and confirmed answer is promoted without further ceremony](../../docs/adr/000Y-a-locked-and-confirmed-answer-is-promoted-without-further-ceremony.md): what ends a grilling and what an answer needs before promotion. - [Lexicon](../../../LEXICON.md): the Workflow verb, Workflow, one row per verb, Writer verb and Governance Plane definitions. - [Blueprint](../../../BLUEPRINT.md): the short page; its sentence on carrying a concept through the Journey. - [The Workflow From Idea To Delivery](idea-to-delivery-workflow.md): the owner's workflow map, rewritten in the verbs. - [Decision Records and the Concept Map](decision-records-and-the-concept-map.md): the artifacts the verbs write. ## History - 2026-10-02: created in the promotion of the owner's 2026-10-02 grilling on the workflow verbs. - 2026-10-03: the Blueprint became the four-part short page and the owner's workflow map moved to the workflow page, from the Blueprint Short Page work. - 2026-10-03: rewritten for the open verb set, the added verbs, the delivery workflow and the Journey correction (the Workbench Terms And Workflow Verb Rows Spec). - 2026-10-05: the owner added QA and Submit to the Journey and moved Review after it, with a failed Review going back to Map, Plan and Journey. - 2026-10-07: linked the one-decision Record, Map, Plan and publication operation, retaining the earlier workflow history. - 2026-10-08: the owner-confirmed workflow reference update routes the current map and diagram to the Runbook, preserving the later gates and historical accounts. ...",
+    expected: /Idea, Align, Confirm, Map, Plan, Journey, Review, Verify, Approve, Delivered, Clean Up/,
+    operator: 'match',
+    diff: 'simple'
+  }
+Full verification stopped: node tools/test-control-fidelity.mjs (exit 1).
