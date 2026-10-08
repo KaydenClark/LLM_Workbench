@@ -213,10 +213,27 @@ This is not a mandatory extra gate for every trivial interaction. Explore still
 ends in Confirm and can contain different workflows; this addition does not
 settle their taxonomy or change the five parent workflows above. The owner
 confirmed the contextual documentation and visible-draft behavior and requested
-these three new verbs on 2026-10-08. Confirm already existed. Definitions live
-in the [Lexicon](LEXICON.md#core-terms), and the
+these three new verbs on 2026-10-08. Confirm already existed. The new verb
+definitions follow below, and the
 [workflow verbs article](workbench/wiki/design-concepts/workflow-verbs.md)
 explains the addition.
+
+**New verb definitions.**
+
+| Verb | Meaning |
+|---|---|
+| **Draft** | Show the actual proposed artifact text, with enough context and source links for the owner to judge it. Proposed wording remains a draft until Confirm; existing source records remain authoritative. |
+| **Critique** | Evaluate a visible draft and give feedback about what should change and why. A comment or change request is not approval or confirmation. Critique and revision can repeat as needed before Confirm; critique alone does not change the authoritative source. |
+| **Revise** | Change the proposed artifact text in response to critique, retaining context for the next reading. Show the revised draft for further critique or exact-text Confirm. An earlier confirmation does not approve later revisions; preserve exactly what was approved. |
+
+Vocabulary destination: the owner directed on 2026-10-08 that new terms belong
+in `GLOSSARY.md`, replacing `LEXICON.md`. Integration
+`47215ff10de711bf110c31f5a3f6ea2cf733b5e7` still has the legacy Lexicon and no
+Glossary; the existing glossary migration is PR431, source
+`03abc895183d1893ee3efcc800d1e69565d95fe5:GLOSSARY.md`. Until that migration
+arrives, these three confirmed definitions remain here. Do not expand the
+legacy Lexicon or create a second Glossary to bypass the migration. This
+bounded addition leaves its existing vocabulary and source routes intact.
 
 ## Ordinary Entry
 
