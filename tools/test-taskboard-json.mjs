@@ -774,7 +774,7 @@ if (process.argv.includes('--demo')) {
   };
 
   test('repeated narrative labels scoped to Spec slice subsections render without changing the card', () => withRoom(root => {
-    sliceSpec(root, { slices: '### TK-000A - Retain the evidence\n\n**Stance:** Builder\n\nNarrative.\n\n#### Detail\n\n**Done criteria:** one\n\n### Scoped Ticket: TK-000B\n\n**Stance:** Reviewer\n**Done criteria:** two\n\n### TK-000C — Em-dash heading\n\n**Stance:** Builder\n\n### First slice - Public proposal\n\n**Stance:** Builder\n\n### v3.2.0 assigned completion (2026-09-08)\n\n**Stance:** Builder\n' });
+    sliceSpec(root, { slices: '### TK-000A - Retain the evidence\n\n**Stance:** Builder\n\nNarrative.\n\n#### Detail\n\n**Done criteria:** one\n\n### Scoped Task: TK-000B\n\n**Stance:** Reviewer\n**Done criteria:** two\n\n### TK-000C — Em-dash heading\n\n**Stance:** Builder\n\n### First slice - Public proposal\n\n**Stance:** Builder\n\n### v3.2.0 assigned completion (2026-09-08)\n\n**Stance:** Builder\n' });
     const card = preview(root).lanes.inProgress['S-000A'];
     assert.ok(card, 'the Spec card renders');
     assert.equal(card.priority, 2); assert.equal(card.assignee, 'fixture-dispatcher'); assert.equal(card.nextAction, 'Verify the objective');

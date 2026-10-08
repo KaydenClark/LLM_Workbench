@@ -168,8 +168,8 @@ export const TASKBOARD_SOURCE_FIELDS = Object.freeze(new Set([
 // A Spec's slice descriptions: each `###` subsection of its
 // `## Vertical Implementation Slices` section (the section parseSpecPacket
 // reads its slice rows from), running until the next heading of level three
-// or above. Real Specs head them `### TK-...`, `### Scoped Ticket: TK-...`,
-// `### First slice - ...` or a dated completion note.
+// or above. Real Specs head them `### TK-...`, with a legacy scoped label
+// before the Task ID, `### First slice - ...` or a dated completion note.
 const SLICES_HEADING = /^##[ \t]+Vertical Implementation Slices[ \t]*\r?$/;
 const SECTION_HEADING = /^#{1,2}[ \t]/;
 const SUBSECTION_HEADING = /^###[ \t]/;
