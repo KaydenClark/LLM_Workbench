@@ -172,6 +172,10 @@ Derived from stable specs; includes completed history.
 | [S-053 - Configured Host Capabilities](S-053-configured-host-capabilities/SPEC.md) | Verify the agreed minimum operations in the actual host while keeping capability, enforcement and agent reliability separate. | complete |
 | [S-054 - Workbench v3.2.1 Review-Boundary Integrity](S-054-v3-2-1-review-boundary-integrity/SPEC.md) | Historical v3.2.1 docket entry for binding an integration review to the exact resulting candidate; its undelivered target-binding requirements now live in the Spec QA Gate at Integration. | superseded |
 | [S-005C - Promote Confirmed Decisions](S-005C-promote-confirmed-decisions/SPEC.md) | Orchestrate one confirmed decision through delegated Record, Map, Plan and verified stage publication to integration. | active |
+| [S-005D - Decision Relocation Link Repair](S-005D-decision-relocation-link-repair/SPEC.md) | Decision lifecycle moves preserve outgoing relative targets and repair incoming Grill Board references without rewriting historical evidence. | active |
+| [S-005E - Reusable Readback Skill](S-005E-readback-skill/SPEC.md) | The owner can invoke /readback at any time to confirm or correct how an answer, concept or direction is understood. | active |
+| [S-005F - Maintained Workflow Reference](S-005F-workflow-reference/SPEC.md) | RUNBOOK.md is the easy-to-reference home for existing workflows expressed as ordered verbs, with scenario and skill pointers. | active |
+| [S-005G - Repository CI And Fast Hooks](S-005G-repository-ci-and-fast-hooks/SPEC.md) | Integration PRs and integration updates run the canonical required suite; this repository alone has fast offline staged whitespace and JavaScript syntax checks at commit. | active |
 
 ### Retired
 
