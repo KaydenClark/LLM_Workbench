@@ -137,3 +137,23 @@ test('catalog-only reading does not build either native projection', t => {
   assert.ok(!view.errors.some(error => error.source === 'tracker'));
   assert.deepEqual(snapshot(root), before);
 });
+
+test('a Taskboard source refusal is returned as the reader error, never a substitute board', t => {
+  const root = room(); t.after(() => fs.rmSync(root, { recursive: true, force: true }));
+  const file = path.join(root, 'workbench/specs/S-000A-fixture/SPEC.md');
+  const source = fs.readFileSync(file, 'utf8');
+  // S-003W's shape: a header Stance repeated in a slice description is read
+  // by no parser and stays available.
+  fs.writeFileSync(file, source.replace('**Owner:** fixture', '**Owner:** fixture\n**Stance:** Builder').replace('\n## Acceptance Criteria', '\n### TK-000A - Retain the evidence\n\n**Stance:** Builder\n\n## Acceptance Criteria'));
+  assert.equal(read(root).taskboard.status, 'available', JSON.stringify(read(root).taskboard.error));
+  // A repeated parsed field could change the card: the reader refuses and
+  // the adapter returns that refusal with no board.
+  fs.writeFileSync(file, source.replace('\n## Acceptance Criteria', '\n### TK-000A - Retain the evidence\n\n**Status:** complete\n\n## Acceptance Criteria'));
+  const view = read(root);
+  assert.equal(view.taskboard.status, 'error');
+  assert.equal(view.taskboard.board, undefined);
+  assert.match(view.taskboard.error.message, /duplicated source field Status/);
+  assert.ok(view.errors.some(error => error.source === 'taskboard'));
+  assert.equal(view.tracker.status, 'available', 'the Tracker keeps its own semantics and availability');
+  assert.match(view.tracker.semantics, /does not establish delivery completion/);
+});
