@@ -217,3 +217,164 @@ test('Drafts to approve groups drafts by target file, lists approvals without dr
  try{assert.deepEqual(await (await fetch(`${served.base}/api/drafts`)).json(),JSON.parse(JSON.stringify(board.draftsToApprove(root))));}
  finally{await served.close();}
 });
+
+// ---- Page model, loaded from the served page in a VM (no browser). ----
+function element() {
+ return {value:'',textContent:'',innerHTML:'',hidden:false,disabled:false,dataset:{},style:{},classList:{toggle(){},add(){},remove(){}},
+  querySelector:()=>null,querySelectorAll:()=>[],setAttribute(){},removeAttribute(){},scrollIntoView(){},focus(){},addEventListener(){}};
+}
+function pageModel({storage={}}={}) {
+ const html=fs.readFileSync(new URL('../workbench/grill-board/index.html',import.meta.url),'utf8');
+ const script=html.match(/<script>([\s\S]*?)<\/script>/)[1].replace('Promise.all([load()','window.model={state,matchesSlice,topicSummaries,sliceTitle,startBatch,batchProgress,resetSlice,gradeBadges,gradeDetail,answerModel,whysList,confirmedItems,dispositionTimeline,laneFor}; Promise.all([load()');
+ const elements=new Map();
+ const localStorage={getItem:key=>storage[key]??null,setItem:(key,value)=>{storage[key]=String(value);},removeItem:key=>{delete storage[key];}};
+ const ctx=vm.createContext({document:{getElementById:id=>{if(!elements.has(id))elements.set(id,element());return elements.get(id);},querySelectorAll:()=>[],documentElement:{dataset:{}}},window:{addEventListener(){},scrollTo(){},scrollY:0},localStorage,setInterval(){},setTimeout,clearTimeout,URL,URLSearchParams,location:{hash:''},fetch:()=>new Promise(()=>{})});
+ vm.runInContext(script,ctx);
+ return {model:ctx.window.model,storage};
+}
+const grade=(p,v)=>({...(p?{priority:{grade:p,reason:`${p} because of its source`}}:{}),...(v?{value:{grade:v,reason:`${v} because of its return`}}:{})});
+function pvInventory() {
+ // id number -> topic: 1 workflow, 17 direction, 14 roles, 5 context, 4 records
+ const rows=[['GB-0001','P1','V2','owner-decision'],['GB-0017','P1','V1','choice'],['GB-0014','P2','V2','owner-decision'],['GB-0005','P3','V1','approve-spec'],['GB-0004','P3','V2','owner-decision'],['GB-0002','P2','V1','choice'],['GB-0006',null,null,'owner-decision'],['GB-0008','P4',null,'choice']];
+ return rows.map(([id,p,v,kind])=>{
+  const item={id,kind,title:`Question ${id}`,question:'Q?',current:'c',proposal:'p',draft:null,options:null,sources:[],links:[],history:[],revision:1,derivedStatus:'pending',status:'open',answer:null,...grade(p,v)};
+  return {...item,controls:board.answerControls(item)};
+ });
+}
+
+test('P/V filters return exactly their members and combine with the other board filters',()=>{
+ const {model}=pageModel();
+ const items=pvInventory();
+ const ids=slice=>items.filter(item=>model.matchesSlice(item,slice)).map(item=>item.id).sort();
+ assert.deepEqual(ids({priority:'P1',value:'V2'}),['GB-0001']);
+ assert.deepEqual(ids({priority:'P3',value:'V1'}),['GB-0005'],'a slice without P1 works');
+ assert.deepEqual(ids({priority:'P2'}),['GB-0002','GB-0014'],'P alone spans every Value');
+ assert.deepEqual(ids({value:'V1'}),['GB-0002','GB-0005','GB-0017'],'V alone spans every Priority');
+ assert.deepEqual(ids({priority:'unclassified'}),['GB-0006']);
+ assert.deepEqual(ids({value:'unclassified'}),['GB-0006','GB-0008'],'missing grades stay reachable, never defaulted');
+ assert.deepEqual(ids({priority:'all',value:'all'}),items.map(item=>item.id).sort(),'clearing restores the whole inventory');
+ assert.deepEqual(ids({value:'V2',topic:'workflow'}),['GB-0001']);
+ assert.deepEqual(ids({value:'V1',intent:'review'}),['GB-0005']);
+ assert.deepEqual(ids({priority:'P2',query:'0014'}),['GB-0014']);
+ items[1].derivedStatus='answered';
+ assert.deepEqual(ids({value:'V1',lane:'pending'}),['GB-0002','GB-0005']);
+ model.state.priority='P1'; model.state.value='V2'; model.state.topic='roles'; model.state.query='x';
+ model.resetSlice();
+ assert.deepEqual([model.state.priority,model.state.value,model.state.topic,model.state.query],['all','all','all',''],'Clear all filters also clears P/V');
+ assert.equal(model.sliceTitle({topic:'all',intent:'all',priority:'P3',value:'V1'}),'All topics · Any kind of decision · P3 · V1');
+});
+
+test('topic navigation keeps matching members reachable without any aggregate P/V score',()=>{
+ const {model}=pageModel();
+ const items=pvInventory();
+ const topics=model.topicSummaries(items,{priority:'all',value:'V2'});
+ assert.deepEqual(JSON.parse(JSON.stringify(topics.flatMap(topic=>topic.members))).sort(),['GB-0001','GB-0004','GB-0014']);
+ for (const topic of topics) {
+  assert.deepEqual(Object.keys(topic).sort(),['counts','done','frame','id','members','outcome','title','total']);
+  assert.ok(!/P[1-4]|V[1-4]|grade|score/i.test(JSON.stringify({counts:topic.counts,done:topic.done,total:topic.total})),'no topic carries a combined grade');
+ }
+});
+
+test('a batch started from a P/V slice keeps its membership through saves, filters, regrades and reload',()=>{
+ const storage={};
+ const first=pageModel({storage}).model;
+ const items=pvInventory();
+ first.state.board={items};
+ first.state.value='V1';
+ first.startBatch(items.filter(item=>first.matchesSlice(item)));
+ assert.deepEqual([...first.state.batch.ids],['GB-0017','GB-0005','GB-0002']);
+ assert.match(first.state.batch.title,/V1/);
+ first.state.priority='P4'; first.state.value='all';
+ items.find(item=>item.id==='GB-0005').value={grade:'V3',reason:'regraded'};
+ items.find(item=>item.id==='GB-0017').derivedStatus='answered';
+ assert.deepEqual([...first.state.batch.ids],['GB-0017','GB-0005','GB-0002'],'filters, saves and a regrade never change membership');
+ assert.equal(first.batchProgress().done,1);
+ first.state.edits.set('GB-0017',{verdict:'confirm',note:'unsaved'});
+ assert.equal(first.batchProgress().done,0,'an unsaved edit does not count as answered');
+ const reloaded=pageModel({storage}).model;
+ assert.equal(reloaded.state.inBatch,true);
+ assert.deepEqual([...reloaded.state.batch.ids],['GB-0017','GB-0005','GB-0002'],'reload restores the same members');
+ assert.deepEqual({...reloaded.state.batch.revisions},{'GB-0017':1,'GB-0005':1,'GB-0002':1});
+});
+
+test('red P and amber V badges open only their own reason; the central view shows both reasons',()=>{
+ const {model}=pageModel();
+ const item=pvInventory()[0];
+ const badges=model.gradeBadges(item);
+ assert.equal((badges.match(/<details class="grade priority">/g)||[]).length,1);
+ assert.equal((badges.match(/<details class="grade value">/g)||[]).length,1);
+ assert.ok(!/data-open|<details[^>]*open/.test(badges),'badges are closed and do not open the question');
+ const [priority,value]=badges.split('</details>');
+ assert.match(priority,/P1 because of its source/); assert.doesNotMatch(priority,/V2 because/);
+ assert.match(value,/V2 because of its return/); assert.doesNotMatch(value,/P1 because/);
+ assert.match(model.gradeBadges(pvInventory()[6]),/P · Unclassified[\s\S]*V · Unclassified/);
+ const detail=model.gradeDetail(item);
+ assert.match(detail,/Priority P1[\s\S]*P1 because of its source[\s\S]*Value V2[\s\S]*V2 because of its return/);
+ assert.match(model.gradeDetail(pvInventory()[6]),/Priority: Unclassified[\s\S]*none is invented/);
+});
+
+test('the page answer buttons follow the server controls and require a note first',()=>{
+ const {model}=pageModel();
+ const root=controlsRoom();
+ const view=Object.fromEntries(board.mergeBoard(root).items.map(item=>[item.id,item]));
+ const buttons=(id,edit)=>model.answerModel(view[id],edit).buttons.map(b=>({role:b.role,value:b.value,label:b.label,disabled:b.disabled,pressed:b.pressed}));
+ const empty=buttons(ids.standard,{verdict:'',note:''});
+ assert.deepEqual(empty.map(b=>[b.label,b.disabled]),[['Confirm',false],['Rework wording',true],['Change the why',true],['Change',true]]);
+ assert.deepEqual(buttons(ids.standard,{verdict:'',note:'my words'}).map(b=>b.disabled),[false,false,false,false]);
+ const alternatives=buttons(ids.flagged,{verdict:'',note:''});
+ assert.deepEqual(alternatives.filter(b=>b.role==='alternative').map(b=>[b.label,b.pressed,b.disabled]),[['Recommended answer: Rename the qualifier (new Spec)',true,false],['A: Keep both',false,true],['B: Rename the verb instead',false,true]]);
+ assert.equal(alternatives.find(b=>b.role==='confirm').value,'rename_qualifier','Confirm confirms the preselected recommendation');
+ assert.equal(alternatives.find(b=>b.role==='confirm').disabled,false);
+ model.state.selected.set(ids.flagged,'keep_both');
+ const other=buttons(ids.flagged,{verdict:'',note:''});
+ assert.equal(other.find(b=>b.role==='confirm').value,'keep_both');
+ assert.equal(other.find(b=>b.role==='confirm').disabled,true,'confirming another alternative needs a note');
+ assert.equal(buttons(ids.flagged,{verdict:'',note:'Because'}).find(b=>b.role==='confirm').disabled,false);
+ const unclear=model.answerModel(view[ids.unclear],{verdict:'',note:''});
+ assert.equal(unclear.selected,null,'nothing is preselected without a recommendation');
+ assert.match(unclear.recommendationBasis,/none is preselected/);
+ assert.equal(unclear.buttons.find(b=>b.role==='confirm').disabled,true);
+ const approval=buttons(ids.spec,{verdict:'',note:''});
+ assert.deepEqual(approval.map(b=>[b.label,b.value]),[['Confirm','approve'],['Rework wording','rework'],['Change the why','change_why'],['Change','change']]);
+ const labels=Object.keys(view).flatMap(id=>buttons(id,{verdict:'',note:'x'}).map(b=>b.label)).join('|');
+ assert.doesNotMatch(labels,/Not now|Decline/);
+ const legacyItem={...view[ids.standard],answer:{verdict:'decline',note:'no',itemRevision:1,at:'x'},answerLabel:'Decline'};
+ const legacy=model.answerModel(legacyItem);
+ assert.deepEqual({...legacy.legacy},{verdict:'decline',label:'Decline'});
+ assert.ok(legacy.buttons.every(b=>!b.pressed),'a legacy answer presses no new button');
+});
+
+test('the Whys list collects Change the why answers with title, ID, note, revision and status',()=>{
+ const {model}=pageModel();
+ const items=[
+  {id:'GB-0002',title:'Second',revision:3,derivedStatus:'stale',answer:{verdict:'change_why',note:'The reason is the cost',itemRevision:2,at:'2026-10-07T00:00:00Z',history:[{verdict:'change_why',note:'Older reason',itemRevision:1,at:'2026-10-05T00:00:00Z'}]}},
+  {id:'GB-0001',title:'First',revision:1,derivedStatus:'answered',answer:{verdict:'change_why',note:'Wrong cause',itemRevision:1,at:'2026-10-08T00:00:00Z',history:[]}},
+  {id:'GB-0003',title:'Third',revision:1,derivedStatus:'answered',answer:{verdict:'rework',note:'Words',itemRevision:1,at:'2026-10-08T00:00:00Z',history:[]}}
+ ];
+ const rows=model.whysList(items);
+ assert.deepEqual(JSON.parse(JSON.stringify(rows.map(row=>[row.title,row.id,row.note,row.itemRevision,row.status]))),[['First','GB-0001','Wrong cause',1,'answered'],['Second','GB-0002','The reason is the cost',2,'stale'],['Second','GB-0002','Older reason',1,'superseded']]);
+ assert.deepEqual([...model.whysList(items,{status:'stale'}).map(row=>row.id)],['GB-0002']);
+ assert.deepEqual([...model.whysList(items,{query:'cost'}).map(row=>row.note)],['The reason is the cost']);
+});
+
+test('promotion readiness and the disposition timeline come from the workflow card states',()=>{
+ const {model}=pageModel();
+ const items=[{id:'GB-0001',title:'One',revision:1,status:'open'},{id:'GB-0002',title:'Two',revision:1,status:'open'},{id:'GB-0003',title:'Three',revision:1,status:'open'}];
+ model.state.board={items};
+ const request={id:'req-1',requestedAt:'2026-10-08T00:00:00Z',status:'requested',stages:['Record','Publish','Map','Publish','Plan','Publish'],cards:[{id:'GB-0002'}]};
+ const receipt=(stage,extra={})=>({stage,by:'director',at:'2026-10-08T01:00:00Z',links:[],evidence:['README.md'],reason:'',...extra});
+ model.state.workflow={revision:3,comments:[],requests:[request],cards:{
+  'GB-0001':{state:'confirmed',label:'Confirmed; promotion not requested'},
+  'GB-0002':{state:'map-published',label:'Published (map); knowledge-only, no Spec or Task: the Wiki owns it',requestId:'req-1',mapping:{implementationNeeded:false,reason:'the Wiki owns it'}},
+  'GB-0003':{state:'in-grilling',label:'In grilling'}},
+  dispositions:{'GB-0002':{requestId:'req-1',receipts:[receipt('Record'),receipt('Publish'),receipt('Map',{implementationNeeded:false,reason:'the Wiki owns it'}),receipt('Publish')]}}};
+ assert.deepEqual(model.confirmedItems().map(item=>item.id),['GB-0001'],'only cards the workflow reports confirmed are promotable');
+ model.state.edits.set('GB-0001',{verdict:'confirm',note:'unsaved'});
+ assert.deepEqual(model.confirmedItems().map(item=>item.id),[],'an unsaved edit holds promotion back');
+ const timeline=model.dispositionTimeline(request,model.state.workflow.dispositions['GB-0002'],model.state.workflow.cards['GB-0002']);
+ assert.match(timeline,/knowledge-only, no Spec or Task: the Wiki owns it/);
+ assert.equal((timeline.match(/class="done"/g)||[]).length,5,'Requested plus four reached receipts');
+ assert.match(timeline,/No Spec or Task: the Wiki owns it/);
+ assert.match(timeline,/class="next"><strong>Plan/);
+ assert.doesNotMatch(timeline,/Implemented/,'a knowledge-only card shows no implementation step');
+});

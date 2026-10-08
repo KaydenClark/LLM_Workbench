@@ -449,18 +449,14 @@
     };
   }
 
-  function isConfirmedAnswer(item) {
-    const answer = item.answer;
-    return Boolean(answer && item.controls?.confirmValues.includes(answer.verdict) && answer.itemRevision === item.revision && answer.approval);
-  }
-  // Cards that may be promoted now: a current confirmation with its exact
-  // snapshot, no unsaved edit, no Change request awaiting revision and no
-  // earlier request for the same approved bytes.
+  // The workflow's own per-card state (GET /api/workflow cards[id]); the page
+  // renders it and never re-derives promotion state.
+  function cardState(item) { return state.workflow?.cards?.[item.id] || null; }
+  // Cards that may be promoted now: the workflow reports them confirmed (a
+  // current exact confirmation with no Change awaiting revision and no request
+  // for the same approved bytes), and the owner has no unsaved edit on them.
   function confirmedItems() {
-    const comments = state.workflow?.comments || [], requests = state.workflow?.requests || [];
-    return state.board.items.filter(item => item.status === 'open' && item.derivedStatus !== 'applied' && isConfirmedAnswer(item) && !state.edits.has(item.id)
-      && !comments.some(comment => comment.id === item.id && comment.kind === 'change' && comment.itemRevision === item.revision)
-      && !requests.some(request => request.cards.some(card => card.id === item.id && card.hash === item.answer.approval.hash)));
+    return state.board.items.filter(item => cardState(item)?.state === 'confirmed' && !state.edits.has(item.id));
   }
 
   const esc = (text) => String(text ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -884,10 +880,11 @@
   }
   // One action ID per intended action, reused until it succeeds, so a repeated
   // or retried click is recorded once (the workflow treats it as idempotent).
-  async function runAction(key, url, body) {
-    if (!state.actions.has(key)) state.actions.set(key, newActionId());
-    const actionId = state.actions.get(key);
-    const response = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ...body, actionId, expectedRevision: state.workflow?.revision ?? 0 }) });
+  // A retry of an interrupted comment passes its original actionId.
+  async function runAction(key, url, body, actionId) {
+    if (actionId) state.actions.set(key, actionId);
+    else if (!state.actions.has(key)) state.actions.set(key, newActionId());
+    const response = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ...body, actionId: state.actions.get(key), expectedRevision: state.workflow?.revision ?? 0 }) });
     const result = await response.json().catch(() => ({}));
     if (!response.ok) {
       if (result.error?.code === 'action-id-conflict') state.actions.delete(key);
@@ -929,7 +926,7 @@
       <p>Answer over as many rounds as you need; unanswered and unconfirmed cards stay in grilling. Promotion is separate and explicit: it prepares a director handoff through Record → Publish → Map → Publish → Plan → Publish.</p>
       <div class="batch-actions"><button class="bulk" type="button" id="end-round" ${state.edits.size ? 'disabled' : ''}>End this round</button><small>Records which cards are confirmed now. It starts no agent and promotes nothing.${state.edits.size ? ' Save or finish your unsaved notes first.' : ''}</small></div>
       <details><summary>Confirmed cards ready for promotion (${confirmed.length})</summary>
-        ${confirmed.length ? `<div class="confirmed-list">${confirmed.map(item => `<label><input type="checkbox" data-promote-pick="${item.id}" ${state.promote.has(item.id) ? 'checked' : ''}> ${esc(item.title)} <small>${item.id} · ${esc(item.answerLabel)}</small></label>`).join('')}</div>` : '<p>No card is confirmed at its current revision with an exact approval snapshot.</p>'}
+        ${confirmed.length ? `<div class="confirmed-list">${confirmed.map(item => `<label><input type="checkbox" data-promote-pick="${item.id}" ${state.promote.has(item.id) ? 'checked' : ''}> ${esc(item.title)} <small>${item.id} · ${esc(item.answerLabel)}</small></label>`).join('')}</div>` : '<p>No card is in the workflow\'s confirmed state (a current exact confirmation, no Change awaiting revision, not already requested).</p>'}
         <button class="primary" type="button" id="promote-selected" ${state.promote.size ? '' : 'disabled'}>Start promotion for selected confirmed cards (${state.promote.size})</button>
       </details>
       <p id="round-result" role="status">${state.workflow.rounds.length} rounds ended · ${state.workflow.requests.length} promotion handoffs requested.</p>`;
@@ -954,20 +951,27 @@
   function receiptLinks(values) {
     return (values || []).map(value => sourceLink(value, typeof value === 'string' ? value : value.path || value.url)).join(' · ');
   }
-  // Requested → Record → Publish → Map → Publish → Plan → Publish, each step
-  // with its receipt's links, evidence or visible no-op reason.
-  function dispositionTimeline(request, disposition) {
-    const receipts = disposition?.receipts || [];
-    const next = receipts.length;
-    const steps = request.stages.map((stage, index) => {
+  // Requested → Record → Publish → Map → Publish → Plan → Publish (and
+  // Implemented when the Map said implementation is needed). How far a card
+  // has come is the workflow's card state; each reached step shows its
+  // receipt's links, evidence or visible no-op reason.
+  const CARD_PROGRESS = ['handoff-requested', 'recorded', 'record-published', 'mapped', 'map-published', 'planned', 'plan-published', 'implemented'];
+  function dispositionTimeline(request, disposition, card) {
+    const current = card && card.requestId === request.id ? card : null;
+    const reached = current ? Math.max(0, CARD_PROGRESS.indexOf(current.state)) : 0;
+    const receipts = disposition?.requestId === request.id ? disposition.receipts || [] : [];
+    const stages = [...request.stages];
+    if (current?.mapping?.implementationNeeded === true || receipts.length > stages.length) stages.push('Implemented');
+    const steps = stages.map((stage, index) => {
       const receipt = receipts[index];
-      const cls = receipt ? 'done' : index === next ? 'next' : '';
-      if (!receipt) return `<li class="${cls}"><strong>${esc(stage)}</strong><small>${index === next ? 'Next; waiting for a director.' : 'Not reached.'}</small></li>`;
+      const done = index < reached;
+      if (!done) return `<li class="${index === reached ? 'next' : ''}"><strong>${esc(stage)}</strong><small>${index === reached ? 'Next; waiting for a director.' : 'Not reached.'}</small></li>`;
+      if (!receipt) return `<li class="done"><strong>${esc(stage)}</strong></li>`;
       const noOp = receipt.implementationNeeded === false && ['Map', 'Plan'].includes(stage);
-      return `<li class="${cls}"><strong>${esc(stage)}</strong> · ${esc(receipt.by)} · ${esc(receipt.at)}${noOp ? `<small>No Spec or Task: ${esc(receipt.reason)}</small>` : receipt.reason ? `<small>${esc(receipt.reason)}</small>` : ''}${receipt.links?.length ? `<small>Result: ${receiptLinks(receipt.links)}</small>` : ''}${receipt.evidence?.length ? `<small>Evidence: ${receiptLinks(receipt.evidence)}</small>` : ''}</li>`;
+      return `<li class="done"><strong>${esc(stage)}</strong> · ${esc(receipt.by)} · ${esc(receipt.at)}${noOp ? `<small>No Spec or Task: ${esc(receipt.reason)}</small>` : receipt.reason ? `<small>${esc(receipt.reason)}</small>` : ''}${receipt.links?.length ? `<small>Result: ${receiptLinks(receipt.links)}</small>` : ''}${receipt.evidence?.length ? `<small>Evidence: ${receiptLinks(receipt.evidence)}</small>` : ''}</li>`;
     });
-    const status = disposition?.status || request.status;
-    return `<div class="request"><strong>Promotion handoff · ${esc(status)}</strong>${disposition?.implementationNeeded === false ? ' · knowledge-only: existing owners used, no Spec or Task' : ''}<ol class="timeline"><li class="done"><strong>Requested</strong> · ${esc(request.requestedAt)}<small>Handoff ${esc(request.id)}, ready for a director. No agent starts automatically.</small></li>${steps.join('')}</ol></div>`;
+    const heading = current ? esc(current.label) : 'an earlier request, replaced by a newer one';
+    return `<div class="request"><strong>Promotion handoff · ${heading}</strong>${current?.revisedSinceRequest ? '<p class="stale-box">The question was revised after this request; the request still carries the wording you confirmed then.</p>' : ''}<ol class="timeline"><li class="done"><strong>Requested</strong> · ${esc(request.requestedAt)}<small>Handoff ${esc(request.id)}, ready for a director. No agent starts automatically.</small></li>${steps.join('')}</ol></div>`;
   }
   function approvalSummary(item) {
     const approval = item.answer?.approval;
@@ -980,16 +984,18 @@
     if (!state.workflow) { panel.innerHTML = `<h4>Comments and promotion</h4><p class="error-box">Unavailable: ${esc(state.workflowError || 'the owner workflow record is not loaded')}.</p>`; return; }
     const comments = state.workflow.comments.filter(comment => comment.id === item.id);
     const requests = state.workflow.requests.filter(request => request.cards.some(card => card.id === item.id));
+    const card = cardState(item);
     const promotable = confirmedItems().some(candidate => candidate.id === item.id);
-    const why = promotable ? '' : isConfirmedAnswer(item) ? 'Promotion is already requested for this wording, or a change request awaits revision.' : 'Only a confirmed card at its current revision can be promoted.';
+    const why = promotable ? '' : state.edits.has(item.id) ? 'Save or finish your unsaved answer first.' : 'Only a card the workflow reports as confirmed can be promoted.';
     panel.innerHTML = `<h4>Comments, change requests and promotion</h4>
+      <p>Workflow state: <strong>${esc(card?.label || 'unknown')}</strong></p>
       ${approvalSummary(item)}
       <label for="comment-${item.id}">Comment or change request</label>
       <textarea id="comment-${item.id}" data-comment-text placeholder="Saved as its own file under workbench/grill-board/comments/"></textarea>
       <div class="batch-actions"><button class="bulk" type="button" data-comment="comment" disabled>Save as a comment</button><button class="bulk" type="button" data-comment="change" disabled>Send a change request</button><small>Neither approves anything and neither starts an agent.</small></div>
-      ${comments.map(comment => `<div class="request"><strong>${comment.kind === 'change' ? 'Change request' : 'Comment'} · revision ${comment.itemRevision}</strong><p>${esc(comment.text)}</p><small>${esc(comment.status || 'requested')} · ${esc(comment.at || '')}</small></div>`).join('')}
+      ${comments.map(comment => `<div class="request"><strong>${comment.kind === 'change' ? 'Change request' : 'Comment'} · revision ${comment.itemRevision}</strong><p>${esc(comment.text)}</p><small>${esc(comment.status || 'requested')} · ${esc(comment.at || '')}</small>${comment.recorded === false ? `<p class="stale-box">${esc(comment.recovery || 'Saved, but not yet recorded in the workflow.')} <button type="button" class="bulk" data-retry-comment="${esc(comment.actionId)}">Finish recording it</button></p>` : ''}</div>`).join('')}
       <div class="batch-actions"><button class="primary" type="button" data-promote ${promotable ? '' : 'disabled'}>Start promotion for this confirmed card</button><small>${esc(why)}</small></div>
-      ${requests.map(request => dispositionTimeline(request, state.workflow.dispositions[item.id]?.requestId === request.id ? state.workflow.dispositions[item.id] : null)).join('')}
+      ${requests.map(request => dispositionTimeline(request, state.workflow.dispositions[item.id], card)).join('')}
       <p class="flow-result" role="status"></p>`;
     const text = panel.querySelector('[data-comment-text]');
     const result = panel.querySelector('.flow-result');
@@ -999,6 +1005,15 @@
       if (!words) return;
       button.disabled = true;
       try { await runAction(`comment:${item.id}:${button.dataset.comment}:${words}`, '/api/comments', { id: item.id, itemRevision: item.revision, kind: button.dataset.comment, text: words }); renderCardWorkflow(panel, item); renderRoundPanel(); }
+      catch (error) { actionError(result, error); button.disabled = false; }
+    };
+    // An interrupted comment is finished by resending its original action ID
+    // with the payload rebuilt from the saved comment record.
+    for (const button of panel.querySelectorAll('[data-retry-comment]')) button.onclick = async () => {
+      const comment = comments.find(candidate => candidate.actionId === button.dataset.retryComment);
+      if (!comment) return;
+      button.disabled = true;
+      try { await runAction(`retry:${comment.actionId}`, '/api/comments', { id: comment.id, itemRevision: comment.itemRevision, kind: comment.kind, text: comment.text }, comment.actionId); renderCardWorkflow(panel, item); renderRoundPanel(); }
       catch (error) { actionError(result, error); button.disabled = false; }
     };
     panel.querySelector('[data-promote]').onclick = async event => {
