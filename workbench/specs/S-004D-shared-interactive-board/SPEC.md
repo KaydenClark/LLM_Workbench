@@ -208,7 +208,7 @@ confirmed requirements, not delivered behavior.
    skills). Architecture, Destination and Consequential Decision Records live
    in the Wiki section, and every question that uses one links to it.
 2. **Answer controls.** The buttons are Confirm, Rework wording, Change the
-   why and Change, with the meanings recorded under
+   why and Change, with the owner's meanings recorded under
    Decisions And Contracts below.
    - Every option except confirming the recommended answer requires a typed
      note before it can be selected.
@@ -370,9 +370,25 @@ CIC labels and meanings. Apply them as follows:
   Artifacts and other things we deliver. We can be smart about what we put in
   the buttons." Agent-proposed and owner-confirmed: the preselected
   recommended alternative, and Confirm or send-back on a Spec delivery approval.
+  The answer words carry the owner's meanings, carried verbatim from the
+  2026-10-07 promotion on `claude/workbench-dashboard` (35a27351), whose
+  Lexicon home this run does not add: Confirm is the Confirm verb, it is
+  confirmed and nothing needs changing; on a question with alternatives it
+  confirms the selected one. The other three:
+
+  | Answer | Meaning |
+  |---|---|
+  | **Rework wording** | Mostly correct; it needs to be restated better. |
+  | **Change the why** | Something about it is correct, but the underlying reason or cause is wrong. |
+  | **Change** | It needs changing, including dropping it. The owner chose Change over Correct: "to me correct means I am telling you its good to go". |
+
 - **The package, Drafts to approve and always open** are agent plan items the
-  owner confirmed on 2026-10-07. The always-open service is a requirement
-  only; it is not installed. It is consistent with local and small hosting.
+  owner confirmed on 2026-10-07. It is consistent with local and small
+  hosting. Observed 2026-10-08 (read only): a login service labelled
+  `com.kayden.workbench-dashboard`, installed on 2026-10-07 outside this
+  repository's tooling, already serves the owner's primary checkout on
+  127.0.0.1:4646; replacing it with the generated configuration is the
+  owner's choice.
 - **P/V is part of the Workbench Dashboard build** (the owner, 2026-10-07:
   "6. confirmed"). DQC P/V stays out.
 - **Producer room first.** The Dashboard is an LLM Workbench producer-room
