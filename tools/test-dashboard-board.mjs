@@ -514,3 +514,25 @@ test('every write the page sends is declared application/json',()=>{
  assert.ok(writes.length>=2);
  for (const call of writes) assert.match(call,/'content-type': 'application\/json'/);
 });
+
+test('a notepad answer stores only itself, so an old note the privacy guard refuses never blocks a new answer',()=>{
+ const root=notepadRoom();
+ const legacy={verdict:'correct',note:'See /Users/someone/x for my words',at:'2026-10-01T00:00:00.000Z',itemRevision:1,history:[]};
+ fs.writeFileSync(board.boardPaths(root).answers,JSON.stringify({schema:board.ANSWERS_SCHEMA,owner:'Kayden',answers:{'GB-0001':legacy}}));
+ const confirmed=board.recordAnswer(root,'GB-0001',{verdict:'confirm',note:'',itemRevision:1,expectedAnswerAt:legacy.at});
+ assert.equal(confirmed.verdict,'confirm');
+ assert.deepEqual(confirmed.history.map(entry=>[entry.verdict,entry.note]),[['correct',legacy.note]],'the returned answer carries its history');
+ const reworked=board.recordAnswer(root,'GB-0001',{verdict:'rework',note:'Plainer words',itemRevision:1,expectedAnswerAt:confirmed.at});
+ const stored=fs.readFileSync(path.join(root,'workbench/sessions/notepads/grilling/dashboard-answers.json'),'utf8');
+ assert.ok(!stored.includes('/Users/someone'),'the notepad never repeats an earlier answer');
+ const entries=JSON.parse(stored).entries.filter(entry=>entry.topic==='dashboard-answer').map(entry=>JSON.parse(entry.content));
+ assert.deepEqual(entries.map(entry=>[entry.answer.verdict,entry.answer.history,entry.supersedes?.at]),[['confirm',undefined,legacy.at],['rework',undefined,confirmed.at]]);
+ assert.match(entries[1].supersedes.hash,/^[a-f0-9]{64}$/);
+ const answer=board.readAnswers(root).answers['GB-0001'];
+ assert.deepEqual(answer.history.map(entry=>entry.verdict),['correct','confirm'],'history is rebuilt from the legacy file and earlier notepad entries');
+ assert.equal(answer.history[1].approval.hash,confirmed.approval.hash,'an earlier approval snapshot stays in history');
+ assert.equal(reworked.history.length,2);
+ const view=board.mergeBoard(root).items[0];
+ assert.equal(view.answer.history.length,2);
+ assert.equal(board.workflow(root).read().cards['GB-0001'].state,'in-grilling');
+});

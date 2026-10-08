@@ -123,13 +123,31 @@ function answerNote(root) {
   return manifest.collections?.notepads ? `${manifest.collections.notepads}/grilling/dashboard-answers.json` : null;
 }
 function notepadResult(result) { if (result.status === 'blocked') throw new BoardError(result.error?.code ?? 'notepad',result.error?.message ?? 'Notepad refused'); return result; }
+// An answer without its history, as one notepad entry stores it.
+function answerOnly(answer) {
+  return Object.fromEntries(Object.entries(answer).filter(([key]) => key !== 'history'));
+}
+function answerHash(answer) {
+  return createHash('sha256').update(JSON.stringify(answerOnly(answer))).digest('hex');
+}
+
+// Owner answers: the legacy answers.json, then the native notepad entries in
+// order. A current entry (schema dashboard-answer@2) holds only its own answer
+// and names the answer it supersedes; history is rebuilt by chaining, so an
+// earlier note is never copied into a later entry (and an earlier note the
+// notepad privacy guard would refuse never blocks a new answer). An entry
+// written before that format holds the whole answer with its history.
 export function readAnswers(root) {
   const answers = readJson(boardPaths(root).answers, emptyAnswers());
   const note = answerNote(root);
   if (note && fs.existsSync(path.join(root,note))) {
     const loaded = notepadResult(readNote(root,{note}));
     for (const entry of loaded.entries) if (entry.topic === 'dashboard-answer') {
-      const saved = JSON.parse(entry.content); answers.answers[saved.id] = saved.answer;
+      const saved = JSON.parse(entry.content);
+      if (saved.schema !== 'dashboard-answer@2') { answers.answers[saved.id] = saved.answer; continue; }
+      const previous = answers.answers[saved.id];
+      const history = previous ? [...(previous.history ?? []), answerOnly(previous)] : [];
+      answers.answers[saved.id] = { ...saved.answer, history };
     }
   }
   validateAnswers(answers);
@@ -563,7 +581,7 @@ export function recordAnswer(root, id, { verdict, note, itemRevision, expectedAn
     let loaded;
     if (fs.existsSync(path.join(root,nativeNote))) loaded=notepadResult(readNote(root,{note:nativeNote}));
     else loaded=notepadResult(createNote(root,{note:nativeNote,type:'grilling',objective:'dashboard-answers',title:'Dashboard owner answers',focus:'Exact owner words and approved snapshots',state:'Local owner working context; legacy answers preserved','next-action':'Owner confirms or requests revision; explicit promotion is separate'}));
-    notepadResult(appendEntry(root,{note:nativeNote,revision:loaded.revision,kind:isConfirmation(item, verdict)?'decision':'source_record',topic:'dashboard-answer',content:JSON.stringify({id,answer:answers.answers[id]})}));
+    notepadResult(appendEntry(root,{note:nativeNote,revision:loaded.revision,kind:isConfirmation(item, verdict)?'decision':'source_record',topic:'dashboard-answer',content:JSON.stringify({schema:'dashboard-answer@2',id,answer:entry,supersedes:previous?{at:previous.at,hash:answerHash(previous)}:null})}));
   } else writeJsonAtomic(boardPaths(root).answers, answers);
   return { ...answers.answers[id], derivedStatus: itemStatus(item, answers.answers[id]) };
 }
