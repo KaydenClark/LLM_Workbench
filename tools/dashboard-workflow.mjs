@@ -51,24 +51,66 @@ function checkResult(result) { if (result.status === 'blocked') fail(result.erro
 function linkTarget(link) { return (typeof link === 'string' ? link : link?.path ?? link?.url).split('#')[0].replace(/:\d+$/, ''); }
 function linksNamed(links, filename) { return links.map(linkTarget).filter(target => !/^https:\/\//.test(target) && path.posix.basename(target) === filename); }
 
-function approvalContent(item) {
-  return { id: item.id, itemRevision: item.revision, question: item.question, current: item.current, proposal: item.proposal, draft: item.draft ?? null, sources: clone(item.sources ?? []), evidence: clone(item.evidence ?? item.brief?.artifacts ?? null) };
+// The default confirmation rule when no board reader is injected: only the
+// plain confirm and approve words. The served board injects its own
+// answerControls rule, which also counts a confirmed alternative.
+export function defaultIsConfirmation(_item, answer) { return CONFIRM_VERDICTS.includes(answer?.verdict); }
+
+// A source path outside the room is never stored: its label and ref stay, the
+// path becomes this marker and a SHA-256 of the original keeps it comparable.
+export const OUTSIDE_ROOM_PATH = '(outside this room)';
+
+// Sources as they are frozen and hashed: a path inside the room becomes its
+// room-relative path, deterministically, and an absolute path outside it is
+// replaced by the marker. Relative paths and markers are left unchanged, so
+// normalizing twice gives the same result. An absolute path cannot be judged
+// without the room root, so it is refused rather than guessed.
+// The real path of `target`, resolving symlinks in its deepest existing
+// ancestor, so /tmp and /private/tmp spellings of one room compare equal.
+function realPathOf(target) {
+  let existing = path.resolve(target);
+  const rest = [];
+  while (!fs.existsSync(existing)) {
+    const parent = path.dirname(existing);
+    if (parent === existing) break;
+    rest.unshift(path.basename(existing));
+    existing = parent;
+  }
+  return path.join(fs.existsSync(existing) ? fs.realpathSync(existing) : existing, ...rest);
 }
-export function approvalHash(item) { return hash(approvalContent(item)); }
-export function approvalSnapshot(item, answer) {
-  if (!CONFIRM_VERDICTS.includes(answer?.verdict) || answer.itemRevision !== item.revision) fail('not-confirmed', 'Only the current explicit confirmation can freeze approved wording');
-  return { ...approvalContent(item), hash: approvalHash(item), confirmedAt: answer.at, verdict: answer.verdict, note: answer.note };
+
+export function normalizeSources(sources, root) {
+  const base = root ? realPathOf(root) : null;
+  return clone(sources ?? []).map((source) => {
+    if (!source || typeof source.path !== 'string' || !path.isAbsolute(source.path)) return source;
+    if (!base) fail('invalid-input', 'An absolute source path needs the room root to normalize it');
+    const relative = path.relative(base, realPathOf(source.path));
+    if (relative && !relative.startsWith('..') && !path.isAbsolute(relative)) return { ...source, path: relative.split(path.sep).join('/') };
+    return { ...source, path: OUTSIDE_ROOM_PATH, pathSha256: hash(source.path) };
+  });
+}
+
+function approvalContent(item, root) {
+  return { id: item.id, itemRevision: item.revision, question: item.question, current: item.current, proposal: item.proposal, draft: item.draft ?? null, sources: normalizeSources(item.sources, root), evidence: clone(item.evidence ?? item.brief?.artifacts ?? null) };
+}
+export function approvalHash(item, { root } = {}) { return hash(approvalContent(item, root)); }
+// options.isConfirmation(item, answer) decides which answers are
+// confirmations; options.root normalizes absolute source paths.
+export function approvalSnapshot(item, answer, { root, isConfirmation = defaultIsConfirmation } = {}) {
+  if (!isConfirmation(item, answer) || answer.itemRevision !== item.revision) fail('not-confirmed', 'Only the current explicit confirmation can freeze approved wording');
+  return { ...approvalContent(item, root), hash: approvalHash(item, { root }), confirmedAt: answer.at, verdict: answer.verdict, note: answer.note };
 }
 
 // Why an answer is not a current exact confirmation of the item, or null.
-function confirmationProblem(item, answer) {
-  if (!CONFIRM_VERDICTS.includes(answer?.verdict)) return { code: 'not-confirmed', message: `${item.id} needs an explicit confirmed answer before promotion` };
+// policy = { root, isConfirmation } from the workflow that asks.
+function confirmationProblem(item, answer, policy) {
+  if (!policy.isConfirmation(item, answer)) return { code: 'not-confirmed', message: `${item.id} needs an explicit confirmed answer before promotion` };
   if (answer.itemRevision !== item.revision) return { code: 'stale-approval', message: `${item.id} answer is stale` };
   const snapshot = answer.approval;
   const exact = snapshot
     && snapshot.itemRevision === item.revision
-    && snapshot.hash === approvalHash(item)
-    && hash(approvalContent({ ...snapshot, revision: snapshot.itemRevision })) === snapshot.hash
+    && snapshot.hash === approvalHash(item, policy)
+    && hash(approvalContent({ ...snapshot, revision: snapshot.itemRevision }, policy.root)) === snapshot.hash
     && snapshot.verdict === answer.verdict
     && snapshot.note === answer.note
     && snapshot.confirmedAt === answer.at;
@@ -119,12 +161,12 @@ function readComment(file, name) {
   return comment;
 }
 
-function commentStatus(comment, items, answers) {
+function commentStatus(comment, items, answers, policy) {
   if (comment.kind !== 'change') return comment.status;
   const item = items.find(candidate => candidate.id === comment.id);
   const revised = item && item.revision > comment.itemRevision;
   if (!revised) return 'awaiting revision';
-  return confirmationProblem(item, answers[comment.id]) ? 'revised; awaiting confirmation' : 'revised; confirmed';
+  return confirmationProblem(item, answers[comment.id], policy) ? 'revised; awaiting confirmation' : 'revised; confirmed';
 }
 
 function dispositionCard(item, disposition, base) {
@@ -141,7 +183,7 @@ function dispositionCard(item, disposition, base) {
 
 // One visible state per card. Implementation is never inferred: only an
 // Implemented receipt backed by a done Task produces it.
-function cardStates(items, answers, state) {
+function cardStates(items, answers, state, policy) {
   const cards = {};
   for (const item of items) {
     const base = { id: item.id, itemRevision: item.revision };
@@ -150,7 +192,7 @@ function cardStates(items, answers, state) {
       continue;
     }
     const answer = answers[item.id];
-    const confirmed = !confirmationProblem(item, answer) && !changeAwaitingRevision(state.comments, item);
+    const confirmed = !confirmationProblem(item, answer, policy) && !changeAwaitingRevision(state.comments, item);
     const disposition = state.dispositions[item.id];
     if (disposition && !(confirmed && answer.approval.hash !== disposition.approval.hash)) cards[item.id] = dispositionCard(item, disposition, base);
     else if (confirmed) cards[item.id] = { ...base, state: 'confirmed', label: CARD_STATES.confirmed, approvalHash: answer.approval.hash };
@@ -166,6 +208,7 @@ export function createWorkflow(root, readers = {}) {
   if (!notepads) fail('missing-owner', 'The manifest must declare the native notepads collection');
   const note = `${notepads}/grilling/dashboard-owner-flow.json`;
   const noteFile = safePath(root, note);
+  const policy = { root, isConfirmation: readers.isConfirmation ?? defaultIsConfirmation };
   const readItems = readers.readItems ?? (() => JSON.parse(fs.readFileSync(path.join(root, 'workbench/grill-board/items.json'), 'utf8')));
   const readAnswers = readers.readAnswers ?? (() => {
     const file = safePath(root, 'workbench/grill-board/answers.json');
@@ -216,8 +259,8 @@ export function createWorkflow(root, readers = {}) {
     }
     const items = readItems(root).items;
     const answers = readAnswers(root).answers;
-    state.comments = state.comments.map(comment => ({ ...comment, status: commentStatus(comment, items, answers) }));
-    state.cards = cardStates(items, answers, state);
+    state.comments = state.comments.map(comment => ({ ...comment, status: commentStatus(comment, items, answers, policy) }));
+    state.cards = cardStates(items, answers, state, policy);
     return state;
   }
 
@@ -275,7 +318,7 @@ export function createWorkflow(root, readers = {}) {
     const file = safePath(root, relative);
     if (fs.existsSync(file)) return adoptComment(input, kind, started, readComment(file, relative));
     const item = itemFor(input.id, input.itemRevision);
-    const record = { schema: 'dashboard-comment@1', id: input.id, itemRevision: input.itemRevision, kind, text: input.text, actionId: input.actionId, at: new Date().toISOString(), status: kind === 'change' ? 'awaiting revision' : 'requested', path: relative, sources: clone(item.sources ?? []) };
+    const record = { schema: 'dashboard-comment@1', id: input.id, itemRevision: input.itemRevision, kind, text: input.text, actionId: input.actionId, at: new Date().toISOString(), status: kind === 'change' ? 'awaiting revision' : 'requested', path: relative, sources: normalizeSources(item.sources, root) };
     fs.mkdirSync(path.dirname(file), { recursive: true });
     if (!createExclusive(file, `${JSON.stringify(record, null, 2)}\n`)) return adoptComment(input, kind, started, readComment(file, relative));
     try {
@@ -291,7 +334,7 @@ export function createWorkflow(root, readers = {}) {
     if (started.repeated) return started.repeated;
     const answers = readAnswers(root).answers;
     const confirmed = readItems(root).items
-      .filter(item => item.status !== 'withdrawn' && !confirmationProblem(item, answers[item.id]) && !changeAwaitingRevision(started.state.comments, item))
+      .filter(item => item.status !== 'withdrawn' && !confirmationProblem(item, answers[item.id], policy) && !changeAwaitingRevision(started.state.comments, item))
       .map(item => ({ id: item.id, itemRevision: item.revision }));
     return save(input, 'round', started, { round: { id: input.actionId, number: started.state.rounds.length + 1, endedAt: new Date().toISOString(), confirmed } }, 'directive');
   }
@@ -305,7 +348,7 @@ export function createWorkflow(root, readers = {}) {
     const cards = input.ids.map(id => {
       const item = itemFor(id, input.revisions?.[id]);
       const answer = answers[id];
-      const problem = confirmationProblem(item, answer);
+      const problem = confirmationProblem(item, answer, policy);
       if (problem?.code === 'not-confirmed') fail(problem.code, problem.message);
       if (changeAwaitingRevision(started.state.comments, item)) fail('change-awaiting-revision', `${id} has a Change request awaiting an agent revision and fresh owner confirmation`);
       if (problem) fail(problem.code, problem.message);

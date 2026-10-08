@@ -84,7 +84,12 @@ and the page reads from the board JSON (`item.controls`):
 
 Only a confirmation (`confirm`, `approve` or a confirmed alternative) freezes an
 approval snapshot: the exact question, current text, proposal, draft and
-sources, with their SHA-256. Answers saved with the earlier words (`correct`,
+sources, with their SHA-256. Source paths are frozen room-relative: an
+absolute path inside the room is stored relative to it, and one outside the
+room keeps its label and ref but stores the marker `(outside this room)` and a
+SHA-256 of the original path, so no absolute path reaches the answer notepad.
+The promotion workflow counts the same confirmations, including a confirmed
+alternative, as confirmed. Answers saved with the earlier words (`correct`,
 `decline`, `defer`, `finding`, `destination_change`, `drop`, `answer`...) still
 read with their original labels and keep their meaning (an earlier Not now
 stays pending); new answers cannot use those words.
@@ -382,20 +387,43 @@ carries the applied verdicts into Git.
    | any | legacy Not now | leave it; do not `apply` |
    | any | legacy Decline | record the decline where the item would have landed (evidence row, DQC correction, Spec note), then `apply` |
 
-3. The dispatcher retains the board's `apply` bookkeeping for each current
+3. **Reassess P/V on every card the answer updates.** After you `apply` an
+   answer, or `revise` a card from it, reassess that card's Priority and
+   Value, and those of any other card the answer changes. Retain a grade
+   whose basis did not change and record that you assessed it; change a grade
+   only when its basis changed, with its new reason; follow an owner-directed
+   correction. Record both through one validated operation:
+
+   ```bash
+   node tools/grill-board.mjs reassess --file ROWS.json --by NAME --reason TEXT
+   ```
+
+   `ROWS.json` is an array of
+   `{"id": "GB-####", "expectedGradeRevision": N, "followed": {"id": "GB-####", "answerAt": "<the answer's saved time>", "itemRevision": N}, "priority": {"retain": true, "basis": "..."}, "value": {"grade": "V2", "reason": "...", "basis": "..."}}`.
+   `followed` names the owner answer the reassessment follows (it may be on
+   another card) and must exist. Each grade is either retained (`retain` and
+   `basis`) or revised (`grade`, its new `reason` and the `basis` for the
+   change). The assessment is appended to the card's history (retained or
+   revised, from and to, basis, the answer followed), so a retained grade is
+   distinguishable from an unassessed one, and the central question view
+   shows the latest one. It bumps `gradeRevision` with the stale check and
+   never the item `revision` or any owner answer. An ungraded card is graded
+   with `grade` first. There is no periodic sweep and no DQC work.
+4. The dispatcher retains the board's `apply` bookkeeping for each current
    answer and commits `items.json` with the work it records. Local application
    does not prove publication: each promotion returns its own integration
    containment and owner read-back. Run `node tools/test-grill-board.mjs` before
    pushing. This routing adds no background scheduler or agent-refresh service.
-4. Anything your work raises that needs the owner becomes a new item through
+5. Anything your work raises that needs the owner becomes a new item through
    `add --file new-items.json --by <you>` (the file holds `{"items":[...]}` in
    the shape of the existing items, without `id`, `revision`, `status`,
    `applied` or `history`). Name artifacts by name and identifier in the title,
    say what is true now in `current`, and label your recommendation
    "Agent proposal:" in `proposal`. Put a full text the owner must read in
    `draft`.
-5. Finish by telling the owner, in plain words, what you applied, what you
-   added, and what you could not carry and why.
+6. Finish by telling the owner, in plain words, what you applied, what you
+   reassessed (retained or revised), what you added, and what you could not
+   carry and why.
 
 ## Status vocabulary
 

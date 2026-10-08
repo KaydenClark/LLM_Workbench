@@ -435,3 +435,75 @@ test('a refused comment write leaves no file behind', () => {
   assert.throws(() => late.comment({ id: 'GB-0002', itemRevision: 1, text: 'Two.', actionId: 'two', expectedRevision: 0 }), /stale-revision/);
   assert.deepEqual(fs.readdirSync(path.join(r.root, 'workbench/grill-board/comments')), [path.basename(first.comment.path)]);
 });
+
+// A real board room whose owner answers go to the native notepad.
+function notepadRoom(rawItems) {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'dashboard-board-flow-'));
+  fs.mkdirSync(path.join(root, board.BOARD_DIR), { recursive: true });
+  fs.writeFileSync(path.join(root, 'workbench/manifest.json'), JSON.stringify({ schemaVersion: 2, lanes: { sessions: 'workbench/sessions' }, collections: { notepads: 'workbench/sessions/notepads', 'notepad-templates': 'workbench/sessions/notepads/templates', handoffs: 'workbench/sessions/handoffs' } }));
+  fs.writeFileSync(path.join(root, 'README.md'), '# Durable owner\n');
+  fs.writeFileSync(board.boardPaths(root).items, JSON.stringify({ schema: board.ITEMS_SCHEMA, title: 'Fixture', groups: [{ id: 'g', title: 'G' }], items: [] }));
+  const base = { group: 'g', question: 'Which?', current: 'Now.', proposal: 'Agent proposal: Keep LMK.', sources: [{ label: 'Owner', path: 'README.md', ref: 'fixture' }] };
+  board.addItems(root, rawItems.map(raw => ({ ...base, ...raw })), { by: 'fixture' });
+  return root;
+}
+const choiceOptions = [{ value: 'keep_lmk', label: 'Keep LMK', recommended: true }, { value: 'new_prefix', label: 'Use a new prefix' }, { value: 'correct', label: 'Correct with my notes' }, { value: 'decline', label: 'Decline' }, { value: 'defer', label: 'Not now' }];
+
+test('a confirmed alternative is a confirmation for card state, rounds, promotion and Change status', () => {
+  const root = notepadRoom([{ key: 'choice', kind: 'choice', title: 'Choose a prefix', options: choiceOptions }, { key: 'plain', kind: 'owner-decision', title: 'Plain question' }]);
+  const flow = board.workflow(root);
+  const answer = board.recordAnswer(root, 'GB-0001', { verdict: 'keep_lmk', note: '', itemRevision: 1 });
+  assert.equal(answer.approval.verdict, 'keep_lmk');
+  let state = flow.read();
+  assert.equal(state.cards['GB-0001'].state, 'confirmed', 'a confirmed alternative is confirmed');
+  const round = flow.endRound({ actionId: 'round-1', expectedRevision: state.revision });
+  assert.deepEqual(round.round.confirmed.map(card => card.id), ['GB-0001']);
+  const promoted = flow.promote({ ids: ['GB-0001'], revisions: { 'GB-0001': 1 }, actionId: 'promote-1', expectedRevision: round.revision });
+  assert.equal(promoted.request.cards[0].verdict, 'keep_lmk');
+  assert.equal(flow.read().cards['GB-0001'].state, 'handoff-requested');
+  // A Change on the plain card, revised and then confirmed, reads as revised; confirmed.
+  state = flow.read();
+  const change = flow.comment({ id: 'GB-0002', itemRevision: 1, kind: 'change', text: 'Say it plainly.', actionId: 'change-1', expectedRevision: state.revision });
+  board.reviseItem(root, 'GB-0002', { proposal: 'Agent proposal: plainly.' }, { by: 'agent', reason: 'Change request' });
+  board.recordAnswer(root, 'GB-0002', { verdict: 'confirm', note: '', itemRevision: 2 });
+  assert.equal(flow.read().comments.find(comment => comment.actionId === 'change-1').status, 'revised; confirmed');
+  assert.ok(change.comment);
+});
+
+test('a legacy correct answer is never a confirmation', () => {
+  const root = notepadRoom([{ key: 'plain', kind: 'owner-decision', title: 'Plain question' }]);
+  const item = board.readItems(root).items[0];
+  const legacy = { verdict: 'correct', note: 'my words', at: '2026-10-01T00:00:00.000Z', itemRevision: 1, history: [] };
+  const fake = { ...legacy, approval: { ...approvalSnapshot(item, { ...legacy, verdict: 'confirm' }), verdict: 'correct', note: 'my words', confirmedAt: legacy.at } };
+  const answers = { 'GB-0001': fake };
+  const flow = createWorkflow(root, { readItems: board.readItems, readAnswers: () => ({ answers }), isConfirmation: (candidate, saved) => board.isConfirmation(candidate, saved?.verdict) });
+  assert.equal(flow.read().cards['GB-0001'].state, 'in-grilling');
+  assert.throws(() => flow.promote({ ids: ['GB-0001'], revisions: { 'GB-0001': 1 }, actionId: 'p', expectedRevision: 0 }), /not-confirmed/);
+  assert.equal(board.isConfirmation(item, 'correct'), false);
+});
+
+test('in-room absolute source paths are stored room-relative and outside paths are never exposed', () => {
+  const placeholder = 'ROOT';
+  const root = notepadRoom([{ key: 'abs', kind: 'confirm-text', title: 'Absolute sources', draft: '# Draft\n\nExact words.', sources: [{ label: 'Packet', path: placeholder, ref: 'untracked' }, { label: 'Elsewhere', path: '/Users/someone/elsewhere/notes.json', ref: 'untracked' }, { label: 'Owner', path: 'README.md', ref: 'fixture' }] }]);
+  // Point the first source at a notepad inside this room by its absolute path.
+  const items = JSON.parse(fs.readFileSync(board.boardPaths(root).items, 'utf8'));
+  const inside = `${root}/workbench/sessions/notepads/x.json`;
+  items.items[0].sources[0].path = inside;
+  fs.writeFileSync(board.boardPaths(root).items, JSON.stringify(items, null, 2));
+  const answer = board.recordAnswer(root, 'GB-0001', { verdict: 'confirm', note: '', itemRevision: 1 });
+  assert.deepEqual(answer.approval.sources.map(source => source.path), ['workbench/sessions/notepads/x.json', '(outside this room)', 'README.md']);
+  assert.match(answer.approval.sources[1].pathSha256, /^[a-f0-9]{64}$/);
+  assert.equal(answer.approval.sources[1].label, 'Elsewhere');
+  const stored = fs.readFileSync(path.join(root, 'workbench/sessions/notepads/grilling/dashboard-answers.json'), 'utf8');
+  assert.ok(!stored.includes(root) && !stored.includes(fs.realpathSync(root)) && !stored.includes('/Users/someone'), 'the saved answer holds no absolute path');
+  const flow = board.workflow(root);
+  assert.equal(flow.read().cards['GB-0001'].state, 'confirmed');
+  const comment = flow.comment({ id: 'GB-0001', itemRevision: 1, text: 'A note.', actionId: 'c-1', expectedRevision: flow.read().revision });
+  assert.ok(!JSON.stringify(comment.comment.sources).includes('/Users/someone') && !JSON.stringify(comment.comment.sources).includes(root), 'comment records normalize sources too');
+  const promoted = flow.promote({ ids: ['GB-0001'], revisions: { 'GB-0001': 1 }, actionId: 'p-1', expectedRevision: flow.read().revision });
+  assert.equal(promoted.request.cards[0].hash, answer.approval.hash);
+  assert.equal(board.draftsToApprove(root).groups[0].items[0].approval.state, 'current', 'Drafts to approve hashes the same normalized content');
+  board.reviseItem(root, 'GB-0001', { draft: '# Draft\n\nRevised words.' }, { by: 'agent', reason: 'critique' });
+  assert.equal(board.draftsToApprove(root).groups[0].items[0].approval.state, 'stale', 'editing the draft still makes the approval stale');
+  assert.notEqual(flow.read().cards['GB-0001'].revisedSinceRequest, false);
+});
