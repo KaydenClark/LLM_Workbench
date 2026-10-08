@@ -655,6 +655,9 @@ export function rewriteAdrLinks(content, oldDir, newDir, locations, { directoryT
     // renormalized an active Spec's own untouched `../S-050-.../SPEC.md`
     // self-link down to `SPEC.md` this way. Leave it exactly as written.
     if (newAbsolute === oldAbsolute && newDir === oldDir) return whole;
+    // Moving between sibling directories can leave a route valid as written.
+    // Preserve that spelling rather than shorten an already-correct link.
+    if (path.resolve(newDir, decoded) === newAbsolute) return whole;
     const relative = path.relative(newDir, newAbsolute).split(path.sep).join('/');
     // Preserve directory-route syntax and URI encoding when recomputing a
     // moved target or referrer. In particular ./ names a directory; # alone
