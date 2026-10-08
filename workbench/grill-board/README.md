@@ -1,6 +1,14 @@
 # Grill Board
 
-The page is titled **Consequential Decision Record**. It is this objective's
+The Grill Board is the first working form of the **Workbench Dashboard**: one
+local site with five sections, **Destination Tracker**, **Taskboard**,
+**Grilling Board**, **Drafts to approve** and **Wiki** (the
+[Lexicon](../../LEXICON.md#workbench-dashboard) owns those names). The tool and
+its files keep the `grill-board` name. The Grilling Board section is the
+review package described below; the other sections read their existing owners
+and store nothing of their own.
+
+The review package was titled **Consequential Decision Record**. It is this objective's
 shared working review package, using the existing Grill Board protocol. It is
 not a newly accepted artifact type. The owner explicitly requested package
 review instead of the ordinary one-question-at-a-time interview.
@@ -29,10 +37,10 @@ with `scope` (BLUEPRINT, LANDMARK, SPEC or TASK) and nonempty Markdown strings
 `summary`, `artifacts`, `why`, `recommendation`, `changes`, `impact`, `history`.
 The revision invalidates earlier answers without editing their words. `pending
 --json` includes the brief so Claude and Codex see the same context.
-Notes without a verdict and **Not now** save locally but remain pending.
-The tool refuses to apply either as a decision. Custom choice verdicts mean the
-selected alternative, not automatic acceptance of the recommended alternative;
-read the returned question, options, brief and verdict together.
+Notes without an answer save but remain pending, and the tool refuses to apply
+them. An alternative's value as the verdict means the owner confirmed that
+alternative, which need not be the recommended one; read the returned question,
+options, brief and verdict together.
 
 One local page where the owner reads every item that waits on him (Spec owner
 gates, open owner decisions, unsettled Destination Question Cards, decision
@@ -45,19 +53,84 @@ that Spec is the destination this page grows into (the owner, 2026-10-04), and
 its Current Verified State maps what the page already delivers and what is
 still to come. There is one board, not two.
 
-## Priority and Value — confirmed design, awaiting delivery
+## Answer controls
 
-The Owner confirmed on 2026-10-07 that P/V should make the board's questions
-visible and filterable into an answering queue the Owner chooses. The shared
-meanings live in the [Lexicon](../../LEXICON.md#priority-and-value); rationale
-and source lineage live in the [Grill Board P/V decision](../docs/ddr/001L-priority-and-value-help-the-owner-choose-grill-board-questions.md).
+The owner answers with four words (the
+[Lexicon](../../LEXICON.md#workbench-dashboard) owns their meanings):
+**Confirm** (confirmed, nothing needs changing), **Rework wording** (verdict
+`rework`), **Change the why** (`change_why`) and **Change** (`change`, including
+dropping it). Every answer except confirming the recommended one needs a typed
+note before its button can be chosen; the page disables the button and
+`recordAnswer` refuses the write. There is no Not now and no Decline: an
+unanswered question simply stays unanswered.
 
-The [Shared Interactive Workbench Board Spec](../specs/S-004D-shared-interactive-board/SPEC.md#priority-and-value-for-answering-questions)
-owns the numbered red P / amber V badges, click-open grade explanations, full
-central question view, independent filters and the answer-to-card-update cycle.
-Those controls are **planned**, not available in the current page. The first
-proof is confined to this board and its questions; DQC classifications are deferred.
-Continue using the existing filters and batches until this slice is delivered.
+The buttons adapt to the question, decided in one place,
+`answerControls(item)` in `tools/grill-board.mjs`, which the server enforces
+and the page reads from the board JSON (`item.controls`):
+
+- **A question without alternatives**: Confirm (verdict `confirm`), Rework
+  wording, Change the why, Change.
+- **A question with alternatives** (`options` holding real choices; the legacy
+  `correct`, `decline` and `defer` options are not alternatives): the
+  alternatives appear as **Recommended answer**, then **A**, **B**, **C**...
+  The recommended one is preselected and **Confirm** stores the selected
+  alternative's value as the verdict. The recommended alternative is
+  identified only by an option carrying `"recommended": true`, or by the
+  recommendation naming exactly one alternative's whole label; otherwise
+  nothing is preselected and the card says so. To mark one, revise the item's
+  options (`revise --options-file`), which bumps the revision.
+- **A Spec delivery approval** (`approve-spec`): Confirm records `approve`;
+  Rework wording, Change the why and Change send it back with the note.
+
+Only a confirmation (`confirm`, `approve` or a confirmed alternative) freezes an
+approval snapshot: the exact question, current text, proposal, draft and
+sources, with their SHA-256. Answers saved with the earlier words (`correct`,
+`decline`, `defer`, `finding`, `destination_change`, `drop`, `answer`...) still
+read with their original labels and keep their meaning (an earlier Not now
+stays pending); new answers cannot use those words.
+
+**Whys list**: every Change the why answer, title first and ID second, with the
+owner's note, the revision answered and its status, filterable by text and
+status. Open it from the Grilling Board's left panel (`#section=whys`). An agent
+fixes the rationale in the owning decision record.
+
+## Priority and Value
+
+Each question can carry its own **Priority** (`P1`-`P4`, when to attend) and
+**Value** (`V1`-`V4`, the governed change's return versus investment), each
+with its own nonempty, source-backed reason. The shared meanings live in the
+[Lexicon](../../LEXICON.md#priority-and-value); rationale and source lineage in
+the [Grill Board P/V decision](../docs/ddr/001L-priority-and-value-help-the-owner-choose-grill-board-questions.md).
+P and V are never combined into a score. An ungraded question shows
+**Unclassified** and is never given a default.
+
+Agents grade through the validated operation only:
+
+```bash
+node tools/grill-board.mjs grade --file GRADES.json --by NAME --reason TEXT
+```
+
+`GRADES.json` is an array of
+`{"id": "GB-####", "expectedGradeRevision": N, "priority": {"grade": "P2", "reason": "..."}, "value": {"grade": "V1", "reason": "..."}}`.
+`expectedGradeRevision` is the item's current `gradeRevision` (0 when
+ungraded); a stale one is refused. Invalid grades, missing reasons and unknown
+fields are refused with `items.json` unchanged. A grade write never touches
+owner answers. **Choice recorded:** a grade change does not bump the item's
+`revision`, because a grade is guidance about the question, not the proposal
+the owner answered; it bumps `gradeRevision` and appends a `graded:` history
+entry instead, so a regrade never stales an owner answer.
+
+On the page, red **P** and amber **V** badges sit on the right of each question
+row; clicking one opens only its own reason, without opening or answering the
+question. The central question view shows P, V and both reasons beside the
+unchanged question, proposal, sources, history and answer controls. The
+**Priority** and **Value** filters are independent: P alone includes every
+Value in that Priority, V alone every Priority in that Value, and both select
+their intersection (for example P1V2 or P3V1). They combine with topic, kind,
+scale, workflow stage and search; **Clear all filters** clears them too. Topic
+cards count and open only matching questions and show no grade of their own. A
+batch started from a P/V slice keeps its members and their revisions through
+saves, later filters, regrades and reloads.
 
 ## Agents: read this before touching anything here
 
@@ -65,8 +138,9 @@ Continue using the existing filters and batches until this slice is delivered.
 
 | File | Who writes it | How |
 |---|---|---|
-| `items.json` | agents | only through `node tools/grill-board.mjs add / revise / apply / withdraw` |
-| `answers.json` | the owner | only through the served page; untracked in Git; **agents never write it** |
+| `items.json` | agents | only through `node tools/grill-board.mjs add / revise / grade / apply / withdraw` |
+| owner answers | the owner | only through the served page; **agents never write them**. In a room whose manifest declares the `notepads` collection they are appended to the git-ignored notepad `<notepads>/grilling/dashboard-answers.json`; otherwise to the untracked `answers.json`. Earlier `answers.json` answers stay readable. |
+| `comments/` | the owner | one file per comment or change request, written by the served page through `tools/dashboard-workflow.mjs`; neither approves anything |
 | `index.html` | agents, rarely | the page; change it only when the owner asks for a page change |
 
 Rules that keep the board trustworthy across sessions:
@@ -114,16 +188,60 @@ an unrelated dirty file; leave it alone.
 ## Owner: how to use it
 
 ```bash
-node tools/grill-board.mjs serve
+node tools/grill-board.mjs serve --path ROOT --port N
 ```
 
-Open <http://127.0.0.1:4646/>. Pick a verdict on each card and type notes; every
-change saves to `answers.json` as you go (the card says "Saved <time>"). Use
-the left filters to choose a kind of decision, topic, scale and workflow stage,
-and the search box to find a question.
-"Read the full draft text" opens a decision record or page text in full. Source
-links open the file as it is in your checkout, or on GitHub at the commit the
-item was built from (↗).
+`--path` defaults to the current checkout and `--port` to 4646; the server
+binds 127.0.0.1 only. Open `http://127.0.0.1:N/`. The five section tabs are
+ordinary links, reachable with Tab and Enter; the current section stays in the
+address (`#section=tracker`, `#section=taskboard`, `#section=grilling`,
+`#section=drafts`, `#section=wiki`), so a reload returns to it. The search box
+in the top bar searches questions and Wiki pages (`#search=...`); when the
+server offers no full-text search the page says so and matches titles and
+identifiers only.
+
+- **Destination Tracker**: the Landmark Tracker's understanding distribution
+  (Idea through Verified) for the whole Workbench and each Landmark, with its
+  Destination Question Cards. Understanding, not delivery.
+- **Taskboard**: the native execution lanes of Specs and Tasks. A done Task
+  never establishes verified understanding. When either source cannot be read
+  the section shows the error and no substitute projection. Both sections load
+  only when opened. Every card opens one inspector: title first, ID second,
+  status, source path and revision, relationships, and the readable source.
+- **Grilling Board**: the questions; see the answer controls and P/V above.
+  Type a note, choose an answer; every change saves as you go (the card says
+  "Saved <time>"). A save refused because the question changed (409) keeps your
+  text and asks you to reload.
+- **Drafts to approve**: every open question with proposed wording, grouped by
+  the file a full-text review replaces, with that file's current text beside
+  the proposed wording and a link to the owning question. Each draft shows its
+  approval state: not yet approved, approved (the snapshot SHA-256 matches the
+  current draft), or stale (the draft changed after you confirmed it).
+  Approval questions without any draft are listed under **No proposed draft
+  available**; none is invented.
+- **Wiki**: the catalog groups (root controls, ADRs, DDRs, Landmarks, Specs,
+  Tasks, DQCs, Wiki pages, skills, and architecture or glossary files when
+  present), titles first. A question whose sources are cataloged, including
+  every ADR or DDR it uses, links to that page. Each page shows **Linked from**
+  (questions and pages that link to it) and glossary terms show their
+  definition on hover, when the server's sources module offers them; without
+  them the page shows the board questions citing the file and no definitions.
+
+**Rounds and promotion.** Answering, confirming, commenting or ending a round
+never starts an agent. Each card can save a **comment** or send a **change
+request** (both need text; each becomes its own file under `comments/`).
+**End this round** records which cards are confirmed and starts nothing. Promotion
+is explicit: **Start promotion for this confirmed card**, or select confirmed
+cards in **Rounds and promotion** and start them together; unconfirmed cards
+stay in grilling. A promotion is a recoverable director handoff. Each card
+shows its workflow state and a timeline, Requested → Record → Publish → Map →
+Publish → Plan → Publish (then Implemented when the Map named a Spec), with
+each receipt's resulting links, evidence or the visible no-op reason of a
+knowledge-only decision. The page renders the state the workflow reports
+(`GET /api/workflow` `cards`). Every action carries an action ID that is reused
+until it succeeds, so a repeated click records once; a stale action (409) says
+so and offers a reload. A comment whose file was saved but not recorded offers
+**Finish recording it**, which resends the same action.
 
 ### Choose a finishable slice
 
@@ -145,16 +263,18 @@ Three kinds of attention cut across those topics:
 - **Review existing work**: delivery approvals, decision/page texts, question
   card understanding and the preserved grilling ledger.
 
-The workflow counts are **To answer**, **Revisit**, **With agents**, **Applied**,
-**Not now**, and **Withdrawn**. Each item counts once. Not now is a current
-saved deferral, while a changed revision goes to Revisit. With agents means a
-current applicable answer was saved; Applied means an agent recorded where it
+The workflow counts are **To answer**, **Revisit**, **Answered · awaiting an
+agent**, **Applied**, **Not now (earlier answers)**, and **Withdrawn**. Each
+item counts once. Not now holds only answers saved with that earlier word at
+the current revision, while a changed revision goes to Revisit. Answered means
+a current applicable answer was saved; Applied means an agent recorded where it
 landed. These are review progress, not implementation or delivery stages.
 
 Open a slice, choose **3, 5 or 10 questions**, and start its next unanswered
 batch, or use checkboxes to choose any set. The page opens one full question
-at a time. The batch membership stays fixed as answers save. Notes without a
-verdict, deferrals, stale answers and unsaved edits do not count as answered.
+at a time. The batch membership stays fixed as answers save. Notes without an
+answer, earlier Not now answers, stale answers and unsaved edits do not count
+as answered.
 Withdrawn items are counted separately and need no answer. **Your part of this
 batch is done** is a stopping point, not proof that agents applied the answers.
 
@@ -174,13 +294,11 @@ to the owner's live board.
 
 ### Read the consequential artifacts
 
-The persistent **Read** dropdown switches between **Questions**, **AGENTS**,
-**RUNBOOK**, **BLUEPRINT**, **LEXICON**, **Landmarks**, **ADRs** and **DDRs**.
-Root files open directly. The collections list records by title, with identity
+The **Wiki** section lists the catalog groups. Root files open directly. The collections list records by title, with identity
 and lifecycle secondary; accepted active decisions appear first, and proposed,
 superseded and deprecated records remain readable. Register and history pages
 are labeled navigation projections. Collection paths come from the manifest.
-Specs and Tasks retain their existing question groups but have no reader pages.
+Specs, Tasks, DQCs, Wiki pages and skills come from the declared lanes.
 
 Each reading page contains the complete **Current artifact**, plus linked board
 drafts and proposed changes with their item identity, revision, source revision
@@ -192,11 +310,11 @@ nothing. The Landmark pages render every meaningful JSON field, origin and
 history, with the full source available; they do not simulate LANDMARK.md.
 
 Reader URLs use a hash, for example
-<http://127.0.0.1:4646/#artifact=BLUEPRINT.md>. The browser's back/forward buttons,
-dropdown and **Return to questions** preserve the question DOM, saved notes,
-queued saves and unsaved drafts. A question's artifact links open its reading
+<http://127.0.0.1:4646/#artifact=BLUEPRINT.md>. The browser's back/forward buttons and
+the section tabs preserve the question DOM, saved notes, queued saves and
+unsaved notes. A question's artifact links open its reading
 page, and each proposal links back to its own question. Relative links between
-the seven groups resolve inside the reader, including section anchors. Other
+cataloged artifacts resolve inside the reader, including section anchors. Other
 artifact types appear as labeled unavailable links rather than new browsing
 surfaces. Markdown headings, tables, lists, code and links render as inert text;
 embedded HTML and scripts do not execute.
@@ -211,8 +329,8 @@ hardlinks and paths escaping the room.
 
 One-command demo: start `node tools/grill-board.mjs serve`, open the Blueprint
 reader URL above, compare **Current artifact** with **Drafts and proposed
-changes**, and return to Questions. `node tools/test-grill-board.mjs` checks the
-API, manifest routing, complete content, revision changes, draft classification,
+changes**, and return to the Grilling Board. `node tools/test-grill-board.mjs`
+and `node tools/test-dashboard-board.mjs` check the API, manifest routing, complete content, revision changes, draft classification,
 read errors, source safety and inert Markdown. Browser save tests use disposable
 boards, never the owner's live answer file. This is a local working-surface
 addition; it changes no generic template or managed room runtime.
@@ -247,20 +365,22 @@ carries the applied verdicts into Git.
 
    | Kind | Verdict | Where it lands |
    |---|---|---|
-   | `approve-spec` | Approve | `spec-workbench.mjs approve S-### --candidate SHA --owner Kayden` against the integration content the item names; then the owner promotes `integration` to `main` himself; `complete S-###` follows that |
-   | `approve-spec` | Send back | `approve ... --finding "<his note>"` creates the corrective Task |
-   | `approve-spec` | Return to Align | `approve ... --destination-change "<his note>"` |
-   | `approve-spec` | Drop this Spec | propose supersession or retirement in the Spec's evidence; `add` a confirm item naming the exact move before doing it |
-   | `owner-decision` / `choice` | Confirm | the Record Worker records the confirmed proposal in its named owners; clear a named `owner:*` blocker only when that decision resolves it |
-   | `owner-decision` / `choice` | Correct | the Record Worker carries **his note's words** and the corrected confirmed revision |
+   | `approve-spec` | Confirm (`approve`; legacy Approve) | `spec-workbench.mjs approve S-### --candidate SHA --owner Kayden` against the integration content the item names; then the owner promotes `integration` to `main` himself; `complete S-###` follows that |
+   | `approve-spec` | Rework wording / Change the why / Change (legacy Send back) | sent back: `approve ... --finding "<his note>"` creates the corrective Task |
+   | `approve-spec` | legacy Return to Align | `approve ... --destination-change "<his note>"` |
+   | `approve-spec` | legacy Drop this Spec | propose supersession or retirement in the Spec's evidence; `add` a confirm item naming the exact move before doing it |
+   | `owner-decision` / `choice` | Confirm, or a confirmed alternative's value | the Record Worker records the confirmed proposal, or that alternative, in its named owners; clear a named `owner:*` blocker only when that decision resolves it |
+   | any | Rework wording | restate the item in clearer words from his note; `revise` it for a fresh confirmation |
+   | any | Change the why | correct the rationale in the owning decision record from his note; it appears in the Whys list |
+   | any | Change (legacy Correct) | the Record Worker carries **his note's words** and the corrected confirmed revision; Change may mean dropping it |
    | `confirm-dqc` | Confirm | the `landmark-tracker.mjs revise` command the proposal spells out (check `--expect-revision` against a fresh `show`) |
    | `confirm-dqc` | Correct | the same `revise` with `--answer`/`--correction` carrying his words |
    | `confirm-ddr` | Confirm | nothing changes; `apply` with where "accepted record unchanged" |
    | `confirm-ddr` | Correct | `adr.mjs new --kind ddr` with his words, `accept`, then `adr.mjs supersede DDR-#### --by DDR-####` (an ADR uses the same verbs with its own prefix) |
    | `confirm-ddr` | Decline | `adr.mjs deprecate ID --reason "<his note>"` |
    | `confirm-text` | Correct | the page's owning Spec gets a corrective Task carrying his words; the page changes through that Task |
-   | any | Not now | leave it; do not `apply` |
-   | any | Decline | record the decline where the item would have landed (evidence row, DQC correction, Spec note), then `apply` |
+   | any | legacy Not now | leave it; do not `apply` |
+   | any | legacy Decline | record the decline where the item would have landed (evidence row, DQC correction, Spec note), then `apply` |
 
 3. The dispatcher retains the board's `apply` bookkeeping for each current
    answer and commits `items.json` with the work it records. Local application
@@ -287,8 +407,13 @@ carries the applied verdicts into Git.
 | Applied | an agent carried the answer and recorded where |
 | Withdrawn | an agent retired the item with a reason; the owner can still read it |
 
-`status`, `pending`, `show`, `validate` are read-only. `serve` writes only
-`answers.json`, and only through a PUT from the page it serves on 127.0.0.1;
-nothing checks who sent that PUT, so the owner-only rule for `answers.json`
-is a rule agents follow, not one the server enforces. The test
-`tools/test-grill-board.mjs` locks these seams.
+These are answer statuses. Promotion has its own per-card workflow states
+(in grilling, confirmed, handoff requested, recorded, published, mapped,
+planned, implemented), reported by `tools/dashboard-workflow.mjs`.
+
+`status`, `pending`, `show`, `validate`, `handoffs` are read-only. `serve`
+writes owner answers only through a PUT from the page it serves on 127.0.0.1,
+and comments, rounds and promotion requests only through the page's POSTs;
+nothing checks who sent them, so the owner-only rule for answers is a rule
+agents follow, not one the server enforces. `tools/test-grill-board.mjs` and
+`tools/test-dashboard-board.mjs` lock these seams.
