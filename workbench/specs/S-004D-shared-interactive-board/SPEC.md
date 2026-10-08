@@ -3,14 +3,14 @@
 **Spec ID:** S-004D
 **Status:** active
 **Priority:** 2
-**Owner:** unassigned
+**Owner:** codex-dashboard-owner-flow
 **Stance:** Builder
-**Updated:** 2026-10-07
+**Updated:** 2026-10-08
 **Catalog description:** The Grill Board's P/V-filtered answering queue, growing into connected Taskboard and Tracker cards, discussion and update requests with distinct source and progress semantics.
 **Release scope:** In scope since the owner's 2026-10-04 answer; no release is assigned.
 **Blockers:** none
-**Latest event:** 2026-10-07: activated at the Plan stage of the DDR-001L promote-decision run; the bounded Grill Board P/V proof is cut into four unclaimed Tasks (TK-007L to TK-007O) from live Actuality at integration 9edbed8a. The wider shared-board capabilities stay uncut.
-**Next gate:** TK-007L (grade schema, operation, badges and central detail) is ready to claim; TK-007M (filters and batches) and TK-007N (inventory grades) follow it in parallel, then TK-007O (answer-to-card-update cycle and real-board scenario). DQC P/V and the wider board capabilities stay outside this proof.
+**Latest event:** TK-007L claimed by codex-dashboard-owner-flow.
+**Next gate:** Close TK-007L with verification and documentation proof.
 
 > **Citation anchors.** pre=`f6af4c339b543988a3212b1940581157f573818d` post=`f6af4c339b543988a3212b1940581157f573818d`.
 
