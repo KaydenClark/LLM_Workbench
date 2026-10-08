@@ -6,6 +6,7 @@ import path from 'node:path';
 import vm from 'node:vm';
 import http from 'node:http';
 import * as board from './grill-board.mjs';
+import { appendEntry, readNote } from '../workbench/tools/notepads.mjs';
 import { createWorkflow, chainAnswers } from './dashboard-workflow.mjs';
 function room() {
  const root=fs.mkdtempSync(path.join(os.tmpdir(),'dashboard-board-test-'));
@@ -740,4 +741,22 @@ test('the server refuses a private note with 400 secret-like-content and keeps t
   assert.equal((await response.json()).error.code,'secret-like-content');
   assert.equal(board.readAnswers(root).answers['GB-0001'],undefined,'nothing is saved');
  }finally{await served.close();}
+});
+
+test('a malformed answer-notepad entry is a clear invalid-notepad error naming the entry, never a crash',async()=>{
+ for (const content of ['{not json','{"id":"GB-0001"}','[1,2]']){
+  const root=notepadRoom();
+  board.recordAnswer(root,'GB-0001',{verdict:'confirm',note:'',itemRevision:1});
+  const note='workbench/sessions/notepads/grilling/dashboard-answers.json';
+  const loaded=readNote(root,{note});
+  const appended=appendEntry(root,{note,revision:loaded.revision,kind:'source_record',topic:'dashboard-answer',content});
+  assert.equal(appended.status,'appended');
+  assert.throws(()=>board.readAnswers(root),e=>e.code==='invalid-notepad'&&new RegExp(appended.entry?.id??'entry').test(e.message));
+  const served=await serve(root,{dashboardRoute:null});
+  try{
+   const response=await fetch(`${served.base}/api/board`);
+   assert.equal(response.status,400,content);
+   assert.equal((await response.json()).error.code,'invalid-notepad');
+  }finally{await served.close();}
+ }
 });
