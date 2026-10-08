@@ -227,7 +227,7 @@ function element() {
 }
 function pageModel({storage={},history=[]}={}) {
  const html=fs.readFileSync(new URL('../workbench/grill-board/index.html',import.meta.url),'utf8');
- const script=html.match(/<script>([\s\S]*?)<\/script>/)[1].replace('Promise.all([load()','window.model={state,matchesSlice,topicSummaries,sliceTitle,startBatch,batchProgress,resetSlice,gradeBadges,gradeDetail,answerModel,whysList,confirmedItems,dispositionTimeline,laneFor,rememberComment,commentDraftFor,forgetComment,cardWorkflowHtml,staleNotice,promotionBlocker,openQuestion,hasUnsavedWork,approvalSummary,conflictNotice}; Promise.all([load()');
+ const script=html.match(/<script>([\s\S]*?)<\/script>/)[1].replace('Promise.all([load()','window.model={state,matchesSlice,topicSummaries,sliceTitle,startBatch,batchProgress,resetSlice,gradeBadges,gradeDetail,answerModel,whysList,confirmedItems,dispositionTimeline,laneFor,rememberComment,commentDraftFor,forgetComment,cardWorkflowHtml,staleNotice,promotionBlocker,openQuestion,hasUnsavedWork,approvalSummary,conflictNotice,saveFailureMessage,autoSaveBlock,noteRefused}; Promise.all([load()');
  const elements=new Map();
  const localStorage={getItem:key=>storage[key]??null,setItem:(key,value)=>{storage[key]=String(value);},removeItem:key=>{delete storage[key];}};
  const ctx=vm.createContext({document:{getElementById:id=>{if(!elements.has(id))elements.set(id,element());return elements.get(id);},querySelectorAll:()=>[],documentElement:{dataset:{}}},window:{addEventListener(){},scrollTo(){},scrollY:0},history:{replaceState:(_state,_title,url)=>history.push(url)},localStorage,setInterval(){},setTimeout,clearTimeout,URL,URLSearchParams,location:{hash:''},fetch:()=>new Promise(()=>{})});
@@ -705,4 +705,39 @@ test('the page names an open answer conflict as the reason promotion is unavaila
  model.state.workflow={comments:[],requests:[],cards:{'GB-0001':{state:'answer-conflict',label:'Answer conflict: answer again to settle it'}}};
  assert.match(model.promotionBlocker(item),/conflict.*Answer again/i);
  assert.deepEqual(model.confirmedItems().map(entry=>entry.id),[]);
+});
+
+test('a note refused by the privacy guard is explained plainly and not auto-saved again until it changes',()=>{
+ const {model}=pageModel();
+ const refusal=Object.assign(new Error('refused to record content matching absolute home path'),{status:400,code:'secret-like-content'});
+ const message=model.saveFailureMessage(refusal);
+ assert.match(message,/home-folder paths, email addresses or token-like text/);
+ assert.match(message,/privacy-checked notepad/);
+ assert.match(message,/room-relative path/);
+ assert.match(message,/kept here|stays here/);
+ const item={id:'GB-0001',revision:1,answerConflict:null};
+ const note='See /Users/someone/x';
+ assert.equal(model.autoSaveBlock(item,note),null);
+ model.noteRefused(item,note);
+ assert.match(model.autoSaveBlock(item,note),/home-folder paths/,'the same refused text is not auto-saved again');
+ assert.equal(model.autoSaveBlock(item,`${note} and more`),null,'changed text is tried again');
+ assert.match(model.saveFailureMessage(Object.assign(new Error('stale'),{status:409,code:'stale-answer'})),/Reload/);
+});
+
+test('auto-save never settles an open answer conflict; an explicit answer is required',()=>{
+ const {model}=pageModel();
+ const item={id:'GB-0001',revision:1,answerConflict:{message:'conflict',answers:[]}};
+ assert.match(model.autoSaveBlock(item,'typing a note'),/conflict.*choose an answer/i);
+ assert.equal(model.autoSaveBlock({...item,answerConflict:undefined},'typing a note'),null);
+});
+
+test('the server refuses a private note with 400 secret-like-content and keeps the guard',async()=>{
+ const root=notepadRoom();
+ const served=await serve(root,{dashboardRoute:null});
+ try{
+  const response=await fetch(`${served.base}/api/answers/GB-0001`,{method:'PUT',headers:{'content-type':'application/json'},body:JSON.stringify({verdict:'change',note:'See /Users/someone/x',itemRevision:1})});
+  assert.equal(response.status,400);
+  assert.equal((await response.json()).error.code,'secret-like-content');
+  assert.equal(board.readAnswers(root).answers['GB-0001'],undefined,'nothing is saved');
+ }finally{await served.close();}
 });

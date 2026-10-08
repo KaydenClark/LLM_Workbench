@@ -312,7 +312,7 @@
   const state = {
     board: null, catalog: null, workflow: null, workflowError: '', dashboard: null, drafts: null, glossary: null,
     termIndex: null, termPattern: null, termSeen: null,
-    edits: new Map(), comments: new Map(), errors: new Map(), inflight: new Map(), timers: new Map(), selected: new Map(), actions: new Map(),
+    edits: new Map(), comments: new Map(), refused: new Map(), errors: new Map(), inflight: new Map(), timers: new Map(), selected: new Map(), actions: new Map(),
     query: '', topic: 'all', intent: 'all', scope: 'all', lane: 'all', priority: 'all', value: 'all',
     focus: null, picked: new Set(), promote: new Set(), batch: null, inBatch: false, size: 5,
     route: 0, revisions: new Map(), artifact: null, view: 'grilling', questionScroll: 0, whyQuery: '', whyStatus: 'all'
@@ -851,6 +851,21 @@
     article.querySelector('.save .status').textContent = status;
     article.querySelector('.save .err').textContent = error || '';
   }
+  const PRIVACY_REFUSAL = 'Not saved: notes can\'t contain home-folder paths, email addresses or token-like text, because answers are saved to a privacy-checked notepad. Use a room-relative path like workbench/… instead. Your text is kept here.';
+  function saveFailureMessage(error) {
+    if (error.code === 'secret-like-content') return PRIVACY_REFUSAL;
+    if (error.status === 409) return `Not saved: ${error.message}. Reload to see the current question and answer; your typed text stays here until then.`;
+    return `Save failed: ${error.message}. Your unsaved text remains here.`;
+  }
+  // Remember a note the privacy guard refused, so typing pauses don't resend it.
+  function noteRefused(item, note) { state.refused.set(item.id, note); }
+  // Why an automatic (typing) save must not run now, or null. An explicit
+  // answer button always tries.
+  function autoSaveBlock(item, note) {
+    if (item.answerConflict) return 'This question has an answer conflict; choose an answer to settle it. Your note is kept here and is not saved until you do.';
+    if (state.refused.has(item.id) && state.refused.get(item.id) === note) return PRIVACY_REFUSAL;
+    return null;
+  }
   // Saves the owner's answer. A verdict passed in is a button choice; without
   // one, typing re-saves the current answer's note when that is allowed.
   function save(article, item, verdictChoice, delay) {
@@ -863,14 +878,17 @@
     clearTimeout(state.timers.get(id));
     if (verdict && !option) { setSaveStatus(article, 'Not saved', 'Choose an answer to save this note; your earlier answer stays as it was until then.'); return Promise.resolve(); }
     if (option?.requiresNote && !note.trim()) { setSaveStatus(article, 'Not saved', `${option.label} needs your note; nothing is saved until you type it.`); return Promise.resolve(); }
+    const blocked = verdictChoice === undefined ? autoSaveBlock(item, note) : null;
+    if (blocked) { setSaveStatus(article, 'Not saved', blocked); return Promise.resolve(); }
     const draft = { verdict, note, itemRevision: item.revision };
     const run = async () => {
       setSaveStatus(article, 'Saving…', '');
       try {
         const response = await fetch(`/api/answers/${id}`, { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ...draft, expectedAnswerAt: item.answer?.at ?? null }) });
         const body = await response.json();
-        if (!response.ok) { const error = new Error(body.error?.message || response.status); error.status = response.status; throw error; }
+        if (!response.ok) { const error = new Error(body.error?.message || response.status); error.status = response.status; error.code = body.error?.code; throw error; }
         state.errors.delete(id);
+        state.refused.delete(id);
         item.answer = body; item.derivedStatus = body.derivedStatus;
         item.answerLabel = item.controls.options.find(candidate => candidate.value === body.verdict)?.label || body.verdict;
         const latest = state.edits.get(id);
@@ -889,7 +907,8 @@
         refreshCounts();
         renderCardWorkflow((document.getElementById(id) || current).querySelector('[data-flow]'), item);
       } catch (error) {
-        const message = error.status === 409 ? `Not saved: ${error.message}. Reload to see the current question and answer; your typed text stays here until then.` : `Save failed: ${error.message}. Your unsaved text remains here.`;
+        if (error.code === 'secret-like-content') noteRefused(item, note);
+        const message = saveFailureMessage(error);
         state.errors.set(id, message);
         setSaveStatus(document.getElementById(id) || article, 'Not saved', message);
       }
