@@ -668,12 +668,30 @@
       return `<details class="grade ${field}"><summary aria-label="${name} ${esc(grade.grade)}: show why">${esc(grade.grade)}</summary><div class="grade-reason" role="note"><strong>${name} ${esc(grade.grade)}</strong><p>${esc(grade.reason)}</p></div></details>`;
     }).join('');
   }
+  // The latest answer-to-card P/V reassessment recorded in item history, or
+  // null when the card has never been reassessed since grading.
+  function latestAssessment(item) {
+    return [...(item.history || [])].reverse().find(entry => entry.assessment) || null;
+  }
+  function assessmentDetail(item) {
+    if (!item.priority && !item.value) return '';
+    const latest = latestAssessment(item);
+    if (!latest) return '<p class="hint">Not reassessed since grading.</p>';
+    const { assessment } = latest;
+    const line = (field, name) => {
+      const entry = assessment[field];
+      const outcome = entry.outcome === 'retained' ? `${name} ${esc(entry.grade)} retained` : `${name} revised ${esc(entry.from)} → ${esc(entry.grade)}`;
+      return `<li><strong>${outcome}</strong>: ${esc(entry.basis)}</li>`;
+    };
+    const followed = assessment.followed;
+    return `<div class="block"><h4>Latest P/V reassessment · ${esc(latest.at)} · ${esc(latest.by)}</h4><p>After the owner answer on ${esc(followed.id)} saved ${esc(followed.answerAt)} (revision ${followed.itemRevision}).</p><ul>${line('priority', 'Priority')}${line('value', 'Value')}</ul></div>`;
+  }
   function gradeDetail(item) {
     return `<section class="grade-detail" aria-label="Priority and Value">${['priority', 'value'].map(field => {
       const letter = field === 'priority' ? 'P' : 'V', name = field === 'priority' ? 'Priority' : 'Value';
       const grade = item[field];
       return `<div class="grade-card"><span class="grade-pill ${grade ? field : 'none'}">${grade ? esc(grade.grade) : letter}</span><div><strong>${name}${grade ? ` ${esc(grade.grade)}` : ': Unclassified'}</strong><p>${grade ? esc(grade.reason) : 'No grade has been assigned yet; none is invented.'}</p></div></div>`;
-    }).join('')}</section>`;
+    }).join('')}</section>${assessmentDetail(item)}`;
   }
   function render() {
     if (!state.board) return;
@@ -731,7 +749,7 @@
     }).join('');
     const applied = item.applied ? `<div class="applied-box"><strong>Applied</strong> by ${esc(item.applied.by)} on ${new Date(item.applied.at).toLocaleString()}: ${esc(item.applied.where)}${item.applied.agentNote ? ` — ${esc(item.applied.agentNote)}` : ''}<br><small>Your answer then: ${esc(item.answerLabel || item.applied.verdict || '(note only)')}${item.applied.note ? ` — “${esc(item.applied.note)}”` : ''}</small></div>` : '';
     const stale = status === 'stale' ? `<div class="stale-box">This question changed after you answered (now revision ${item.revision}; you answered revision ${answer.itemRevision}). Your earlier answer was <strong>${esc(item.answerLabel || '(note only)')}</strong>${answer.note ? `: “${esc(answer.note)}”` : ''}. Please answer again.</div>` : '';
-    const history = (item.history || []).filter(entry => entry.revision > 1 || /^applied|^withdrawn|^graded/.test(entry.reason || '')).map(entry => `${new Date(entry.at).toLocaleDateString()} · ${esc(entry.by)}: ${esc(entry.reason)}`);
+    const history = (item.history || []).filter(entry => entry.revision > 1 || /^applied|^withdrawn|^graded|^reassessed/.test(entry.reason || '')).map(entry => `${new Date(entry.at).toLocaleDateString()} · ${esc(entry.by)}: ${esc(entry.reason)}`);
     return `<article class="item" id="${item.id}" data-id="${item.id}" data-status="${status}" data-revision="${item.revision}">
       <div class="item-head"><h3>${esc(item.title)}<small class="identity">${item.id} · revision ${item.revision}</small></h3><span><span class="badge ${status}">${STATUS_LABEL[status]}</span><span class="kind">${esc(KIND_LABEL[item.kind] || item.kind)}</span></span></div>
       ${gradeDetail(item)}

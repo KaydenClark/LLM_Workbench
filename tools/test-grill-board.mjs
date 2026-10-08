@@ -13,7 +13,8 @@ import test from 'node:test';
 import vm from 'node:vm';
 import {
   ANSWERS_SCHEMA, ITEMS_SCHEMA, addItems, applyAnswer, boardPaths, createServer, itemStatus, mergeBoard,
-  pendingForAgents, readAnswers, readItems, readSourceFile, recordAnswer, reviseItem, statusSummary, withdrawItem
+  pendingForAgents, readAnswers, readItems, readSourceFile, recordAnswer, reviseItem, statusSummary, withdrawItem,
+  gradeItems, reassessItems
 } from './grill-board.mjs';
 
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -341,7 +342,7 @@ test('the CLI exposes no command that writes answers.json and reports with exit 
 
 function sliceModel() {
   const html = fs.readFileSync(path.join(repo, 'workbench/grill-board/index.html'), 'utf8');
-  const script = html.match(/<script>([\s\S]*?)<\/script>/)[1].replace('Promise.all([load()', 'window.sliceTest = { topicFor, intentFor, laneFor, sliceCounts, batchProgress, matchesSlice, state, TOPICS }; Promise.all([load()');
+  const script = html.match(/<script>([\s\S]*?)<\/script>/)[1].replace('Promise.all([load()', 'window.sliceTest = { topicFor, intentFor, laneFor, sliceCounts, batchProgress, matchesSlice, state, TOPICS, latestAssessment, gradeDetail }; Promise.all([load()');
   const context = vm.createContext({ document: { getElementById: () => ({}), documentElement: { dataset: {} } }, window: { addEventListener() {} }, setInterval() {}, URL, URLSearchParams, fetch: () => new Promise(() => {}) });
   vm.runInContext(script, context);
   return context.window.sliceTest;
@@ -399,4 +400,70 @@ test('the live board in this repository validates and every item carries a sourc
   assert.equal(summary.total, board.items.length);
   const groups = new Set(board.groups.map((group) => group.id));
   for (const group of summary.groups) assert.ok(groups.has(group.id));
+});
+
+// TK-007O: after an owner answer is applied, or a card revised from it, the
+// agent reassesses that card's P and V. A retained grade is recorded as
+// assessed, a revised one with its justification, and nothing touches the
+// item's revision or the owner's answers.
+test('answer-to-card-update cycle: P/V reassessment retains or revises with its basis', async () => {
+  const dir = room();
+  addItems(dir, [sample('a'), sample('b'), sample('ungraded')], { by: 'tester' });
+  gradeItems(dir, ['GB-0001', 'GB-0002'].map(id => ({ id, expectedGradeRevision: 0, priority: { grade: 'P2', reason: 'Source: README.md; blocks one Spec' }, value: { grade: 'V3', reason: 'Source: README.md; modest return' } })), { by: 'grader', reason: 'initial' });
+  const server = createServer(dir);
+  await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
+  const put = (id, body) => fetch(`http://127.0.0.1:${server.address().port}/api/answers/${id}`, { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
+  try {
+    assert.equal((await put('GB-0001', { verdict: 'confirm', note: '', itemRevision: 1 })).status, 200);
+    assert.equal((await put('GB-0002', { verdict: 'change', note: 'Narrow it to the Taskboard', itemRevision: 1 })).status, 200);
+  } finally { await new Promise(resolve => server.close(resolve)); }
+  const answersBefore = fs.readFileSync(boardPaths(dir).answers, 'utf8');
+  const answerA = readAnswers(dir).answers['GB-0001'], answerB = readAnswers(dir).answers['GB-0002'];
+  applyAnswer(dir, 'GB-0001', { by: 'agent', where: 'S-999 Decisions row' });
+  reviseItem(dir, 'GB-0002', { proposal: 'Agent proposal: only the Taskboard.' }, { by: 'agent', reason: 'Owner Change GB-0002' });
+  const unassessed = readItems(dir).items[0];
+  assert.equal(unassessed.history.some(entry => entry.assessment), false, 'before reassessment nothing records an assessment');
+
+  const before = fs.readFileSync(boardPaths(dir).items, 'utf8');
+  const refuse = (rows, pattern) => { assert.throws(() => reassessItems(dir, rows, { by: 'agent', reason: 'cycle' }), pattern); assert.equal(fs.readFileSync(boardPaths(dir).items, 'utf8'), before, 'a refused reassessment leaves items.json unchanged'); };
+  const retain = basis => ({ retain: true, basis });
+  const followA = { id: 'GB-0001', answerAt: answerA.at, itemRevision: 1 };
+  refuse([{ id: 'GB-0003', expectedGradeRevision: 0, followed: { id: 'GB-0003', answerAt: answerA.at, itemRevision: 1 }, priority: retain('x'), value: retain('x') }], /ungraded|no grade|answer/);
+  refuse([{ id: 'GB-0001', expectedGradeRevision: 0, followed: followA, priority: retain('x'), value: retain('x') }], /stale/);
+  refuse([{ id: 'GB-0001', expectedGradeRevision: 1, followed: followA, priority: retain(''), value: retain('x') }], /basis/);
+  refuse([{ id: 'GB-0001', expectedGradeRevision: 1, followed: { ...followA, answerAt: '2020-01-01T00:00:00.000Z' }, priority: retain('x'), value: retain('x') }], /answer/);
+  refuse([{ id: 'GB-0001', expectedGradeRevision: 1, followed: followA, priority: retain('x'), value: { grade: 'V9', reason: 'r', basis: 'b' } }], /grade/);
+  refuse([{ id: 'GB-0001', expectedGradeRevision: 1, followed: followA, priority: retain('x') }], /value/);
+
+  const [a, b] = reassessItems(dir, [
+    { id: 'GB-0001', expectedGradeRevision: 1, followed: followA, priority: retain('The confirmed answer leaves the blocked Spec as it was.'), value: { grade: 'V2', reason: 'Source: S-999 Decisions row; the confirmed choice removes repeated work', basis: 'The answer settled the choice, raising its return.' } },
+    { id: 'GB-0002', expectedGradeRevision: 1, followed: { id: 'GB-0002', answerAt: answerB.at, itemRevision: 1 }, priority: retain('Narrowing keeps the same urgency.'), value: retain('Narrowing keeps the same return.') }
+  ], { by: 'agent', reason: 'Answer-to-card update' });
+  assert.deepEqual([a.id, a.key, a.revision, a.gradeRevision, a.priority.grade, a.value.grade], ['GB-0001', 'a', 1, 2, 'P2', 'V2']);
+  assert.equal(a.priority.reason, 'Source: README.md; blocks one Spec', 'a retained grade keeps its reason');
+  assert.deepEqual([b.revision, b.gradeRevision, b.priority.grade, b.value.grade], [2, 2, 'P2', 'V3'], 'reassessment never bumps the item revision');
+  const assessment = a.history.at(-1).assessment;
+  assert.deepEqual(JSON.parse(JSON.stringify(assessment)), { followed: followA, priority: { outcome: 'retained', grade: 'P2', basis: 'The confirmed answer leaves the blocked Spec as it was.' }, value: { outcome: 'revised', from: 'V3', grade: 'V2', basis: 'The answer settled the choice, raising its return.' } });
+  assert.match(a.history.at(-1).reason, /reassessed/);
+  assert.ok(a.history.some(entry => /^applied/.test(entry.reason)), 'earlier history is preserved');
+  assert.equal(b.history.at(-1).assessment.priority.outcome, 'retained');
+  assert.equal(fs.readFileSync(boardPaths(dir).answers, 'utf8'), answersBefore, 'agent operations never touch owner answers');
+  const view = mergeBoard(dir).items;
+  assert.equal(view[0].derivedStatus, 'applied', 'the applied owner answer stays applied');
+  assert.equal(view[0].answer.verdict, 'confirm');
+  assert.equal(view[1].derivedStatus, 'stale', 'the revised card awaits a fresh answer; its earlier answer is kept');
+  assert.throws(() => reassessItems(dir, [{ id: 'GB-0001', expectedGradeRevision: 1, followed: followA, priority: retain('x'), value: retain('x') }], { by: 'agent', reason: 'stale' }), /stale/);
+});
+
+test('the central question view shows the latest P/V assessment, retained or revised', () => {
+  const model = sliceModel();
+  const graded = { priority: { grade: 'P2', reason: 'r' }, value: { grade: 'V2', reason: 'r' } };
+  const history = [{ revision: 1, at: '2026-10-08T00:00:00.000Z', by: 'grader', reason: 'graded: initial', gradeRevision: 1 }];
+  assert.equal(model.latestAssessment({ ...graded, history }), null, 'a graded but unassessed card has no assessment');
+  const assessed = { ...graded, history: [...history, { revision: 1, gradeRevision: 2, at: '2026-10-09T00:00:00.000Z', by: 'agent', reason: 'reassessed: Answer-to-card update', assessment: { followed: { id: 'GB-0001', answerAt: '2026-10-08T12:00:00.000Z', itemRevision: 1 }, priority: { outcome: 'retained', grade: 'P2', basis: 'Same urgency.' }, value: { outcome: 'revised', from: 'V3', grade: 'V2', basis: 'Higher return.' } } }] };
+  const html = model.gradeDetail(assessed);
+  assert.match(html, /Priority P2 retained[\s\S]*Same urgency\./);
+  assert.match(html, /Value revised V3 → V2[\s\S]*Higher return\./);
+  assert.match(html, /GB-0001[\s\S]*2026-10-08T12:00:00.000Z/);
+  assert.match(model.gradeDetail({ ...graded, history }), /Not reassessed since grading/);
 });

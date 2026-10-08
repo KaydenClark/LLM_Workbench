@@ -440,6 +440,64 @@ export function gradeItems(root, grades, { by, reason }) {
   validateItems(board); writeJsonAtomic(boardPaths(root).items,board); return grades.map(row => findItem(board,row.id));
 }
 
+// Answer-to-card update (TK-007O): after an owner answer is applied, or a
+// card revised from it, the agent reassesses that card's Priority and Value.
+// Each row names the answer it followed ({id, answerAt, itemRevision}; the
+// answer may be on another card) and, per grade, either
+//   { retain: true, basis }                 the basis did not change, or
+//   { grade, reason, basis }                a revised grade, its new reason
+//                                           and why the basis changed.
+// The assessment is appended to item history, so a retained grade is told
+// apart from an unassessed one. It uses the grade stale check and bumps
+// gradeRevision, never `revision`, and never reads or writes owner answers
+// beyond checking that the followed answer exists.
+function answerExists(answers, followed) {
+  const answer = answers.answers[followed.id];
+  if (!answer) return false;
+  return [answer, ...(answer.history ?? [])].some((entry) => entry.at === followed.answerAt && entry.itemRevision === followed.itemRevision);
+}
+
+export function reassessItems(root, rows, { by, reason }) {
+  if (!by || !reason || !Array.isArray(rows) || !rows.length) throw new BoardError('invalid-reassessment', 'rows[], --by and --reason required');
+  const board = readItems(root);
+  const answers = readAnswers(root);
+  const seen = new Set();
+  const at = now();
+  for (const row of rows) {
+    if (!row || Object.keys(row).some((key) => !['id', 'expectedGradeRevision', 'followed', 'priority', 'value'].includes(key))) throw new BoardError('invalid-reassessment', 'unknown reassessment field');
+    const item = findItem(board, row.id);
+    if (seen.has(row.id)) throw new BoardError('invalid-reassessment', 'duplicate reassessment identity');
+    seen.add(row.id);
+    if (!item.priority || !item.value) throw new BoardError('ungraded', `${row.id} has no grade to reassess; grade it first`);
+    if (row.expectedGradeRevision !== (item.gradeRevision ?? 0)) throw new BoardError('stale-grade', `${row.id}: stale grade revision`);
+    const followed = row.followed;
+    if (!followed || !ID_PATTERN.test(followed.id ?? '') || !isString(followed.answerAt) || !Number.isInteger(followed.itemRevision)) throw new BoardError('invalid-reassessment', `${row.id}: followed must name the answer {id, answerAt, itemRevision}`);
+    if (!answerExists(answers, followed)) throw new BoardError('unknown-answer', `${row.id}: no owner answer ${followed.id} at ${followed.answerAt} for revision ${followed.itemRevision}`);
+    const assessment = { followed: { id: followed.id, answerAt: followed.answerAt, itemRevision: followed.itemRevision } };
+    const next = {};
+    for (const field of ['priority', 'value']) {
+      const change = row[field];
+      if (!change || typeof change !== 'object') throw new BoardError('invalid-reassessment', `${row.id}: ${field} assessment required`);
+      if (!isString(change.basis) || !change.basis.trim()) throw new BoardError('invalid-reassessment', `${row.id}: ${field} needs the basis of its assessment`);
+      if (change.retain === true) {
+        if (Object.keys(change).some((key) => !['retain', 'basis'].includes(key))) throw new BoardError('invalid-reassessment', `${row.id}: a retained ${field} takes only retain and basis`);
+        assessment[field] = { outcome: 'retained', grade: item[field].grade, basis: change.basis };
+      } else {
+        if (Object.keys(change).some((key) => !['grade', 'reason', 'basis'].includes(key))) throw new BoardError('invalid-reassessment', `${row.id}: a revised ${field} takes grade, reason and basis`);
+        next[field] = { grade: change.grade, reason: change.reason };
+        assessment[field] = { outcome: 'revised', from: item[field].grade, grade: change.grade, basis: change.basis };
+      }
+    }
+    Object.assign(item, next);
+    item.gradeRevision = (item.gradeRevision ?? 0) + 1;
+    const outcome = (field, letter) => assessment[field].outcome === 'retained' ? `${letter} retained` : `${letter} ${assessment[field].from} -> ${assessment[field].grade}`;
+    item.history.push({ revision: item.revision, gradeRevision: item.gradeRevision, at, by, reason: `reassessed (${outcome('priority', 'P')}, ${outcome('value', 'V')}): ${reason}`, assessment });
+  }
+  validateItems(board);
+  writeJsonAtomic(boardPaths(root).items, board);
+  return rows.map((row) => findItem(board, row.id));
+}
+
 // The workflow reads confirmations by the same answerControls rule the
 // board enforces (injected, since this module imports the workflow).
 function confirmsAnswer(item, answer) { return isConfirmation(item, answer?.verdict); }
@@ -770,7 +828,7 @@ function parseArgs(argv) {
   return { positional, flags };
 }
 
-const USAGE = 'Usage: grill-board.mjs serve [--port N] | status | pending | show GB-#### | add --file ITEMS.json --by NAME [--reason TEXT] | revise GB-#### --by NAME --reason TEXT [--title T] [--question T] [--current T] [--proposal T] [--draft-file PATH] [--options-file PATH] [--brief-file PATH] | apply GB-#### --by NAME --where TEXT [--note TEXT] | withdraw GB-#### --by NAME --reason TEXT | validate [--path ROOT] [--json] (see workbench/grill-board/README.md)';
+const USAGE = 'Usage: grill-board.mjs serve [--port N] | status | pending | show GB-#### | add --file ITEMS.json --by NAME [--reason TEXT] | revise GB-#### --by NAME --reason TEXT [--title T] [--question T] [--current T] [--proposal T] [--draft-file PATH] [--options-file PATH] [--brief-file PATH] | apply GB-#### --by NAME --where TEXT [--note TEXT] | withdraw GB-#### --by NAME --reason TEXT | grade --file GRADES.json --by NAME --reason TEXT | reassess --file ROWS.json --by NAME --reason TEXT | validate [--path ROOT] [--json] (see workbench/grill-board/README.md)';
 
 function out(flags, value, text) {
   if (flags.json) process.stdout.write(`${JSON.stringify(value, null, 2)}\n`);
@@ -834,6 +892,11 @@ export async function main(argv) {
     case 'grade': {
       if (!flags.file) throw new BoardError('invalid-invocation','grade --file JSON --by NAME --reason TEXT');
       const grades = readJson(path.resolve(flags.file)); out(flags,gradeItems(root,grades,{by:flags.by,reason:flags.reason})); return;
+    }
+    case 'reassess': {
+      if (!flags.file) throw new BoardError('invalid-invocation', 'reassess --file JSON --by NAME --reason TEXT');
+      out(flags, reassessItems(root, readJson(path.resolve(flags.file)), { by: flags.by, reason: flags.reason }));
+      return;
     }
     case 'handoffs': { out(flags,workflow(root).read()); return; }
     case 'disposition': {
