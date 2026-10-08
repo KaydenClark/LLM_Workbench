@@ -1034,7 +1034,7 @@
     const ids = items.map(item => item.id).sort();
     await runAction(`promote:${ids.join(',')}`, '/api/promotions', { ids, revisions: Object.fromEntries(items.map(item => [item.id, item.revision])) });
     state.promote.clear();
-    if (statusTarget) statusTarget.textContent = `Promotion requested for ${ids.length} confirmed card${ids.length === 1 ? '' : 's'}. A director picks it up; no agent starts automatically.`;
+    if (statusTarget) statusTarget.textContent = `Promotion requested for ${ids.length} confirmed card${ids.length === 1 ? '' : 's'}. No agent starts automatically: tell a director to pick it up.`;
     renderRoundPanel();
     renderFocus();
   }
@@ -1237,7 +1237,7 @@
     const rows = whysList(state.board.items, { query: state.whyQuery, status: state.whyStatus });
     const all = whysList(state.board.items);
     panel.innerHTML = `<p><a href="#section=grilling">← Grilling Board</a></p><h1>Whys list</h1>
-      <p class="semantics">Your <strong>Change the why</strong> answers: something is correct, but the underlying reason is wrong. An agent fixes the rationale in the owning decision record.</p>
+      <p class="semantics">Your <strong>Change the why</strong> answers: something is correct, but the underlying reason is wrong. An agent fixes the rationale in its owner (the decision record, Destination Question Card, text or Spec the question governs).</p>
       <div class="section-filter"><label for="why-query">Filter</label><input type="search" id="why-query" value="${esc(state.whyQuery)}" placeholder="Title, ID or your note"><label for="why-status">Status</label><select id="why-status">${['all', 'answered', 'applied', 'stale', 'pending', 'superseded'].map(status => `<option value="${status}" ${state.whyStatus === status ? 'selected' : ''}>${status === 'all' ? 'All statuses' : STATUS_LABEL[status]}</option>`).join('')}</select><span>${rows.length} of ${all.length}</span></div>
       <div id="why-rows">${rows.map(row => `<article class="why-row"><h3><a href="#${row.id}">${esc(row.title)}</a></h3><span class="identity">${row.id} · answered at revision ${row.itemRevision}${row.revision !== row.itemRevision ? ` (question now at revision ${row.revision})` : ''}</span><blockquote>${esc(row.note)}</blockquote><span class="badge ${row.status}">${STATUS_LABEL[row.status] || row.status}</span>${row.current ? '' : ' <small>an earlier answer, since replaced</small>'} <small>${esc(row.at || '')}</small></article>`).join('') || '<p class="empty">No Change the why answers match.</p>'}</div>`;
     document.getElementById('why-query').oninput = event => { state.whyQuery = event.target.value; renderWhys(panel); const input = document.getElementById('why-query'); input.focus(); input.setSelectionRange(input.value.length, input.value.length); };
@@ -1355,7 +1355,7 @@
     const count = drafts.groups.reduce((sum, group) => sum + group.items.length, 0);
     const stale = drafts.groups.flatMap(group => group.items).filter(entry => entry.approval.state === 'stale').length;
     panel.innerHTML = `<h1>Drafts to approve</h1>
-      <p class="semantics">Each proposed wording sits beside the current text of the file it would change, tagged with the question that owns it. Confirming that question freezes exactly the wording shown, by SHA-256; a revised draft makes that approval visibly stale. Comments and change requests never approve.</p>
+      <p class="semantics">A full-text review of a decision record or text sits beside that file's current text; other proposed wording, with no single target file, is listed separately without current text. Each is tagged with the question that owns it. Confirming that question freezes exactly the wording shown, by SHA-256; a revised draft makes that approval visibly stale. Comments and change requests never approve.</p>
       <p>${count} drafts · ${drafts.groups.filter(group => group.target).length} target files · ${stale} stale approvals · ${drafts.withoutDraft.length} approval questions without a draft. <button class="bulk" type="button" id="refresh-drafts">Read again</button></p>
       ${drafts.groups.map(group => group.target ? `<section class="draft-group"><h2>${esc(catalogArtifact(group.target)?.title || group.target)}</h2><p class="reader-meta">${esc(group.target)}</p><div class="draft-comparison"><div><h3>Current text</h3><details data-current="${esc(group.target)}"><summary>Show the current text of this file</summary><div class="scroll-box reader" data-current-text>Not loaded.</div></details></div><div><h3>Proposed wording</h3>${group.items.map(entry => draftItem(entry, true)).join('')}</div></div></section>` : `<section class="draft-group"><h2>Proposed wording without one named target file</h2><p>These drafts are excerpts or proposals whose question does not name a single file they replace; read each question's sources for what they would change.</p>${group.items.map(entry => draftItem(entry, false)).join('')}</section>`).join('')}
       <section class="draft-group"><h2>No proposed draft available</h2><p>These questions ask for an approval but carry no proposed wording. None is invented; answer them from the question itself.</p><div class="artifact-list">${drafts.withoutDraft.map(entry => `<a href="#${entry.id}"><strong>${esc(entry.title)}</strong><small>${entry.id} · revision ${entry.revision} · ${esc(STATUS_LABEL[entry.derivedStatus] || entry.derivedStatus)} · ${esc(KIND_LABEL[entry.kind] || entry.kind)}</small></a>`).join('') || '<p>None.</p>'}</div></section>`;
@@ -1375,7 +1375,7 @@
   // ---- Wiki. ----
   function renderWiki(panel) {
     const groups = state.catalog.groups.map(group => ({ ...group, count: state.catalog.artifacts.filter(artifact => artifact.group === group.id).length })).filter(group => group.count);
-    panel.innerHTML = `<h1>Wiki</h1><p class="semantics">Root controls, decision records, Wiki pages, skills, Specs, Tasks and maintained knowledge, read from their owners. A question links here to each decision record among its sources and each one its question, context, proposal, brief, draft or options name by a full identifier or slash shorthand (ADR-000B/C/D). Identifiers continued as a comma list (ADR-000F, 000M) link only the first, records named only in a Priority or Value reason are not linked, and an identifier with no cataloged record is shown as unavailable. ${state.glossary ? `Glossary terms show their definition on hover (from ${esc(state.glossary.source || 'no glossary file')}).` : 'Hover definitions are unavailable from this server.'}</p>
+    panel.innerHTML = `<h1>Wiki</h1><p class="semantics">Root controls, decision records, Wiki pages, skills, Specs, Tasks and maintained knowledge, read from their owners. A question links here to each decision record among its sources and each one its title, question, context, proposal, brief, draft or options name by a full identifier or slash shorthand (ADR-000B/C/D). Identifiers continued as a comma list (ADR-000F, 000M) link only the first, records named only in a Priority or Value reason are not linked, and an identifier with no cataloged record is shown as unavailable. ${state.glossary ? `Glossary terms show their definition on hover (from ${esc(state.glossary.source || 'no glossary file')}).` : 'Hover definitions are unavailable from this server.'}</p>
       <div class="group-grid">${groups.map(group => `<a class="group-card" href="#artifacts=${esc(group.id)}"><strong>${esc(group.title)}</strong><small>${group.count} ${group.count === 1 ? 'document' : 'documents'}</small></a>`).join('')}</div>
       ${state.catalog.errors?.length ? `<details><summary>${state.catalog.errors.length} sources could not be cataloged</summary>${state.catalog.errors.map(error => `<p class="error-box">${esc(error.source)}${error.path ? ` · ${esc(error.path)}` : ''}: ${esc(error.message)}</p>`).join('')}</details>` : ''}`;
   }
@@ -1437,7 +1437,7 @@
     panel.innerHTML = `<h1>Search: ${esc(query)}</h1><p>Searching…</p>`;
     let results, note = '';
     try { results = (await getJson(`/api/search?q=${encodeURIComponent(query)}`)).results || []; }
-    catch (error) { results = localSearch(query); note = `<p class="reader-meta">Full-text search is unavailable from this server (${esc(error.message)}); showing title and identifier matches only.</p>`; }
+    catch (error) { results = localSearch(query); note = `<p class="reader-meta">Full-text search is unavailable from this server (${esc(error.message)}); showing matches in titles, identifiers, question text and paths only.</p>`; }
     if (serial !== state.route) return;
     panel.innerHTML = `<h1>Search: ${esc(query)}</h1>${note}<p>${results.length} results</p>${results.map(result => {
       const href = result.kind === 'question' && result.id ? `#${result.id}` : result.path ? (catalogArtifact(result.path) ? artifactHref(result.path) : '') : '';

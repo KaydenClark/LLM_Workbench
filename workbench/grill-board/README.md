@@ -51,8 +51,8 @@ their durable owners, and both update the board through the same tool. It is
 the first working form of the
 [Workbench Dashboard (S-004D)](../specs/S-004D-shared-interactive-board/SPEC.md):
 that Spec is the destination this page grows into (the owner, 2026-10-04), and
-its Current Verified State maps what the page already delivers and what is
-still to come. There is one board, not two.
+its checked acceptance lines, Next gate and evidence log record what the page
+delivers and what is still to come. There is one board, not two.
 
 ## Answer controls
 
@@ -78,7 +78,7 @@ and the page reads from the board JSON (`item.controls`):
   The recommended one is preselected and **Confirm** stores the selected
   alternative's value as the verdict. The recommended alternative is
   identified only by an option carrying `"recommended": true`, or by the
-  recommendation naming exactly one alternative's whole label; otherwise
+  recommendation naming exactly one alternative's whole label (labels of at least two words); otherwise
   nothing is preselected and the card says so. To mark one, revise the item's
   options (`revise --options-file`), which bumps the revision.
 - **A Spec delivery approval** (`approve-spec`): Confirm records `approve`;
@@ -114,7 +114,8 @@ settle the conflict.
 **Whys list**: every Change the why answer, title first and ID second, with the
 owner's note, the revision answered and its status, filterable by text and
 status. Open it from the Grilling Board's left panel (`#section=whys`). An agent
-fixes the rationale in the owning decision record.
+fixes the rationale in its owner, routed by the question's kind (the table under
+Answer processing).
 
 ## Priority and Value
 
@@ -175,7 +176,7 @@ rather than a versioned Cellar path; `print` says which it chose.
 
 | File | Who writes it | How |
 |---|---|---|
-| `items.json` | agents | only through `node tools/grill-board.mjs add / revise / grade / apply / withdraw` |
+| `items.json` | agents | only through `node tools/grill-board.mjs add / revise / grade / reassess / apply / withdraw` |
 | owner answers | the owner | only through the served page; **agents never write them**. In a room whose manifest declares the `notepads` collection they are appended to the git-ignored notepad `<notepads>/grilling/dashboard-answers.json`; otherwise to the untracked `answers.json`. Earlier `answers.json` answers stay readable. |
 | `comments/` | the owner | one file per comment or change request, written by the served page through `tools/dashboard-workflow.mjs`; neither approves anything. These files are the durable owner of board discussion (owner decision, 2026-10-06) and are tracked in Git: an agent that processes a comment commits the comment file with the change it led to |
 | `index.html` | agents, rarely | the page; change it only when the owner asks for a page change |
@@ -254,8 +255,8 @@ ordinary links, reachable with Tab and Enter; the current section stays in the
 address (`#section=tracker`, `#section=taskboard`, `#section=grilling`,
 `#section=drafts`, `#section=wiki`), so a reload returns to it. The search box
 in the top bar searches questions and Wiki pages (`#search=...`); when the
-server offers no full-text search the page says so and matches titles and
-identifiers only.
+server offers no full-text search the page says so and matches titles,
+identifiers, question text and paths only.
 
 - **Destination Tracker**: the Landmark Tracker's understanding distribution
   (Idea through Verified) for the whole Workbench and each Landmark, with its
@@ -266,14 +267,17 @@ identifiers only.
   only when opened. Every card opens one inspector: title first, ID second,
   status, source path and revision, relationships, and the readable source.
 - **Grilling Board**: the questions; see the answer controls and P/V above.
-  Type a note, choose an answer; every change saves as you go (the card says
-  "Saved <time>"). A save refused because the question changed (409) keeps your
+  Type a note, choose an answer; changes save as you go (the card says
+  "Saved <time>"), except on a card with an answer conflict or a retired answer
+  word, where the card asks you to choose an answer first. A save refused because the question changed (409) keeps your
   text and asks you to reload.
-- **Drafts to approve**: every open question with proposed wording, grouped by
-  the file a full-text review replaces, with that file's current text beside
-  the proposed wording and a link to the owning question. Each draft shows its
-  approval state: not yet approved, approved (the snapshot SHA-256 matches the
-  current draft), or stale (the draft changed after you confirmed it).
+- **Drafts to approve**: every open question with proposed wording, with a link
+  to the owning question. A full-text review of a decision record or text is
+  grouped under the file it replaces, beside that file's current text; other
+  drafts have no single target file and are listed separately without current
+  text. Each draft shows its approval state: not yet approved, approved (the
+  snapshot SHA-256 of the question, current text, proposal, draft and sources
+  matches), stale (any of them changed after you confirmed), or superseded.
   Approval questions without any draft are listed under **No proposed draft
   available**; none is invented.
 - **Wiki**: the catalog groups (root controls, ADRs, DDRs, Landmarks, Specs,
@@ -282,7 +286,7 @@ identifiers only.
   source and of each decision record it uses as a source or names by a full
   identifier or slash shorthand (ADR-, DDR- or CDR-; a comma-listed
   continuation links only its first identifier, see below; Priority and Value
-  reasons are not scanned) in its question, context,
+  reasons are not scanned) in its title, question, context,
   proposal, brief, draft or options, including slash shorthand (`ADR-000B/C/D`
   names ADR-000B, ADR-000C and ADR-000D; `DDR-000P/000Q` names both; an
   ordinary slash such as `ADR-000B/its successor` does not expand). Those
@@ -412,8 +416,11 @@ reader URL above, compare **Current artifact** with **Drafts and proposed
 changes**, and return to the Grilling Board. `node tools/test-grill-board.mjs`
 and `node tools/test-dashboard-board.mjs` check the API, manifest routing, complete content, revision changes, draft classification,
 read errors, source safety and inert Markdown. Browser save tests use disposable
-boards, never the owner's live answer file. This is a local working-surface
-addition; it changes no generic template or managed room runtime.
+boards, never the owner's live answer file. The reader is a local
+working-surface addition. The Dashboard as a whole also changes two managed
+runtime tools (`workbench/tools/taskboard.mjs` and the read-only Taskboard reader
+in `workbench/tools/spec-workbench.mjs`) and adds the Draft → Critique → Revise →
+Confirm workflow to the generic Runbook template.
 
 When you have answered a batch, tell any Claude or Codex session:
 
