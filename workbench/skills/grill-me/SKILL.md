@@ -100,6 +100,14 @@ are separate authorized compositions (`promote`, `to-spec`, `handoff`,
 note: locked answers, pending readbacks, corrections, unresolved items and
 next action must match what actually happened.
 
+For a promotion handoff in the LLM Workbench, obtain the owner's confirmation
+of the session's final settled-decision readback. Save each decision's question
+ID, confirmed source revision, rationale, corrections and endpoint in the
+existing note. Give those pointers and the project root to the dispatcher,
+which starts one `promote-decision` run per decision through the Runbook route.
+Keep unfinished questions in the inquiry. Other rooms retain the compositions
+above; this maintainer operation is available only where the manifest declares it.
+
 ## Not covered here
 
 No new note kind, status, schema or collection, and no change to how note

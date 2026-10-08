@@ -6,6 +6,8 @@ knowledge_role: curated
 provenance:
   - Owner's workflow map of 2026-09-24, moved here from the Blueprint by the owner's Blueprint teardown answer of 2026-10-03, rewritten in the workflow verbs
 source_paths:
+  - workbench/skills/promote-decision/SKILL.md
+  - workbench/docs/adr/proposed/001A-promote-publishes-confirmed-documentation-specs-and-task-plans-before-implementation.md
   - workbench/docs/adr/000X-the-workflow-is-eight-verbs-and-each-verb-writes-the-plane-its-claims-live-on.md
   - workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md
   - workbench/docs/adr/000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md
@@ -15,7 +17,7 @@ source_paths:
   - AGENTS.md
 parent: none
 authorized_by: the owner's Blueprint teardown answer that the workflow map moves to the Workflow landmark and the Wiki, 2026-10-03
-last_verified: 2026-10-05
+last_verified: 2026-10-07
 ---
 
 # The Workflow From Idea To Delivery
@@ -58,6 +60,16 @@ and confirming it authorizes the agents to carry it to its endpoint
 ([DDR on what confirmation authorizes](../../docs/ddr/000C-confirming-a-concept-authorizes-the-agents-to-carry-it-to-its-endpoint.md)).
 A prototype, where one is used, is optional and lands nothing in enduring
 context ([DDR on prototypes](../../docs/ddr/000D-prototype-needs-no-map-and-lands-nothing-in-enduring-context.md)).
+
+## Promoting a confirmed decision
+
+The [Promote Decision skill](../../skills/promote-decision/SKILL.md) carries one
+confirmed decision through Record, Map and Plan, with each stage published
+before the next depends on it. Record is the `to-docs` operation. A nearer
+endpoint limits the run; pending questions remain in their working source.
+The [proposed Promote Decision record](../../docs/adr/proposed/001A-promote-publishes-confirmed-documentation-specs-and-task-plans-before-implementation.md)
+records this design and its rationale. This Workbench maintainer operation
+prepares shared decisions and plans; implementation follows its own workflow.
 
 ## What each line of the old map became
 
@@ -155,3 +167,5 @@ and those words move with the controls.
   Workflow landmark and the Wiki, rewritten in the workflow verbs.
 - 2026-10-05: the owner added QA and Submit to the Journey and moved Review
   after it, with a failed Review going back to Map, Plan and Journey.
+
+- 2026-10-07: linked the one-decision Record, Map, Plan and publication operation, retaining the earlier workflow history.

@@ -171,6 +171,7 @@ Derived from stable specs; includes completed history.
 | [S-052 - Private Session Transport](S-052-private-session-transport/SPEC.md) | Optionally synchronize selected working records through private Git with explicit acknowledgment and lossless offline/conflict handling. | active |
 | [S-053 - Configured Host Capabilities](S-053-configured-host-capabilities/SPEC.md) | Verify the agreed minimum operations in the actual host while keeping capability, enforcement and agent reliability separate. | complete |
 | [S-054 - Workbench v3.2.1 Review-Boundary Integrity](S-054-v3-2-1-review-boundary-integrity/SPEC.md) | Historical v3.2.1 docket entry for binding an integration review to the exact resulting candidate; its undelivered target-binding requirements now live in the Spec QA Gate at Integration. | superseded |
+| [S-005C - Promote Confirmed Decisions](S-005C-promote-confirmed-decisions/SPEC.md) | Orchestrate one confirmed decision through delegated Record, Map, Plan and verified stage publication to integration. | active |
 
 ### Retired
 
