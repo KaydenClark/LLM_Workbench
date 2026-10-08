@@ -3,12 +3,12 @@
 **Task ID:** TK-00JB
 **Spec ID:** S-004J
 **Slice:** Prove domain-modeling behavior in fresh-context disposable rooms
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** TK-00JA
 **Destination:** spec-acceptance: In a grilling scenario, a proposed rename or boundary is traced to named owners, identifiers and tests before the owner chooses, and the room diff stays empty.
 **Planned verification:** Scripted-owner fresh-context runs in disposable rooms installed from the assembled lane, asserting observed turns and room diffs for the trace, challenge, capture/promotion, decision-record and grilling-without-the-skill scenarios; a source correction, if any, re-runs the scoped test and full suite.
-**Claimed by:** claude-s004j-worker-jb, claude-s004j-worker-fix
+**Claimed by:** claude-s004j-worker-jb, claude-s004j-worker-fix, claude-s004j-worker-fix2
 **Proof:** Correction pass: scenario 1 run 3 names every owner and both tests before the choice with an empty room diff after a red-green trace wording fix; promotion evidence qualified (glossary variant manual write after tool refusal, tool promotion verified for the Lexicon fallback only); full RUNBOOK suite 54/54 on clean fb9765b5
 
 ## Scope and authority
