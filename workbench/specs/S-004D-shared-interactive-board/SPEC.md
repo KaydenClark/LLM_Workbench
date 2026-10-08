@@ -432,7 +432,9 @@ policies. Resolve them within the existing owners before adding executable work.
 - Replacing Taskboard or Tracker sources with a new authoritative mega-board.
 - Flattening execution and understanding into one lifecycle or one percentage.
 - Rolling the Dashboard out to every workbench, or running the Workbench from
-  it: future goals, not this Spec's scope. Generic templates do not change.
+  it: future goals, not this Spec's scope. Generic templates carry no
+  Dashboard behavior; they gain only the Runbook's Draft → Critique → Revise →
+  Confirm workflow.
 - A second Wiki, dictionary or glossary store: the Wiki section reads the
   existing owners. Also out: the Lexicon retirement itself, a new scheduler,
   GitHub Projects cutover, or a mandatory third-party service.

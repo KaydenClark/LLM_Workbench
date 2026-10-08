@@ -166,9 +166,9 @@ flowchart LR
 
 This is not a mandatory extra gate for every trivial interaction. Explore still
 ends in Confirm and can contain different workflows; this addition does not
-settle their taxonomy or change the five parent workflows above. The Workbench
-owner confirmed this workflow and its three new verbs on 2026-10-08. Confirm
-already existed. The new verb definitions follow below.
+settle their taxonomy or change the five parent workflows above. Draft,
+Critique and Revise are the added verbs; Confirm already exists. Their
+definitions follow below.
 
 **New verb definitions.**
 
