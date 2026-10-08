@@ -3,12 +3,12 @@
 **Task ID:** TK-00JC
 **Spec ID:** S-004J
 **Slice:** Reconcile the Domain Modeling Wiki article with delivered behavior
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** TK-00JB
 **Destination:** spec-acceptance: The Wiki article separates upstream method, Workbench adaptation and verified behavior and limits.
 **Planned verification:** Wiki validation and lint on the touched pages, link checks, full RUNBOOK suite on a committed candidate.
-**Claimed by:** claude-s004j-worker-jc, claude-s004j-worker-fix
+**Claimed by:** claude-s004j-worker-jc, claude-s004j-worker-fix, claude-s004j-worker-fix2
 **Proof:** Correction pass: Wiki article matches the corrected adapter list, NOTICE.md credit, qualified promotion evidence, scenario 1 reruns and the scenario 4 prompt limit; wiki validate ok, test-wiki 25/25, full RUNBOOK suite 54/54 on clean eab82fe5
 
 ## Scope and authority
