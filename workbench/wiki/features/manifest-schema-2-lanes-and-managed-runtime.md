@@ -7,6 +7,10 @@ provenance:
   - Owner-directed one-article-per-Spec migration, 2026-09-19
   - Moved into the features collection and restructured as a feature article by Wiki Evolving-Synthesis Migration (S-003W) Task TK-002 (Move And Retype The Remaining Per-Spec Articles) using wiki.mjs move-note, 2026-10-04
 source_paths:
+  - workbench/specs/S-004M-room-legibility-surface/SPEC.md
+  - workbench/tools/workbench-layout.mjs
+  - workbench/tools/diagnostics.mjs
+  - workbench/specs/S-004Q-managed-runtime-growth-rollback/SPEC.md
   - workbench/specs/retired/S-023-manifest-schema-2-and-managed-runtime/SPEC.md
   - workbench/manifest.json
   - workbench/tools/workbench-paths.mjs
@@ -52,7 +56,27 @@ runtime without taking over application-owned tools. Comparing installed bytes,
 receipt claims and the selected source separately, and refusing contradictory
 layouts, keeps one authoritative support root.
 
+## Growth rollback and recovery limits
+
+[Managed Runtime Growth Rollback (S-004Q)](../../specs/S-004Q-managed-runtime-growth-rollback/SPEC.md) corrects component recovery when an update adds runtime tools. The release-side controller records originally absent names and saved-file hashes, validates the selected backup against the current receipt, and preflights restores and deletions before writing. It restores originally present saved files and removes only identified introduced tools; post-update local byte/mode changes or deletions, or corrupt/unsafe recovery input refuse without changing the lane.
+
+Recorded legacy growth backups can infer absence from their saved-file inventory only with verified producer history: integration generation `8e9c06f6f98825925e7da6cce59fb68768b589d7` always treats receipt-missing names as changed and saves every present changed file. Its controller matches historical main source `9378eada35b30199a53f6b921215950d0fa7ff38`; ancestry of the main merge itself is unnecessary. Unknown or unavailable history refuses. Legacy saved bytes must match the previous receipt; new saved hashes also authenticate pre-update local edits. Originally unreceipted files are restored only with that saved-byte proof.
+
+Recovery restores a historical generation, rather than upgrading it. The historical eleven-tool controller verifies eleven restored tools; the current twenty-nine-tool controller still reports the older generation's eighteen unaccounted members as requiring update. Current coverage is not weakened. The recovery-controller source identity and an unchanged runtime-payload receipt may differ; component receipts do not prove whole-room inverse recovery or Owner QA.
+
 ## Limits
+
+The optional `legibility` block routes agents to the room's own run, operate,
+inspect, errors, journey and measure commands, paths or pointers. Doctor reports
+missing, empty or bracketed-placeholder entries as `legibility-undeclared` and
+`confirmation: "pending"` as `legibility-unconfirmed`. Both are attention
+findings that block nothing. A confirmed complete block is silent; malformed
+blocks retain the existing `invalid-manifest` error. After grilling confirms
+the surface, `workbench-layout.mjs declare-legibility` records all six entries
+without `--pending`. A pointer grants no permission to execute a command.
+Existing-room updates preserve the block or its absence. The
+[Room Legibility Surface Spec (S-004M)](../../specs/S-004M-room-legibility-surface/SPEC.md)
+owns the remaining setup-drafting and dedicated article work.
 
 - The original ten-tool and seven-collection inventories describe that
   release. The current manifest and installer own today's sets.
@@ -78,6 +102,8 @@ layouts, keeps one authoritative support root.
 - [Manifest schema 2 declares six lanes and every machine-used collection (ADR-0032)](../../docs/adr/0032-manifest-schema-2-declares-lanes-and-collections.md)
 
 ## History
+
+- 2026-10-07: Room Legibility Surface doctor Task (TK-008U) added the advisory runtime-surface diagnostics and their repair route. The focused doctor test checks the declared, undeclared, placeholder, pending and malformed cases; this update does not reverify the older capability history.
 
 - 2026-09-19: Created on explicit owner direction for one article per legacy Spec. Preserved useful knowledge and historical limits; no source record retired or discarded.
 - 2026-10-04: Moved from `design-concepts/spec-S-023-manifest-and-managed-runtime.md` into the features collection under this name with `wiki.mjs move-note`, retyped `feature` and restructured into the four feature sections from its existing prose, for the Wiki Evolving-Synthesis Migration Spec (S-003W) Task TK-002 (Move And Retype The Remaining Per-Spec Articles). Every live link to it was rewritten by the move; no claim was changed. This move checked that the named current source paths (the first entry names the Spec's eventual retired route, which does not exist yet) and the immutable commit exist, not the behavior of the capability itself.

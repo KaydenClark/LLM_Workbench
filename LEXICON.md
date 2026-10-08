@@ -151,6 +151,9 @@ still apply to individual claims in the current operation.
 | **Frontier** | The open, unblocked and unclaimed Tasks at the edge of the current Map. | Taskboard projects implementation work across Specs; Landmark Tracker separately shows evolving documentation and understanding. Neither view authors the source state. |
 | **Align** | The inquiry, usually grilling, in which an idea becomes a design concept the owner and the agents share. | Grilling supports that inquiry; Confirm is the owner's agreement to the readback that closes it, and what that agreement authorizes is in the Confirm row. |
 | **Workflow** | Workflows are composed from workflow verbs, and the verb set stays open. What each verb means is its own Lexicon row. The delivery workflow reads Idea, Align, Confirm, Map, Plan, Journey, Review, Verify, Approve, Delivered, Clean Up. | The owner: "We shouldnt need to Lock in a list. We lock in verbs. We use verbs to create workflows." The first eight verbs were the first standardization, and the owner has since added more: "why cant we add more workflow verbs? They are verbs." A verb can be passed through: when there is nothing to map, Confirm goes to Plan, and when everything is good, Review and Verify write nothing beyond saying so ([the workflow verbs decision](workbench/docs/adr/000X-the-workflow-is-eight-verbs-and-each-verb-writes-the-plane-its-claims-live-on.md)). A failed Review returns to Map, Plan and Journey before Verify; a send-back at Approve returns to Align. |
+| **Promote** | Carry one confirmed decision through Record, Map and Plan, publishing each applicable stage before the next depends on it. | A nearer endpoint limits the run. The LLM Workbench uses `promote-decision` for this orchestration; the core `/promote` skill remains the selected-claim reconciliation primitive. Planning and publication are distinct from implementation and owner acceptance. |
+| **Record** | Route a confirmed decision, its rationale and corrections into their durable documentation owners. | `to-docs` owns the authoring operation; pending choices stay in their working source. |
+| **Publish** | Make an authorized record stage available from the manifest-declared integration branch, with containment and changed-owner read-back verified. | A local write or branch push is an earlier boundary. Existing review and merge gates still apply. |
 | **Workflow verb** | A workflow verb is a defined action or process that workflows are built from and that people use in ordinary language. Each verb gets its own Lexicon row. | The owner's words: "A workflow verb is an defined action/process that we can use to create workflows and actually use in regular language. And yes, one row per verb". A verb row defines a meaning; it changes no command, status, folder or gate. |
 | **Idea** | The owner's starting thought, recorded as given, before any alignment. | Not Fog: Fog is anticipated work toward a destination that cannot yet be stated as a precise decision question. The owner's note: "Between idea and Align is the Fog of war mentioned in the Wayfind Skill." |
 | **Confirm** | The owner's agreement to a readback that names the concept, its direction, cost, reason and what will be created. It authorizes the agents to carry the concept to its endpoint. | A claim moves from Intent to Enduring Context only by the owner's confirmation of its readback, in a grilling session or ordinary conversation, for one answer or a batch; an agent's recommendation is intent too, and the owner's yes confirms it as written. A review surface whose items carry their own Confirm button is the one place the confirmation is that button rather than a chat reply. Once the owner confirms a concept, the agents are authorized to carry it to its endpoint, unless the confirmation names a nearer one ([the confirmation decision](workbench/docs/ddr/000C-confirming-a-concept-authorizes-the-agents-to-carry-it-to-its-endpoint.md)). The Confirmed label the Landmark Tracker prints for a question card is evidence of understanding and, as `AGENTS.md` says, grants no authority by itself; the verb is the owner's agreement to a readback. Whether `AGENTS.md`'s sentence should say so would change a rule's meaning, which the Contract carrier rewrite, a relocation, did not do; it stays open for its own decision. Approve is the owner's later judgment of delivered work. |
@@ -220,6 +223,25 @@ still apply to individual claims in the current operation.
 | **Normal setup** | Laying the skills lane and its discovery adapters down from the release during Genesis or Adoption. | It never reads the provider home and never touches a skill the room added under another name. |
 | **Explicit skill update** | The Workbench update's `workbench-skills.mjs update --explicit-update`: replace only changed core skills in the lane, back the previous directories up, and record the rollback path in the receipt. | It is the only path that may replace a core skill in a room; routine setup and doctor cannot imply it. The one-time v2 route (`workbench-upgrade.mjs upgrade --explicit-update` or `--layout-only`) lays the lane down through Adoption instead. Publishing the core into a personal catalog (`core-skill-installer.mjs`) is a separate operation. |
 | **Control fidelity** | How a room's hand-reconciled root files relate to the templates they derive from: every template line is `filled` only when its fixed wording survives placeholder substitution, `unchanged`, `dropped`, or `changed`, and every extra room line is `added`, as `tools/control-fidelity.mjs report` states beside the checkout and manifest versions. | It is a report, never a gate: divergence is legitimate and is restored or recorded as a decision; silent divergence is the defect ([S-034](workbench/specs/S-034-control-fidelity-report/SPEC.md)). |
+
+### Priority And Value
+
+**Priority** describes when to attend. **Value** describes return versus
+investment. They are separate classifications, never a summed score.
+
+| Priority: when to attend | Value: return versus investment |
+|---|---|
+| **P1 — Interrupt:** stop normal work | **V1 — Quick Win:** high return, low investment |
+| **P2 — Committed:** current expected work | **V2 — Strategic Value:** high return, high investment |
+| **P3 — Secondary:** when committed work allows | **V3 — Fill-In:** low return, low investment |
+| **P4 — Backlog:** retained without current expectation | **V4 — Defer / Eliminate:** low return, high investment |
+
+P1 remains visible regardless of Value. Value informs choices within an
+attention lane; quick wins must not continually crowd out strategic work.
+
+The [Grill Board P/V decision](workbench/docs/ddr/001L-priority-and-value-help-the-owner-choose-grill-board-questions.md)
+applies these meanings to answering questions; its planned capability is owned
+by [Shared Interactive Workbench Board](workbench/specs/S-004D-shared-interactive-board/SPEC.md#priority-and-value-for-answering-questions).
 
 ### Feedback Dispositions
 

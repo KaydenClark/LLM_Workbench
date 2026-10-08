@@ -19,6 +19,8 @@ const registry = Object.freeze({
   'identity-busy': entry('error', 'manifest', 'none', 'another local identity writer holds the assignment lock'),
   'identity-write-failed': entry('error', 'manifest', 'none', 'Workbench identity assignment could not be verified'),
   'invalid-manifest': entry('error', 'manifest', 'all', 'the manifest is unreadable or malformed'),
+  'legibility-undeclared': entry('attention', 'manifest', 'none', 'declare the missing runtime surface entries with workbench-layout.mjs declare-legibility'),
+  'legibility-unconfirmed': entry('attention', 'manifest', 'none', 'confirm the drafted runtime surface through grilling, then declare it without --pending'),
   'upgrade-required': entry('error', 'manifest', 'all', 'the manifest is an older schema; run the one-time migration'),
   'invalid-lane': entry('error', 'manifest', 'all', 'a declared lane path is unsafe or not the v3.1 contract'),
   'unsafe-lane': entry('error', 'manifest', 'all', 'a declared lane is missing, a symlink, or not a directory'),

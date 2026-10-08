@@ -3,13 +3,13 @@
 **Spec ID:** S-004M
 **Status:** active
 **Priority:** 2
-**Owner:** claude-s004m-dispatcher
+**Owner:** codex-cloud-tk008u
 **Stance:** Builder
-**Updated:** 2026-10-06
+**Updated:** 2026-10-07
 **Catalog description:** Let every room declare how an agent runs, operates, inspects, sees errors in, exercises and measures its product, as a manifest block checked by doctor, with the Workbench's own declaration as the first.
 **Blockers:** none. Runbook or AGENTS wording waits for the S-004C writer and is not cut as a Task.
-**Latest event:** TK-008T closed with proof.
-**Next gate:** Complete TK-008U.
+**Latest event:** TK-008U closed with proof.
+**Next gate:** Complete TK-008V.
 
 ## Outcome
 
@@ -94,6 +94,7 @@ The manifest's documentation, the Runbook's diagnostics row, a Wiki page for the
 | 2026-10-06 | TK-008T, TK-008U, TK-008V, TK-008W, TK-008X | Plan: inspected validateManifest, doctor assembly, the registry, Genesis, adoption, the update route and the template-placeholder check at integration 35187ee6; cut five sequential Tasks; identifiers allocated upward from the Director's mark TK-008T after a fresh fetch showed no remote tip holding them; Spec activated with convert-tasks --activate. | Plan only; render and doctor accept the records. Guardrail baseline 73/100. | This Spec and its Task records. | All five Tasks remain to implement and prove. |
 | 2026-10-06 | TK-008T | Safe stop ordered by the Director while this Dispatcher session winds down. TK-008T is claimed (8ad07fef) and implemented (6b0140b0: `legibility` block validation, `LEGIBILITY_ENTRIES`/`legibilityState` exports, `declare-legibility`, the Workbench's own declaration, red/green in tools/test-workbench-layout.mjs and tools/test-workbench-dogfood.mjs), merged with integration ef704e36 at 74e2ca5e on branch claude/s004m-tk008t (worktree .worktrees/s004m-tk008t), pushed to origin on both claude/s004m-tk008t and claude/s004m-dispatcher; PR #371 to integration carries the plan and this Task and is open, not merged. | Targeted on the committed tree: test-workbench-layout, test-diagnostics, test-workbench-tools, test-workbench-dogfood, test-self-drift all PASS; self-drift receipt pre (ef704e36) and post (74e2ca5e) differ only by the four new blocked-slice rows. The full suite on 74e2ca5e was still running at the stop and its result is not claimed; no Receipt recorded yet. | This Spec. | Next Dispatcher: rerun the full suite on the PR #371 head, record the TK-008T Receipt, fill the two merge answers on #371, merge it, close TK-008T, then branch TK-008U from the fresh integration tip (fixture helpers to update are the init helpers in tools/test-diagnostics.mjs L62 and tools/test-spec-workbench.mjs L3051; every other empty-doctor assertion filters by code). TK-008U to TK-008X remain ready/blocked in order. |
 | 2026-10-06 | TK-008T | Task closed | Full RUNBOOK suite 52/52 on 1938da8f (lane head merged with integration c5194960); Receipt at 785aecee; layout and dogfood red/green at 6b0140b0 | workbench/manifest.json legibility declaration and the S-004M Spec/Task records updated; Wiki checked, no page describes the manifest legibility block yet (TK-008U onward owns the doctor and docs surface) | none |
+| 2026-10-07 | TK-008U | Task closed | Full RUNBOOK suite54/54 PASS; diagnostics37/37, layout82/82, red5a1974a5 then green35ab07ba; append-only clean baseline and eight corruption cases PASS. Verified code6049f79a and published final Receipt/proof1c58ab24; see proof/tk008u-cloud-verification.json for cloud reruns and limits. | Runtime diagnostics skill and manifest feature article updated; Wiki validation and touched-page semantic lint PASS; durable verification summary retained. | none for this Task; S-004M setup drafting, dedicated article, whole-Spec QA and owner gates remain. |
 
 ## Completion Result
 

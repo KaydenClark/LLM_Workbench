@@ -31,6 +31,7 @@ test('fresh core composes local save and selected promotion using only installed
       assert.equal(fs.readFileSync(path.join(canonical, 'SKILL.md'), 'utf8'), fs.readFileSync(path.join(root, 'workbench', 'skills', skill, 'SKILL.md'), 'utf8'));
     }
     assert.equal(fs.readFileSync(path.join(home, '.agents/skills/handoff/assets/HANDOFF.md'), 'utf8'), fs.readFileSync(path.join(root, 'templates/HANDOFF.md'), 'utf8'), 'installed handoff carries its portable shape without a producer checkout');
+    assert.equal(fs.existsSync(path.join(home, '.agents/skills/promote-decision')), false, 'the decision coordinator stays outside the personal Core catalog');
     assert.equal(fs.existsSync(path.join(home, '.codex')), false);
     run(root, 'workbench/tools/workbench-layout.mjs', ['init', '--project', project, '--provenance', 'genesis', '--version', version]);
     run(root, 'tools/workbench-tools.mjs', ['install', '--project', project]);
@@ -62,6 +63,7 @@ test('fresh core composes local save and selected promotion using only installed
     // skills lane; both discovery adapters resolve into it with no per-skill
     // link and nothing published to the personal catalog.
     run(root, 'tools/workbench-skills.mjs', ['install', '--project', project]);
+    assert.equal(fs.existsSync(path.join(project, 'workbench/skills/promote-decision')), false, 'the decision coordinator is Workbench-only, not installed as Core');
     for (const skill of ['save', 'promote', 'notepad', 'to-docs', 'handoff']) {
       assert.equal(fs.readFileSync(path.join(project, '.agents/skills', skill, 'SKILL.md'), 'utf8'), fs.readFileSync(path.join(root, 'workbench', 'skills', skill, 'SKILL.md'), 'utf8'));
       assert.equal(fs.realpathSync(path.join(project, '.claude/skills', skill)), fs.realpathSync(path.join(project, 'workbench/skills', skill)));
@@ -79,6 +81,119 @@ test('fresh core composes local save and selected promotion using only installed
     assert.equal(fs.existsSync(path.join(home, '.agents/skills/room-demo')), false, 'room source is not published to the global catalog');
     assert.equal(fs.existsSync(path.join(project, '.codex/skills')), false);
 
+  } finally { fs.rmSync(base, { recursive: true, force: true }); }
+});
+
+// This exercises installed public seams and Git publication, with simulated
+// fixture merge authorization. It does not run an agent or a live GitHub PR.
+test('public runtime supports separate decision-record, Map and Plan publication with retry', () => {
+  const base = fs.mkdtempSync(path.join(os.tmpdir(), 'workbench-promote-stages-'));
+  const project = path.join(base, 'room'), remote = path.join(base, 'remote.git'), reader = path.join(base, 'reader');
+  const git = (cwd, args, expected = 0) => {
+    const result = spawnSync('git', ['-c', 'user.name=Promotion Test', '-c', 'user.email=promotion@example.invalid', '-c', 'commit.gpgsign=false', ...args], { cwd, encoding: 'utf8' });
+    assert.equal(result.status, expected, `git ${args.join(' ')}: ${result.stdout}${result.stderr}`);
+    return result.stdout.trim();
+  };
+  const write = (relative, content) => {
+    const file = path.join(project, relative);
+    fs.mkdirSync(path.dirname(file), { recursive: true });
+    fs.writeFileSync(file, content);
+  };
+  const node = (...args) => run(project, 'workbench/tools/spec-workbench.mjs', args);
+  const readRemote = relative => git(reader, ['show', `origin/integration:${relative}`]);
+  const commitStage = (files, message) => {
+    git(project, ['add', ...files]);
+    git(project, ['commit', '-q', '-m', message]);
+    return git(project, ['rev-parse', 'HEAD']);
+  };
+  const publish = (branch, candidate, owners) => {
+    git(project, ['push', '-q', 'origin', branch]);
+    git(reader, ['fetch', '-q', 'origin']);
+    git(reader, ['merge-base', '--is-ancestor', candidate, 'origin/integration'], 1);
+    const authored = owners.map(relative => fs.readFileSync(path.join(project, relative), 'utf8').trimEnd());
+    git(project, ['switch', '-q', 'integration']);
+    git(project, ['merge', '-q', '--no-ff', branch, '-m', 'Simulated approved record-stage merge']);
+    git(project, ['push', '-q', 'origin', 'integration']);
+    git(reader, ['fetch', '-q', 'origin', 'integration']);
+    git(reader, ['merge-base', '--is-ancestor', candidate, 'origin/integration']);
+    owners.forEach((relative, i) => assert.equal(readRemote(relative), authored[i]));
+    assert.equal(git(reader, ['ls-tree', '-r', '--name-only', 'origin/integration']).split('\n').includes('unfinished.mjs'), false);
+    return git(reader, ['rev-parse', 'origin/integration']);
+  };
+  try {
+    fs.mkdirSync(project);
+    git(base, ['init', '-q', '--bare', remote]);
+    run(root, 'workbench/tools/workbench-layout.mjs', ['init', '--project', project, '--provenance', 'genesis', '--version', version, '--integration-branch', 'integration']);
+    run(root, 'tools/workbench-tools.mjs', ['install', '--project', project]);
+    run(root, 'tools/workbench-skills.mjs', ['install', '--project', project]);
+    git(project, ['init', '-q', '-b', 'integration']);
+    git(project, ['remote', 'add', 'origin', remote]);
+    const original = '# Runbook\n\n## Reports\n\nNaming remains open.\n';
+    write('RUNBOOK.md', original);
+    write('BLUEPRINT.md', '# Reports\n\nGenerate reports with the confirmed name.\n');
+    write('TASKBOARD.md', '# Tasks\n\n<!-- hot-specs:start -->\n<!-- hot-specs:end -->\n');
+    git(project, ['add', '-A']);
+    git(project, ['commit', '-q', '-m', 'Fixture baseline']);
+    git(project, ['push', '-q', 'origin', 'integration']);
+    git(base, ['clone', '-q', '-b', 'integration', remote, reader]);
+    git(project, ['switch', '-q', '-c', 'codex/unfinished']);
+    write('unfinished.mjs', '// Work has not met acceptance.\n');
+    const unfinished = commitStage(['unfinished.mjs'], 'Keep incomplete implementation separate');
+    git(project, ['push', '-q', 'origin', 'codex/unfinished']);
+    git(project, ['switch', '-q', '-c', 'codex/docs', 'integration']);
+
+    const notes = args => run(project, 'workbench/tools/notepads.mjs', args);
+    const note = notes(['create', '--note', 'promotion', '--objective', 'promotion', '--title', 'Promotion fixture']).note;
+    notes(['append', '--note', note, '--revision', '1', '--kind', 'source_record', '--topic', 'naming', '--content', 'Name reports room-first.']);
+    notes(['append', '--note', note, '--revision', '2', '--kind', 'correction', '--topic', 'naming', '--corrects', 'source_record-001', '--content', 'Use YYYY-MM-DD-ROOM.md instead.']);
+    notes(['append', '--note', note, '--revision', '3', '--kind', 'decision', '--topic', 'naming', '--content', 'Confirmed date-first naming so reports sort by date; this applies to report names only.']);
+    notes(['append', '--note', note, '--revision', '4', '--kind', 'source_record', '--topic', 'retention', '--content', 'Retention is still undecided.']);
+    notes(['current', '--note', note, '--revision', '5', '--unresolved', 'retention readback pending', '--next-action', 'Publish the confirmed naming decision.']);
+    const noteBefore = fs.readFileSync(path.join(project, note));
+    const authoredDocs = '# Runbook\n\n## Reports\n\nUse YYYY-MM-DD-ROOM.md for report names so reports sort by date.\n';
+    const draft = 'workbench/sessions/recovery/reports.md';
+    write(draft, authoredDocs);
+    run(project, 'workbench/tools/sessions.mjs', ['promote', '--from', note, '--revision', '6', '--entries', 'decision-001,correction-001', '--to', 'RUNBOOK.md', '--expected', hash(original), '--content', draft]);
+    const docs = commitStage(['RUNBOOK.md'], 'Publish the corrected confirmed naming decision');
+    const docsTip = publish('codex/docs', docs, ['RUNBOOK.md']);
+
+    // A docs-only endpoint reaches integration without creating planning work.
+    const specPath = 'workbench/specs/S-0PA-reports/SPEC.md';
+    git(reader, ['cat-file', '-e', `origin/integration:${specPath}`], 128);
+    assert.deepEqual(fs.readFileSync(path.join(project, note)), noteBefore);
+    assert.equal(git(reader, ['ls-tree', '-r', '--name-only', 'origin/integration']).split('\n').includes(note), false);
+
+    // Simulate losing continuity after merge but before the local receipt.
+    // Resume checks live containment and reuses the stage without another merge.
+    git(reader, ['fetch', '-q', 'origin', 'integration']);
+    git(reader, ['merge-base', '--is-ancestor', docs, 'origin/integration']);
+    assert.equal(git(reader, ['rev-parse', 'origin/integration']), docsTip);
+    assert.equal(readRemote('RUNBOOK.md'), authoredDocs.trimEnd());
+
+    git(project, ['switch', '-q', '-c', 'codex/spec']);
+    const spec = `# S-0PA - Reports\n\n**Spec ID:** S-0PA\n**Status:** planned\n**Priority:** 2\n**Owner:** fixture\n**Stance:** Builder\n**Updated:** 2026-10-07\n**Catalog description:** Implement confirmed report naming.\n**Blockers:** none\n**Latest event:** Decision published.\n**Next gate:** Plan the authorized Task.\n\n## Outcome\n\nImplement the naming in RUNBOOK.md; code remains unfinished.\n\n## Why It Matters\n\nReports sort by date.\n\n## Current Verified State\n\nThe decision is published; implementation is pending.\n\n## Desired Behavior\n\nGenerate the confirmed report name.\n\n## Decisions And Contracts\n\nRead RUNBOOK.md for the accepted naming rule.\n\n## Non-Goals\n\nRetention policy.\n\n## Dependencies And Blockers\n\nNone.\n\n## Vertical Implementation Slices\n\n| Task | Slice | Status | Blockers | Proof |\n|---|---|---|---|---|\n\n## Acceptance Criteria\n\n- [ ] A report uses the confirmed name.\n\n## Testing Seams\n\nReport output.\n\n## Verification Procedure\n\nCheck a generated name.\n\n## Documentation Impact\n\nRUNBOOK.md.\n\n## Append-Only Evidence And Execution Log\n\n| Date | Task | Event | Verification | Docs | Remaining gap |\n|---|---|---|---|---|---|\n`;
+    write(specPath, spec);
+    write('workbench/specs/S-0PA-reports/tasks/.gitkeep', '');
+    node('render');
+    node('doctor', '--json');
+    const specFiles = [specPath, 'workbench/specs/S-0PA-reports/tasks/.gitkeep', 'workbench/specs/CATALOG.md', 'TASKBOARD.md'];
+    publish('codex/spec', commitStage(specFiles, 'Publish the planned report capability'), specFiles);
+    assert.match(readRemote(specPath), /\*\*Status:\*\* planned/);
+    assert.equal(node('show', 'S-0PA', '--json').tasks.length, 0);
+
+    git(project, ['switch', '-q', '-c', 'codex/tasks']);
+    const taskPath = 'workbench/specs/S-0PA-reports/tasks/TK-0PA/TASK.md';
+    write(taskPath, '# TK-0PA - Generate the confirmed report name\n\n**Task ID:** TK-0PA\n**Spec ID:** S-0PA\n**Slice:** Generate the confirmed report name\n**Status:** ready\n**Stance:** Builder\n**Blockers:** none\n**Destination:** spec-acceptance: A report uses the confirmed name.\n**Planned verification:** Generate and compare a report name.\n');
+    node('convert-tasks', 'S-0PA', '--activate');
+    node('render');
+    node('doctor', '--json');
+    const taskFiles = [specPath, taskPath, 'workbench/specs/CATALOG.md', 'TASKBOARD.md'];
+    publish('codex/tasks', commitStage(taskFiles, 'Publish the unclaimed report Task plan'), taskFiles);
+    assert.match(readRemote(specPath), /\*\*Status:\*\* active/);
+    assert.match(readRemote(taskPath), /\*\*Status:\*\* ready/);
+    assert.doesNotMatch(readRemote(taskPath), /Claimed by|Receipt|\*\*Status:\*\* done/);
+    git(reader, ['merge-base', '--is-ancestor', unfinished, 'origin/integration'], 1);
+    assert.deepEqual(fs.readFileSync(path.join(project, note)), noteBefore, 'planning and publication preserve pending exploration');
   } finally { fs.rmSync(base, { recursive: true, force: true }); }
 });
 

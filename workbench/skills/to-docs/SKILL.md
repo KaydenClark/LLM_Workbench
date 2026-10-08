@@ -7,7 +7,13 @@ description: Route settled conversation truth into existing Workbench documentat
 
 Persist an already-settled conversation. Do not start a new interview. First
 state the proposed destinations, then update only owners whose durable truth
-changed:
+changed.
+
+As the Record Worker for `promote-decision`, use the assigned decision's source,
+confirmed revision, rationale, corrections and endpoint. Return exact owner
+changes, commits and checks to its publisher before Map begins. The selected
+claims primitive remains [`promote`](../promote/SKILL.md); standalone `to-docs`
+keeps its requested documentation endpoint.
 
 For a v3 project, first read `workbench/manifest.json`. It declares the support
 lanes; do not create a root `specs/`, project-local `skills/` core shadow, or parallel

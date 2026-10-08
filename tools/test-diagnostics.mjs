@@ -61,6 +61,12 @@ function project(version = VERSION) {
   const dir = fixture();
   const init = spawnSync(process.execPath, [layout, 'init', '--project', dir, '--provenance', 'genesis', '--version', version], { encoding: 'utf8' });
   assert.equal(init.status, 0, init.stdout);
+  // Most tests exercise other findings. Declare a confirmed runtime surface
+  // so their exact reports do not include unrelated legibility attention.
+  const manifestPath = path.join(dir, 'workbench', 'manifest.json');
+  const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+  manifest.legibility = Object.fromEntries(['run', 'operate', 'inspect', 'errors', 'journey', 'measure'].map((entry) => [entry, `fixture ${entry}`]));
+  fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
   // A room lives in a Git repository whose declared integration branch
   // resolves; doctor reports a missing one, which is not the behavior under
   // test in the fixtures that expect an empty report.
@@ -112,6 +118,51 @@ function assertRegistryRemediation(describeEntry, codes) {
     assert.ok(typeof summary === 'string' && summary.trim(), `${code} requires remediation text`);
   }
 }
+
+test('legibility findings name undeclared entries and pending confirmation without blocking work', () => {
+  const dir = project();
+  try {
+    write(dir, 'workbench/specs/S-001-first/SPEC.md', spec('S-001'));
+    render(dir);
+    const manifestPath = path.join(dir, 'workbench', 'manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+    const complete = manifest.legibility;
+    const set = (legibility) => write(dir, 'workbench/manifest.json', `${JSON.stringify({ ...manifest, legibility }, null, 2)}\n`);
+    const legibilityFindings = () => doctorAll(dir, { home: quietHome }).filter((item) => item.code.startsWith('legibility-'));
+    assert.deepEqual(legibilityFindings(), [], 'a complete confirmed block is silent');
+    set(undefined);
+    let findings = legibilityFindings();
+    assert.equal(findings.length, 1);
+    assert.equal(findings[0].code, 'legibility-undeclared');
+    assert.deepEqual(findings[0].entries, ['run', 'operate', 'inspect', 'errors', 'journey', 'measure']);
+    assert.match(findings[0].message, /declare-legibility/);
+    for (const code of ['legibility-undeclared', 'legibility-unconfirmed']) {
+      assert.deepEqual([describe(code).severity, describe(code).scope, describe(code).blocks], ['attention', 'manifest', 'none']);
+    }
+    assert.equal(cliDoctorAll(dir).status, 0, 'an undeclared surface never fails doctor');
+    assert.equal(nextWork(dir).taskId, 'TK-001', 'the advisory finding never hides work');
+    for (const run of ['', '   ', '[RUN COMMAND]']) {
+      const { errors, ...partial } = complete;
+      set({ ...partial, run });
+      findings = legibilityFindings();
+      assert.deepEqual(findings.map((item) => [item.code, item.entries]), [['legibility-undeclared', ['run', 'errors']]]);
+    }
+    set({ ...complete, confirmation: 'pending' });
+    assert.deepEqual(legibilityFindings().map((item) => item.code), ['legibility-unconfirmed']);
+    assert.equal(cliDoctorAll(dir).status, 0, 'pending confirmation never fails doctor');
+    set({ run: '[RUN]', confirmation: 'pending' });
+    assert.deepEqual(legibilityFindings().map((item) => item.code), ['legibility-undeclared', 'legibility-unconfirmed']);
+    set(complete);
+    assert.deepEqual(legibilityFindings(), [], 'confirmation repairs the report');
+    set({ ...complete, run: 42 });
+    const malformed = cliDoctorAll(dir);
+    assert.equal(malformed.status, 1);
+    assert.ok(malformed.findings.some((item) => item.code === 'invalid-manifest'));
+    assert.equal(malformed.findings.some((item) => item.code.startsWith('legibility-')), false, 'malformed manifests keep their existing error');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
 
 test('the registry rejects empty remediation text in a disposable module', async () => {
   const source = fs.readFileSync(path.join(root, 'workbench/tools/diagnostics.mjs'), 'utf8');
@@ -927,6 +978,8 @@ const PINNED_EFFECTS = {
   'session-transport-pending': ['attention', 'sessions', 'none'],
   'identity-write-failed': ['error', 'manifest', 'none'],
   'invalid-manifest': ['error', 'manifest', 'all'],
+  'legibility-undeclared': ['attention', 'manifest', 'none'],
+  'legibility-unconfirmed': ['attention', 'manifest', 'none'],
   'upgrade-required': ['error', 'manifest', 'all'],
   'invalid-lane': ['error', 'manifest', 'all'],
   'unsafe-lane': ['error', 'manifest', 'all'],

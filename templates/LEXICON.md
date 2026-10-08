@@ -138,6 +138,9 @@ still apply to individual claims in the current operation.
 | **Frontier** | The open, unblocked and unclaimed Tasks at the edge of the current Map. | Taskboard projects implementation work across Specs; Landmark Tracker separately shows evolving documentation and understanding. Neither view authors the source state. |
 | **Align** | The inquiry, usually grilling, in which an idea becomes a design concept the owner and the agents share. | Grilling supports that inquiry; Confirm is the owner's agreement to the readback that closes it, and what that agreement authorizes is in the Confirm row. |
 | **Workflow** | Workflows are composed from workflow verbs, and the verb set stays open. What each verb means is its own Lexicon row. The delivery workflow reads Idea, Align, Confirm, Map, Plan, Journey, Review, Verify, Approve, Delivered, Clean Up. | The point is not a locked list but verbs defined one at a time, with workflows built from them. A verb can be passed through: when there is nothing to map, Confirm goes to Plan, and when everything is good, Review and Verify write nothing beyond saying so. A failed Review returns to Map, Plan and Journey before Verify; a send-back at Approve returns to Align. |
+| **Promote** | Carry one confirmed decision through Record, Map and Plan, publishing each applicable stage before the next depends on it. | A nearer endpoint limits the run. The core `/promote` skill remains the selected-claim reconciliation primitive; the room's operations routes own orchestration. Planning and publication are distinct from implementation and owner acceptance. |
+| **Record** | Route a confirmed decision, its rationale and corrections into their durable documentation owners. | `to-docs` owns the authoring operation; pending choices stay in their working source. |
+| **Publish** | Make an authorized record stage available from the manifest-declared integration branch, with containment and changed-owner read-back verified. | A local write or branch push is an earlier boundary. Existing review and merge gates still apply. |
 | **Workflow verb** | A workflow verb is a defined action or process that workflows are built from and that people use in ordinary language. Each verb gets its own Lexicon row. | A verb row defines a meaning; it changes no command, status, folder or gate. |
 | **Idea** | The owner's starting thought, recorded as given, before any alignment. | Not Fog: Fog is anticipated work toward a destination that cannot yet be stated as a precise decision question. |
 | **Confirm** | The owner's agreement to a readback that names the concept, its direction, cost, reason and what will be created. It authorizes the agents to carry the concept to its endpoint. | A claim moves from Intent to Enduring Context only by the owner's confirmation of its readback, in a grilling session or ordinary conversation, for one answer or a batch; an agent's recommendation is intent too, and the owner's yes confirms it as written. A review surface whose items carry their own Confirm button is the one place the confirmation is that button rather than a chat reply. Once the owner confirms a concept, the agents are authorized to carry it to its endpoint, unless the confirmation names a nearer one. The Confirmed label the Landmark Tracker prints for a question card is evidence of understanding and, as `AGENTS.md` says, grants no authority by itself; the verb is the owner's agreement to a readback. Whether `AGENTS.md`'s sentence should say so would change a rule's meaning, which the Contract carrier rewrite, a relocation, did not do; it stays open for its own decision. Approve is the owner's later judgment of delivered work. |
@@ -186,6 +189,21 @@ still apply to individual claims in the current operation.
 | **Worker** | The role scoped to one assigned Task and one attempt, producing a self-checked result and hand-back to its Dispatcher. | The assigned job can be implementation or Task-authoring assistance. A working Chat performs at most one Task; no new per-Task approval ceremony is implied. Shared Spec state retains one durable writer; a Worker cannot independently approve a candidate it implemented. |
 | **Ticket** | Retired as a live term. `Task` names the execution slice. | Historical `TK-###` identifiers stay readable exactly as written in append-only evidence and are never rewritten; `TK` is the Task identifier prefix, so newly allocated slices keep the `TK-###` form. |
 | **Coordination hand-back** | A point during an assigned run where the owner had to supply something that was not a preference, tradeoff, authorization, or unavailable resource under `AGENTS.md`'s governing gate: a settled decision repeated, evidence already in the project located for the agent, a routine technical finding reconciled, or an already-authorized step prompted. | It is a defect in a record, route, skill, or tool, recorded per occurrence with its cause and smallest correction in the assigned spec's evidence log by the `carry` skill. Answering a genuine owner decision is not one, and neither is a new framework built in response to one. `AGENTS.md` Safety And Change Control owns when an owner is asked; these four reasons restate that gate and never widen it. |
+
+### Priority And Value
+
+**Priority** describes when to attend. **Value** describes return versus
+investment. They are separate classifications, never a summed score.
+
+| Priority: when to attend | Value: return versus investment |
+|---|---|
+| **P1 — Interrupt:** stop normal work | **V1 — Quick Win:** high return, low investment |
+| **P2 — Committed:** current expected work | **V2 — Strategic Value:** high return, high investment |
+| **P3 — Secondary:** when committed work allows | **V3 — Fill-In:** low return, low investment |
+| **P4 — Backlog:** retained without current expectation | **V4 — Defer / Eliminate:** low return, high investment |
+
+P1 remains visible regardless of Value. Value informs choices within an
+attention lane; quick wins must not continually crowd out strategic work.
 
 ### Feedback Dispositions
 

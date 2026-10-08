@@ -1,0 +1,40 @@
+✔ source identity requires a clean Git checkout with a concrete origin and commit (177.813375ms)
+✔ source identity requires the requested root to be the Git checkout root (65.811125ms)
+✔ the product tools lane is the canonical runtime source and holds exactly the runtime tools (98.782542ms)
+✔ install writes receipt-backed copies with hashes, source identity, and non-executable permissions, leaving root tools untouched (647.543583ms)
+✔ verify reports drift, update requires explicit authorization, backs up, and rollback restores the backup (910.579708ms)
+✔ a drift result separates a stale receipt from a modified runtime and names each remedy (461.827875ms)
+✔ a receipt that does not account for every managed file is refused, not read as valid (729.547125ms)
+✔ update --explicit-update restores a managed file removed together with its receipt key (497.684875ms)
+✔ v3.1.1 maintenance preserves project truth and historical provenance while managed tools update and roll back (438.271542ms)
+✔ the installed Landmark Tracker runtime captures and rebuilds in a room that declares its root (456.523875ms)
+✔ install refuses an unreceipted collision and a symlinked lane before mutating anything (342.606958ms)
+✔ no active root control or template names a root tools path for a runtime tool (17.005791ms)
+✔ runtime tools import safely when argv has no file and still run their main when invoked directly (144.731667ms)
+✔ update refuses a symlinked file before any writes (445.973916ms)
+✔ update refuses a symlinked lane before any writes (453.937666ms)
+✔ update refuses a symlinked ancestor before any writes (462.327292ms)
+✔ rollback refuses a symlinked file before any writes (421.073875ms)
+✔ rollback refuses a symlinked lane before any writes (413.322792ms)
+✔ rollback refuses a symlinked ancestor before any writes (421.754417ms)
+✔ growth rollback records original absence and restores the historical eleven-file generation (686.047833ms)
+✔ growth rollback recovers the recorded legacy nine-backed-up eleven-to-twenty-nine shape (704.26125ms)
+✔ growth rollback refuses unrecorded before any lane writes (543.896875ms)
+✔ growth rollback refuses modified-introduced before any lane writes (547.162584ms)
+✔ growth rollback refuses mode-introduced before any lane writes (555.204ms)
+✔ growth rollback refuses modified-restored before any lane writes (542.422292ms)
+✔ growth rollback refuses corrupt-backup before any lane writes (554.40225ms)
+✔ growth rollback refuses unsafe-backup before any lane writes (539.890458ms)
+✔ growth rollback refuses inconsistent-absence before any lane writes (544.970333ms)
+✔ growth rollback refuses missing-unchanged before any lane writes (535.246166ms)
+✔ growth rollback refuses unknown-legacy-source before any lane writes (562.632458ms)
+✔ growth rollback refuses pruned-legacy-current before any lane writes (555.803875ms)
+✔ growth rollback restores an originally present unreceipted managed name instead of deleting it (542.795542ms)
+ℹ tests 32
+ℹ suites 0
+ℹ pass 32
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 15027.430125
