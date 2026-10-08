@@ -114,8 +114,8 @@ settle the conflict.
 **Whys list**: every Change the why answer, title first and ID second, with the
 owner's note, the revision answered and its status, filterable by text and
 status. Open it from the Grilling Board's left panel (`#section=whys`). An agent
-fixes the rationale in its owner, routed by the question's kind (the table under
-Answer processing).
+fixes the rationale in its owner, routed by the question's kind (step 2, "Route
+each verdict by item kind", under "Agents: how to process a batch").
 
 ## Priority and Value
 
@@ -275,9 +275,13 @@ identifiers, question text and paths only.
   to the owning question. A full-text review of a decision record or text is
   grouped under the file it replaces, beside that file's current text; other
   drafts have no single target file and are listed separately without current
-  text. Each draft shows its approval state: not yet approved, approved (the
-  snapshot SHA-256 of the question, current text, proposal, draft and sources
-  matches), stale (any of them changed after you confirmed), or superseded.
+  text. Each draft shows its approval state: not yet approved; approved (the
+  SHA-256 of the confirmed snapshot still matches: the question, its Current
+  and Proposal fields, the draft, its source list as paths, labels and refs,
+  its evidence and its revision); stale (any of those changed after you
+  confirmed); or superseded (a later answer replaced the confirmation). The
+  hash does not read the target file, so a change to that file alone does not
+  make an approval stale.
   Approval questions without any draft are listed under **No proposed draft
   available**; none is invented.
 - **Wiki**: the catalog groups (root controls, ADRs, DDRs, Landmarks, Specs,
