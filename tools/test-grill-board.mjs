@@ -95,17 +95,25 @@ test('decision context survives a revision and never changes an owner answer', (
   assert.equal(readItems(dir).items[0].revision, 2, 'invalid context leaves the previous item intact');
 });
 
-test('saved notes and Not now are not decisions an agent may apply', () => {
+test('saved notes, legacy Not now and an unexplained send-back are not decisions an agent may apply', () => {
   const dir = room();
   addItems(dir, [sample('notes')], { by: 'tester' });
   recordAnswer(dir, 'GB-0001', { verdict: '', note: 'Still thinking', itemRevision: 1 });
   assert.deepEqual(pendingForAgents(dir), []);
   assert.throws(() => applyAnswer(dir, 'GB-0001', { by: 'tester', where: 'Spec' }), /decision|deferred/);
-  recordAnswer(dir, 'GB-0001', { verdict: 'defer', note: 'Later', itemRevision: 1 });
+  // New answers offer no Not now or Decline; a Change needs the owner's words.
+  assert.throws(() => recordAnswer(dir, 'GB-0001', { verdict: 'defer', note: 'Later', itemRevision: 1 }), (e) => e.code === 'legacy-verdict');
+  assert.throws(() => recordAnswer(dir, 'GB-0001', { verdict: 'decline', note: 'No', itemRevision: 1 }), (e) => e.code === 'legacy-verdict');
+  assert.throws(() => recordAnswer(dir, 'GB-0001', { verdict: 'change', note: '', itemRevision: 1 }), (e) => e.code === 'note-required');
+  // Earlier answers saved with the legacy words keep their meaning.
+  const answers = readAnswers(dir);
+  answers.answers['GB-0001'] = { verdict: 'defer', note: 'Later', at: '2026-10-05T00:00:00.000Z', itemRevision: 1, history: [] };
+  fs.writeFileSync(boardPaths(dir).answers, JSON.stringify(answers));
   assert.deepEqual(pendingForAgents(dir), []);
   assert.throws(() => applyAnswer(dir, 'GB-0001', { by: 'tester', where: 'Spec' }), /decision|deferred/);
-  recordAnswer(dir, 'GB-0001', { verdict: 'correct', note: '', itemRevision: 1 });
-  assert.deepEqual(pendingForAgents(dir), [], 'a correction must include the owner replacement words');
+  answers.answers['GB-0001'] = { verdict: 'correct', note: '', at: '2026-10-05T00:00:00.000Z', itemRevision: 1, history: [] };
+  fs.writeFileSync(boardPaths(dir).answers, JSON.stringify(answers));
+  assert.deepEqual(pendingForAgents(dir), [], 'a legacy correction must include the owner replacement words');
   assert.throws(() => applyAnswer(dir, 'GB-0001', { by: 'tester', where: 'Spec' }), /note|decision/);
 });
 
@@ -117,12 +125,12 @@ test('status derivation: pending, answered, applied, stale after revise, withdra
   assert.equal(view.items[0].options.length, 4, 'default options apply when options is null');
   assert.throws(() => applyAnswer(dir, 'GB-0001', { by: 'agent', where: 'nowhere' }), /nothing-to-apply|no owner answer/);
 
-  const saved = recordAnswer(dir, 'GB-0001', { verdict: 'correct', note: 'use my words', itemRevision: 1 });
+  const saved = recordAnswer(dir, 'GB-0001', { verdict: 'change', note: 'use my words', itemRevision: 1 });
   assert.equal(saved.derivedStatus, 'answered');
-  assert.deepEqual(pendingForAgents(dir).map((item) => [item.id, item.verdict, item.note]), [['GB-0001', 'correct', 'use my words']]);
+  assert.deepEqual(pendingForAgents(dir).map((item) => [item.id, item.verdict, item.verdictLabel, item.note]), [['GB-0001', 'change', 'Change', 'use my words']]);
 
   const applied = applyAnswer(dir, 'GB-0001', { by: 'agent', where: 'S-999 Decisions row' });
-  assert.equal(applied.applied.verdict, 'correct');
+  assert.equal(applied.applied.verdict, 'change');
   assert.equal(applied.applied.note, 'use my words');
   assert.equal(mergeBoard(dir).items[0].derivedStatus, 'applied');
   assert.throws(() => applyAnswer(dir, 'GB-0001', { by: 'agent', where: 'again' }), (e) => e.code === 'already-applied');

@@ -38,21 +38,21 @@ export const ANSWERS_FILE = 'answers.json';
 export const PAGE_FILE = 'index.html';
 export const KINDS = Object.freeze(['approve-spec', 'owner-decision', 'confirm-dqc', 'confirm-ddr', 'confirm-text', 'choice']);
 export const STATUSES = Object.freeze(['pending', 'stale', 'answered', 'applied', 'withdrawn']);
-export const DEFAULT_OPTIONS = Object.freeze({
-  'approve-spec': [
-    { value: 'approve', label: 'Approve', hint: 'records your approval of the delivered integration content' },
-    { value: 'finding', label: 'Send back', hint: 'your note becomes a corrective Task' },
-    { value: 'destination_change', label: 'Return to Align', hint: 'the concept changes; recorded, no Tasks invented' },
-    { value: 'defer', label: 'Not now', hint: 'stays open; nothing recorded' },
-    { value: 'drop', label: 'Drop this Spec', hint: 'an agent proposes supersession or retirement for you to confirm' }
-  ],
-  default: [
-    { value: 'confirm', label: 'Confirm', hint: 'the proposal stands as written' },
-    { value: 'correct', label: 'Change', hint: 'request a revised question or concept; your note is required' },
-    { value: 'decline', label: 'Rework wording', hint: 'request clearer wording; your note is required' },
-    { value: 'defer', label: 'Change the why', hint: 'request revised rationale; your note is required' }
-  ]
+// The words the owner answers with (Lexicon, Workbench Dashboard). Confirm
+// means confirmed; the other three send the item back and need his note.
+export const SEND_BACK_OPTIONS = Object.freeze([
+  Object.freeze({ value: 'rework', label: 'Rework wording', hint: 'Mostly correct; it needs to be restated better. Your note says how.', requiresNote: true }),
+  Object.freeze({ value: 'change_why', label: 'Change the why', hint: 'Something is correct, but the underlying reason is wrong. Your note joins the Whys list.', requiresNote: true }),
+  Object.freeze({ value: 'change', label: 'Change', hint: 'It needs changing, including dropping it. Your note says what.', requiresNote: true })
+]);
+// Words of answers saved before the four answer words. They stay readable with
+// their original labels and meaning, but the board offers them for no new answer.
+export const LEGACY_LABELS = Object.freeze({
+  confirm: 'Confirm', correct: 'Correct', decline: 'Decline', defer: 'Not now',
+  approve: 'Approve', finding: 'Send back', destination_change: 'Return to Align', drop: 'Drop this Spec'
 });
+const LEGACY_META = Object.freeze(['correct', 'decline', 'defer']);
+const LEGACY_APPROVAL = Object.freeze(['finding', 'destination_change', 'drop', ...LEGACY_META]);
 const ITEM_KEYS = Object.freeze(['id', 'key', 'group', 'kind', 'title', 'question', 'current', 'proposal', 'draft', 'options', 'sources', 'tags', 'revision', 'status', 'applied', 'history', 'brief', 'priority', 'value', 'gradeRevision']);
 const BRIEF_FIELDS = ['summary', 'why', 'recommendation', 'impact', 'changes', 'history', 'artifacts'];
 const ID_PATTERN = /^GB-\d{4}$/;
@@ -234,10 +234,81 @@ export function itemStatus(item, answer) {
   return 'answered';
 }
 
+function normalizeWords(text) {
+  return String(text ?? '').toLowerCase().replace(/\([^)]*\)/g, ' ').replace(/[^a-z0-9]+/g, ' ').trim();
+}
+
+// Which alternative the item recommends: an option flagged `recommended: true`,
+// or else the one alternative whose whole label (two or more words) the
+// recommendation names. Anything less certain preselects nothing.
+function recommendedAlternative(item, alternatives) {
+  const flagged = alternatives.filter((option) => option.recommended === true);
+  if (flagged.length === 1) return { value: flagged[0].value, basis: 'The question marks this alternative as the recommended answer.' };
+  if (flagged.length > 1) return { value: null, basis: 'The question marks more than one alternative as recommended, so none is preselected. Read the recommendation and choose.' };
+  const recommendation = item.brief?.recommendation ?? String(item.proposal ?? '').replace(/^Agent proposal:\s*/i, '').split(/\n\s*\n/)[0];
+  const text = ` ${normalizeWords(recommendation)} `;
+  const named = alternatives.filter((option) => {
+    const label = normalizeWords(option.label);
+    return label.split(' ').length >= 2 && text.includes(` ${label} `);
+  });
+  if (named.length === 1) return { value: named[0].value, basis: 'The recommendation names this alternative.' };
+  return { value: null, basis: 'The recommendation does not name exactly one of these alternatives, so none is preselected. Read the recommendation and choose.' };
+}
+
+// The one place answer controls are decided, so the served page and the
+// server-side validation in recordAnswer agree. Three modes:
+//   standard      Confirm, Rework wording, Change the why, Change
+//   alternatives  Recommended answer, A, B, C... (Confirm stores the selected
+//                 alternative) plus the three send-back answers
+//   approval      a Spec delivery approval: Confirm records `approve`; the
+//                 three send-back answers return it with the note
+export function answerControls(item) {
+  const sendBack = SEND_BACK_OPTIONS.map((option) => ({ ...option }));
+  if (item.kind === 'approve-spec') {
+    const confirm = { value: 'approve', label: 'Confirm', hint: 'Approves the delivered integration content named here.', requiresNote: false };
+    return { mode: 'approval', recommended: null, recommendationBasis: null, alternatives: [], confirm, confirmValues: ['approve'], sendBack, options: [confirm, ...sendBack] };
+  }
+  const real = (item.options ?? []).filter((option) => !LEGACY_META.includes(option.value) && !['confirm', ...SEND_BACK_OPTIONS.map((o) => o.value)].includes(option.value));
+  if (!real.length) {
+    const confirm = { value: 'confirm', label: 'Confirm', hint: 'It is confirmed as written; nothing needs changing.', requiresNote: false };
+    return { mode: 'standard', recommended: null, recommendationBasis: null, alternatives: [], confirm, confirmValues: ['confirm'], sendBack, options: [confirm, ...sendBack] };
+  }
+  const { value: recommended, basis } = recommendedAlternative(item, real);
+  const ordered = [...real.filter((option) => option.value === recommended), ...real.filter((option) => option.value !== recommended)];
+  let letter = 0;
+  const alternatives = ordered.map((option) => ({
+    value: option.value,
+    label: option.label,
+    hint: option.hint ?? '',
+    marker: option.value === recommended ? 'Recommended answer' : String.fromCharCode(65 + letter++),
+    recommended: option.value === recommended,
+    requiresNote: option.value !== recommended
+  }));
+  const confirm = { value: null, label: 'Confirm', hint: 'Confirms the selected alternative.', requiresNote: false };
+  return { mode: 'alternatives', recommended, recommendationBasis: basis, alternatives, confirm, confirmValues: alternatives.map((a) => a.value), sendBack, options: [...alternatives.map(({ value, label, hint, requiresNote }) => ({ value, label, hint, requiresNote })), ...sendBack] };
+}
+
+// Every value a new answer may record for this item.
 export function optionsFor(item) {
-  if (item.options) return item.options;
-  if (item.kind !== 'approve-spec') return DEFAULT_OPTIONS.default;
-  return DEFAULT_OPTIONS[item.kind] ?? DEFAULT_OPTIONS.default;
+  return answerControls(item).options;
+}
+
+export function isConfirmation(item, verdict) {
+  return Boolean(verdict) && answerControls(item).confirmValues.includes(verdict);
+}
+
+// The words to show for a saved verdict: the current answer word, else the
+// item's own original option label, else the original default label.
+export function answerLabel(item, verdict) {
+  if (!verdict) return '';
+  const controls = answerControls(item);
+  const alternative = controls.alternatives.find((option) => option.value === verdict);
+  if (alternative) return alternative.label;
+  const own = (item.options ?? []).find((option) => option.value === verdict);
+  if (own) return own.label;
+  const current = controls.options.find((option) => option.value === verdict);
+  if (current) return current.label;
+  return LEGACY_LABELS[verdict] ?? verdict;
 }
 
 export function mergeBoard(root) {
@@ -249,7 +320,9 @@ export function mergeBoard(root) {
     return {
       ...item,
       options: optionsFor(item),
+      controls: answerControls(item),
       answer,
+      answerLabel: answer ? answerLabel(item, answer.verdict) : '',
       derivedStatus: itemStatus(item, answer),
       links: item.sources.map((source) => ({ ...source, url: source.ref && source.ref !== 'untracked' && !path.isAbsolute(source.path) ? `${GITHUB_BLOB}/${source.ref}/${source.path}` : null }))
     };
@@ -403,14 +476,27 @@ export function recordAnswer(root, id, { verdict, note, itemRevision, expectedAn
   const board = readItems(root);
   const item = findItem(board, id);
   if (!isString(verdict) || !isString(note)) throw new BoardError('invalid-answer', 'verdict and note must be strings');
-  if (verdict && !optionsFor(item).some((option) => option.value === verdict)) throw new BoardError('invalid-answer', `${verdict} is not an option of ${id}`);
+  const option = verdict ? optionsFor(item).find((candidate) => candidate.value === verdict) : null;
+  if (verdict && !option) {
+    const legacy = (item.kind === 'approve-spec' ? LEGACY_APPROVAL : LEGACY_META).includes(verdict);
+    throw new BoardError(legacy ? 'legacy-verdict' : 'invalid-answer', legacy
+      ? `${verdict} (${answerLabel(item, verdict)}) is a legacy answer word kept only for earlier answers; answer ${id} with ${optionsFor(item).map((o) => o.label).join(', ')}`
+      : `${verdict} is not an option of ${id}`);
+  }
   if (itemRevision !== item.revision) throw new BoardError('stale-item', `${id} is at revision ${item.revision}; reload the page and answer again`);
+  if (option?.requiresNote && !note.trim()) throw new BoardError('note-required', `${option.label} needs your note before it can be chosen`);
   const answers = readAnswers(root);
   const previous = answers.answers[id];
   if (expectedAnswerAt !== undefined && expectedAnswerAt !== (previous?.at ?? null)) throw new BoardError('stale-answer', `${id}: stale answer; reload before saving`);
   if (previous && previous.verdict === verdict && previous.note === note && previous.itemRevision === itemRevision) return { ...previous, derivedStatus: itemStatus(item, previous) };
   const entry = { verdict, note, at: new Date(Math.max(Date.now(), previous ? Date.parse(previous.at) + 1 : 0)).toISOString(), itemRevision };
-  if (['confirm','approve'].includes(verdict)) entry.approval = approvalSnapshot(item, entry);
+  // Only a confirmation freezes the exact wording it confirmed. The workflow
+  // snapshot helper names the confirm/approve words; a confirmed alternative
+  // keeps its own value as the snapshot verdict.
+  if (isConfirmation(item, verdict)) {
+    const snapshotVerdict = verdict === 'approve' ? 'approve' : 'confirm';
+    entry.approval = { ...approvalSnapshot(item, { ...entry, verdict: snapshotVerdict }), verdict };
+  }
   const history = previous ? [...previous.history, Object.fromEntries(Object.entries(previous).filter(([key]) => key !== 'history'))] : [];
   answers.answers[id] = { ...entry, history };
   const nativeNote = answerNote(root);
@@ -418,7 +504,7 @@ export function recordAnswer(root, id, { verdict, note, itemRevision, expectedAn
     let loaded;
     if (fs.existsSync(path.join(root,nativeNote))) loaded=notepadResult(readNote(root,{note:nativeNote}));
     else loaded=notepadResult(createNote(root,{note:nativeNote,type:'grilling',objective:'dashboard-answers',title:'Dashboard owner answers',focus:'Exact owner words and approved snapshots',state:'Local owner working context; legacy answers preserved','next-action':'Owner confirms or requests revision; explicit promotion is separate'}));
-    notepadResult(appendEntry(root,{note:nativeNote,revision:loaded.revision,kind:['confirm','approve'].includes(verdict)?'decision':'source_record',topic:'dashboard-answer',content:JSON.stringify({id,answer:answers.answers[id]})}));
+    notepadResult(appendEntry(root,{note:nativeNote,revision:loaded.revision,kind:isConfirmation(item, verdict)?'decision':'source_record',topic:'dashboard-answer',content:JSON.stringify({id,answer:answers.answers[id]})}));
   } else writeJsonAtomic(boardPaths(root).answers, answers);
   return { ...answers.answers[id], derivedStatus: itemStatus(item, answers.answers[id]) };
 }
@@ -435,7 +521,7 @@ export function pendingForAgents(root) {
     options: item.options,
     revision: item.revision,
     verdict: item.answer.verdict,
-    verdictLabel: item.options.find((option) => option.value === item.answer.verdict)?.label ?? item.answer.verdict,
+    verdictLabel: item.answerLabel,
     note: item.answer.note,
     answeredAt: item.answer.at,
     proposal: item.proposal,
