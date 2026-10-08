@@ -225,6 +225,20 @@ test('artifact reader follows manifest collections, preserves full records and d
   fs.writeFileSync(path.join(dir, 'workbench/docs/decisions/adr/archive/000C-old.md'), '---\ndate: 2026-10-04\nsuperseded_by: ADR-000A\n---\n# Old decision\nOld text.\n');
   const landmark = { id: 'LMK-000G', title: 'Workbench Updates', revision: 3, summary: 'Full summary', importance: 'Why it matters', origin: { title: 'Original name' }, history: [{ revision: 3, reason: 'Keep full history' }] };
   fs.writeFileSync(path.join(dir, 'concepts/LMK-000G.json'), JSON.stringify(landmark));
+  // The Dashboard catalog also reads the declared Spec, Task, DQC, Wiki and
+  // skill lanes and the optional root ARCHITECTURE/GLOSSARY files.
+  const specDir = path.join(dir, manifest.lanes.specs, 'S-999-fixture');
+  fs.mkdirSync(path.join(specDir, 'tasks', 'TK-999A'), { recursive: true });
+  fs.writeFileSync(path.join(specDir, 'SPEC.md'), '# Fixture capability\n\n**Spec ID:** S-999\n**Status:** planned\n');
+  fs.writeFileSync(path.join(specDir, 'tasks', 'TK-999A', 'TASK.md'), '# TK-999A - Fixture slice\n\n**Task ID:** TK-999A\n**Spec ID:** S-999\n**Status:** ready\n');
+  const dqcDir = path.join(dir, manifest.landmarkTracker.collections['destination-questions']);
+  fs.mkdirSync(dqcDir, { recursive: true });
+  fs.writeFileSync(path.join(dqcDir, 'DQC-999A.json'), JSON.stringify({ id: 'DQC-999A', title: 'Fixture destination question', revision: 2 }));
+  fs.mkdirSync(path.join(dir, manifest.lanes.wiki), { recursive: true });
+  fs.writeFileSync(path.join(dir, manifest.lanes.wiki, 'MEMORY.md'), '# Wiki router\n');
+  fs.mkdirSync(path.join(dir, manifest.lanes.skills, 'fixture-skill'), { recursive: true });
+  fs.writeFileSync(path.join(dir, manifest.lanes.skills, 'fixture-skill', 'SKILL.md'), '# Fixture skill\n');
+  fs.writeFileSync(path.join(dir, 'GLOSSARY.md'), '# Glossary\n');
   addItems(dir, [sample('full', { kind: 'confirm-text', sources: [{ label: 'Blueprint', path: 'BLUEPRINT.md', ref: 'abc1234' }], draft: '# Blueprint draft\n\nComplete reviewed page.\n' }), sample('excerpt', { sources: [{ label: 'Blueprint', path: 'BLUEPRINT.md', ref: 'abc1234' }], draft: 'Only one proposed line.' }), sample('second', { sources: [{ label: 'Blueprint', path: 'BLUEPRINT.md' }] })], { by: 'tester' });
   const before = fs.readFileSync(boardPaths(dir).items, 'utf8');
   const server = createServer(dir);
@@ -233,7 +247,16 @@ test('artifact reader follows manifest collections, preserves full records and d
   const get = async p => (await fetch(base + p)).json();
   try {
     const catalog = await get('/api/artifacts');
-    assert.deepEqual(catalog.groups.map(g => g.id), ['agents', 'runbook', 'blueprint', 'lexicon', 'landmarks', 'adrs', 'ddrs']);
+    assert.deepEqual(catalog.groups.map(g => g.id), ['agents', 'runbook', 'blueprint', 'lexicon', 'landmarks', 'adrs', 'ddrs', 'specs', 'tasks', 'dqcs', 'wiki', 'skills', 'architecture', 'glossary']);
+    const inGroup = (group, file) => catalog.artifacts.some(a => a.group === group && a.path === file);
+    assert.ok(inGroup('specs', `${manifest.lanes.specs}/S-999-fixture/SPEC.md`), 'Specs are cataloged');
+    assert.ok(inGroup('tasks', `${manifest.lanes.specs}/S-999-fixture/tasks/TK-999A/TASK.md`), 'Tasks are cataloged');
+    assert.ok(inGroup('dqcs', `${manifest.landmarkTracker.collections['destination-questions']}/DQC-999A.json`), 'DQCs are cataloged');
+    assert.ok(inGroup('wiki', `${manifest.lanes.wiki}/MEMORY.md`), 'Wiki pages are cataloged');
+    assert.ok(inGroup('skills', `${manifest.lanes.skills}/fixture-skill/SKILL.md`), 'skills are cataloged');
+    assert.ok(inGroup('glossary', 'GLOSSARY.md'), 'a present glossary is cataloged');
+    assert.ok(!catalog.artifacts.some(a => a.group === 'architecture'), 'an absent ARCHITECTURE.md is not invented');
+    assert.equal(catalog.artifacts.filter(a => a.path === 'concepts/LMK-000G.json').length, 1, 'a landmark is cataloged once');
     assert.ok(catalog.artifacts.some(a => a.title === 'Accepted decision' && a.status === 'accepted'));
     assert.ok(catalog.artifacts.some(a => a.title === 'Proposed decision' && a.status === 'proposed'));
     assert.ok(catalog.artifacts.some(a => a.title === 'Old decision' && a.status === 'superseded'));
