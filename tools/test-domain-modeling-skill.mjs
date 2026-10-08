@@ -184,6 +184,8 @@ test('upstream consequences are traced to named owners before a choice settles, 
     'a document owner is named by path, not only by its title');
   assert.match(trace, /a title alone is nothing to open/, 'a title without its path does not count as naming the owner');
   assert.match(trace, /every trace, including a later one/, 'a later trace that repeats owners still names their paths');
+  // Run 5's later trace listed the decision record by its label and dropped the path.
+  assert.match(trace, /Lead each listed owner's line with its path/, 'the path comes first on each listed owner, before any label');
   assert.match(trace, /could change the choice/, 'only consequences that could change the choice are raised');
   assert.match(trace, /bounded/i);
   assert.match(trace, /not an audit/, 'the trace is not a whole-room audit');
