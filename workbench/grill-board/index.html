@@ -1007,8 +1007,16 @@
     const heading = current ? esc(current.label) : 'an earlier request, replaced by a newer one';
     return `<div class="request"><strong>Promotion handoff · ${heading}</strong>${current?.revisedSinceRequest ? '<p class="stale-box">The question was revised after this request; the request still carries the wording you confirmed then.</p>' : ''}<ol class="timeline"><li class="done"><strong>Requested</strong> · ${esc(request.requestedAt)}<small>Handoff ${esc(request.id)}, ready for a director. No agent starts automatically.</small></li>${steps.join('')}</ol></div>`;
   }
+  // A confirm or approve answer saved before confirmations froze the exact
+  // wording carries no snapshot, so it cannot be promoted as it stands.
+  const UNSNAPSHOTTED = 'You confirmed this question with an answer saved before the board froze the exact wording you confirmed. Confirm it again to record that wording; until then it cannot be promoted.';
+  function unsnapshottedConfirmation(item) {
+    const answer = item.answer;
+    return Boolean(answer && !answer.approval && answer.itemRevision === item.revision && item.controls?.confirmValues.includes(answer.verdict));
+  }
   function approvalSummary(item) {
     const approval = item.answer?.approval;
+    if (!approval && unsnapshottedConfirmation(item)) return `<p class="stale-box">${UNSNAPSHOTTED}</p>`;
     if (!approval) return '<p>No exact-wording confirmation is recorded for this question.</p>';
     const current = item.answer.itemRevision === item.revision;
     return `<p>Confirmed snapshot · revision ${approval.itemRevision} · SHA-256 <code>${esc(approval.hash)}</code>. ${current ? 'This is the current revision.' : 'The question has changed since; it needs a fresh confirmation.'}</p><details><summary>Exactly what was confirmed</summary><div class="reader">${markdown(approval.draft || approval.proposal)}</div></details>`;
@@ -1024,6 +1032,7 @@
   // Why this card cannot be promoted now, in the owner's terms.
   function promotionBlocker(item) {
     if (state.edits.has(item.id)) return 'Save or finish your unsaved answer first.';
+    if (unsnapshottedConfirmation(item)) return UNSNAPSHOTTED;
     const change = (state.workflow?.comments || []).find(comment => comment.id === item.id && comment.kind === 'change' && comment.itemRevision === item.revision);
     if (change) return `Your change request of ${change.at || 'this revision'} (“${change.text}”) is waiting: an agent must revise this question from it, and you must confirm the revised question, before it can be promoted.`;
     return 'Only a card the workflow reports as confirmed can be promoted.';

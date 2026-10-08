@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import test from 'node:test';
+import { spawnSync } from 'node:child_process';
 import { approvalHash, approvalSnapshot, createWorkflow, PROMOTION_STAGES } from './dashboard-workflow.mjs';
 import { appendEntry, createNote } from '../workbench/tools/notepads.mjs';
 import * as board from './grill-board.mjs';
@@ -520,4 +521,14 @@ test('an action replay is recognized whatever the JSON key order of its payload'
   f.api.comment(comment);
   assert.equal(f.api.comment({ text: comment.text, actionId: comment.actionId, kind: 'comment', itemRevision: 1, id: 'GB-0002', expectedRevision: 0 }).idempotent, true);
   assert.throws(() => f.api.comment({ ...comment, text: 'Different words' }), /action-id-conflict/, 'different content still conflicts');
+});
+
+test('the workflow CLI reads confirmations by the same rule as the board', () => {
+  const root = notepadRoom([{ key: 'choice', kind: 'choice', title: 'Choose a prefix', options: choiceOptions }]);
+  board.recordAnswer(root, 'GB-0001', { verdict: 'keep_lmk', note: '', itemRevision: 1 });
+  const tool = new URL('./dashboard-workflow.mjs', import.meta.url).pathname;
+  const run = spawnSync(process.execPath, [tool, 'read', '--path', root], { encoding: 'utf8' });
+  assert.equal(run.status, 0, run.stderr);
+  assert.equal(JSON.parse(run.stdout).cards['GB-0001'].state, 'confirmed', 'a confirmed alternative is confirmed from the CLI too');
+  assert.deepEqual(JSON.parse(run.stdout).cards, board.workflow(root).read().cards);
 });

@@ -123,13 +123,31 @@ function answerNote(root) {
   return manifest.collections?.notepads ? `${manifest.collections.notepads}/grilling/dashboard-answers.json` : null;
 }
 function notepadResult(result) { if (result.status === 'blocked') throw new BoardError(result.error?.code ?? 'notepad',result.error?.message ?? 'Notepad refused'); return result; }
+// An answer without its history, as one notepad entry stores it.
+function answerOnly(answer) {
+  return Object.fromEntries(Object.entries(answer).filter(([key]) => key !== 'history'));
+}
+function answerHash(answer) {
+  return createHash('sha256').update(JSON.stringify(answerOnly(answer))).digest('hex');
+}
+
+// Owner answers: the legacy answers.json, then the native notepad entries in
+// order. A current entry (schema dashboard-answer@2) holds only its own answer
+// and names the answer it supersedes; history is rebuilt by chaining, so an
+// earlier note is never copied into a later entry (and an earlier note the
+// notepad privacy guard would refuse never blocks a new answer). An entry
+// written before that format holds the whole answer with its history.
 export function readAnswers(root) {
   const answers = readJson(boardPaths(root).answers, emptyAnswers());
   const note = answerNote(root);
   if (note && fs.existsSync(path.join(root,note))) {
     const loaded = notepadResult(readNote(root,{note}));
     for (const entry of loaded.entries) if (entry.topic === 'dashboard-answer') {
-      const saved = JSON.parse(entry.content); answers.answers[saved.id] = saved.answer;
+      const saved = JSON.parse(entry.content);
+      if (saved.schema !== 'dashboard-answer@2') { answers.answers[saved.id] = saved.answer; continue; }
+      const previous = answers.answers[saved.id];
+      const history = previous ? [...(previous.history ?? []), answerOnly(previous)] : [];
+      answers.answers[saved.id] = { ...saved.answer, history };
     }
   }
   validateAnswers(answers);
@@ -563,7 +581,7 @@ export function recordAnswer(root, id, { verdict, note, itemRevision, expectedAn
     let loaded;
     if (fs.existsSync(path.join(root,nativeNote))) loaded=notepadResult(readNote(root,{note:nativeNote}));
     else loaded=notepadResult(createNote(root,{note:nativeNote,type:'grilling',objective:'dashboard-answers',title:'Dashboard owner answers',focus:'Exact owner words and approved snapshots',state:'Local owner working context; legacy answers preserved','next-action':'Owner confirms or requests revision; explicit promotion is separate'}));
-    notepadResult(appendEntry(root,{note:nativeNote,revision:loaded.revision,kind:isConfirmation(item, verdict)?'decision':'source_record',topic:'dashboard-answer',content:JSON.stringify({id,answer:answers.answers[id]})}));
+    notepadResult(appendEntry(root,{note:nativeNote,revision:loaded.revision,kind:isConfirmation(item, verdict)?'decision':'source_record',topic:'dashboard-answer',content:JSON.stringify({schema:'dashboard-answer@2',id,answer:entry,supersedes:previous?{at:previous.at,hash:answerHash(previous)}:null})}));
   } else writeJsonAtomic(boardPaths(root).answers, answers);
   return { ...answers.answers[id], derivedStatus: itemStatus(item, answers.answers[id]) };
 }
@@ -732,6 +750,36 @@ function readBody(request) {
   });
 }
 
+// The served board is local to this machine. Every request must name this
+// server by its local address (a DNS-rebinding guard), and every write must be
+// a same-origin JSON request: a cross-site page can send a "simple" text/plain
+// POST without a preflight, so writes refuse any other content type, any
+// foreign Origin and a cross-site fetch. No response grants CORS.
+export function requestRefusal(request) {
+  const port = request.socket.localPort;
+  const local = [`127.0.0.1:${port}`, `localhost:${port}`];
+  if (!local.includes(String(request.headers.host ?? '').toLowerCase())) return { status: 403, code: 'foreign-host', message: 'This board answers only requests addressed to its local address' };
+  if (request.method === 'GET' || request.method === 'HEAD') return null;
+  const origin = request.headers.origin;
+  if (origin !== undefined && !local.map((address) => `http://${address}`).includes(String(origin).toLowerCase())) return { status: 403, code: 'foreign-origin', message: 'Writes are accepted only from this board\'s own page' };
+  if (String(request.headers['sec-fetch-site'] ?? '').toLowerCase() === 'cross-site') return { status: 403, code: 'cross-site', message: 'Cross-site writes are refused' };
+  const type = String(request.headers['content-type'] ?? '').split(';')[0].trim().toLowerCase();
+  if (type !== 'application/json') return { status: 415, code: 'unsupported-media-type', message: 'Writes must be sent as application/json' };
+  return null;
+}
+
+// A write body: JSON holding one object.
+async function readObject(request) {
+  let body;
+  try {
+    body = JSON.parse(await readBody(request));
+  } catch (error) {
+    throw new BoardError('invalid-json', `request body is not JSON: ${error.message}`);
+  }
+  if (!body || typeof body !== 'object' || Array.isArray(body)) throw new BoardError('invalid-input', 'request body must be a JSON object');
+  return body;
+}
+
 // options.dashboardRoute replaces the sources module's optional route
 // (tests pass a stub, or null for a sources module without it).
 export function createServer(root, options = {}) {
@@ -740,6 +788,12 @@ export function createServer(root, options = {}) {
   const flows = () => workflow(root);
   return http.createServer(async (request, response) => {
     const url = new URL(request.url, 'http://localhost');
+    const refusal = requestRefusal(request);
+    if (refusal) {
+      request.resume();
+      sendJson(response, refusal.status, { error: { code: refusal.code, message: refusal.message } });
+      return;
+    }
     try {
       if (request.method === 'GET' && (url.pathname === '/' || url.pathname === '/index.html')) {
         const html = fs.readFileSync(paths.page);
@@ -761,12 +815,7 @@ export function createServer(root, options = {}) {
       }
       if (request.method === 'GET' && url.pathname === '/api/workflow') { sendJson(response,200,flows().read()); return; }
       if (request.method === 'POST' && ['/api/comments','/api/rounds','/api/promotions'].includes(url.pathname)) {
-        let body;
-        try {
-          body = JSON.parse(await readBody(request));
-        } catch (error) {
-          throw new BoardError('invalid-json', `request body is not JSON: ${error.message}`);
-        }
+        const body = await readObject(request);
         const result = url.pathname === '/api/comments' ? flows().comment(body) : url.pathname === '/api/rounds' ? flows().endRound(body) : flows().promote(body);
         sendJson(response,200,result); return;
       }
@@ -792,12 +841,7 @@ export function createServer(root, options = {}) {
       }
       const match = url.pathname.match(/^\/api\/answers\/(GB-\d{4})$/);
       if (request.method === 'PUT' && match) {
-        let body;
-        try {
-          body = JSON.parse(await readBody(request));
-        } catch (error) {
-          throw new BoardError('invalid-json', `request body is not JSON: ${error.message}`);
-        }
+        const body = await readObject(request);
         sendJson(response, 200, recordAnswer(root, match[1], body));
         return;
       }

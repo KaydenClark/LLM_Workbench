@@ -444,17 +444,25 @@ export function createWorkflow(root, readers = {}) {
   return { read, comment, endRound, promote, disposition };
 }
 
+// The CLI reads through the board, so it counts the same confirmations
+// (including a confirmed alternative) as the served page. The board imports
+// this module, so it is loaded once this module has finished evaluating
+// (an awaited import here would deadlock on the cycle).
+async function cli(argv) {
+  const [command, ...args] = argv;
+  const options = {};
+  for (let i = 0; i < args.length; i += 2) {
+    if (!args[i]?.startsWith('--') || args[i + 1] === undefined) fail('invalid-input', 'Use --path ROOT and --input JSON_FILE');
+    options[args[i].slice(2)] = args[i + 1];
+  }
+  if (!['read', 'disposition'].includes(command)) fail('invalid-input', 'CLI accepts read or disposition; owner actions use the served page');
+  const board = await import('./grill-board.mjs');
+  const api = board.workflow(path.resolve(options.path ?? process.cwd()));
+  return command === 'read' ? api.read() : api.disposition(JSON.parse(fs.readFileSync(options.input, 'utf8')));
+}
+
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  try {
-    const [command, ...args] = process.argv.slice(2);
-    const options = {};
-    for (let i = 0; i < args.length; i += 2) {
-      if (!args[i]?.startsWith('--') || args[i + 1] === undefined) fail('invalid-input', 'Use --path ROOT and --input JSON_FILE');
-      options[args[i].slice(2)] = args[i + 1];
-    }
-    const api = createWorkflow(options.path ?? process.cwd());
-    if (!['read', 'disposition'].includes(command)) fail('invalid-input', 'CLI accepts read or disposition; owner actions use the served page');
-    const result = command === 'read' ? api.read() : api.disposition(JSON.parse(fs.readFileSync(options.input, 'utf8')));
-    console.log(JSON.stringify(result, null, 2));
-  } catch (error) { console.error(error.message); process.exitCode = 1; }
+  cli(process.argv.slice(2))
+    .then(result => console.log(JSON.stringify(result, null, 2)))
+    .catch(error => { console.error(error.message); process.exitCode = 1; });
 }
