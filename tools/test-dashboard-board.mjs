@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import vm from 'node:vm';
+import http from 'node:http';
 import * as board from './grill-board.mjs';
 function room() {
  const root=fs.mkdtempSync(path.join(os.tmpdir(),'dashboard-board-test-'));
@@ -420,4 +421,96 @@ test('opening a question from the list records it in the address so a reload reo
  model.openQuestion(item.id);
  assert.equal(model.state.focus,item.id);
  assert.deepEqual(history,['#GB-0001']);
+});
+
+// ---- Local-only write guard: no cross-site or DNS-rebinding request writes. ----
+function notepadRoom() {
+ const root=fs.mkdtempSync(path.join(os.tmpdir(),'dashboard-guard-'));
+ fs.mkdirSync(path.join(root,board.BOARD_DIR),{recursive:true});
+ fs.writeFileSync(path.join(root,'workbench/manifest.json'),JSON.stringify({schemaVersion:2,lanes:{sessions:'workbench/sessions'},collections:{notepads:'workbench/sessions/notepads','notepad-templates':'workbench/sessions/notepads/templates',handoffs:'workbench/sessions/handoffs'}}));
+ fs.writeFileSync(path.join(root,'README.md'),'# Owner\n');
+ fs.writeFileSync(board.boardPaths(root).items,JSON.stringify({schema:board.ITEMS_SCHEMA,title:'Fixture',groups:[{id:'one',title:'One'}],items:[]}));
+ board.addItems(root,[1,2].map(n=>({key:`k${n}`,group:'one',kind:'owner-decision',title:`Question ${n}`,question:'Q?',current:'c',proposal:'Agent proposal: p',sources:[{label:'Owner',path:'README.md',ref:'x'}]})),{by:'fixture'});
+ return root;
+}
+function snapshotWrites(root) {
+ const files={};
+ const walk=dir=>{ if(!fs.existsSync(dir))return; for(const entry of fs.readdirSync(dir,{withFileTypes:true})){ const file=path.join(dir,entry.name); if(entry.isDirectory())walk(file); else files[path.relative(root,file)]=fs.readFileSync(file,'utf8'); } };
+ walk(path.join(root,'workbench/grill-board'));
+ walk(path.join(root,'workbench/sessions'));
+ return files;
+}
+function send(port,method,pathname,{headers={},body}={}) {
+ return new Promise((resolve,reject)=>{
+  const request=http.request({host:'127.0.0.1',port,method,path:pathname,headers:{host:`127.0.0.1:${port}`,...headers}},response=>{const chunks=[];response.on('data',c=>chunks.push(c));response.on('end',()=>resolve({status:response.statusCode,headers:response.headers,text:Buffer.concat(chunks).toString('utf8')}));});
+  request.on('error',reject); request.end(body);
+ });
+}
+
+test('write routes refuse non-JSON, foreign Origin, foreign Host and cross-site requests and write nothing',async()=>{
+ const root=notepadRoom();
+ const server=board.createServer(root,{dashboardRoute:null});
+ await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
+ const port=server.address().port;
+ const json={'content-type':'application/json'};
+ try{
+  board.recordAnswer(root,'GB-0002',{verdict:'confirm',note:'',itemRevision:1});
+  const revision=()=>board.workflow(root).read().revision;
+  const routes=[
+   ['PUT','/api/answers/GB-0001',()=>({verdict:'confirm',note:'',itemRevision:1})],
+   ['POST','/api/comments',()=>({id:'GB-0001',itemRevision:1,kind:'comment',text:'From elsewhere',actionId:'a-comment',expectedRevision:revision()})],
+   ['POST','/api/rounds',()=>({actionId:'a-round',expectedRevision:revision()})],
+   ['POST','/api/promotions',()=>({ids:['GB-0002'],revisions:{'GB-0002':1},actionId:'a-promote',expectedRevision:revision()})]
+  ];
+  const bad=[
+   ['text/plain',{'content-type':'text/plain'},415],
+   ['no content type',{},415],
+   ['foreign Origin',{...json,origin:'https://evil.example'},403],
+   ['other local port Origin',{...json,origin:`http://127.0.0.1:${port+1}`},403],
+   ['foreign Host',{...json,host:`evil.example:${port}`},403],
+   ['rebound Host',{...json,host:'attacker.test'},403],
+   ['cross-site fetch',{...json,'sec-fetch-site':'cross-site'},403]
+  ];
+  for(const [method,route,payload] of routes){
+   for(const [name,headers,status] of bad){
+    const before=snapshotWrites(root);
+    const response=await send(port,method,route,{headers,body:JSON.stringify(payload())});
+    assert.equal(response.status,status,`${method} ${route} ${name}: ${response.text}`);
+    assert.deepEqual(snapshotWrites(root),before,`${method} ${route} ${name} wrote nothing`);
+   }
+   for(const origin of [undefined,`http://127.0.0.1:${port}`,`http://localhost:${port}`]){
+    if(origin===`http://localhost:${port}`&&route!=='/api/comments')continue;
+    const headers={...json,...(origin?{origin}:{}),...(origin===`http://localhost:${port}`?{host:`localhost:${port}`}:{}),'sec-fetch-site':'same-origin'};
+    const body=route==='/api/comments'&&origin?{...payload(),actionId:`a-comment-${origin.includes("localhost")?"localhost":"loopback"}`,text:`Same origin ${origin}`}:payload();
+    const response=await send(port,method,route,{headers,body:JSON.stringify(body)});
+    assert.equal(response.status,200,`${method} ${route} same-origin: ${response.text}`);
+   }
+  }
+  for(const route of ['/','/api/board','/api/artifacts','/api/workflow','/api/drafts','/api/status']){
+   const ok=await send(port,'GET',route,{headers:{origin:'https://evil.example'}});
+   assert.equal(ok.headers['access-control-allow-origin'],undefined,`${route} sends no CORS grant`);
+   assert.equal((await send(port,'GET',route,{headers:{host:'attacker.test'}})).status,403,`${route} refuses a rebound Host`);
+  }
+ }finally{await new Promise(resolve=>server.close(resolve));}
+});
+
+test('a JSON body that is not an object is refused with 400 invalid-input',async()=>{
+ const root=notepadRoom();
+ const served=await serve(root,{dashboardRoute:null});
+ try{
+  for(const [method,route] of [['PUT','/api/answers/GB-0001'],['POST','/api/comments'],['POST','/api/rounds'],['POST','/api/promotions']]){
+   for(const body of ['null','[]','"text"','3']){
+    const response=await fetch(served.base+route,{method,headers:{'content-type':'application/json'},body});
+    assert.equal(response.status,400,`${method} ${route} ${body}`);
+    assert.equal((await response.json()).error.code,'invalid-input');
+   }
+  }
+ }finally{await served.close();}
+});
+
+test('every write the page sends is declared application/json',()=>{
+ const html=fs.readFileSync(new URL('../workbench/grill-board/index.html',import.meta.url),'utf8');
+ const writes=[...html.matchAll(/fetch\([^;]*method: '(PUT|POST|DELETE|PATCH)'[^;]*/g)].map(match=>match[0]);
+ assert.ok(writes.length>=2);
+ for (const call of writes) assert.match(call,/'content-type': 'application\/json'/);
 });

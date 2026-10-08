@@ -732,6 +732,36 @@ function readBody(request) {
   });
 }
 
+// The served board is local to this machine. Every request must name this
+// server by its local address (a DNS-rebinding guard), and every write must be
+// a same-origin JSON request: a cross-site page can send a "simple" text/plain
+// POST without a preflight, so writes refuse any other content type, any
+// foreign Origin and a cross-site fetch. No response grants CORS.
+export function requestRefusal(request) {
+  const port = request.socket.localPort;
+  const local = [`127.0.0.1:${port}`, `localhost:${port}`];
+  if (!local.includes(String(request.headers.host ?? '').toLowerCase())) return { status: 403, code: 'foreign-host', message: 'This board answers only requests addressed to its local address' };
+  if (request.method === 'GET' || request.method === 'HEAD') return null;
+  const origin = request.headers.origin;
+  if (origin !== undefined && !local.map((address) => `http://${address}`).includes(String(origin).toLowerCase())) return { status: 403, code: 'foreign-origin', message: 'Writes are accepted only from this board\'s own page' };
+  if (String(request.headers['sec-fetch-site'] ?? '').toLowerCase() === 'cross-site') return { status: 403, code: 'cross-site', message: 'Cross-site writes are refused' };
+  const type = String(request.headers['content-type'] ?? '').split(';')[0].trim().toLowerCase();
+  if (type !== 'application/json') return { status: 415, code: 'unsupported-media-type', message: 'Writes must be sent as application/json' };
+  return null;
+}
+
+// A write body: JSON holding one object.
+async function readObject(request) {
+  let body;
+  try {
+    body = JSON.parse(await readBody(request));
+  } catch (error) {
+    throw new BoardError('invalid-json', `request body is not JSON: ${error.message}`);
+  }
+  if (!body || typeof body !== 'object' || Array.isArray(body)) throw new BoardError('invalid-input', 'request body must be a JSON object');
+  return body;
+}
+
 // options.dashboardRoute replaces the sources module's optional route
 // (tests pass a stub, or null for a sources module without it).
 export function createServer(root, options = {}) {
@@ -740,6 +770,12 @@ export function createServer(root, options = {}) {
   const flows = () => workflow(root);
   return http.createServer(async (request, response) => {
     const url = new URL(request.url, 'http://localhost');
+    const refusal = requestRefusal(request);
+    if (refusal) {
+      request.resume();
+      sendJson(response, refusal.status, { error: { code: refusal.code, message: refusal.message } });
+      return;
+    }
     try {
       if (request.method === 'GET' && (url.pathname === '/' || url.pathname === '/index.html')) {
         const html = fs.readFileSync(paths.page);
@@ -761,12 +797,7 @@ export function createServer(root, options = {}) {
       }
       if (request.method === 'GET' && url.pathname === '/api/workflow') { sendJson(response,200,flows().read()); return; }
       if (request.method === 'POST' && ['/api/comments','/api/rounds','/api/promotions'].includes(url.pathname)) {
-        let body;
-        try {
-          body = JSON.parse(await readBody(request));
-        } catch (error) {
-          throw new BoardError('invalid-json', `request body is not JSON: ${error.message}`);
-        }
+        const body = await readObject(request);
         const result = url.pathname === '/api/comments' ? flows().comment(body) : url.pathname === '/api/rounds' ? flows().endRound(body) : flows().promote(body);
         sendJson(response,200,result); return;
       }
@@ -792,12 +823,7 @@ export function createServer(root, options = {}) {
       }
       const match = url.pathname.match(/^\/api\/answers\/(GB-\d{4})$/);
       if (request.method === 'PUT' && match) {
-        let body;
-        try {
-          body = JSON.parse(await readBody(request));
-        } catch (error) {
-          throw new BoardError('invalid-json', `request body is not JSON: ${error.message}`);
-        }
+        const body = await readObject(request);
         sendJson(response, 200, recordAnswer(root, match[1], body));
         return;
       }
