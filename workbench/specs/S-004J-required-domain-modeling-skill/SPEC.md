@@ -3,13 +3,13 @@
 **Spec ID:** S-004J
 **Status:** active
 **Priority:** 2
-**Owner:** claude-s004j-dispatcher
+**Owner:** claude-s004j-worker-fix2
 **Stance:** Builder
-**Updated:** 2026-10-07
+**Updated:** 2026-10-08
 **Catalog description:** Ship domain modeling in every room's skills lane as the Align companion that shows the downstream consequences of an upstream name, boundary or relationship before it settles, and hands settled meaning to promotion instead of writing Canon inline.
 **Blockers:** none
-**Latest event:** Corrected candidate `e413ecfc` passed the full RUNBOOK suite 54/54 and is ready for integration review as [PR #425](https://github.com/KaydenClark/LLM_Workbench/pull/425).
-**Next gate:** Fresh separate-context integration review of `e413ecfc` on PR #425 (`report S-004J --candidate e413ecfc`), then authorized integration merge; owner Human QA and release stay separate.
+**Latest event:** TK-00JA claimed by claude-s004j-worker-fix2.
+**Next gate:** Close TK-00JA with verification and documentation proof.
 
 > **Citation anchors.** pre=`46ad978956a74a3ee1bda22c36eb16207dcd98fd` post=`46ad978956a74a3ee1bda22c36eb16207dcd98fd`.
 
