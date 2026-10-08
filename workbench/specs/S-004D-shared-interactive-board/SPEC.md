@@ -1,14 +1,16 @@
 # S-004D - Shared Interactive Workbench Board
 
 **Spec ID:** S-004D
-**Status:** planned
+**Status:** active
+**Priority:** 2
+**Owner:** unassigned
 **Stance:** Builder
 **Updated:** 2026-10-07
 **Catalog description:** The Grill Board's P/V-filtered answering queue, growing into connected Taskboard and Tracker cards, discussion and update requests with distinct source and progress semantics.
 **Release scope:** In scope since the owner's 2026-10-04 answer; no release is assigned.
 **Blockers:** none
-**Latest event:** 2026-10-07: Owner confirmed visible P/V grades, independent filters, click-open rationale and central question detail for an Owner-selected answering queue; docs and requirements captured. P/V delivery and the wider shared-board Spec remain planned.
-**Next gate:** At activation, cut a bounded Grill Board P/V proof from live Actuality with `/to-tasks`; leave DQC P/V and the wider board capabilities outside that proof.
+**Latest event:** 2026-10-07: activated at the Plan stage of the DDR-001L promote-decision run; the bounded Grill Board P/V proof is cut into four unclaimed Tasks (TK-007L to TK-007O) from live Actuality at integration 9edbed8a. The wider shared-board capabilities stay uncut.
+**Next gate:** TK-007L (grade schema, operation, badges and central detail) is ready to claim; TK-007M (filters and batches) and TK-007N (inventory grades) follow it in parallel, then TK-007O (answer-to-card-update cycle and real-board scenario). DQC P/V and the wider board capabilities stay outside this proof.
 
 > **Citation anchors.** pre=`f6af4c339b543988a3212b1940581157f573818d` post=`f6af4c339b543988a3212b1940581157f573818d`.
 
@@ -23,8 +25,9 @@ with execution and understanding available as different views.
 The [Grill Board](../../grill-board/README.md) is this board's first working
 form, already in use: the owner answers pending items in a local browser page
 and agents carry the answers into their owners. This Spec is the destination it
-grows into. It remains planned with no claimed owner or Tasks; the remaining
-work is the path from the Grill Board to the outcome above.
+grows into. It was activated on 2026-10-07 for the bounded P/V proof below,
+whose four Tasks are cut and unclaimed; the rest of the path from the Grill
+Board to the outcome above has no Task yet.
 
 The next confirmed board capability lets the Owner evaluate questions by
 Priority and Value and filter them into an answering queue of the Owner's
@@ -108,6 +111,16 @@ Re-read when this record was carried onto
 `d9a353590644f957ae24636d13ce9a41ef1987e9` (clean integration): `ITEM_KEYS`
 and the 180 items in `items.json` still carry no P/V or grading-rationale
 fields, and `index.html` still has no P/V selectors, badges or explanation cards.
+
+Re-read at activation on integration
+`9edbed8a585a99a52368c3c09aa7eb91def6b7ef` (Plan stage): `ITEM_KEYS` still
+lists no P/V or rationale field and `validateItem` refuses any unknown field;
+`items.json` holds 180 items (171 `open`, 9 `withdrawn`; all 35 `confirm-dqc`
+items open) with no P/V; `index.html` slices by topic, intent, scale,
+workflow stage and search, groups navigation only by topic (`TOPICS`), and
+freezes fixed batches in local storage, with no P/V badge, selector or
+explanation card. Its page logic is tested by loading the inline script into
+a VM (`sliceModel()` in `tools/test-grill-board.mjs`).
 
 The requirements below are Owner-confirmed; the P/V capability and its
 real-board usefulness proof are **not delivered** by this documentation pass.
@@ -292,20 +305,45 @@ or the unfinished discussion/dispatch capabilities. No P/V concept blocker
 remains after the Owner's final confirmation; record new implementation
 findings against this slice instead of silently extending its scope.
 
+Coordination, not a Task blocker: the unpublished
+`codex/consequential-decision-board` lane (local Codex worktree, commit
+`724a5d52`, no upstream at planning) changes the same `tools/grill-board.mjs`,
+`items.json`, `index.html`, Grill Board README and this Spec, adding
+decision-record `decisions` groups and further items. Whichever of that lane
+and a P/V Task lands second reconciles onto the other on fresh integration;
+TK-007N grades the inventory present when it runs, and TK-007M applies its
+group rule to decision-record groups if they have landed.
+
 ## Vertical Implementation Slices
 
-No Tasks are cut. The Grill Board is the delivered first slice, built outside
-a claimed Task. At activation, cut the next slices from live Actuality along
-the "Not yet" and "Partly" rows above, growing the Grill Board rather than
-starting a new page; for example, live Taskboard and Tracker cards with their
-distinct dimensions, then discussion attached to artifact identities. This
-sequence is a proposal, not an assignment.
+Task records live under `tasks/`. The Grill Board is the delivered first
+slice, built outside a claimed Task.
 
-For the next bounded proof, start with question-level P/V validation and
-reasoned classifications, then the existing page's filters, grade badges and
-central detail, and finally the answer-to-card-update cycle against real
-questions. Cut actual Tasks from the then-current source at activation;
-this planning pass creates none.
+The bounded P/V proof was cut on 2026-10-07 from integration `9edbed8a`. The
+layers each Task crosses are the item schema and validator and the grade
+operation in `tools/grill-board.mjs`, `items.json`, the page
+`workbench/grill-board/index.html`, the Grill Board README procedure and
+`tools/test-grill-board.mjs`. Order:
+
+1. TK-007L, the tracer bullet: an agent grades one question through a
+   validated grade operation; the Owner sees red P / amber V badges, opens
+   each reason, and sees P, V and both reasons in the central view
+   (acceptance: badges and central detail; the operation half of validated
+   grade updates; unclassified stays visible).
+2. Then in parallel: TK-007M, independent P and V filters combined with the
+   existing filters, topic navigation and fixed batches (acceptance: exact
+   P/V slices; fixed batch from a P/V slice); and TK-007N, reasoned grades on
+   every open board question through the grade operation (acceptance: every
+   in-scope live question graded).
+3. TK-007O, after both: the answer-to-card-update reassessment procedure and
+   the real-inventory P3V1 Owner scenario on a disposable copy (acceptance:
+   the demonstrated cycle; the browser scenario receipt).
+
+Later shared-board slices stay uncut. When they are authorized, cut them from
+live Actuality along the "Not yet" and "Partly" rows above, growing the Grill
+Board rather than starting a new page; for example, live Taskboard and Tracker
+cards with their distinct dimensions, then discussion attached to artifact
+identities. That sequence is a proposal, not an assignment.
 
 ## Acceptance Criteria
 
@@ -387,6 +425,11 @@ and interface do not belong in the generic Blueprint template. No runtime,
 question inventory, Owner answer file, DQC, Task or release assignment changes
 are part of this documentation/specification endpoint.
 
+The 2026-10-07 Plan pass adds the four Task records and updates this Spec's
+header, current-state re-read, dependencies and slice order. It changes no
+runtime, page, inventory, README, Lexicon, template or answer file; each Task
+names the README and test changes its delivery owns.
+
 ## Append-Only Evidence And Execution Log
 
 | Date | Event | Evidence and limits |
@@ -400,3 +443,5 @@ are part of this documentation/specification endpoint.
 | 2026-10-07 | P/V planning verification and limits | [Planning verification receipt](priority-value-planning-verification-2026-10-07.json) preserves results for all 53 Runbook commands: first run 21 pass / 32 fail. Existing AGENTS draft/control assertions and uncommitted-source identity checks prevent a full-suite pass; the board's initial localhost EPERM is separately resolved by a socket-enabled rerun, 19/19 pass, leaving 31 failed commands recorded. Exact CIC table fidelity in both Lexicons, ten added local links/anchors, DDR validation, render and diff whitespace checks pass; prior S-004D evidence is preserved byte-for-byte. Pre/post self-drift retains the same 16 code/artifact pairs and cleanUpdate=false; the final doctor exposes those 16 findings, including untracked planning receipts. Confirmed DDR content remains proposed lifecycle in this dirty tree. No executable P/V behavior or real-board usefulness proof is claimed. |
 | 2026-10-07 | P/V records carried onto a clean integration branch | Record stage of a `promote-decision` run on `claude/promote-ddr-001l-priority-value`, cut from integration d9a353590644f957ae24636d13ce9a41ef1987e9. Carried only the P/V content of the shared checkout and of commit 30bdf29f032075deffee03cc41ebc3248a2bbd76: DDR-001L with its decision text unchanged, accepted on this clean tree through `adr.mjs accept` (two relative link depths repaired after the move), both Lexicon sections, the Blueprint outcome, the Grill Board README pointer and these requirements; the consequential-decision reconciliation lane stays with its own branch. The planning receipt above is preserved lineage of the dirty shared checkout; none of its results are checks of this branch. Added a dated re-read of the board source at that base under Current Verified State. Adaptations: the DDR-001L link in the concept-confirmed row above points at the accepted record rather than its former `proposed/` path, and Documentation Impact now dates the "templates unchanged" sentence to the earlier planning changes, since this pass adds the generic Lexicon definitions. No Task, implementation, answer application or Owner Human QA. |
 | 2026-10-07 | P/V record carry verified | Committed candidate f5ce6c46fe21ea6d27d8f9bb57e554bf7aaafa65, clean tree: all 54 Runbook Full suite commands exit 0, including `node tools/test-evaluate-workbench.mjs`, `node tools/test-adr.mjs`, `node tools/test-grill-board.mjs`, `python3 tools/test-check-append-only.py` and `node workbench/tools/spec-workbench.mjs doctor` (no blocking finding; its attention findings equal those of integration d9a353590644f957ae24636d13ce9a41ef1987e9 apart from that worktree's detached HEAD). `node workbench/tools/adr.mjs validate` and `node workbench/tools/wiki.mjs validate` pass. The same 54 commands also pass on unmodified integration. These are documentation and record checks only; P/V behavior, the real-board proof and Owner Human QA remain undelivered. |
+| 2026-10-07 | Activated; bounded P/V proof planned | Plan stage of the DDR-001L `promote-decision` run on `claude/plan-ddr-001l-priority-value`, cut from integration 9edbed8a585a99a52368c3c09aa7eb91def6b7ef, under decision-005's authorization of implementation following the current request and its lifecycle. Live board re-read at that base (recorded under Current Verified State). Four Task records written with `next-id` labels confirmed free across every `origin/*` tip and local worktree: TK-007L tracer bullet (no blockers), TK-007M filters and batches and TK-007N inventory grades (each blocked by TK-007L), TK-007O answer-to-card-update cycle and real-board scenario (blocked by TK-007M and TK-007N); all `ready`, Builder, unclaimed. Header gained Priority 2 (this repository's default for an in-scope capability with no release assignment; the Owner's purpose is a board aid, not an interrupt or release gate) and Owner `unassigned` (no Dispatcher is assigned; whoever takes the Spec records themselves), then `convert-tasks S-004D --activate` set Status active. Readings recorded in the Tasks: AC1 covers every open board item including the 35 `confirm-dqc` items, with "deferred" applying to DQC records (TK-007N); requirement 4's decision-group navigation is the page's topic grouping, with no aggregate group P/V (TK-007M). Plan only: no claim, implementation, answer application or Owner Human QA. |
+| 2026-10-07 | P/V plan verified | Committed candidate e88cbec0585adecaa57d5b5782a89b3abe75492e, clean tree: all 54 Runbook Full suite commands exit 0, including `node tools/test-evaluate-workbench.mjs`, `node tools/test-spec-workbench.mjs`, `node tools/test-grill-board.mjs` (run with localhost socket permission), `python3 tools/test-check-append-only.py` and `node workbench/tools/spec-workbench.mjs doctor` (no blocking finding; its new findings are the expected `blocked-slice` dependency entries for TK-007M, TK-007N and TK-007O). `show S-004D --json` reads back Status active, Priority 2, Owner unassigned and all four Tasks `ready` with no claim. These are planning and record checks only: no P/V behavior, real-board proof or Owner Human QA is claimed. |
