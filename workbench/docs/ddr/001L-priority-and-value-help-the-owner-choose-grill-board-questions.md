@@ -7,7 +7,7 @@ canonicalized_in:
   - workbench/specs/S-004D-shared-interactive-board/SPEC.md
 ---
 
-# DDR-001L — Priority and Value help the Owner choose Grill Board questions
+# Priority and Value help the Owner choose Grill Board questions
 
 ## Decision
 
