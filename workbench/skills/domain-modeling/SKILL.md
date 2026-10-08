@@ -86,8 +86,11 @@ change, or what it would silently mean instead. Put the few consequences that
 could change the choice in front of the owner, with the file or line behind
 each, while changing course is still cheap. Name each owner you list by its
 path, and a test by its file and test name: "both test files" or "the tests"
-names nothing. This is a bounded trace of the owners the choice reaches, not an
-audit of the whole room.
+names nothing. A Spec, decision record or Wiki page needs its path as much as a
+source file does: give the path beside its title, because a title alone is
+nothing to open. Do this in every trace, including a later one that lists
+owners an earlier turn already named. This is a bounded trace of the owners the
+choice reaches, not an audit of the whole room.
 
 ### Capture, then promote
 

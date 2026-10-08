@@ -179,6 +179,11 @@ test('upstream consequences are traced to named owners before a choice settles, 
   assert.match(trace, /Name each owner you list by its path, and a test by its file and test name/,
     'every listed owner is named by its path, and a test by its file and test name');
   assert.match(trace, /"the tests" names nothing/, 'a vague "the tests" does not count as tracing them');
+  // Scenario 1 run 4 listed the decision record and the Spec by title alone.
+  assert.match(trace, /A Spec, decision record or Wiki page needs its path as much as a source file does/,
+    'a document owner is named by path, not only by its title');
+  assert.match(trace, /a title alone is nothing to open/, 'a title without its path does not count as naming the owner');
+  assert.match(trace, /every trace, including a later one/, 'a later trace that repeats owners still names their paths');
   assert.match(trace, /could change the choice/, 'only consequences that could change the choice are raised');
   assert.match(trace, /bounded/i);
   assert.match(trace, /not an audit/, 'the trace is not a whole-room audit');
