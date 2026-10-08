@@ -3,7 +3,7 @@
 **Task ID:** TK-007S
 **Spec ID:** S-005G
 **Slice:** Repository CI And Fast Hooks
-**Status:** done
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: S-005G Acceptance Criteria
@@ -31,3 +31,4 @@ Deliver the scoped behavior, maintained owners and checkable proof. Preserve the
 | 1 | 2026-10-08 | evidence row 2 (fail verdict at b5571bf8ec6bbc9a4f5918e942ca3aa5f248dbc0 on 2026-10-08) | Inspect index modes and syntax-check ordinary staged file blobs only, with a real Git symlink regression |
 | 2 | 2026-10-08 | evidence row 2 (fail verdict at b5571bf8ec6bbc9a4f5918e942ca3aa5f248dbc0 on 2026-10-08) | Refuse multiply linked hook snapshot files before writes and add a refusal regression. |
 | 3 | 2026-10-08 | evidence row 4 (fail verdict at 30d211102c28ab0c55e94b910c4e4949541eaec7 on 2026-10-08) | Honor ordinary .js CommonJS and staged package module context, retain .mjs and .cjs modes, and add narrow real-Git regressions. |
+| 4 | 2026-10-08 | evidence row 9 (fail verdict at 308d0afb083e5b14316f0eb73543759d5896087b on 2026-10-08) | Hosted CI proved fixture Git initialization uses another default branch, while existing lifecycle fixtures require main, set an ephemeral Git init default only for the CI step and add a narrow effective-configuration regression without harness redesign. |

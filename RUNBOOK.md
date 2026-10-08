@@ -331,6 +331,10 @@ candidates.
 
 ## CI And Local Hooks
 
+The CI step supplies an ephemeral Git `init.defaultBranch=main`, which existing
+lifecycle fixtures require. Setting this default writes no Git configuration and
+changes no GitHub setting.
+
 `.github/workflows/verify.yml` runs one standard Linux job on PRs targeting
 `integration` and pushes to `integration`, with read-only contents permission,
 concurrency cancellation and a 30-minute limit. It uses the existing full-suite

@@ -139,3 +139,23 @@ test('installed hook honors JavaScript extensions and staged nearest package con
     assert.match(commit.stderr, /explicit-module\.mjs/);
   } finally { clean(f.dir); }
 });
+
+
+test('CI step gives existing Git fixtures an ephemeral main default without changing Git configuration files', () => {
+  const f = fixture();
+  try {
+    const workflow = fs.readFileSync(path.join(source, '.github/workflows/verify.yml'), 'utf8');
+    const step = workflow.slice(workflow.indexOf('- name: Run the canonical full suite'));
+    const config = Object.fromEntries([...step.matchAll(/^\s+(GIT_CONFIG_(?:COUNT|KEY_0|VALUE_0)):\s*['"]?([^'"\n]+)['"]?$/gm)].map(match => [match[1], match[2].trim()]));
+    const globalFile = path.join(f.dir, 'fixture-global-config');
+    fs.writeFileSync(globalFile, '[init]\n\tdefaultBranch = master\n');
+    const before = fs.readFileSync(globalFile);
+    const target = path.join(f.dir, 'ci-initialization');
+    const initialized = spawnSync('git', ['init', '--quiet', target], { env: { ...process.env, GIT_CONFIG_GLOBAL: globalFile, ...config }, encoding: 'utf8' });
+    assert.equal(initialized.status, 0, initialized.stderr);
+    const branch = spawnSync('git', ['-C', target, 'symbolic-ref', '--short', 'HEAD'], { encoding: 'utf8' });
+    assert.equal(branch.stdout.trim(), 'main', 'CI must provide the main default existing lifecycle fixtures require');
+    assert.deepEqual(fs.readFileSync(globalFile), before, 'environment override writes no global configuration');
+    assert.doesNotMatch(fs.readFileSync(path.join(target, '.git/config'), 'utf8'), /defaultBranch/, 'environment override writes no repository configuration');
+  } finally { clean(f.dir); }
+});
