@@ -3,13 +3,13 @@
 **Spec ID:** S-004J
 **Status:** active
 **Priority:** 2
-**Owner:** claude-s004j-worker-fix2
+**Owner:** claude-s004j-dispatcher
 **Stance:** Builder
 **Updated:** 2026-10-08
 **Catalog description:** Ship domain modeling in every room's skills lane as the Align companion that shows the downstream consequences of an upstream name, boundary or relationship before it settles, and hands settled meaning to promotion instead of writing Canon inline.
 **Blockers:** none
-**Latest event:** TK-00JC closed with proof.
-**Next gate:** Confirm acceptance criteria and completion result.
+**Latest event:** The second correction pass for the PR #425 review is on `claude/s004j-corrections`: per-adapter reasons asserted, scenario 1 passed on run 6 after the trace wording put each owner's path first, acceptance line 5 reopened and the Wiki article reconciled.
+**Next gate:** Fresh separate-context review of the corrected candidate on PR #425 (`report S-004J --candidate <head>`); the Spec cannot complete until acceptance line 5 closes, which needs Lexicon Retirement And ARCHITECTURE.md (S-004O) to put the `promote` glossary destination on integration and a glossary rerun through the tool; owner Human QA and release stay separate.
 
 > **Citation anchors.** pre=`46ad978956a74a3ee1bda22c36eb16207dcd98fd` post=`46ad978956a74a3ee1bda22c36eb16207dcd98fd`.
 
@@ -91,6 +91,8 @@ At assembly candidate `345e8754556bb7fade26f2cc1f8fad919136af61` on 2026-10-07, 
 At integration `c80cb282` on 2026-10-07 (PR #415 merged), the required bundle holds 30 skills with `domain-modeling` and then `pr` after `improve-harness`; assembled review 1, re-pinned to the merged head `d8b17a6a`, failed on the in-room MIT notice and four should-fix gaps, so the Tasks continue on `claude/s004j-corrections`.
 
 At corrections candidate `abef8e91` on 2026-10-07 (integration `817661a4` merged in), the required bundle holds 32 skills; `workbench/skills/domain-modeling/` ships `SKILL.md`, the verbatim `GLOSSARY-FORMAT.md` and an in-directory MIT `NOTICE.md`, which a room install copies byte-identical through both adapters. Root `GLOSSARY.md` is still absent, so the Lexicon remains the vocabulary owner the skill reads and promotes into.
+
+At corrections branch `claude/s004j-corrections` on 2026-10-08 (integration `45d79a45` merged in as `76ab259f`), the skill's trace wording leads each listed owner with its path, including Specs, decision records and Wiki pages, and the scoped test binds each Workbench adapter to its own reason. The `promote` tool on integration still refuses a root `GLOSSARY.md`; its glossary destination exists only on S-004O's assembly branch `claude/s004o-lexicon-retirement` (draft PR #431), so acceptance line 5 is open.
 
 ## Desired Behavior
 
@@ -280,10 +282,12 @@ Record `Docs checked; no update needed` for any other owner checked.
 | 2026-10-08 | TK-00JA | Task closed (run 3) | Review-fix run: each Workbench adapter bullet bound to its own reason; the reviewer's mutation passes the old test 11/11 and fails the new 10/11; scoped 11/11 green; full RUNBOOK suite 54/54 on clean 7499d6bd | Skill Form adapter reason and scoped test; THIRD_PARTY_NOTICES checked, no update needed | TK-00JB scenario 1 rerun and open promotion line; TK-00JC Wiki; fresh assembled review |
 | 2026-10-08 | TK-00JB | Task closed (run 3) | Review-fix run: scenario 1 runs 4 and 5 FAIL then run 6 PASS after two red-green trace wording fixes (every owner led by its path, tests by file and test name, before the choice, empty room diff); run 3 rename corrected to incomplete; acceptance line 5 reopened with wording unchanged; full RUNBOOK suite 54/54 on clean d52d0bf8 | Skill trace wording, scoped test, s1 and s3 observations, run4-6 records, scenario-evidence, Spec acceptance line 5 and dependency | Acceptance line 5 waits on S-004O's glossary promote route on integration and a glossary rerun; single run of the final wording; TK-00JC Wiki; fresh assembled review |
 | 2026-10-08 | TK-00JC | Task closed (run 3) | Review-fix run: Domain Modeling article reconciled with scenario 1 runs 1-6, the path-first trace wording and the open glossary promotion line; wiki validate ok, test-wiki 25/25, full RUNBOOK suite 54/54 on clean 62839f66 | Domain Modeling Wiki article; router line checked, no update needed | Fresh separate-context assembled review; acceptance line 5 waits on S-004O; owner Human QA |
+| 2026-10-08 | correction | Second correction pass for the PR #425 review (verdict #3): TK-00JA binds each Workbench adapter bullet to its own reason in the scoped test and gives the Form adapter its reason; TK-00JB corrects scenario 1 run 3's rename assertion to incomplete, reruns scenario 1 (run 4 FAIL, run 5 FAIL, run 6 PASS) after two red-green trace wording fixes, and unchecks acceptance line 5 with its wording unchanged; TK-00JC reconciles the Wiki article; integration `45d79a45` merged forward as `76ab259f`. Acceptance line 3 re-checked on run 6; line 5 open on S-004O. | Full RUNBOOK suite 54/54 on clean `7499d6bd`, `d52d0bf8` and `62839f66`; scoped 11/11 with each new assertion red on its mutation; wiki validate ok and test-wiki 25/25; self-drift no added finding against PR head `6f33d38b`; guardrail 73/100 before and after. | Skill trace wording and Form adapter, scoped test, s1 and s3 observations, run4-6 records, scenario-evidence, Wiki article; Spec header, current state, acceptance line 5, dependency and Completion Result. TASKBOARD.md not rendered here: the shared projection is coordinated separately. | Fresh separate-context review of the corrected candidate; acceptance line 5 (S-004O glossary route and a tool rerun); owner Human QA; release identity; trace pass rests on one run of the final wording. |
+| 2026-10-08 | hand-back | Occurrence: the owner had to name PR #425's three outstanding review findings and ask for them to be corrected; the building session had stopped at "ready for review" and no repository record held them. Cause (missing): the findings were GitHub review threads by the automatic PR reviewer, posted at 10:41 after the session recorded `ready` at 10:39, and the Spec's next gate named only a separate-context review, so no route read PR review threads back into the Spec. | Findings recovered from the PR's review threads with `gh api`; recorded as verdict #3 so the next agent reads them here. | This Spec's evidence. | Gap, owner the `code-review` skill (independent review boundaries): say how automatic PR review findings that arrive after hand-off reach the owning Spec. Not repaired here; outside this assignment's file lane. |
 
 ## Completion Result
 
-Not complete. The correction pass for assembled review 1 is delivered on `claude/s004j-corrections`: the in-room MIT notice, a scoped test whose contract assertions each fail on their mutation, a complete adapter list without unrelated policy, a sharpened trace that named every owner and test in scenario 1's third run, qualified promotion evidence and a reconciled Wiki article. A fresh separate-context review of this candidate, its integration delivery and owner Human QA remain; glossary promotion through the tool waits on S-004O and release identity on the release owner.
+Not complete. Two correction passes are delivered on `claude/s004j-corrections`. The first answered assembled review 1 with the in-room MIT notice, mutation-proven contract assertions, a complete adapter list and a reconciled Wiki article. The second answered the PR #425 review: each adapter's reason is asserted on its own bullet, the trace wording leads each listed owner with its path and passed in scenario 1's sixth run, and acceptance line 5 is open again because promotion has not reached the canonical glossary through the tool. Still open: a fresh separate-context review of this candidate, acceptance line 5 (it waits on S-004O's glossary route reaching integration and a tool rerun), owner Human QA and release identity.
 
 ## Supersession
 
