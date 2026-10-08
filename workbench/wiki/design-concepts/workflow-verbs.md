@@ -31,7 +31,10 @@ the Journey verb have been defined since. Draft, Critique and Revise were added
 on 2026-10-08. The owner had been calling the delivery sequence
 the workflow while it kept being called the ladder or the steps. This page
 explains the verbs and how they decide where a claim is written. It authorizes
-nothing; the Lexicon holds the definitions.
+nothing; the existing vocabulary remains in its current owner. The three new
+verb definitions are retained in the Runbook reference pending the established
+Glossary migration, following the owner's 2026-10-08 direction to stop expanding
+the legacy Lexicon.
 
 ## The delivery workflow
 
@@ -165,3 +168,7 @@ and renaming them is the owner's call.
   then added Draft, Critique and Revise. The Draft → Critique → Revise → Confirm
   workflow permits repeated critique and revision before exact-text
   confirmation, without settling its taxonomy or changing existing boundaries.
+
+- 2026-10-08: corrected the new verbs' vocabulary destination to the established
+  Glossary migration. The Runbook retains their definitions until that owner
+  is available on integration; no new legacy Lexicon entries are added.

@@ -168,7 +168,20 @@ This is not a mandatory extra gate for every trivial interaction. Explore still
 ends in Confirm and can contain different workflows; this addition does not
 settle their taxonomy or change the five parent workflows above. The Workbench
 owner confirmed this workflow and its three new verbs on 2026-10-08. Confirm
-already existed. Definitions live in the [Lexicon](LEXICON.md#core-terms).
+already existed. The new verb definitions follow below.
+
+**New verb definitions.**
+
+| Verb | Meaning |
+|---|---|
+| **Draft** | Show the actual proposed artifact text, with enough context and source links for the owner to judge it. Proposed wording remains a draft until Confirm; existing source records remain authoritative. |
+| **Critique** | Evaluate a visible draft and give feedback about what should change and why. A comment or change request is not approval or confirmation. Critique and revision can repeat as needed before Confirm; critique alone does not change the authoritative source. |
+| **Revise** | Change the proposed artifact text in response to critique, retaining context for the next reading. Show the revised draft for further critique or exact-text Confirm. An earlier confirmation does not approve later revisions; preserve exactly what was approved. |
+
+Vocabulary destination: these new definitions belong in the room's established
+`GLOSSARY.md`. If its glossary migration is pending, retain them in this
+workflow reference until they can move to that owner; do not add new legacy
+Lexicon entries or create a second Glossary.
 
 ## Ordinary Entry
 

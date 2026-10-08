@@ -37,17 +37,20 @@ for (const file of ['RUNBOOK.md', 'templates/RUNBOOK.md']) {
   ]) assert.ok(workflows.includes(edge), `${file}: preserve ${edge}`);
 }
 
+for (const file of ['RUNBOOK.md', 'templates/RUNBOOK.md']) {
+  const source = read(file);
+  for (const verb of ['Draft', 'Critique', 'Revise']) {
+    assert.equal([...source.matchAll(new RegExp(`^\\| \\*\\*${verb}\\*\\* \\|`, 'gm'))].length, 1, `${file}: one temporary ${verb} definition`);
+  }
+  assert.match(source, /GLOSSARY\.md/, `${file}: intended glossary destination`);
+  assert.match(source, /(?:do not|Do not).{0,100}(?:legacy|Lexicon)/s, `${file}: do not expand legacy vocabulary`);
+}
 for (const file of ['LEXICON.md', 'templates/LEXICON.md']) {
   const source = read(file);
-  for (const verb of ['Draft', 'Critique', 'Revise', 'Confirm']) {
-    assert.equal([...source.matchAll(new RegExp(`^\\| \\*\\*${verb}\\*\\* \\|`, 'gm'))].length, 1, `${file}: one ${verb} definition`);
-  }
-  const critique = source.split('| **Critique** |')[1].split('\n')[0];
-  assert.match(critique, /(?:not|neither).{0,45}(?:approval|confirmation)/, `${file}: critique preserves approval boundary`);
-  const revise = source.split('| **Revise** |')[1].split('\n')[0];
-  assert.match(revise, /(?:previous|earlier).{0,60}(?:confirm|approval)/, `${file}: prior approval does not approve revision`);
-  assert.match(source, /2026-10-08/, `${file}: confirmed source date`);
+  for (const verb of ['Draft', 'Critique', 'Revise']) assert.ok(!source.includes(`| **${verb}** |`), `${file}: no new legacy verb entries`);
 }
+assert.match(read('RUNBOOK.md'), /PR431/, 'pending migration explicitly named');
+assert.match(read('RUNBOOK.md'), /no\s+Glossary/, 'actual baseline conflict stated');
 
 const lexicon = read('LEXICON.md');
 for (const meaning of ['P1 — Interrupt', 'P2 — Committed', 'P3 — Secondary', 'P4 — Backlog', 'V1 — Quick Win', 'V2 — Strategic Value', 'V3 — Fill-In', 'V4 — Defer / Eliminate']) {
@@ -56,4 +59,4 @@ for (const meaning of ['P1 — Interrupt', 'P2 — Committed', 'P3 — Secondary
 const wiki = read('workbench/wiki/design-concepts/workflow-verbs.md');
 assert.match(wiki, /Draft → Critique → Revise → Confirm/, 'Wiki explains draft workflow');
 assert.match(wiki, /2026-10-08:.*(?:Draft|draft)/s, 'Wiki history preserves owner-confirmed addition');
-console.log('ok - repeatable draft workflow, verb definitions and unchanged parent boundaries');
+console.log('ok - repeatable draft workflow, Runbook verb definitions, intended Glossary destination and unchanged parent boundaries');
