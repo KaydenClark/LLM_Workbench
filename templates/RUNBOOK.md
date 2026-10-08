@@ -101,24 +101,24 @@ with their existing owners. The reference adds no authority or new gate.
 flowchart TB
   subgraph Explore
     direction LR
-    idea[Idea] --> align[Align] --> confirm[Confirm]
+    idea("Idea") --> align("Align") --> confirm("Confirm")
   end
   subgraph Promote
     direction LR
-    record[Record] --> pubRecord[Publish] --> map[Map] --> pubMap[Publish] --> plan[Plan] --> pubPlan[Publish]
+    record("Record") --> pubRecord("Publish") --> map("Map") --> pubMap("Publish") --> plan("Plan") --> pubPlan("Publish")
   end
   subgraph Journey
     direction LR
-    implement[Implement] --> check[Check] --> qa[QA] --> submit[Submit]
+    implement("Implement") --> check("Check") --> qa("QA") --> submit("Submit")
   end
   subgraph Judge
     direction LR
-    review[Review]
-    verify[Verify] --> approve[Approve]
+    review("Review")
+    verify("Verify") --> approve("Approve")
   end
   subgraph Complete
     direction LR
-    delivered[Delivered] --> cleanup[Clean Up]
+    delivered("Delivered") --> cleanup("Clean Up")
   end
   confirm --> record
   pubPlan --> implement
