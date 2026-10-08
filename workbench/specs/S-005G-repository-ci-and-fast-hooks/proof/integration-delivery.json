@@ -54,5 +54,17 @@
     "cleanUpdate": false,
     "readbackDemo": "three synthetic native Codex outputs; not reliability or Claude-native proof",
     "canonicalSource": "existing dirty branch retained; no personal/global readback installation"
+  },
+  "integrationPushVerification": {
+    "runId": 37774604684,
+    "url": "https://github.com/KaydenClark/LLM_Workbench/actions/runs/37774604684",
+    "headSha": "e0586aa37f91f61848ef6171a6b321f05cd1eead",
+    "event": "push",
+    "conclusion": "success",
+    "commandsPassed": 55,
+    "seconds": 869.9,
+    "canonicalStepLog": "hosted-feature-integration-suite.txt.gz",
+    "uncompressedLogSha256": "a721e32185bc3930b5b6c88747e365e72eba565f098111c6855b1cda5c4f288b",
+    "observedAt": "2026-10-08T12:22:25.418973+00:00"
   }
 }
