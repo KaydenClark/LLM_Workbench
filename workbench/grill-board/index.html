@@ -843,8 +843,10 @@
         const badge = current.querySelector('.item-head .badge');
         badge.className = `badge ${body.derivedStatus}`; badge.textContent = STATUS_LABEL[body.derivedStatus];
         refreshAnswer(current, item);
+        // The workflow derives each card's state from the saved answer.
+        await loadWorkflow();
         refreshCounts();
-        renderCardWorkflow(current.querySelector('[data-flow]'), item);
+        renderCardWorkflow((document.getElementById(id) || current).querySelector('[data-flow]'), item);
       } catch (error) {
         const message = error.status === 409 ? `Not saved: ${error.message}. Reload to see the current question and answer; your typed text stays here until then.` : `Save failed: ${error.message}. Your unsaved text remains here.`;
         state.errors.set(id, message);
@@ -1315,7 +1317,8 @@
   for (const type of ['mouseover', 'focusin']) window.addEventListener(type, event => { const term = event.target?.closest?.('.term'); if (term) showTip(term); });
   for (const type of ['mouseout', 'focusout']) window.addEventListener(type, event => { if (event.target?.closest?.('.term')) hideTip(); });
 
-  window.addEventListener('hashchange', routePage);
+  window.addEventListener('scroll', hideTip, { passive: true });
+  window.addEventListener('hashchange', () => { hideTip(); routePage(); });
   document.getElementById('global-search-form').onsubmit = event => {
     event.preventDefault();
     const query = document.getElementById('global-search').value.trim();
