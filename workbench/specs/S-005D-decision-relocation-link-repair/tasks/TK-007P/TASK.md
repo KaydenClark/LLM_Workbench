@@ -3,7 +3,7 @@
 **Task ID:** TK-007P
 **Spec ID:** S-005D
 **Slice:** Decision Relocation Link Repair
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: S-005D Acceptance Criteria

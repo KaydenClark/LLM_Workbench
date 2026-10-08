@@ -3,7 +3,7 @@
 **Task ID:** TK-007S
 **Spec ID:** S-005G
 **Slice:** Repository CI And Fast Hooks
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: S-005G Acceptance Criteria

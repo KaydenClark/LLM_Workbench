@@ -3,7 +3,7 @@
 **Task ID:** TK-007R
 **Spec ID:** S-005F
 **Slice:** Maintained Workflow Reference
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: S-005F Acceptance Criteria

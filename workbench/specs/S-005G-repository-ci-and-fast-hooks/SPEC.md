@@ -8,8 +8,8 @@
 **Updated:** 2026-10-08
 **Catalog description:** Integration PRs and integration updates run the canonical required suite; this repository alone has fast offline staged whitespace and JavaScript syntax checks at commit.
 **Blockers:** none
-**Latest event:** TK-007S closed with proof.
-**Next gate:** Correct the independent review findings, rerun final verification, and obtain fresh assembled review before integration delivery.
+**Latest event:** TK-007S claimed by codex-confirmed-followup.
+**Next gate:** Close TK-007S with verification and documentation proof.
 
 > **Citation anchors.** pre=`45d79a453cf21520317ff7ec48e2d299a2f6a0ad` post=`45d79a453cf21520317ff7ec48e2d299a2f6a0ad`.
 
