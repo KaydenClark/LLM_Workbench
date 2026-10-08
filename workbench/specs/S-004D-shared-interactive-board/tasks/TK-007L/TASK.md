@@ -8,7 +8,7 @@
 **Blockers:** none
 **Destination:** spec-acceptance: Numbered red P and amber V badges appear on the right of question cards; clicking each reveals its own rationale without replacing or answering the question. Opening the question centrally shows all information, P/V and reasons.
 **Planned verification:** Red first in `tools/test-grill-board.mjs`: the validator refuses an item carrying Priority/Value fields today (unknown field), and a `grade` operation does not exist. Green: valid P1–P4 / V1–V4 grades with nonempty reasons pass; P5, V0, a grade without a reason, a combined score field and an unknown grade field are refused with the prior `items.json` bytes unchanged; a stale grade write is refused; the grade write never creates or changes `answers.json`; an ungraded item still validates and the page model reports it unclassified; the page model renders both badges on the row, opens each reason separately without opening the question, and the central view shows P, V and both reasons beside the unchanged question, proposal, sources, history and answer controls. Then a disposable-copy browser check of one graded real item, `node tools/grill-board.mjs validate` on the live board and the full Runbook suite on the committed candidate.
-**Claimed by:** codex-dashboard-owner-flow
+**Claimed by:** claude-dashboard-director
 
 ## Scope
 
