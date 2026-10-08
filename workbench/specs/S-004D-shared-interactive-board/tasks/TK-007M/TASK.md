@@ -3,12 +3,13 @@
 **Task ID:** TK-007M
 **Spec ID:** S-004D
 **Slice:** The Owner filters board questions by P, V or both into a fixed answering batch
-**Status:** in-progress
+**Status:** done
 **Stance:** Builder
 **Blockers:** TK-007L
 **Destination:** spec-acceptance: P1V2, P3V1, P2 alone and V alone return exactly their matching questions. Clearing filters restores the wider inventory; other board filters still combine.
 **Planned verification:** Red first at the page's slice seam (`matchesSlice` and the batch model, loaded through the existing `sliceModel()` harness in `tools/test-grill-board.mjs`): a fixture of graded and unclassified items where P1V2, P3V1, P2 alone and V1 alone must return exactly their members fails before the filters exist. Green: those exact sets; P alone spans every Value and V alone every Priority; clearing restores the whole inventory; P/V combine with topic, intent, scope, workflow stage and search; unclassified items are reachable without an invented grade; a batch started from a P/V slice keeps its membership and revisions through saves, pause/resume and reload; selecting a slice changes no grade; topic navigation keeps matching members reachable and shows no per-topic P/V score. Then a disposable-copy browser check and the full Runbook suite on the committed candidate.
 **Claimed by:** claude-dashboard-director
+**Proof:** Independent P and V filters combined with topic, intent, scale, workflow and search filters; P3+V1 returned exactly the 51 matching real questions; fixed batch started from a P/V slice kept its members across pause, resume and reload (page-model tests in tools/test-dashboard-board.mjs; browser receipt proof/owner-flow-demo-a857b658.json). Full suite 60/60 on clean candidate 07429c50; separate-context review #4 pass at 07429c50 (Spec evidence)
 
 ## Scope
 
@@ -63,3 +64,9 @@ not depend on it or build it.
 New grades or inventory grading (TK-007N), the answer-to-card-update cycle
 (TK-007O), an automatic recommended batch, ordering by a combined score, and
 DQC P/V.
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | claude/workbench-dashboard-first-pass | 573a1a78515fd28eeef881a98eb9adff12b8b472 | ahead 0 behind 0 | 0 | Independent P and V filters combined with topic, intent, scale, workflow and search filters; P3+V1 returned exactly the 51 matching real questions; fixed batch started from a P/V slice kept its members across pause, resume and reload (page-model tests in tools/test-dashboard-board.mjs; browser receipt proof/owner-flow-demo-a857b658.json). Full suite 60/60 on clean candidate 07429c50; separate-context review #4 pass at 07429c50 (Spec evidence) | workbench/grill-board/README.md: P/V filters and fixed batches | none | c3f8ecfe21f2987cc70a43861ecfe5c0ac74a449d554d0e9a2be7049760e1652 |
