@@ -8,8 +8,8 @@
 **Updated:** 2026-10-08
 **Catalog description:** Ship domain modeling in every room's skills lane as the Align companion that shows the downstream consequences of an upstream name, boundary or relationship before it settles, and hands settled meaning to promotion instead of writing Canon inline.
 **Blockers:** none
-**Latest event:** TK-00JC claimed by claude-s004j-worker-fix2.
-**Next gate:** Close TK-00JC with verification and documentation proof.
+**Latest event:** TK-00JC closed with proof.
+**Next gate:** Confirm acceptance criteria and completion result.
 
 > **Citation anchors.** pre=`46ad978956a74a3ee1bda22c36eb16207dcd98fd` post=`46ad978956a74a3ee1bda22c36eb16207dcd98fd`.
 
@@ -279,6 +279,7 @@ Record `Docs checked; no update needed` for any other owner checked.
 | 2026-10-08 | review | Review verdict: fail at e413ecfc79be5423e8d4a1279686313b74b640e6 [8524d348e762] #3 | continue TK-00JB: acceptance line 5 is checked although both glossary runs reached GLOSSARY.md only by a manual write after sessions.mjs promote refused, so uncheck it with its wording unchanged and keep it open on S-004O's glossary promotion route until the glossary variant reruns through promote on integration; continue TK-00JB: scenario 1 run 3 lists the Blueprint outcomes, Wiki billing-model page, Invoice Settlement spec and decision record without their paths, so mark the rename assertion incomplete and rerun scenario 1 until every listed owner is named by path before the owner chooses; continue TK-00JA: the scoped test only finds each adapter label somewhere in the section and counts five uses of because, so deleting one adapter's reason stays green, so bind each named adapter to its own nonempty reason and show that mutation red; continue TK-00JC: the review names the downstream claims that every owner was named and that promotion reached the glossary, which the Domain Modeling Wiki article repeats, so reconcile the article with the rerun and the open promotion line | chatgpt-codex-connector automatic GitHub review on PR #425 at e413ecfc, three unresolved P2 findings the owner directed corrected on 2026-10-08 | 4 |
 | 2026-10-08 | TK-00JA | Task closed (run 3) | Review-fix run: each Workbench adapter bullet bound to its own reason; the reviewer's mutation passes the old test 11/11 and fails the new 10/11; scoped 11/11 green; full RUNBOOK suite 54/54 on clean 7499d6bd | Skill Form adapter reason and scoped test; THIRD_PARTY_NOTICES checked, no update needed | TK-00JB scenario 1 rerun and open promotion line; TK-00JC Wiki; fresh assembled review |
 | 2026-10-08 | TK-00JB | Task closed (run 3) | Review-fix run: scenario 1 runs 4 and 5 FAIL then run 6 PASS after two red-green trace wording fixes (every owner led by its path, tests by file and test name, before the choice, empty room diff); run 3 rename corrected to incomplete; acceptance line 5 reopened with wording unchanged; full RUNBOOK suite 54/54 on clean d52d0bf8 | Skill trace wording, scoped test, s1 and s3 observations, run4-6 records, scenario-evidence, Spec acceptance line 5 and dependency | Acceptance line 5 waits on S-004O's glossary promote route on integration and a glossary rerun; single run of the final wording; TK-00JC Wiki; fresh assembled review |
+| 2026-10-08 | TK-00JC | Task closed (run 3) | Review-fix run: Domain Modeling article reconciled with scenario 1 runs 1-6, the path-first trace wording and the open glossary promotion line; wiki validate ok, test-wiki 25/25, full RUNBOOK suite 54/54 on clean 62839f66 | Domain Modeling Wiki article; router line checked, no update needed | Fresh separate-context assembled review; acceptance line 5 waits on S-004O; owner Human QA |
 
 ## Completion Result
 

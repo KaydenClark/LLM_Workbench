@@ -3,13 +3,13 @@
 **Task ID:** TK-00JC
 **Spec ID:** S-004J
 **Slice:** Reconcile the Domain Modeling Wiki article with delivered behavior
-**Status:** in-progress
+**Status:** done
 **Stance:** Builder
 **Blockers:** TK-00JB
 **Destination:** spec-acceptance: The Wiki article separates upstream method, Workbench adaptation and verified behavior and limits.
 **Planned verification:** Wiki validation and lint on the touched pages, link checks, full RUNBOOK suite on a committed candidate.
 **Claimed by:** claude-s004j-worker-jc, claude-s004j-worker-fix, claude-s004j-worker-fix2
-**Proof:** Correction pass: Wiki article matches the corrected adapter list, NOTICE.md credit, qualified promotion evidence, scenario 1 reruns and the scenario 4 prompt limit; wiki validate ok, test-wiki 25/25, full RUNBOOK suite 54/54 on clean eab82fe5
+**Proof:** Review-fix run: Domain Modeling article reconciled with scenario 1 runs 1-6, the path-first trace wording and the open glossary promotion line; wiki validate ok, test-wiki 25/25, full RUNBOOK suite 54/54 on clean 62839f66
 
 ## Scope and authority
 
@@ -30,6 +30,7 @@ The article and router read back against the delivered source and the scenario e
 | 3 | claude/s004j-corrections | eab82fe52669f0d479128bea52c6b8ad3ad095c2 | ahead 0 behind 0 | 0 | Correction run: wiki.mjs validate ok, test-wiki 25/25, git diff --check clean, manual lint of the page against the skill, NOTICE.md, scenario evidence and s1, s3 and s4 observations with no contradiction and no stale domain-modeling claims elsewhere in the Wiki. Full RUNBOOK suite 54/54 on clean eab82fe5. Self-drift no new finding. Fast-forward into claude/s004j-corrections verified. | skill-domain-modeling.md: full adapter table with the trace naming sentence, NOTICE.md credit route, qualified promotion evidence, scenario 1 runs 1 to 3, scenario 4 prompt limit and single-host limit. Router line checked; no update needed. | Fresh assembled integration review and owner Human QA; glossary tool promotion owned by S-004O; release identity. | 3b92e2525139625210472a35bdc72532a42bb54e1ca729fad2bad6260cf20c9d |
 | 4 | claude/s004j-corrections | 80c0e6acb661296e6d10667d68369825ba9f553c | ahead 0 behind 0 | 0 | Correction pass: Wiki article matches the corrected adapter list, NOTICE.md credit, qualified promotion evidence, scenario 1 reruns and the scenario 4 prompt limit; wiki validate ok, test-wiki 25/25, full RUNBOOK suite 54/54 on clean eab82fe5 | Domain Modeling Wiki article; router line checked, no update needed | Fresh assembled integration review and owner Human QA; glossary tool promotion owned by S-004O; release identity | c4dcefe800c5876d8c8f1fe3689cbb3f81a46044b0f2f6ae8b6cfd47451e062b |
 | 5 | claude/s004j-corrections | 62839f66852e8955dfc2d0fa60c6c71c1a8a9f06 | ahead 0 behind 0 | 0 | Review-fix run: wiki validate ok, test-wiki 25/25; small lint of the touched article (links, sources, router line, identifiers with names, history line, last_verified moved for checked facts); full RUNBOOK suite 54/54 on clean 62839f66; self-drift pre (PR head 6f33d38b) 5 and post 4 findings with none added (the removed one is the scratch checkout's detached HEAD), cleanUpdate false; guardrail 73/100 before and after. | Domain Modeling Wiki article: trace adapter row, behavior count, trace scenario runs 1-6 with run 3 incomplete, promotion row and limits name the open acceptance line and S-004O, history line; router line checked, no update needed. | Fresh separate-context assembled review; acceptance line 5 waits on S-004O's glossary promote route; owner Human QA | 15185bf955a5e04f5f7f8bb8e979db20f00646c0f0caa2abb21cf4ec3c4cdb27 |
+| 6 | claude/s004j-corrections | c402971c02199c6c780d2c648738aea0f234f485 | ahead 0 behind 0 | 0 | Review-fix run: Domain Modeling article reconciled with scenario 1 runs 1-6, the path-first trace wording and the open glossary promotion line; wiki validate ok, test-wiki 25/25, full RUNBOOK suite 54/54 on clean 62839f66 | Domain Modeling Wiki article; router line checked, no update needed | Fresh separate-context assembled review; acceptance line 5 waits on S-004O; owner Human QA | b56c92ee4be3278184aafb956938322dd0de1144ab3db0bbd17f5308de8722de |
 
 ## Continuation
 
