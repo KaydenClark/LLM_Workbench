@@ -198,7 +198,7 @@ and [Portable Workbench (S-00V)](../../specs/S-00V-portable-workbench/SPEC.md),
 whose tools [host floor](../../tools/host-floor.mjs) and
 [optional capabilities](../../tools/optional-capabilities.mjs) carry the
 capability routing. The future shared browser board is
-[Shared Interactive Workbench Board (S-004D)](../../specs/S-004D-shared-interactive-board/SPEC.md),
+[Workbench Dashboard (S-004D)](../../specs/S-004D-shared-interactive-board/SPEC.md),
 planned only.
 
 ## Related pages

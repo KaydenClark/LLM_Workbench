@@ -205,7 +205,7 @@ The tools are the [Tracker runtime](../../tools/landmark-tracker.mjs) and the
 in the [Tracker README](../../landmark-tracker/README.md) and the
 [Landmark Wiki procedure](../../landmark-tracker/LANDMARK-WIKI.md). The future
 shared browser view is
-[Shared Interactive Workbench Board (S-004D)](../../specs/S-004D-shared-interactive-board/SPEC.md),
+[Workbench Dashboard (S-004D)](../../specs/S-004D-shared-interactive-board/SPEC.md),
 planned only. Definitions are in the [Lexicon](../../../LEXICON.md).
 
 ## Related pages
