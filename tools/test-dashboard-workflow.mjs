@@ -166,10 +166,14 @@ test('standalone readers overlay latest native answers without mutating legacy o
   const note = 'workbench/sessions/notepads/grilling/dashboard-answers.json';
   const created = createNote(f.root, { note, type: 'grilling', objective: 'dashboard-answers', title: 'Disposable owner answers' });
   assert.equal(created.status, 'created');
-  const old = { verdict: 'defer', note: 'Earlier native draft.', itemRevision: 1, history: [] };
+  // Earlier full-format entries carry the history of the answers they follow,
+  // starting from the legacy answers.json answer, as the earlier writer did.
+  const legacyAnswer = { verdict: 'defer', note: 'Legacy source stays intact.', itemRevision: 1 };
+  const old = { verdict: 'defer', note: 'Earlier native draft.', itemRevision: 1, history: [legacyAnswer] };
   let written = appendEntry(f.root, { note, revision: created.revision, kind: 'source_record', topic: 'dashboard-answer', content: JSON.stringify({ id: 'GB-0001', answer: old }) });
   f.confirm();
-  written = appendEntry(f.root, { note, revision: written.revision, kind: 'decision', topic: 'dashboard-answer', content: JSON.stringify({ id: 'GB-0001', answer: { ...f.answers['GB-0001'], history: [old] } }) });
+  const { history: _oldHistory, ...oldOnly } = old;
+  written = appendEntry(f.root, { note, revision: written.revision, kind: 'decision', topic: 'dashboard-answer', content: JSON.stringify({ id: 'GB-0001', answer: { ...f.answers['GB-0001'], history: [legacyAnswer, oldOnly] } }) });
   assert.equal(written.status, 'appended');
   const api = createWorkflow(f.root);
   const promoted = api.promote({ ids: ['GB-0001'], revisions: { 'GB-0001': 1 }, actionId: 'native-promote', expectedRevision: 0 });

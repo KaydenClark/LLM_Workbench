@@ -1042,6 +1042,7 @@
   function promotionBlocker(item) {
     if (state.edits.has(item.id)) return 'Save or finish your unsaved answer first.';
     if (unsnapshottedConfirmation(item)) return UNSNAPSHOTTED;
+    if (item.answerConflict) return 'Two answers to this question conflict. Answer again to settle it; until then it cannot be promoted.';
     const change = (state.workflow?.comments || []).find(comment => comment.id === item.id && comment.kind === 'change' && comment.itemRevision === item.revision);
     if (change) return `Your change request of ${change.at || 'this revision'} (“${change.text}”) is waiting: an agent must revise this question from it, and you must confirm the revised question, before it can be promoted.`;
     return 'Only a card the workflow reports as confirmed can be promoted.';
