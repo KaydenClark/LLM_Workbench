@@ -8,8 +8,8 @@
 **Updated:** 2026-10-08
 **Catalog description:** Integration PRs and integration updates run the canonical required suite; this repository alone has fast offline staged whitespace and JavaScript syntax checks at commit.
 **Blockers:** none
-**Latest event:** Independent review passed; [Workbench follow-up delivery evidence](https://github.com/KaydenClark/LLM_Workbench/pull/438) is maintained in PR #438.
-**Next gate:** Owner Human QA after reviewed integration delivery; main promotion remains owner-only.
+**Latest event:** Reviewed feature delivery is contained in integration `e0586aa37f91f61848ef6171a6b321f05cd1eead`; [delivery evidence](https://github.com/KaydenClark/LLM_Workbench/pull/438) and the Repository CI And Fast Hooks proof record the observed checks.
+**Next gate:** Owner Human QA on delivered integration content; main promotion remains owner-only.
 
 > **Citation anchors.** pre=`45d79a453cf21520317ff7ec48e2d299a2f6a0ad` post=`45d79a453cf21520317ff7ec48e2d299a2f6a0ad`.
 
@@ -89,6 +89,7 @@ Owning files: .github/workflows/verify.yml; .githooks/; tools/setup-pre-commit.m
 | 2026-10-08 | review | Review verdict: pass at a739f8af03b1c5841cb14a631824f5776288a0c8 [c92d8ee91001] #5 | P3 nonblocking: distinguish already recorded hook installation from pending hosted verification and integration delivery. | OpenAI Codex fresh independent Director thread 01a11b3a-89c6-77f2-95fd-1dd5870b7d97, read-only ephemeral CLI 0.159.3, configured gpt-6.1-sol/high, exact model not independently exposed in reviewer context | 1 |
 | 2026-10-08 | review | Nonblocking current-state clarification | [CI correction review](../S-005F-workflow-reference/proof/ci-correction-review.md.gz) passes all four Specs; its P3 wording finding is corrected in Remaining Limitations | Hook installation recorded separately from pending corrective hosted CI and integration | Fresh review of this documentation-only correction pending; implementation/control bytes remain verified7d7c6e51 |
 | 2026-10-08 | review | Review verdict: pass at f46f29e0a4821d46e5ad183879fa4ceb4e7c6449 [e9c1571a8b63] #6 | none | OpenAI Codex fresh independent Director thread 01a11b4f-5ff6-7153-8e8b-744baf3e37f8, read-only ephemeral CLI 0.159.3, configured gpt-6.1-sol/high, exact model not independently exposed in reviewer context | none |
+| 2026-10-08 | delivery | Reviewed feature integrated in [PR #438](https://github.com/KaydenClark/LLM_Workbench/pull/438) | [Observed delivery proof](proof/integration-delivery.json): submitted 7684af89 hosted 55/55 in 884.2s; integration e0586aa3 contains reviewed f46f29e0, submitted head and observed remote tip; main unchanged | Current delivery headers reconciled; evidence preserved | Owner Human QA and main remain separate |
 
 ## Completion Result
 
@@ -103,7 +104,7 @@ The observed hosted fixture-default correction is verified locally at `7d7c6e51f
 
 ## Remaining Limitations Or Follow-Up Specs
 
-- Hook installation from the independently reviewed snapshot is recorded in the evidence above. Corrective hosted verification and reviewed integration delivery remain pending, with observations maintained in the linked PR. Owner Human QA and main promotion remain separate.
+- The corrected feature passed hosted verification and was delivered through reviewed PR #438 into integration `e0586aa37f91f61848ef6171a6b321f05cd1eead`. Repository-local hook installation and its post-delivery recheck are recorded in [the delivery proof](proof/integration-delivery.json). Owner Human QA and main promotion remain separate; neither is claimed by this delivery.
 - Existing Workbench drift remains separately owned; passing this patch's tests cannot establish a globally clean Workbench or agent reliability.
 
 ## Supersession

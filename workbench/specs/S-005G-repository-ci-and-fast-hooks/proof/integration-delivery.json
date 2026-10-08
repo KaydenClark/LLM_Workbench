@@ -1,0 +1,58 @@
+{
+  "observedAt": "2026-10-08T12:09:43.168819+00:00",
+  "featurePR": {
+    "baseRefName": "integration",
+    "headRefOid": "7684af898c120696f395e8b00a1bc6aa6ff64e91",
+    "mergeCommit": {
+      "oid": "e0586aa37f91f61848ef6171a6b321f05cd1eead"
+    },
+    "mergedAt": "2026-10-08T12:06:52Z",
+    "state": "MERGED",
+    "url": "https://github.com/KaydenClark/LLM_Workbench/pull/438"
+  },
+  "reviewedCandidate": "f46f29e0a4821d46e5ad183879fa4ceb4e7c6449",
+  "implementationCandidate": "7d7c6e51f9a7b96f93090b64e58284602eb5a796",
+  "integration": {
+    "commit": "e0586aa37f91f61848ef6171a6b321f05cd1eead",
+    "containsReviewedCandidate": true,
+    "containsSubmittedHead": true,
+    "containsObservedRemoteFeatureTip": true,
+    "treeMatchesSubmittedHead": true,
+    "mainObserved": "83825230aa4289c80e657d3a8ac8ed8d13d3390f",
+    "mainUnchanged": true
+  },
+  "hostedVerification": {
+    "runId": 37772510047,
+    "url": "https://github.com/KaydenClark/LLM_Workbench/actions/runs/37772510047",
+    "headSha": "7684af898c120696f395e8b00a1bc6aa6ff64e91",
+    "event": "pull_request",
+    "conclusion": "success",
+    "commandsPassed": 55,
+    "seconds": 884.2,
+    "jobSeconds": 895,
+    "canonicalStepLog": "hosted-corrected-suite.txt.gz",
+    "uncompressedLogSha256": "1789e48335628be0f3c03665da7e96fa8b57d632155296b1a764a671b32216c5"
+  },
+  "canonicalHookRecheck": {
+    "repository": "/Users/kayden/LLM_Workbench",
+    "configuredPath": "/Users/kayden/LLM_Workbench/.git/workbench-hooks",
+    "snapshotSha256": {
+      "pre-commit": "62c24aaa5ac14ba52df9d315123cfd8729279e50fc6805c84be79969dfe95aa3",
+      "pre-commit.mjs": "78076921b629c03d3f99396671af596d9a7372fee634b6f25901249abc210c62"
+    },
+    "matchesDeliveredSource": true,
+    "result": "Workbench pre-commit: staged whitespace and 0 JavaScript syntax check(s) passed.",
+    "scope": "Existing canonical index only, zero staged JavaScript; behavior covered by five real-Git tests. Historical source preservation applies at installation time."
+  },
+  "ownerGates": {
+    "humanQA": "separate; no owner approval recorded",
+    "mainPromotion": "owner-only; not performed"
+  },
+  "limitations": {
+    "knownDriftFindings": 23,
+    "guardrailScore": 73,
+    "cleanUpdate": false,
+    "readbackDemo": "three synthetic native Codex outputs; not reliability or Claude-native proof",
+    "canonicalSource": "existing dirty branch retained; no personal/global readback installation"
+  }
+}
