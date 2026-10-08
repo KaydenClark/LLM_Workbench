@@ -28,7 +28,7 @@ import { appendEntry, createNote, readNote } from '../workbench/tools/notepads.m
 // A namespace import, so a sources module without the optional
 // dashboardRoute export still loads; its routes then answer 404.
 import * as sources from './dashboard-sources.mjs';
-import { createWorkflow, approvalSnapshot, approvalHash } from './dashboard-workflow.mjs';
+import { createWorkflow, approvalSnapshot, approvalHash, chainAnswers, answerRecordHash } from './dashboard-workflow.mjs';
 import { listAdrs } from '../workbench/tools/adr.mjs';
 
 export const ITEMS_SCHEMA = 'grill-board/items@1';
@@ -40,8 +40,10 @@ export const ANSWERS_FILE = 'answers.json';
 export const PAGE_FILE = 'index.html';
 export const KINDS = Object.freeze(['approve-spec', 'owner-decision', 'confirm-dqc', 'confirm-ddr', 'confirm-text', 'choice']);
 export const STATUSES = Object.freeze(['pending', 'stale', 'answered', 'applied', 'withdrawn']);
-// The words the owner answers with (Lexicon, Workbench Dashboard). Confirm
-// means confirmed; the other three send the item back and need his note.
+// The words the owner answers with; their meanings are owned by the
+// Workbench Dashboard Spec's Decisions And Contracts
+// (workbench/specs/S-004D-shared-interactive-board/SPEC.md). Confirm means
+// confirmed; the other three send the item back and need his note.
 export const SEND_BACK_OPTIONS = Object.freeze([
   Object.freeze({ value: 'rework', label: 'Rework wording', hint: 'Mostly correct; it needs to be restated better. Your note says how.', requiresNote: true }),
   Object.freeze({ value: 'change_why', label: 'Change the why', hint: 'Something is correct, but the underlying reason is wrong. Your note joins the Whys list.', requiresNote: true }),
@@ -123,32 +125,20 @@ function answerNote(root) {
   return manifest.collections?.notepads ? `${manifest.collections.notepads}/grilling/dashboard-answers.json` : null;
 }
 function notepadResult(result) { if (result.status === 'blocked') throw new BoardError(result.error?.code ?? 'notepad',result.error?.message ?? 'Notepad refused'); return result; }
-// An answer without its history, as one notepad entry stores it.
-function answerOnly(answer) {
-  return Object.fromEntries(Object.entries(answer).filter(([key]) => key !== 'history'));
-}
-function answerHash(answer) {
-  return createHash('sha256').update(JSON.stringify(answerOnly(answer))).digest('hex');
-}
-
 // Owner answers: the legacy answers.json, then the native notepad entries in
-// order. A current entry (schema dashboard-answer@2) holds only its own answer
-// and names the answer it supersedes; history is rebuilt by chaining, so an
-// earlier note is never copied into a later entry (and an earlier note the
-// notepad privacy guard would refuse never blocks a new answer). An entry
-// written before that format holds the whole answer with its history.
+// order, chained by chainAnswers (dashboard-workflow.mjs, shared with the
+// workflow's own reader). A current entry (schema dashboard-answer@2) holds
+// only its own answer and names the answer it supersedes, so an earlier note
+// is never copied into a later entry (and an earlier note the notepad privacy
+// guard would refuse never blocks a new answer); an entry that does not follow
+// the answer it names is reported as a conflict, never dropped.
 export function readAnswers(root) {
   const answers = readJson(boardPaths(root).answers, emptyAnswers());
   const note = answerNote(root);
   if (note && fs.existsSync(path.join(root,note))) {
     const loaded = notepadResult(readNote(root,{note}));
-    for (const entry of loaded.entries) if (entry.topic === 'dashboard-answer') {
-      const saved = JSON.parse(entry.content);
-      if (saved.schema !== 'dashboard-answer@2') { answers.answers[saved.id] = saved.answer; continue; }
-      const previous = answers.answers[saved.id];
-      const history = previous ? [...(previous.history ?? []), answerOnly(previous)] : [];
-      answers.answers[saved.id] = { ...saved.answer, history };
-    }
+    const entries = loaded.entries.filter((entry) => entry.topic === 'dashboard-answer').map((entry) => JSON.parse(entry.content));
+    answers.answers = chainAnswers(answers.answers, entries);
   }
   validateAnswers(answers);
   return answers;
@@ -343,6 +333,7 @@ export function mergeBoard(root) {
       controls: answerControls(item),
       answer,
       answerLabel: answer ? answerLabel(item, answer.verdict) : '',
+      ...(answer?.conflict ? { answerConflict: answer.conflict } : {}),
       derivedStatus: itemStatus(item, answer),
       links: item.sources.map((source) => ({ ...source, url: source.ref && source.ref !== 'untracked' && !path.isAbsolute(source.path) ? `${GITHUB_BLOB}/${source.ref}/${source.path}` : null }))
     };
@@ -569,7 +560,12 @@ export function recordAnswer(root, id, { verdict, note, itemRevision, expectedAn
   const answers = readAnswers(root);
   const previous = answers.answers[id];
   if (expectedAnswerAt !== undefined && expectedAnswerAt !== (previous?.at ?? null)) throw new BoardError('stale-answer', `${id}: stale answer; reload before saving`);
-  if (previous && previous.verdict === verdict && previous.note === note && previous.itemRevision === itemRevision) return { ...previous, derivedStatus: itemStatus(item, previous) };
+  // An identical repeat is idempotent, except a confirmation whose saved
+  // answer has no snapshot of the current wording (a confirmation saved before
+  // snapshots, or one frozen from other bytes): confirming again records it.
+  const snapshotCurrent = !isConfirmation(item, verdict)
+    || (previous?.approval?.itemRevision === item.revision && previous.approval.hash === approvalHash(item, { root }));
+  if (previous && previous.verdict === verdict && previous.note === note && previous.itemRevision === itemRevision && snapshotCurrent) return { ...previous, derivedStatus: itemStatus(item, previous) };
   const entry = { verdict, note, at: new Date(Math.max(Date.now(), previous ? Date.parse(previous.at) + 1 : 0)).toISOString(), itemRevision };
   // Only a confirmation freezes the exact wording it confirmed, with source
   // paths normalized to the room so no absolute path is stored.
@@ -581,7 +577,7 @@ export function recordAnswer(root, id, { verdict, note, itemRevision, expectedAn
     let loaded;
     if (fs.existsSync(path.join(root,nativeNote))) loaded=notepadResult(readNote(root,{note:nativeNote}));
     else loaded=notepadResult(createNote(root,{note:nativeNote,type:'grilling',objective:'dashboard-answers',title:'Dashboard owner answers',focus:'Exact owner words and approved snapshots',state:'Local owner working context; legacy answers preserved','next-action':'Owner confirms or requests revision; explicit promotion is separate'}));
-    notepadResult(appendEntry(root,{note:nativeNote,revision:loaded.revision,kind:isConfirmation(item, verdict)?'decision':'source_record',topic:'dashboard-answer',content:JSON.stringify({schema:'dashboard-answer@2',id,answer:entry,supersedes:previous?{at:previous.at,hash:answerHash(previous)}:null})}));
+    notepadResult(appendEntry(root,{note:nativeNote,revision:loaded.revision,kind:isConfirmation(item, verdict)?'decision':'source_record',topic:'dashboard-answer',content:JSON.stringify({schema:'dashboard-answer@2',id,answer:entry,supersedes:previous?{at:previous.at,hash:answerRecordHash(previous)}:null})}));
   } else writeJsonAtomic(boardPaths(root).answers, answers);
   return { ...answers.answers[id], derivedStatus: itemStatus(item, answers.answers[id]) };
 }
@@ -797,7 +793,8 @@ export function createServer(root, options = {}) {
     try {
       if (request.method === 'GET' && (url.pathname === '/' || url.pathname === '/index.html')) {
         const html = fs.readFileSync(paths.page);
-        response.writeHead(200, { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store' });
+        // No other page may frame the board (clickjacking on Confirm).
+        response.writeHead(200, { 'content-type': 'text/html; charset=utf-8', 'cache-control': 'no-store', 'x-frame-options': 'DENY', 'content-security-policy': "frame-ancestors 'none'" });
         response.end(html);
         return;
       }
