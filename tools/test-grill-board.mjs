@@ -95,17 +95,25 @@ test('decision context survives a revision and never changes an owner answer', (
   assert.equal(readItems(dir).items[0].revision, 2, 'invalid context leaves the previous item intact');
 });
 
-test('saved notes and Not now are not decisions an agent may apply', () => {
+test('saved notes, legacy Not now and an unexplained send-back are not decisions an agent may apply', () => {
   const dir = room();
   addItems(dir, [sample('notes')], { by: 'tester' });
   recordAnswer(dir, 'GB-0001', { verdict: '', note: 'Still thinking', itemRevision: 1 });
   assert.deepEqual(pendingForAgents(dir), []);
   assert.throws(() => applyAnswer(dir, 'GB-0001', { by: 'tester', where: 'Spec' }), /decision|deferred/);
-  recordAnswer(dir, 'GB-0001', { verdict: 'defer', note: 'Later', itemRevision: 1 });
+  // New answers offer no Not now or Decline; a Change needs the owner's words.
+  assert.throws(() => recordAnswer(dir, 'GB-0001', { verdict: 'defer', note: 'Later', itemRevision: 1 }), (e) => e.code === 'legacy-verdict');
+  assert.throws(() => recordAnswer(dir, 'GB-0001', { verdict: 'decline', note: 'No', itemRevision: 1 }), (e) => e.code === 'legacy-verdict');
+  assert.throws(() => recordAnswer(dir, 'GB-0001', { verdict: 'change', note: '', itemRevision: 1 }), (e) => e.code === 'note-required');
+  // Earlier answers saved with the legacy words keep their meaning.
+  const answers = readAnswers(dir);
+  answers.answers['GB-0001'] = { verdict: 'defer', note: 'Later', at: '2026-10-05T00:00:00.000Z', itemRevision: 1, history: [] };
+  fs.writeFileSync(boardPaths(dir).answers, JSON.stringify(answers));
   assert.deepEqual(pendingForAgents(dir), []);
   assert.throws(() => applyAnswer(dir, 'GB-0001', { by: 'tester', where: 'Spec' }), /decision|deferred/);
-  recordAnswer(dir, 'GB-0001', { verdict: 'correct', note: '', itemRevision: 1 });
-  assert.deepEqual(pendingForAgents(dir), [], 'a correction must include the owner replacement words');
+  answers.answers['GB-0001'] = { verdict: 'correct', note: '', at: '2026-10-05T00:00:00.000Z', itemRevision: 1, history: [] };
+  fs.writeFileSync(boardPaths(dir).answers, JSON.stringify(answers));
+  assert.deepEqual(pendingForAgents(dir), [], 'a legacy correction must include the owner replacement words');
   assert.throws(() => applyAnswer(dir, 'GB-0001', { by: 'tester', where: 'Spec' }), /note|decision/);
 });
 
@@ -117,12 +125,12 @@ test('status derivation: pending, answered, applied, stale after revise, withdra
   assert.equal(view.items[0].options.length, 4, 'default options apply when options is null');
   assert.throws(() => applyAnswer(dir, 'GB-0001', { by: 'agent', where: 'nowhere' }), /nothing-to-apply|no owner answer/);
 
-  const saved = recordAnswer(dir, 'GB-0001', { verdict: 'correct', note: 'use my words', itemRevision: 1 });
+  const saved = recordAnswer(dir, 'GB-0001', { verdict: 'change', note: 'use my words', itemRevision: 1 });
   assert.equal(saved.derivedStatus, 'answered');
-  assert.deepEqual(pendingForAgents(dir).map((item) => [item.id, item.verdict, item.note]), [['GB-0001', 'correct', 'use my words']]);
+  assert.deepEqual(pendingForAgents(dir).map((item) => [item.id, item.verdict, item.verdictLabel, item.note]), [['GB-0001', 'change', 'Change', 'use my words']]);
 
   const applied = applyAnswer(dir, 'GB-0001', { by: 'agent', where: 'S-999 Decisions row' });
-  assert.equal(applied.applied.verdict, 'correct');
+  assert.equal(applied.applied.verdict, 'change');
   assert.equal(applied.applied.note, 'use my words');
   assert.equal(mergeBoard(dir).items[0].derivedStatus, 'applied');
   assert.throws(() => applyAnswer(dir, 'GB-0001', { by: 'agent', where: 'again' }), (e) => e.code === 'already-applied');
@@ -225,6 +233,20 @@ test('artifact reader follows manifest collections, preserves full records and d
   fs.writeFileSync(path.join(dir, 'workbench/docs/decisions/adr/archive/000C-old.md'), '---\ndate: 2026-10-04\nsuperseded_by: ADR-000A\n---\n# Old decision\nOld text.\n');
   const landmark = { id: 'LMK-000G', title: 'Workbench Updates', revision: 3, summary: 'Full summary', importance: 'Why it matters', origin: { title: 'Original name' }, history: [{ revision: 3, reason: 'Keep full history' }] };
   fs.writeFileSync(path.join(dir, 'concepts/LMK-000G.json'), JSON.stringify(landmark));
+  // The Dashboard catalog also reads the declared Spec, Task, DQC, Wiki and
+  // skill lanes and the optional root ARCHITECTURE/GLOSSARY files.
+  const specDir = path.join(dir, manifest.lanes.specs, 'S-999-fixture');
+  fs.mkdirSync(path.join(specDir, 'tasks', 'TK-999A'), { recursive: true });
+  fs.writeFileSync(path.join(specDir, 'SPEC.md'), '# Fixture capability\n\n**Spec ID:** S-999\n**Status:** planned\n');
+  fs.writeFileSync(path.join(specDir, 'tasks', 'TK-999A', 'TASK.md'), '# TK-999A - Fixture slice\n\n**Task ID:** TK-999A\n**Spec ID:** S-999\n**Status:** ready\n');
+  const dqcDir = path.join(dir, manifest.landmarkTracker.collections['destination-questions']);
+  fs.mkdirSync(dqcDir, { recursive: true });
+  fs.writeFileSync(path.join(dqcDir, 'DQC-999A.json'), JSON.stringify({ id: 'DQC-999A', title: 'Fixture destination question', revision: 2 }));
+  fs.mkdirSync(path.join(dir, manifest.lanes.wiki), { recursive: true });
+  fs.writeFileSync(path.join(dir, manifest.lanes.wiki, 'MEMORY.md'), '# Wiki router\n');
+  fs.mkdirSync(path.join(dir, manifest.lanes.skills, 'fixture-skill'), { recursive: true });
+  fs.writeFileSync(path.join(dir, manifest.lanes.skills, 'fixture-skill', 'SKILL.md'), '# Fixture skill\n');
+  fs.writeFileSync(path.join(dir, 'GLOSSARY.md'), '# Glossary\n');
   addItems(dir, [sample('full', { kind: 'confirm-text', sources: [{ label: 'Blueprint', path: 'BLUEPRINT.md', ref: 'abc1234' }], draft: '# Blueprint draft\n\nComplete reviewed page.\n' }), sample('excerpt', { sources: [{ label: 'Blueprint', path: 'BLUEPRINT.md', ref: 'abc1234' }], draft: 'Only one proposed line.' }), sample('second', { sources: [{ label: 'Blueprint', path: 'BLUEPRINT.md' }] })], { by: 'tester' });
   const before = fs.readFileSync(boardPaths(dir).items, 'utf8');
   const server = createServer(dir);
@@ -233,7 +255,16 @@ test('artifact reader follows manifest collections, preserves full records and d
   const get = async p => (await fetch(base + p)).json();
   try {
     const catalog = await get('/api/artifacts');
-    assert.deepEqual(catalog.groups.map(g => g.id), ['agents', 'runbook', 'blueprint', 'lexicon', 'landmarks', 'adrs', 'ddrs']);
+    assert.deepEqual(catalog.groups.map(g => g.id), ['agents', 'runbook', 'blueprint', 'lexicon', 'landmarks', 'adrs', 'ddrs', 'specs', 'tasks', 'dqcs', 'wiki', 'skills', 'architecture', 'glossary']);
+    const inGroup = (group, file) => catalog.artifacts.some(a => a.group === group && a.path === file);
+    assert.ok(inGroup('specs', `${manifest.lanes.specs}/S-999-fixture/SPEC.md`), 'Specs are cataloged');
+    assert.ok(inGroup('tasks', `${manifest.lanes.specs}/S-999-fixture/tasks/TK-999A/TASK.md`), 'Tasks are cataloged');
+    assert.ok(inGroup('dqcs', `${manifest.landmarkTracker.collections['destination-questions']}/DQC-999A.json`), 'DQCs are cataloged');
+    assert.ok(inGroup('wiki', `${manifest.lanes.wiki}/MEMORY.md`), 'Wiki pages are cataloged');
+    assert.ok(inGroup('skills', `${manifest.lanes.skills}/fixture-skill/SKILL.md`), 'skills are cataloged');
+    assert.ok(inGroup('glossary', 'GLOSSARY.md'), 'a present glossary is cataloged');
+    assert.ok(!catalog.artifacts.some(a => a.group === 'architecture'), 'an absent ARCHITECTURE.md is not invented');
+    assert.equal(catalog.artifacts.filter(a => a.path === 'concepts/LMK-000G.json').length, 1, 'a landmark is cataloged once');
     assert.ok(catalog.artifacts.some(a => a.title === 'Accepted decision' && a.status === 'accepted'));
     assert.ok(catalog.artifacts.some(a => a.title === 'Proposed decision' && a.status === 'proposed'));
     assert.ok(catalog.artifacts.some(a => a.title === 'Old decision' && a.status === 'superseded'));
@@ -345,9 +376,9 @@ test('workflow counts partition items and a parked or unsaved answer never finis
   assert.equal(model.batchProgress().complete, false);
   items.at(-1).derivedStatus = 'answered';
   assert.equal(model.batchProgress().complete, true);
-  model.state.drafts.set('parked', { note: 'unsaved edit' });
+  model.state.edits.set('parked', { note: 'unsaved edit' });
   assert.equal(model.batchProgress().complete, false);
-  model.state.drafts.clear();
+  model.state.edits.clear();
   items.at(-1).derivedStatus = 'stale';
   assert.equal(model.batchProgress().complete, false);
   assert.equal(model.state.batch.ids.length, 3, 'saving never refills the fixed batch');
