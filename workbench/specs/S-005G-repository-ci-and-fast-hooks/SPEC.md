@@ -8,8 +8,8 @@
 **Updated:** 2026-10-08
 **Catalog description:** Integration PRs and integration updates run the canonical required suite; this repository alone has fast offline staged whitespace and JavaScript syntax checks at commit.
 **Blockers:** none
-**Latest event:** TK-007S claimed by codex-confirmed-followup.
-**Next gate:** Correct the observed CI environment default under TK-007S, verify the final candidate and obtain fresh independent review before delivery.
+**Latest event:** TK-007S closed with proof.
+**Next gate:** Fresh independent assembled review, corrective draft update and green hosted CI before reviewed integration delivery; owner Human QA and main remain separate.
 
 > **Citation anchors.** pre=`45d79a453cf21520317ff7ec48e2d299a2f6a0ad` post=`45d79a453cf21520317ff7ec48e2d299a2f6a0ad`.
 
@@ -85,6 +85,7 @@ Owning files: .github/workflows/verify.yml; .githooks/; tools/setup-pre-commit.m
 | 2026-10-08 | delivery | Draft PR publication | Four native assembled gates pass; submitted e21e5e8a20a219cccb7c52e4ff64da80b3a4753f | [Maintained hosted CI, integration containment and hook observations](https://github.com/KaydenClark/LLM_Workbench/pull/438) | No hosted CI or integration/hook success claimed at this publication snapshot; owner Human QA and main remain separate |
 | 2026-10-08 | review | Review verdict: fail at 308d0afb083e5b14316f0eb73543759d5896087b [fa450aa952c8] #4 | continue TK-007S: Hosted CI proved fixture Git initialization uses another default branch, while existing lifecycle fixtures require main, set an ephemeral Git init default only for the CI step and add a narrow effective-configuration regression without harness redesign. | codex-confirmed-followup Builder CI QA, observed hosted run 37767424255 only, own failure evidence not independent approval | 1 |
 | 2026-10-08 | TK-007S | Hosted CI corrective return | [Hosted failure](proof/hosted-initial-failure.txt.gz): existing fixture checked out main after default initialization created another branch; narrow effective-config regression red then green, six hook/CI cases pass | CI-only environment default, no fixture-builder or configuration-file redesign; [canonical hook proof](proof/canonical-hook-installation.json) records reviewed snapshot installation while CI was pending | Fresh full verification and independent review before the corrective draft update |
+| 2026-10-08 | TK-007S | Task closed (run 4) | code 7d7c6e51f9a7b96f93090b64e58284602eb5a796; canonical 55/55 commands pass in 956.1s with exact ephemeral CI Git default and required localhost permission; six hook/CI tests pass; score73 and exact23baseline drift remain; reviewed canonical hook snapshot and canonical dirty source preserved | .github/workflows/verify.yml; RUNBOOK.md; tools/test-pre-commit.mjs; owned Spec/proof | none in local implementation Git state at close: dirty-tree (7 files: workbench/specs/S-005G-repository-ci-and-fast-hooks/SPEC.md, workbench/specs/S-005G-repository-ci-and-fast-hooks/proof/ci-correction-full-suite.txt.gz, workbench/specs/S-005G-repository-ci-and-fast-hooks/proof/ci-correction-guardrail.json.gz, workbench/specs/S-005G-repository-ci-and-fast-hooks/proof/ci-correction-self-drift.json.gz, workbench/specs/S-005G-repository-ci-and-fast-hooks/proof/ci-correction-verification.json, workbench/specs/S-005G-repository-ci-and-fast-hooks/proof/ci-git-default-green-final.txt.gz, workbench/specs/S-005G-repository-ci-and-fast-hooks/tasks/TK-007S/TASK.md) and unpushed (ahead 2 behind 0 of origin/codex/workbench-confirmed-followup); recorded reason: Corrective code remains local under owner review-before-publication authorization, hosted CI and integration are still pending |
 
 ## Completion Result
 
@@ -94,6 +95,8 @@ Initial local checkpoint, before round-one review: implementation verified local
 Corrected implementation verified locally at `65dcac7658f78a0eaaccd6f72efaa83b19cfd5bc`: all 55 canonical commands pass in 948.2 seconds. The continued ADR, workflow and hook Tasks preserve their earlier proof and round-one findings. Targeted edge regressions and the corrected workflow contract pass. The unchanged readback native trace remains bounded to its recorded candidate. This result establishes local implementation verification; actual independent review, hosted CI, integration containment and repository-local hook installation are recorded as they occur in the append-only evidence. Owner Human QA and main remain separate.
 
 Final correction verified locally at `1711be148b6b0d734c84531b3a122000dfa536c6`: canonical 55/55 commands verified on unchanged source across permission segments in 955.8 measured execution seconds, with 62 ADR tests and five real-Git hook cases passing. Earlier local results remain bounded to their candidates. The unchanged readback demo still supports three synthetic outputs only. Independent review and actual delivery observations remain pending in this local snapshot; owner Human QA and main remain separate.
+
+The observed hosted fixture-default correction is verified locally at `7d7c6e51f9a7b96f93090b64e58284602eb5a796`: all 55 canonical commands pass in 956.1 seconds with the exact ephemeral CI Git environment and required localhost permission. Six hook/CI regressions pass. This local snapshot precedes fresh review and the corrective hosted run; delivery observations remain in the linked PR. The previously installed hook snapshot is unchanged and its source-state preservation is recorded. Owner Human QA and main remain separate.
 
 ## Remaining Limitations Or Follow-Up Specs
 
