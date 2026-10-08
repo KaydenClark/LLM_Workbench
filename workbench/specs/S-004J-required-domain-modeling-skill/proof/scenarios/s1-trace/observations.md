@@ -6,10 +6,17 @@ room diff stays empty.
 
 **Result across runs:** run 1 traced owners and identifiers with file or line
 but did not name the tests it claimed; run 2, on the corrected skill, did the
-same ("Both test files"); run 3, after the skill's trace wording was sharpened,
-named both test files and their test names with path and line for every other
-owner, before the owner chose, with an empty room diff. Acceptance line 3 rests
-on run 3.
+same ("Both test files"); run 3, after the trace wording was sharpened, named
+every owner by path and both tests by file and test name in the boundary trace,
+but its rename trace listed the Blueprint, Wiki page, Spec and decision record
+without their paths (corrected 2026-10-08 after the PR #425 review). Run 4, on
+the same wording, listed the Spec and the decision record by title alone in
+both traces; run 5, after the wording required a path for every document
+owner, passed the boundary trace but listed the decision record without its
+path in the rename trace; run 6, after the wording put the path first on each
+listed owner, named every owner by path and both tests by file and test name in
+both traces, before the owner chose, with an empty room diff. Acceptance line 3
+rests on run 6.
 
 ## Run 1 (room variant A)
 
@@ -144,20 +151,91 @@ then put a two-payer scenario to the owner with options and a recommendation.
 Turn 3 split the "Billing Profile" rename into its own question, quoted
 `LEXICON.md:308` ("avoid 'profile'"), and traced the rename to `accountId` at
 `src/billing/invoice.js:9` and `src/billing/settlement.js:11`, `src/accounts/`
-and `createAccount`, the same two named tests, and the Blueprint, Wiki page,
-Spec and ADR title. The owner had chosen neither option at either turn. The
-cited lines were checked against the room after the run and are accurate.
+and `createAccount`, the same two named tests, and then "the Blueprint's
+promised outcomes, the Wiki billing-model page, the Invoice Settlement spec"
+and the ADR title with no path for any of them. The owner had chosen neither
+option at either turn. The cited lines were checked against the room after the
+run and are accurate.
 
 | Assertion | Result | Evidence |
 |---|---|---|
 | Boundary change traced to owners, identifiers and tests with file or line, before the owner chooses | PASS | Turn 2: every owner by path, lines for Lexicon, Blueprint, Spec and source, tests by file and test name |
-| Rename traced the same way | PASS | Turn 3, with the same named tests |
+| Rename traced the same way | INCOMPLETE (corrected 2026-10-08) | Turn 3 named the identifiers and the two tests, but its "Other owners" line gave "the Blueprint's promised outcomes, the Wiki billing-model page, the Invoice Settlement spec" and the decision record's title with no path. The earlier PASS overstated this; the PR #425 review found it. |
 | Few consequences that could change the choice put in front of the owner | PASS | Separate-payer scenario (turn 2); "profile" already an avoided alias (turn 3) |
 | Room diff empty | PASS | All three turns: status empty, diff against base empty, HEAD at base, no shadow store; only the ignored grilling notepad changed |
 | Skill reached by installed discovery | PASS | Transcript skill base directory is the room's `.claude/skills/domain-modeling` |
 
 ### Limits of runs 2 and 3
 
-One model, scripted owner turns, one run each. Run 3 is the only run that
-names tests in the reply, and it ran on wording added because run 2 did not,
-so the pass rests on a single run of the sharpened skill.
+One model, scripted owner turns, one run each. Run 3 named the tests in both
+traces but not every owner's path in the rename trace, so it does not pass
+the rename assertion; runs 4 to 6 below follow from that.
+
+## Runs 4 to 6 (room variant A, after the PR #425 review)
+
+The review of candidate `e413ecfc` found run 3's rename trace listing owners
+without paths. Each run below used a fresh room built by
+[scenario-room.mjs](../../scenario-room.mjs) and the unchanged owner turns.
+The judging rule is the skill's: every owner a trace lists carries its path in
+that reply, and every test its file and test name.
+
+| Field | Run 4 | Run 5 | Run 6 |
+|---|---|---|---|
+| Room / base | `s1-A-r4` / `d646437af23bd6bbe1d20bbc3e9f5551d6453aab` | `s1-A-r5` / `81cbe084b1da17c397b0bbb44b504d12d304fdb8` | `s1-A-r6` / `c31483b568e36148dd414b31a079f99e36888b04` |
+| Installed from | `7499d6bda98529a0005eb2f4bb89d52215679231` (corrections branch, wording of run 3) | scratch commit `14183bdb82b0571df7bbf37d5847d6833a87fa46`, same bytes as branch commit `892f03e7` (document owners need their paths) | scratch commit `6bd1b72ef212f87a94461eb0c3db0f97c52b2c6d`, same bytes as branch commit `311e82e0` (lead each owner with its path) |
+| `SKILL.md` sha256 | `4746ceea…656392` (run 3's trace wording; the Form adapter reason added) | `45f3ba3a…3a927f` | `627d77b7…f30bda` |
+| Model / CLI | `claude-opus-5-5`, Claude Code 2.1.287, headless `-p` with `--resume`, `--setting-sources project,local` | same | same |
+| Session | `883acea8-d2b9-411b-9a6b-4c8bd247384f`; about 2.12 USD | `70ff4efd-b781-44d8-b977-be3c1fee11ab`; about 2.05 USD | `558bff85-aa00-440b-8861-5e3352ba1f02`; about 2.19 USD |
+| Skills loaded | `<room>/.claude/skills/grilling`, `<room>/.claude/skills/domain-modeling` | same | same |
+| Curated record | [run4-A.json](run4-A.json) | [run5-A.json](run5-A.json) | [run6-A.json](run6-A.json) |
+
+**Run 4.** Turn 2 listed the Lexicon, `BLUEPRINT.md` lines 17-18,
+`workbench/wiki/billing-model.md`, the source files and both tests by file and
+test name, but the "Invoice Settlement spec" with no path and the decision
+record under its title in the list. Turn 3 did the same for the Spec and the
+decision record. Cause: the skill's "Name each owner you list by its path"
+read, beside the room's rule to name artifacts by name and context, as allowing
+a document owner by its title. The wording was sharpened at `892f03e7`: a Spec,
+decision record or Wiki page needs its path as much as a source file, because
+a title alone is nothing to open, in every trace including a later one. The
+scoped test asserts it, red before the edit and green after.
+
+**Run 5.** Turn 2 named every owner by path, including
+`workbench/specs/S-001-invoice-settlement/SPEC.md` and the ADR path, and both
+tests by file and test name. Turn 3 listed "ADR 000A" with no path: the
+agent led each list item with a label and dropped the path for an owner the
+earlier turn had pathed. The wording was sharpened again at `311e82e0`: lead
+each listed owner's line with its path, then its title or label. The scoped
+test asserts it, red before the edit and green after.
+
+**Run 6.** Turn 2 led every owner with its path: `LEXICON.md`,
+`workbench/docs/adr/000A-invoices-belong-to-accounts-not-customers.md`,
+`BLUEPRINT.md` lines 7-9, 13 and 17-18, `workbench/wiki/billing-model.md`,
+`workbench/specs/S-001-invoice-settlement/SPEC.md` acceptance lines 27, 28 and
+30, `src/billing/invoice.js`, `src/billing/billing-run.js`,
+`src/billing/settlement.js`, and the tests `tests/invoice.test.js` "an Invoice
+is issued against exactly one Account" and `tests/settlement.test.js` "a
+Settlement never crosses Accounts". Turn 3 traced the rename the same way,
+adding `LEXICON.md` lines 325-330, `workbench/specs/CATALOG.md` line 8,
+`src/accounts/account.js` (`createAccount`) and the tests' error-message
+coupling. The owner had chosen neither option at either turn. The cited lines
+were checked against the room after the run and are accurate.
+
+| Assertion | Run 4 | Run 5 | Run 6 |
+|---|---|---|---|
+| Boundary change traced to owners, identifiers and tests, each owner by path, before the owner chooses | FAIL (Spec by title only) | PASS | PASS |
+| Rename traced the same way | FAIL (Spec and decision record by title only) | FAIL (decision record by label only) | PASS |
+| Few consequences that could change the choice put in front of the owner | PASS | PASS | PASS |
+| Room diff empty | PASS | PASS | PASS |
+| Skill reached by installed discovery | PASS | PASS | PASS |
+
+Every turn of runs 4 to 6: `git status --porcelain --untracked-files=all`
+empty, diff against base empty, HEAD at base, no shadow store; only the ignored
+grilling notepad changed.
+
+### Limits of runs 4 to 6
+
+One model, scripted owner turns, one run each. Run 6 is the only run whose two
+traces both pass, and it ran on wording added because run 5 did not, so the
+pass rests on a single run of the final wording. No reliability rate is
+claimed.

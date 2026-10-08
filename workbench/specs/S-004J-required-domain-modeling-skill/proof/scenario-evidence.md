@@ -21,7 +21,11 @@ lines 3, 4, 5, 7 and 8, recorded 2026-10-07 by Task TK-00JB.
   reruns used rooms built the same way from later commits: run 2 from
   `2d92a3d370274a30afc1bb5358c744ac00a1cef4` (the corrected skill after the
   review's first verdict) and run 3 from
-  `7188bc639f17614e73f9d75ab861b6f0e0bc59b7` (trace wording sharpened).
+  `7188bc639f17614e73f9d75ab861b6f0e0bc59b7` (trace wording sharpened). After
+  the PR #425 review, runs 4 to 6 used rooms built from
+  `7499d6bda98529a0005eb2f4bb89d52215679231` and two scratch commits whose
+  skill bytes equal branch commits `892f03e7` and `311e82e0`; the
+  [scenario 1 observations](scenarios/s1-trace/observations.md) give each.
 - **Fresh contexts.** [run-scenario.mjs](run-scenario.mjs) drives each
   scenario as a new headless Claude Code session started inside the room
   (`claude -p`, later turns `--resume SESSION`), with
@@ -39,15 +43,16 @@ lines 3, 4, 5, 7 and 8, recorded 2026-10-07 by Task TK-00JB.
   and room diffs, not exact prose.
 - **Model and CLI.** `claude-opus-5-5`, Claude Code 2.1.287, default effort.
   Session cost reported by the CLI for the first eight runs: about 18 USD;
-  scenario 1 runs 2 and 3: 1.97 and 2.15 USD.
+  scenario 1 runs 2 and 3: 1.97 and 2.15 USD; runs 4 to 6: about 2.12, 2.05
+  and 2.19 USD.
 
 ## Results
 
 | Scenario (acceptance line) | Runs | Result | Evidence |
 |---|---|---|---|
-| 1. Trace a boundary and a rename before the owner chooses (3) | 3 (A) | PASS on run 3 only: runs 1 and 2 did not name the tests; run 3, after the trace wording was sharpened, did | [observations](scenarios/s1-trace/observations.md), [run1-A](scenarios/s1-trace/run1-A.json), [run2-A](scenarios/s1-trace/run2-A.json), [run3-A](scenarios/s1-trace/run3-A.json) |
+| 1. Trace a boundary and a rename before the owner chooses (3) | 6 (A) | PASS on run 6 only: runs 1 and 2 did not name the tests; runs 3 to 5 named them but listed some document owners without their paths; run 6, after the wording put the path first on each listed owner, named every owner by path in both traces | [observations](scenarios/s1-trace/observations.md), [run1-A](scenarios/s1-trace/run1-A.json), [run2-A](scenarios/s1-trace/run2-A.json), [run3-A](scenarios/s1-trace/run3-A.json), [run4-A](scenarios/s1-trace/run4-A.json), [run5-A](scenarios/s1-trace/run5-A.json), [run6-A](scenarios/s1-trace/run6-A.json) |
 | 2. Conflict, overload, edge case and a classified behavior claim (4) | 1 (A) | PASS | [observations](scenarios/s2-challenges/observations.md), [run1-A](scenarios/s2-challenges/run1-A.json) |
-| 3. Capture, correction, confirmation and promotion (5) | 2 (A) + 2 (B) | Capture, correction and confirmation PASS in all four. Promotion: Lexicon fallback through the promote tool PASS (A, 2 runs); variant B reached `GLOSSARY.md` by a manual write after the promote tool refused. Tool promotion verified only for the Lexicon fallback | [observations](scenarios/s3-capture-promotion/observations.md), [run1-A](scenarios/s3-capture-promotion/run1-A.json), [run1-B](scenarios/s3-capture-promotion/run1-B.json), [run2-A](scenarios/s3-capture-promotion/run2-A.json), [run2-B](scenarios/s3-capture-promotion/run2-B.json) |
+| 3. Capture, correction, confirmation and promotion (5) | 2 (A) + 2 (B) | Capture, correction and confirmation PASS in all four. Promotion: Lexicon fallback through the promote tool PASS (A, 2 runs); variant B reached `GLOSSARY.md` by a manual write after the promote tool refused. Tool promotion verified only for the Lexicon fallback, so acceptance line 5 stays open until the glossary variant reruns through the tool | [observations](scenarios/s3-capture-promotion/observations.md), [run1-A](scenarios/s3-capture-promotion/run1-A.json), [run1-B](scenarios/s3-capture-promotion/run1-B.json), [run2-A](scenarios/s3-capture-promotion/run2-A.json), [run2-B](scenarios/s3-capture-promotion/run2-B.json) |
 | 4. Decision records: three declined, one offered by the scope test (7) | 1 (A) | PASS | [observations](scenarios/s4-decision-records/observations.md), [run1-A](scenarios/s4-decision-records/run1-A.json) |
 | 5. Grilling without the skill; no shadow store in any run (8) | 1 (A) + all rooms | PASS | [observations](scenarios/s5-without-skill/observations.md), [run1-A](scenarios/s5-without-skill/run1-A.json) |
 
@@ -59,11 +64,18 @@ Highlights:
   named the tests only as "two current tests" and "both test files". Run 2, on
   the corrected skill, did the same. The skill's trace wording was then
   sharpened to name each owner by path and each test by file and test name.
-  Run 3 then named every owner by path, with lines for the Lexicon,
-  Blueprint, Spec and source, and the tests `tests/invoice.test.js` "an Invoice
-  is issued against exactly one Account" and `tests/settlement.test.js` "a
-  Settlement never crosses Accounts", before the owner chose. Room diff empty
-  in every run.
+  Run 3 named both tests and every owner's path in the boundary trace, but its
+  rename trace listed the Blueprint, Wiki page, Spec and decision record by
+  title alone. Run 4 listed the Spec and decision record by title in both
+  traces; run 5, after the wording required a path for every document owner,
+  dropped the decision record's path in the rename trace. Run 6, after the
+  wording put the path first on each listed owner, led every owner in both
+  traces with its path, including
+  `workbench/docs/adr/000A-invoices-belong-to-accounts-not-customers.md` and
+  `workbench/specs/S-001-invoice-settlement/SPEC.md`, and named the tests
+  `tests/invoice.test.js` "an Invoice is issued against exactly one Account"
+  and `tests/settlement.test.js` "a Settlement never crosses Accounts", before
+  the owner chose. Room diff empty in every run.
 - **Challenges (2).** Each owner turn drew its own challenge, quoting
   `LEXICON.md` lines; the partial-Settlement claim was run against
   `settle()` and classified as an implementation gap, citing
@@ -83,7 +95,7 @@ Highlights:
   with its state in the notepad and `domain-modeling` never loaded. No
   `CONTEXT.md`, `CONTEXT-MAP.md`, `UBIQUITOUS_LANGUAGE.md`, `GLOSSARY-MAP.md`
   or root `docs/` tree appeared in any of the eight rooms, nor in scenario 1's
-  run 2 and run 3 rooms (their per-turn `shadowStores` are empty).
+  run 2 to run 6 rooms (their per-turn `shadowStores` are empty).
 
 ## Finding outside the skill
 
@@ -104,8 +116,8 @@ to the `domain-modeling` skill was needed, and none was made.
 ## Limits
 
 - One model and one provider; one run per scenario except scenario 3 (two per
-  variant) and scenario 1 (three runs, the last on sharpened wording). No
-  statistical claim about reliability.
+  variant) and scenario 1 (six runs, the last on the final wording, which
+  passed once). No statistical claim about reliability.
 - Owner turns are scripted and do not answer the agent's questions, so later
   turns arrive with earlier questions open.
 - Fresh contexts are separate headless sessions on the same machine with only

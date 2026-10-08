@@ -190,7 +190,7 @@ operations index), and with S-00R on the pending source. S-003L and S-003O
 read this skill's delivered boundary. Coordinate with S-004O for vocabulary layout and
 consumer migration; a missing glossary is an implementation dependency, not an
 open owner choice. Do not ship references to an absent vocabulary owner or
-remove the Lexicon fallback before migration is verified. Promotion into a root `GLOSSARY.md` through the `promote` tool depends on S-004O adding the glossary to the layout's accepted root owners (its TK-009E); until then the scenario proof verifies tool promotion only for the Lexicon fallback, and the glossary variant reached `GLOSSARY.md` only by a manual write at the authorized boundary after the tool refused.
+remove the Lexicon fallback before migration is verified. Promotion into a root `GLOSSARY.md` through the `promote` tool depends on S-004O adding the glossary to the layout's accepted root owners (its TK-009E); until then the scenario proof verifies tool promotion only for the Lexicon fallback, and the glossary variant reached `GLOSSARY.md` only by a manual write at the authorized boundary after the tool refused, so acceptance line 5 stays open. At 2026-10-08 the glossary destination exists on S-004O's assembly branch `claude/s004o-lexicon-retirement` (draft PR #431), not on integration.
 
 ## Vertical Implementation Slices
 
@@ -214,10 +214,10 @@ rooms; (4) Wiki article reconciliation.
   empty.
 - [x] A conflicting term, an overloaded term and an edge case each draw a
   specific challenge; a stated behavior is classified against named source.
-- [x] A pending term and its correction remain in the notepad; confirmation
+- [ ] A pending term and its correction remain in the notepad; confirmation
   records settled meaning and promotion reaches the canonical glossary only at
   the authorized boundary. No inline Canon or glossary write occurs.
-  - QA scope: the recorded local glossary scenarios used an authorized manual write after `sessions.mjs promote` refused the root glossary destination. The skill boundary passed; the runtime glossary route remains owned by S-004O, with no tool-based promotion or cloud reliability claim. Curated proof retains observed replies, notepads and room diffs; original tool-result streams are not committed.
+  - Open (2026-10-08, PR #425 review): capture, correction, confirmation and the empty diff before authorization passed in all four scenario 3 runs, and tool promotion passed for the Lexicon fallback. Promotion has not reached the canonical glossary: both glossary-variant runs wrote `GLOSSARY.md` by hand after `sessions.mjs promote` refused the destination, which skipped the route's selection, privacy and owner checks. This line stays open until S-004O's glossary destination for `promote` is on integration and the glossary variant reruns through the tool. Curated proof retains observed replies, notepads and room diffs; original tool-result streams are not committed.
 - [x] Source and format comparison records the pin, credits and each necessary
   adapter; the upstream language challenges, scenario probes and code checks
   are preserved without unrelated policy rewrites.

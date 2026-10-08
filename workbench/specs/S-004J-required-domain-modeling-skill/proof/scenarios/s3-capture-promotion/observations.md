@@ -10,7 +10,8 @@ before authorization held in all four runs. Promotion did not: the Lexicon
 fallback (variant A, two runs) was promoted through the promote tool; the
 glossary variant (B, two runs) reached `GLOSSARY.md` by a manual write after
 the promote tool refused. Tool promotion is verified only for the Lexicon
-fallback.
+fallback, so acceptance line 5 stays open until the glossary variant reruns
+through `promote` once S-004O's glossary destination is on integration.
 
 Owner turns ([turns.json](turns.json)): (1) `/domain-modeling` proposes
 "Dunning" as one reminder email; (2) corrects it to the whole escalating
