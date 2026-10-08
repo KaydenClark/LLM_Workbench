@@ -279,8 +279,9 @@ identifiers only.
 - **Wiki**: the catalog groups (root controls, ADRs, DDRs, Landmarks, Specs,
   Tasks, DQCs, Wiki pages, skills, and architecture or glossary files when
   present), titles first. A question links to the Wiki page of each cataloged
-  source and of every decision record it uses: one among its sources, or one
-  it names by identifier (ADR-, DDR- or CDR-) anywhere in its question, context,
+  source and of each decision record it uses as a source or names by a full
+  identifier or slash shorthand (ADR-, DDR- or CDR-; a comma-listed
+  continuation links only its first identifier, see below) in its question, context,
   proposal, brief, draft or options, including slash shorthand (`ADR-000B/C/D`
   names ADR-000B, ADR-000C and ADR-000D; `DDR-000P/000Q` names both; an
   ordinary slash such as `ADR-000B/its successor` does not expand). Those
