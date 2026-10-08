@@ -507,3 +507,17 @@ test('in-room absolute source paths are stored room-relative and outside paths a
   assert.equal(board.draftsToApprove(root).groups[0].items[0].approval.state, 'stale', 'editing the draft still makes the approval stale');
   assert.notEqual(flow.read().cards['GB-0001'].revisedSinceRequest, false);
 });
+
+test('an action replay is recognized whatever the JSON key order of its payload', () => {
+  const f = fixture();
+  f.confirm();
+  const first = f.api.promote({ ids: ['GB-0001'], revisions: { 'GB-0001': 1 }, actionId: 'promote-order', expectedRevision: 0 });
+  const reordered = f.api.promote({ revisions: { 'GB-0001': 1 }, expectedRevision: 0, actionId: 'promote-order', ids: ['GB-0001'] });
+  assert.equal(reordered.idempotent, true);
+  assert.equal(reordered.request.id, first.request.id);
+  assert.equal(f.api.read().requests.length, 1);
+  const comment = { id: 'GB-0002', itemRevision: 1, kind: 'comment', text: 'Order does not matter.', actionId: 'comment-order', expectedRevision: first.revision };
+  f.api.comment(comment);
+  assert.equal(f.api.comment({ text: comment.text, actionId: comment.actionId, kind: 'comment', itemRevision: 1, id: 'GB-0002', expectedRevision: 0 }).idempotent, true);
+  assert.throws(() => f.api.comment({ ...comment, text: 'Different words' }), /action-id-conflict/, 'different content still conflicts');
+});
