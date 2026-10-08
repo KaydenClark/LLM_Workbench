@@ -8,8 +8,8 @@
 **Updated:** 2026-10-08
 **Catalog description:** Integration PRs and integration updates run the canonical required suite; this repository alone has fast offline staged whitespace and JavaScript syntax checks at commit.
 **Blockers:** none
-**Latest event:** TK-007S closed with proof.
-**Next gate:** Fresh independent assembled review, then reviewed integration delivery; owner Human QA and main remain separate.
+**Latest event:** Independent assembled review passed at 29b1da5759755d9cce38d9d037553fbc700dac48.
+**Next gate:** Owner Human QA after reviewed integration delivery; main promotion remains owner-only.
 
 > **Citation anchors.** pre=`45d79a453cf21520317ff7ec48e2d299a2f6a0ad` post=`45d79a453cf21520317ff7ec48e2d299a2f6a0ad`.
 
@@ -81,6 +81,7 @@ Owning files: .github/workflows/verify.yml; .githooks/; tools/setup-pre-commit.m
 | 2026-10-08 | review | Review verdict: fail at 30d211102c28ab0c55e94b910c4e4949541eaec7 [5979835a5767] #2 | continue TK-007S: Honor ordinary .js CommonJS and staged package module context, retain .mjs and .cjs modes, and add narrow real-Git regressions. | OpenAI Codex fresh read-only ephemeral CLI context 01a11b05-523b-7a11-a7e0-bf6da36f1de9, configured gpt-6.1-sol/high, runtime 0.159.3 | 1 |
 | 2026-10-08 | TK-007S | Round-two corrective return | Default CommonJS .js red reproduces module-mode rejection; five real-Git hook cases now pass, including explicit extensions and staged nearest-package metadata. | Owned raw proof with whitespace stored as gzip without changing its bytes; review-round-two.md.gz preserves the independent report | Full clean-candidate verification and fresh review pending |
 | 2026-10-08 | TK-007S | Task closed (run 3) | code 1711be148b6b0d734c84531b3a122000dfa536c6; canonical 55/55 commands verified in two permission segments on unchanged source (955.8s measured execution); focused ADR 62/62 and real-Git hook scenarios 5/5 pass; range whitespace check clean; score 73 and exact baseline 23 drift findings remain | .github/workflows/verify.yml; .githooks/; tools/setup-pre-commit.mjs; tools/verify.mjs; tools/test-pre-commit.mjs; RUNBOOK.md | none in implementation Git state at close: dirty-tree (13 files: workbench/specs/S-005D-decision-relocation-link-repair/SPEC.md, workbench/specs/S-005D-decision-relocation-link-repair/proof/adr-round-three-green.txt.gz, workbench/specs/S-005D-decision-relocation-link-repair/tasks/TK-007P/TASK.md, workbench/specs/S-005E-readback-skill/SPEC.md, workbench/specs/S-005F-workflow-reference/SPEC.md, workbench/specs/S-005G-repository-ci-and-fast-hooks/SPEC.md, workbench/specs/S-005G-repository-ci-and-fast-hooks/proof/hooks-round-three-green.txt.gz, workbench/specs/S-005G-repository-ci-and-fast-hooks/proof/round-three-guardrail.json.gz, workbench/specs/S-005G-repository-ci-and-fast-hooks/proof/round-three-sandbox-suite.txt.gz, workbench/specs/S-005G-repository-ci-and-fast-hooks/proof/round-three-self-drift.json.gz, and 3 more) and unpushed (ahead 15 behind 0 of origin/integration); recorded reason: Owner requires independent review before publication, locally verified completion is not remote delivery or owner Human QA |
+| 2026-10-08 | review | Review verdict: pass at 29b1da5759755d9cce38d9d037553fbc700dac48 [fa450aa952c8] #3 | none | OpenAI Codex fresh independent Director thread 01a11b15-797c-72a1-8886-b2e20df641e8, read-only ephemeral CLI 0.159.3, configured gpt-6.1-sol/high, exact model not independently exposed within reviewer context | none |
 
 ## Completion Result
 

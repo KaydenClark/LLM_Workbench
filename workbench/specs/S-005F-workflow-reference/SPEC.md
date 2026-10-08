@@ -8,8 +8,8 @@
 **Updated:** 2026-10-08
 **Catalog description:** RUNBOOK.md is the easy-to-reference home for existing workflows expressed as ordered verbs, with scenario and skill pointers.
 **Blockers:** none
-**Latest event:** TK-007R closed with proof.
-**Next gate:** Fresh independent assembled review, then reviewed integration delivery; owner Human QA and main remain separate.
+**Latest event:** Independent assembled review passed at 29b1da5759755d9cce38d9d037553fbc700dac48.
+**Next gate:** Owner Human QA after reviewed integration delivery; main promotion remains owner-only.
 
 > **Citation anchors.** pre=`45d79a453cf21520317ff7ec48e2d299a2f6a0ad` post=`45d79a453cf21520317ff7ec48e2d299a2f6a0ad`.
 
@@ -82,6 +82,8 @@ Owning files: RUNBOOK.md; templates/RUNBOOK.md; the existing Workflow Verbs and 
 | 2026-10-08 | TK-007R | Task closed (run 2) | corrected code 65dcac7658f78a0eaaccd6f72efaa83b19cfd5bc; canonical 55/55 commands pass in 948.2s; focused ADR lifecycle 5/5 and real-Git hook cases 4/4 pass; Blueprint semantic assertion and Wiki validation pass; score remains 73 and baseline drift remains 23 | RUNBOOK.md; templates/RUNBOOK.md; tools/test-blueprint-contract.mjs; tools/test-control-fidelity.mjs; workbench/wiki/design-concepts/workflow-verbs.md; workbench/wiki/design-concepts/idea-to-delivery-workflow.md | none in implementation Git state at close: dirty-tree (13 files: workbench/specs/S-005D-decision-relocation-link-repair/SPEC.md, workbench/specs/S-005D-decision-relocation-link-repair/tasks/TK-007P/TASK.md, workbench/specs/S-005E-readback-skill/SPEC.md, workbench/specs/S-005E-readback-skill/proof/readback-identity.json, workbench/specs/S-005F-workflow-reference/SPEC.md, workbench/specs/S-005F-workflow-reference/proof/control-fidelity-home-red.txt, workbench/specs/S-005F-workflow-reference/tasks/TK-007R/TASK.md, workbench/specs/S-005G-repository-ci-and-fast-hooks/proof/corrected-full-suite.txt, workbench/specs/S-005G-repository-ci-and-fast-hooks/proof/corrected-guardrail.json.gz, workbench/specs/S-005G-repository-ci-and-fast-hooks/proof/corrected-self-drift.json.gz, and 3 more) and unpushed (ahead 12 behind 0 of origin/integration); recorded reason: Owner requires independent review before publication, local verified completion is not remote delivery or owner Human QA |
 | 2026-10-08 | review | Review verdict: pass at 30d211102c28ab0c55e94b910c4e4949541eaec7 [daf41ccb0820] #2 | none | OpenAI Codex fresh read-only ephemeral CLI context 01a11b05-523b-7a11-a7e0-bf6da36f1de9, configured gpt-6.1-sol/high, runtime 0.159.3 | none |
 | 2026-10-08 | TK-007R | Final corrected assembly verification | code 1711be148b6b0d734c84531b3a122000dfa536c6; canonical 55/55 commands verified in two permission segments on unchanged source (955.8s measured execution); focused ADR 62/62 and real-Git hook scenarios 5/5 pass; range whitespace check clean; score 73 and exact baseline 23 drift findings remain | Existing owned readback/reference docs and proof | Fresh combined review and delivery pending |
+| 2026-10-08 | review | Review verdict: pass at 29b1da5759755d9cce38d9d037553fbc700dac48 [b94a4f664f94] #3 | none | OpenAI Codex fresh independent Director thread 01a11b15-797c-72a1-8886-b2e20df641e8, read-only ephemeral CLI 0.159.3, configured gpt-6.1-sol/high, exact model not independently exposed within reviewer context | none |
+| 2026-10-08 | review | Final independent report | [Exact independent report](proof/review-round-three.md.gz) | All four native digests pass; implementation/control bytes unchanged from verified code | Hosted CI and delivery observations follow in the linked PR, owner Human QA remains separate |
 
 ## Completion Result
 

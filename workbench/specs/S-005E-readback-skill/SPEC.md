@@ -8,8 +8,8 @@
 **Updated:** 2026-10-08
 **Catalog description:** The owner can invoke /readback at any time to confirm or correct how an answer, concept or direction is understood.
 **Blockers:** none
-**Latest event:** TK-007Q closed with proof.
-**Next gate:** Fresh independent assembled review, then reviewed integration delivery; owner Human QA and main remain separate.
+**Latest event:** Independent assembled review passed at 29b1da5759755d9cce38d9d037553fbc700dac48.
+**Next gate:** Owner Human QA after reviewed integration delivery; main promotion remains owner-only.
 
 > **Citation anchors.** pre=`45d79a453cf21520317ff7ec48e2d299a2f6a0ad` post=`45d79a453cf21520317ff7ec48e2d299a2f6a0ad`.
 
@@ -80,6 +80,7 @@ Owning files: workbench/skills/readback/SKILL.md; workbench/manifest.json; workb
 | 2026-10-08 | TK-007Q | Corrected assembled verification | corrected code 65dcac7658f78a0eaaccd6f72efaa83b19cfd5bc; canonical 55/55 commands pass in 948.2s; focused ADR lifecycle 5/5 and real-Git hook cases 4/4 pass; Blueprint semantic assertion and Wiki validation pass; score remains 73 and baseline drift remains 23 | Readback source unchanged; native three-case proof remains bounded | Fresh combined review and integration delivery pending |
 | 2026-10-08 | review | Review verdict: pass at 30d211102c28ab0c55e94b910c4e4949541eaec7 [e1e5e324de8e] #2 | none | OpenAI Codex fresh read-only ephemeral CLI context 01a11b05-523b-7a11-a7e0-bf6da36f1de9, configured gpt-6.1-sol/high, runtime 0.159.3 | none |
 | 2026-10-08 | TK-007Q | Final corrected assembly verification | code 1711be148b6b0d734c84531b3a122000dfa536c6; canonical 55/55 commands verified in two permission segments on unchanged source (955.8s measured execution); focused ADR 62/62 and real-Git hook scenarios 5/5 pass; range whitespace check clean; score 73 and exact baseline 23 drift findings remain | Existing owned readback/reference docs and proof | Fresh combined review and delivery pending |
+| 2026-10-08 | review | Review verdict: pass at 29b1da5759755d9cce38d9d037553fbc700dac48 [b371782fc939] #3 | none | OpenAI Codex fresh independent Director thread 01a11b15-797c-72a1-8886-b2e20df641e8, read-only ephemeral CLI 0.159.3, configured gpt-6.1-sol/high, exact model not independently exposed within reviewer context | none |
 
 ## Completion Result
 
