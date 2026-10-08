@@ -281,13 +281,17 @@ identifiers only.
   present), titles first. A question links to the Wiki page of each cataloged
   source and of every decision record it uses: one among its sources, or one
   it names by identifier (ADR-, DDR- or CDR-) anywhere in its question, context,
-  proposal, brief, draft or options. Those identifiers are also linked where
-  they appear in the question's text (never inside code), with the record's
-  title on hover; an identifier with no cataloged record is shown as
-  unavailable, not as a dead link. Relative Markdown links in a question's
-  text resolve against its first in-room source, and link only to cataloged
-  pages. Each page shows **Linked from**
-  (questions and pages that link to it) and glossary terms show their
+  proposal, brief, draft or options, including slash shorthand (`ADR-000B/C/D`
+  names ADR-000B, ADR-000C and ADR-000D; `DDR-000P/000Q` names both; an
+  ordinary slash such as `ADR-000B/its successor` does not expand). Those
+  identifiers are also linked where they appear in the question's text (never
+  inside code), with the record's title on hover; an identifier with no
+  cataloged record is shown as unavailable, not as a dead link. Relative
+  Markdown links in a question's text resolve against its first in-room source
+  (the room root when it has none), and link only to cataloged pages. Each page
+  shows **Linked from**: the pages that link to it, and every question whose
+  card links to it in any of those ways (by source, by identifier or shorthand,
+  or by a Markdown link), counted by the same rule the card uses and glossary terms show their
   definition on hover, when the server's sources module offers them; without
   them the page shows the board questions citing the file and no definitions.
 
