@@ -8,8 +8,8 @@
 **Updated:** 2026-10-08
 **Catalog description:** Decision lifecycle moves preserve outgoing relative targets and repair incoming Grill Board references without rewriting historical evidence.
 **Blockers:** none
-**Latest event:** TK-007P claimed by codex-confirmed-followup.
-**Next gate:** Close TK-007P with verification and documentation proof.
+**Latest event:** TK-007P closed with proof.
+**Next gate:** Fresh independent assembled review, then reviewed integration delivery; owner Human QA and main remain separate.
 
 > **Citation anchors.** pre=`45d79a453cf21520317ff7ec48e2d299a2f6a0ad` post=`45d79a453cf21520317ff7ec48e2d299a2f6a0ad`.
 
@@ -80,6 +80,7 @@ Owning files: workbench/tools/adr.mjs; tools/test-adr.mjs; workbench/skills/to-d
 | 2026-10-08 | review | Review verdict: pass at 30d211102c28ab0c55e94b910c4e4949541eaec7 [2d65cc5e0809] #2 | none | OpenAI Codex fresh read-only ephemeral CLI context 01a11b05-523b-7a11-a7e0-bf6da36f1de9, configured gpt-6.1-sol/high, runtime 0.159.3 | none |
 | 2026-10-08 | review | Review verdict: fail at 30d211102c28ab0c55e94b910c4e4949541eaec7 [2d65cc5e0809] #3 | continue TK-007P: Builder QA reproduced a regression where multiline link labels are skipped, restore their previously supported relocation and add narrow lifecycle regression. | codex-confirmed-followup Builder QA, own proven failure only, not independent approval | 1 |
 | 2026-10-08 | TK-007P | Round-two corrective return | Multiline-label ADR/DDR relocation red reproduces the missed rebase; parser restores original label acceptance without a new harness. | Owned raw proof with whitespace stored as gzip without changing its bytes; review-round-two.md.gz preserves the independent report | Full clean-candidate verification and fresh review pending |
+| 2026-10-08 | TK-007P | Task closed (run 3) | code 1711be148b6b0d734c84531b3a122000dfa536c6; canonical 55/55 commands verified in two permission segments on unchanged source (955.8s measured execution); focused ADR 62/62 and real-Git hook scenarios 5/5 pass; range whitespace check clean; score 73 and exact baseline 23 drift findings remain | workbench/tools/adr.mjs; tools/test-adr.mjs; workbench/skills/to-docs/SKILL.md | none in implementation Git state at close: dirty-tree (9 files: workbench/specs/S-005D-decision-relocation-link-repair/SPEC.md, workbench/specs/S-005D-decision-relocation-link-repair/proof/adr-round-three-green.txt.gz, workbench/specs/S-005D-decision-relocation-link-repair/tasks/TK-007P/TASK.md, workbench/specs/S-005G-repository-ci-and-fast-hooks/proof/hooks-round-three-green.txt.gz, workbench/specs/S-005G-repository-ci-and-fast-hooks/proof/round-three-guardrail.json.gz, workbench/specs/S-005G-repository-ci-and-fast-hooks/proof/round-three-sandbox-suite.txt.gz, workbench/specs/S-005G-repository-ci-and-fast-hooks/proof/round-three-self-drift.json.gz, workbench/specs/S-005G-repository-ci-and-fast-hooks/proof/round-three-suite-continuation.txt.gz, workbench/specs/S-005G-repository-ci-and-fast-hooks/proof/round-three-verification.json) and unpushed (ahead 15 behind 0 of origin/integration); recorded reason: Owner requires independent review before publication, locally verified completion is not remote delivery or owner Human QA |
 
 ## Completion Result
 
@@ -87,6 +88,8 @@ Initial local checkpoint, before round-one review: implementation verified local
 
 
 Corrected implementation verified locally at `65dcac7658f78a0eaaccd6f72efaa83b19cfd5bc`: all 55 canonical commands pass in 948.2 seconds. The continued ADR, workflow and hook Tasks preserve their earlier proof and round-one findings. Targeted edge regressions and the corrected workflow contract pass. The unchanged readback native trace remains bounded to its recorded candidate. This result establishes local implementation verification; actual independent review, hosted CI, integration containment and repository-local hook installation are recorded as they occur in the append-only evidence. Owner Human QA and main remain separate.
+
+Final correction verified locally at `1711be148b6b0d734c84531b3a122000dfa536c6`: canonical 55/55 commands verified on unchanged source across permission segments in 955.8 measured execution seconds, with 62 ADR tests and five real-Git hook cases passing. Earlier local results remain bounded to their candidates. The unchanged readback demo still supports three synthetic outputs only. Independent review and actual delivery observations remain pending in this local snapshot; owner Human QA and main remain separate.
 
 ## Remaining Limitations Or Follow-Up Specs
 
