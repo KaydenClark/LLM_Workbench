@@ -9,8 +9,8 @@
 **Catalog description:** The owner's local Dashboard: Destination Tracker, Taskboard, Grilling Board, Drafts to approve and Wiki, with progressive grilling, exact wording approvals and explicit promotion handoffs.
 **Release scope:** In scope since the owner's 2026-10-04 answer; no release is assigned.
 **Blockers:** none
-**Latest event:** TK-007O closed with proof.
-**Next gate:** Complete TK-007Y.
+**Latest event:** 2026-10-08: the director run's assembled Dashboard first pass passed its fourth separate-context review at `07429c50` (Full suite 60/60) after three failed reviews and their corrections; TK-007L, TK-007M, TK-007N, TK-007O, TK-007T and TK-007X are closed with proof on `claude/workbench-dashboard-first-pass`, which is offered as a draft PR into integration. Not delivered until merged.
+**Next gate:** A fresh review of the final records candidate and the draft PR's merge into integration. Open after that: TK-007Y (the always-open login service verified after login and a killed process: the Owner's installed service must be restarted or replaced by the Owner), the unchecked acceptance lines (wider shared-board lines, recommended-alternative preselection on 33 questions, applied-approval wording, sampled-path context labels and the nine grouped prompts that live on the unpublished consequential-decision lane), the question-content pass recorded in `proof/question-content-audit-2026-10-08.json`, and Owner Human QA.
 
 > **Citation anchors.** pre=`f6af4c339b543988a3212b1940581157f573818d` post=`f6af4c339b543988a3212b1940581157f573818d`.
 
@@ -554,33 +554,33 @@ before its draft PR into integration.
 
 ### P/V proof on the Grill Board
 
-- [ ] Every in-scope live question has valid P1–P4 and V1–V4 grades with reasons
+- [x] Every in-scope live question has valid P1–P4 and V1–V4 grades with reasons
   traceable to its question and governed capability/change. Missing grades
   remain visible as unclassified rather than receiving invented defaults.
-- [ ] Numbered red P and amber V badges appear on the right of question cards;
+- [x] Numbered red P and amber V badges appear on the right of question cards;
   clicking each reveals its own rationale without replacing or answering the
   question. Opening the question centrally shows all information, P/V and reasons.
-- [ ] P1V2, P3V1, P2 alone and V alone return exactly their matching questions.
+- [x] P1V2, P3V1, P2 alone and V alone return exactly their matching questions.
   Clearing filters restores the wider inventory; other board filters still combine.
-- [ ] The Owner can select a fixed answering batch from a P/V-filtered slice,
+- [x] The Owner can select a fixed answering batch from a P/V-filtered slice,
   inspect details, answer, pause/resume and reload without lost drafts,
   changed batch membership, missing history or double-counted questions.
-- [ ] Grade updates through validated operations retain stable identity and
+- [x] Grade updates through validated operations retain stable identity and
   revision/history behavior. Invalid classifications and stale updates are
   refused without losing prior data; agent operations never write Owner answers.
-- [ ] A demonstrated answer-to-card-update cycle shows the agent assessing
+- [x] A demonstrated answer-to-card-update cycle shows the agent assessing
   whether each affected grade's basis changed, retaining grades when it did
   not and recording justified revisions when it did. No periodic DQC work is needed.
-- [ ] Browser checks on a disposable copy of the real inventory show the
+- [x] Browser checks on a disposable copy of the real inventory show the
   Owner's P3V1 -> grade explanation -> central question -> answer -> card-update
   scenario. Record exact source/candidate, matched question identities and
   results; technical tests alone do not establish Owner usefulness or Human QA.
 
 ### Workbench Dashboard proof
 
-- [ ] The five sections open from one site, each reading its existing owners;
+- [x] The five sections open from one site, each reading its existing owners;
   every question that uses a decision record links to it in the Wiki section.
-- [ ] The answer controls are Confirm, Rework wording, Change the why and
+- [x] The answer controls are Confirm, Rework wording, Change the why and
   Change; every answer except confirming the recommended one is refused until
   a note is typed; there is no Not now or Decline; Change the why answers
   appear in a filterable Whys list.
@@ -599,13 +599,13 @@ before its draft PR into integration.
 - [ ] Owner-path verification on the real inventory shows the owner can
   understand and answer the nine grouped rationale prompts without asking in
   chat where things are; technical tests alone do not establish Human QA.
-- [ ] Draft → Critique → Revise → Confirm works on a card: a Change request
+- [x] Draft → Critique → Revise → Confirm works on a card: a Change request
   with its note, an agent revision, and a fresh confirmation bound to the
   revised wording; a comment or Change never counts as approval.
-- [ ] The owner explicitly starts promotion for one confirmed card or for
+- [x] The owner explicitly starts promotion for one confirmed card or for
   selected confirmed cards; answering, confirming or ending a round starts no
   agent; unconfirmed, stale or Change-pending cards are refused.
-- [ ] Each promotion shows ordered Record → Publish → Map → Publish → Plan →
+- [x] Each promotion shows ordered Record → Publish → Map → Publish → Plan →
   Publish receipts with evidence and native source links; a knowledge-only
   decision shows its no-op reason and gains no Spec or Task.
 
@@ -702,3 +702,4 @@ The Blueprint is unchanged, for the reason the decision gives.
 | 2026-10-08 | TK-007T | Task closed | Five sections from native owners: source-qualified Taskboard (613 real cards, legacy labels kept apart, overwritten identity refused, duplicate-field guard strict for every parsed field), Tracker semantics kept distinct, source errors shown without substitutes; Drafts to approve with current beside proposed wording and snapshot match or stale state; Wiki groups, decision-record links, glossary, backlinks and bounded search excluding private collections. tools/test-dashboard-sources.mjs 11/11, tools/test-taskboard-json.mjs 65/65; browser receipt proof/owner-flow-demo-a857b658.json step 1. Full suite 60/60 on clean candidate 07429c50; separate-context review #4 pass at 07429c50 (Spec evidence) | workbench/grill-board/README.md: sections, Drafts to approve, search, backlinks and glossary; RUNBOOK Full suite lists the Dashboard checks | Question content: 99 pointer-only recommendations, 16 wording approvals without a draft and 61 missing or moved source paths remain for a content pass (proof/question-content-audit-2026-10-08.json); the glossary reads GLOSSARY.md once the Lexicon retirement lands |
 | 2026-10-08 | TK-007X | Task closed | Four answer controls through one shared answerControls rule, notes required server-side, retired words refused for new answers and legacy answers keeping labels and status; Whys list; exact approval snapshots with one normalized hash and re-confirmation of legacy confirmations; answer history chained with supersedes and conflicts that stop agents, apply, rounds and promotion; explicit single and selected promotion with ordered receipts, knowledge-only no-op reasons and distinct card states; local-only Host, Origin, content-type, cross-site and framing guards. tools/test-dashboard-board.mjs 38/38, tools/test-dashboard-workflow.mjs 24/24; browser receipt proof/owner-flow-demo-a857b658.json steps 2-9. Full suite 60/60 on clean candidate 07429c50; separate-context review #4 pass at 07429c50 (Spec evidence) | workbench/grill-board/README.md: answer controls, Whys, refused notes, answer store, rounds, promotion, dispositions and conflicts; S-004D Decisions And Contracts carries the answer-word meanings | 33 of the 36 real alternative questions cannot preselect their recommendation until agents mark it with revise, which bumps their revisions; until then every alternative there needs a note |
 | 2026-10-08 | TK-007O | Task closed | reassess operation records a retained or revised P/V assessment with its basis and the answer it followed, using the stale gradeRevision check and never touching revision or answers; fixture cycle with one retained and one revised grade in tools/test-grill-board.mjs; real-inventory P3V1 -> reason -> central question -> answer -> apply -> reassess scenario on a disposable copy (proof/owner-flow-demo-a857b658.json step 10, repeated by the fourth reviewer). Full suite 60/60 on clean candidate 07429c50; separate-context review #4 pass at 07429c50 (Spec evidence) | workbench/grill-board/README.md: answer-processing step to reassess P/V on every card an answer updates | none |
+| 2026-10-08 | Tasks closed after the passing review; acceptance lines checked | Records-only commits after review #4 (`b00915e5` to `f7247969`): TK-007L, TK-007M, TK-007N, TK-007T, TK-007X and TK-007O claimed by `claude-dashboard-director` where needed and closed through `close --task` with their proof, documentation and remaining gaps (TK-007N: withdrawn items stay ungraded and the content audit; TK-007T: the question-content pass and the Glossary route; TK-007X: 33 of 36 alternative questions cannot preselect their recommendation yet). TK-007Y stays `ready`: its destination needs the Owner's always-open service checked after login and a killed process, which this run did not install, replace or restart. Checked: all seven P/V proof lines and five Workbench Dashboard lines (five sections, answer controls, Draft → Critique → Revise → Confirm, explicit promotion, ordered receipts), each backed by the tests, the demonstration receipt and the reviews above. Left unchecked: the seven wider shared-board lines, recommended-alternative preselection, link and label resolution across the whole package, the applied-approval wording line, the always-open service line and the nine grouped prompts' owner-path verification. |
