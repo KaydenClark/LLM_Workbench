@@ -1,0 +1,28 @@
+{
+  "codeCandidate": "ffa941905c0667c92065d58894f78f35302b31be",
+  "canonicalSuite": {
+    "owner": "RUNBOOK.md",
+    "commands": 55,
+    "passed": 55,
+    "seconds": 849.3,
+    "logSha256": "7b40bdb15b5971fbd73348b2f25eb4348cdeb6adb27ab90a9a2dd6d00d5f35ec"
+  },
+  "runtime": {
+    "node": "26.3.0",
+    "python": "3.9.6",
+    "host": "Servitor/Darwin arm64"
+  },
+  "guardrail": {
+    "pre": 73,
+    "post": 73,
+    "outcomeClaim": false
+  },
+  "selfDrift": {
+    "preFindings": 23,
+    "postFindings": 23,
+    "unchanged": true,
+    "cleanUpdate": false
+  },
+  "hostedCI": "pending reviewed publication",
+  "canonicalHookInstall": "pending reviewed integration delivery"
+}

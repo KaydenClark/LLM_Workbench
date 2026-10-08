@@ -8,8 +8,8 @@
 **Updated:** 2026-10-08
 **Catalog description:** RUNBOOK.md is the easy-to-reference home for existing workflows expressed as ordered verbs, with scenario and skill pointers.
 **Blockers:** none
-**Latest event:** TK-007R claimed by codex-confirmed-followup.
-**Next gate:** Close TK-007R with verification and documentation proof.
+**Latest event:** TK-007R closed with proof.
+**Next gate:** Confirm acceptance criteria and completion result.
 
 > **Citation anchors.** pre=`45d79a453cf21520317ff7ec48e2d299a2f6a0ad` post=`45d79a453cf21520317ff7ec48e2d299a2f6a0ad`.
 
@@ -22,6 +22,8 @@ RUNBOOK.md is the easy-to-reference home for existing workflows expressed as ord
 The owner requested faster, clearer skill building and confirmed this concrete scope and reviewed delivery into integration.
 
 ## Current Verified State
+
+Baseline at the `pre` citation anchor:
 
 DDR-001D selects the Runbook as the workflow home. ADR-000X amended Journey to Implement, Check, QA, Submit. The outer sequence is still being reconstructed.
 
@@ -48,14 +50,14 @@ The acceptance below defines this bounded follow-up. Existing claims, source own
 
 ## Vertical Implementation Slices
 
-No Task is cut yet. The authorized next step is one complete-path Task for this capability.
+One complete-path Task, [TK-007R - RUNBOOK.md](tasks/TK-007R/TASK.md), owns this capability's implementation and proof. The native Task record owns its state.
 
 ## Acceptance Criteria
 
-- [ ] One reference points to existing authoritative definitions and procedures rather than duplicating them.
-- [ ] Confirmed stages and unresolved outer ordering remain distinguishable.
-- [ ] QA inside Journey and owner approval, delivery, main verification and cleanup remain visible.
-- [ ] Root and generic Runbook references agree while the separate S-004C carrier rewrite remains unchanged.
+- [x] One reference points to existing authoritative definitions and procedures rather than duplicating them.
+- [x] Confirmed stages and unresolved outer ordering remain distinguishable.
+- [x] QA inside Journey and owner approval, delivery, main verification and cleanup remain visible.
+- [x] Root and generic Runbook references agree while the separate S-004C carrier rewrite remains unchanged.
 
 ## Testing Seams
 
@@ -73,10 +75,11 @@ Owning files: RUNBOOK.md; templates/RUNBOOK.md. Update existing owners, preserve
 
 | Date | Task | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
+| 2026-10-08 | TK-007R | Task closed | code ffa941905c0667c92065d58894f78f35302b31be; canonical 55/55 commands pass in 849.3s; focused ADR/Wiki/Board, catalog/lane, workflow pointers and staged-hook regressions pass; fresh native readback 3 synthetic cases; unchanged 23 drift findings and 73 score | RUNBOOK.md; templates/RUNBOOK.md | none in implementation Git state at close: dirty-tree (13 files: workbench/specs/S-005D-decision-relocation-link-repair/SPEC.md, workbench/specs/S-005D-decision-relocation-link-repair/tasks/TK-007P/TASK.md, workbench/specs/S-005E-readback-skill/SPEC.md, workbench/specs/S-005E-readback-skill/proof/native-readback.txt, workbench/specs/S-005E-readback-skill/tasks/TK-007Q/TASK.md, workbench/specs/S-005F-workflow-reference/SPEC.md, workbench/specs/S-005F-workflow-reference/tasks/TK-007R/TASK.md, workbench/specs/S-005G-repository-ci-and-fast-hooks/proof/followup-guardrail-post.json.gz, workbench/specs/S-005G-repository-ci-and-fast-hooks/proof/followup-guardrail-pre.json.gz, workbench/specs/S-005G-repository-ci-and-fast-hooks/proof/followup-self-drift-post.json.gz, and 3 more) and unpushed (ahead 4 behind 0 of origin/integration); recorded reason: Owner requires independent review before publication; this is a local verified completion checkpoint, not remote recovery or owner Human QA |
 
 ## Completion Result
 
-Pending implementation and reviewed integration delivery. Owner Human QA and main remain later gates.
+Implementation verified locally at `ffa941905c0667c92065d58894f78f35302b31be`. The canonical RUNBOOK suite passed all 55 commands in 849.3 seconds, with focused red/green and source checks. Native Codex discovered readback and produced the three bounded outputs recorded in the Reusable Readback Skill proof. Mandatory self-drift findings remained unchanged at 23; score remained 73, so no globally clean Workbench or agent-outcome claim is made. Independent review and integration delivery are the next gates. Hosted CI and canonical hook installation will be observed after delivery; owner Human QA and main remain separate later gates.
 
 ## Remaining Limitations Or Follow-Up Specs
 

@@ -8,8 +8,8 @@
 **Updated:** 2026-10-08
 **Catalog description:** Integration PRs and integration updates run the canonical required suite; this repository alone has fast offline staged whitespace and JavaScript syntax checks at commit.
 **Blockers:** none
-**Latest event:** TK-007S claimed by codex-confirmed-followup.
-**Next gate:** Close TK-007S with verification and documentation proof.
+**Latest event:** TK-007S closed with proof.
+**Next gate:** Confirm acceptance criteria and completion result.
 
 > **Citation anchors.** pre=`45d79a453cf21520317ff7ec48e2d299a2f6a0ad` post=`45d79a453cf21520317ff7ec48e2d299a2f6a0ad`.
 
@@ -22,6 +22,8 @@ Integration PRs and integration updates run the canonical required suite; this r
 The owner requested faster, clearer skill building and confirmed this concrete scope and reviewed delivery into integration.
 
 ## Current Verified State
+
+Baseline at the `pre` citation anchor:
 
 Actions are enabled with read-only defaults, the repository is public and has no workflows or installed hooks. S-002R remains a pending-skill alignment Spec with installation outside its scope.
 
@@ -48,14 +50,14 @@ The acceptance below defines this bounded follow-up. Existing claims, source own
 
 ## Vertical Implementation Slices
 
-No Task is cut yet. The authorized next step is one complete-path Task for this capability.
+One complete-path Task, [TK-007S - .github/workflows/verify.yml](tasks/TK-007S/TASK.md), owns this capability's implementation and proof. The native Task record owns its state.
 
 ## Acceptance Criteria
 
-- [ ] One standard Linux workflow reads the existing canonical RUNBOOK suite and has bounded concurrency and runtime.
-- [ ] Hooks check staged bytes, including partially staged files, and avoid network work or the full suite at commit.
-- [ ] Install and recovery are repository-local, idempotent where safe, and refuse existing-hook collisions and other repositories.
-- [ ] Hosted CI and canonical hook installation have explicit post-delivery checks scoped to LLM_Workbench; pre-publication success is not claimed.
+- [x] One standard Linux workflow reads the existing canonical RUNBOOK suite and has bounded concurrency and runtime.
+- [x] Hooks check staged bytes, including partially staged files, and avoid network work or the full suite at commit.
+- [x] Install and recovery are repository-local, idempotent where safe, and refuse existing-hook collisions and other repositories.
+- [x] Hosted CI and canonical hook installation have explicit post-delivery checks scoped to LLM_Workbench; pre-publication success is not claimed.
 
 ## Testing Seams
 
@@ -73,10 +75,11 @@ Owning files: .github/workflows/verify.yml; .githooks/; tools/setup-pre-commit.m
 
 | Date | Task | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
+| 2026-10-08 | TK-007S | Task closed | code ffa941905c0667c92065d58894f78f35302b31be; canonical 55/55 commands pass in 849.3s; focused ADR/Wiki/Board, catalog/lane, workflow pointers and staged-hook regressions pass; fresh native readback 3 synthetic cases; unchanged 23 drift findings and 73 score | .github/workflows/verify.yml; .githooks/; tools/setup-pre-commit.mjs; tools/verify.mjs; tools/test-pre-commit.mjs; RUNBOOK.md | none in implementation Git state at close: dirty-tree (15 files: workbench/specs/S-005D-decision-relocation-link-repair/SPEC.md, workbench/specs/S-005D-decision-relocation-link-repair/tasks/TK-007P/TASK.md, workbench/specs/S-005E-readback-skill/SPEC.md, workbench/specs/S-005E-readback-skill/proof/native-readback.txt, workbench/specs/S-005E-readback-skill/tasks/TK-007Q/TASK.md, workbench/specs/S-005F-workflow-reference/SPEC.md, workbench/specs/S-005F-workflow-reference/tasks/TK-007R/TASK.md, workbench/specs/S-005G-repository-ci-and-fast-hooks/SPEC.md, workbench/specs/S-005G-repository-ci-and-fast-hooks/proof/followup-guardrail-post.json.gz, workbench/specs/S-005G-repository-ci-and-fast-hooks/proof/followup-guardrail-pre.json.gz, and 5 more) and unpushed (ahead 4 behind 0 of origin/integration); recorded reason: Owner requires independent review before publication; this is a local verified completion checkpoint, not remote recovery or owner Human QA |
 
 ## Completion Result
 
-Pending implementation and reviewed integration delivery. Owner Human QA and main remain later gates.
+Implementation verified locally at `ffa941905c0667c92065d58894f78f35302b31be`. The canonical RUNBOOK suite passed all 55 commands in 849.3 seconds, with focused red/green and source checks. Native Codex discovered readback and produced the three bounded outputs recorded in the Reusable Readback Skill proof. Mandatory self-drift findings remained unchanged at 23; score remained 73, so no globally clean Workbench or agent-outcome claim is made. Independent review and integration delivery are the next gates. Hosted CI and canonical hook installation will be observed after delivery; owner Human QA and main remain separate later gates.
 
 ## Remaining Limitations Or Follow-Up Specs
 
