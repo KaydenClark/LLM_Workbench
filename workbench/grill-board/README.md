@@ -85,8 +85,9 @@ and the page reads from the board JSON (`item.controls`):
   Rework wording, Change the why and Change send it back with the note.
 
 Only a confirmation (`confirm`, `approve` or a confirmed alternative) freezes an
-approval snapshot: the exact question, current text, proposal, draft and
-sources, with their SHA-256. Source paths are frozen room-relative: an
+approval snapshot: the exact question, its Current and Proposal fields, the
+draft, the sources, its evidence (the brief's "What this concerns" list) and the
+revision, with their SHA-256. Source paths are frozen room-relative: an
 absolute path inside the room is stored relative to it, and one outside the
 room keeps its label and ref but stores the marker `(outside this room)` and a
 SHA-256 of the original path, so no absolute path reaches the answer notepad.
@@ -278,7 +279,7 @@ identifiers, question text and paths only.
   text. Each draft shows its approval state: not yet approved; approved (the
   SHA-256 of the confirmed snapshot still matches: the question, its Current
   and Proposal fields, the draft, its source list as paths, labels and refs,
-  its evidence and its revision); stale (any of those changed after you
+  its evidence (the brief's "What this concerns" list) and its revision); stale (any of those changed after you
   confirmed); or superseded (a later answer replaced the confirmation). The
   hash does not read the target file, so a change to that file alone does not
   make an approval stale.
