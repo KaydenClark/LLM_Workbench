@@ -224,6 +224,25 @@ still apply to individual claims in the current operation.
 | **Explicit skill update** | The Workbench update's `workbench-skills.mjs update --explicit-update`: replace only changed core skills in the lane, back the previous directories up, and record the rollback path in the receipt. | It is the only path that may replace a core skill in a room; routine setup and doctor cannot imply it. The one-time v2 route (`workbench-upgrade.mjs upgrade --explicit-update` or `--layout-only`) lays the lane down through Adoption instead. Publishing the core into a personal catalog (`core-skill-installer.mjs`) is a separate operation. |
 | **Control fidelity** | How a room's hand-reconciled root files relate to the templates they derive from: every template line is `filled` only when its fixed wording survives placeholder substitution, `unchanged`, `dropped`, or `changed`, and every extra room line is `added`, as `tools/control-fidelity.mjs report` states beside the checkout and manifest versions. | It is a report, never a gate: divergence is legitimate and is restored or recorded as a decision; silent divergence is the defect ([S-034](workbench/specs/S-034-control-fidelity-report/SPEC.md)). |
 
+### Priority And Value
+
+**Priority** describes when to attend. **Value** describes return versus
+investment. They are separate classifications, never a summed score.
+
+| Priority: when to attend | Value: return versus investment |
+|---|---|
+| **P1 — Interrupt:** stop normal work | **V1 — Quick Win:** high return, low investment |
+| **P2 — Committed:** current expected work | **V2 — Strategic Value:** high return, high investment |
+| **P3 — Secondary:** when committed work allows | **V3 — Fill-In:** low return, low investment |
+| **P4 — Backlog:** retained without current expectation | **V4 — Defer / Eliminate:** low return, high investment |
+
+P1 remains visible regardless of Value. Value informs choices within an
+attention lane; quick wins must not continually crowd out strategic work.
+
+The [Grill Board P/V decision](workbench/docs/ddr/001L-priority-and-value-help-the-owner-choose-grill-board-questions.md)
+applies these meanings to answering questions; its planned capability is owned
+by [Shared Interactive Workbench Board](workbench/specs/S-004D-shared-interactive-board/SPEC.md#priority-and-value-for-answering-questions).
+
 ### Feedback Dispositions
 
 Every feedback finding has exactly one disposition from this closed set, recorded
