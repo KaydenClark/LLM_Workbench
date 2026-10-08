@@ -3,7 +3,7 @@
 **Task ID:** TK-00JA
 **Spec ID:** S-004J
 **Slice:** Ship the adapted domain-modeling skill in every room's lane
-**Status:** done
+**Status:** ready
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: A fresh clone discovers `domain-modeling` through both adapters; the manifest, layout bundle, catalog and count-bearing documents agree.
@@ -39,3 +39,4 @@ Both adapters resolve the lane source; the scoped source test proves the operati
 | 1 | 2026-10-07 | evidence row 13 (fail verdict at d8b17a6a1f0099b6784ca2b87d3ff25eaadbd8e0 on 2026-10-07) | B1 every room receives the verbatim MIT-licensed GLOSSARY-FORMAT.md without the MIT notice, so ship the full notice inside workbench/skills/domain-modeling as the pr skill does with its NOTICE.md and assert it in the scoped test |
 | 2 | 2026-10-07 | evidence row 13 (fail verdict at d8b17a6a1f0099b6784ca2b87d3ff25eaadbd8e0 on 2026-10-07) | S1 the scoped test still passes the write-boundary, ADR and DDR direction, promotion-route, Lexicon-fallback and confirmation-rule mutations, so assert each and show each assertion failing on its mutation |
 | 3 | 2026-10-07 | evidence row 13 (fail verdict at d8b17a6a1f0099b6784ca2b87d3ff25eaadbd8e0 on 2026-10-07) | S3 and N5 the adapter list claims every change but omits several and adds unrelated authority and evidence policy lines, so remove that policy, list each remaining change with its reason, restore capture as it happens and say the lazy-creation line in GLOSSARY-FORMAT does not apply |
+| 4 | 2026-10-08 | evidence row 20 (fail verdict at e413ecfc79be5423e8d4a1279686313b74b640e6 on 2026-10-08) | the scoped test only finds each adapter label somewhere in the section and counts five uses of because, so deleting one adapter's reason stays green, so bind each named adapter to its own nonempty reason and show that mutation red |

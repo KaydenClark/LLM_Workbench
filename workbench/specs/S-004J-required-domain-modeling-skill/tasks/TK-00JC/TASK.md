@@ -3,7 +3,7 @@
 **Task ID:** TK-00JC
 **Spec ID:** S-004J
 **Slice:** Reconcile the Domain Modeling Wiki article with delivered behavior
-**Status:** done
+**Status:** ready
 **Stance:** Builder
 **Blockers:** TK-00JB
 **Destination:** spec-acceptance: The Wiki article separates upstream method, Workbench adaptation and verified behavior and limits.
@@ -35,3 +35,4 @@ The article and router read back against the delivered source and the scenario e
 | Run | Date | Answers | Adjusted handoff |
 |---|---|---|---|
 | 1 | 2026-10-07 | evidence row 13 (fail verdict at d8b17a6a1f0099b6784ca2b87d3ff25eaadbd8e0 on 2026-10-07) | N2 and S3 the Domain Modeling Wiki article must match the corrected adapter list and name the scenario 4 prompt limit |
+| 2 | 2026-10-08 | evidence row 20 (fail verdict at e413ecfc79be5423e8d4a1279686313b74b640e6 on 2026-10-08) | the review names the downstream claims that every owner was named and that promotion reached the glossary, which the Domain Modeling Wiki article repeats, so reconcile the article with the rerun and the open promotion line |

@@ -3,7 +3,7 @@
 **Task ID:** TK-00JB
 **Spec ID:** S-004J
 **Slice:** Prove domain-modeling behavior in fresh-context disposable rooms
-**Status:** done
+**Status:** ready
 **Stance:** Builder
 **Blockers:** TK-00JA
 **Destination:** spec-acceptance: In a grilling scenario, a proposed rename or boundary is traced to named owners, identifiers and tests before the owner chooses, and the room diff stays empty.
@@ -35,3 +35,5 @@ Each scenario has an observed transcript and room diff assertion under this Spec
 | Run | Date | Answers | Adjusted handoff |
 |---|---|---|---|
 | 1 | 2026-10-07 | evidence row 13 (fail verdict at d8b17a6a1f0099b6784ca2b87d3ff25eaadbd8e0 on 2026-10-07) | S4 and S5 scenario 1 never names the tests it claims to trace and the glossary variant reached GLOSSARY.md only by a manual write after the promote tool refused, so rerun scenario 1 on the corrected skill until the trace names test files or lines and qualify every 4/4 promotion summary in the proof |
+| 2 | 2026-10-08 | evidence row 20 (fail verdict at e413ecfc79be5423e8d4a1279686313b74b640e6 on 2026-10-08) | acceptance line 5 is checked although both glossary runs reached GLOSSARY.md only by a manual write after sessions.mjs promote refused, so uncheck it with its wording unchanged and keep it open on S-004O's glossary promotion route until the glossary variant reruns through promote on integration |
+| 3 | 2026-10-08 | evidence row 20 (fail verdict at e413ecfc79be5423e8d4a1279686313b74b640e6 on 2026-10-08) | scenario 1 run 3 lists the Blueprint outcomes, Wiki billing-model page, Invoice Settlement spec and decision record without their paths, so mark the rename assertion incomplete and rerun scenario 1 until every listed owner is named by path before the owner chooses |
