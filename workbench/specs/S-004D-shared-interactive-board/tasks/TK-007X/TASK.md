@@ -3,11 +3,12 @@
 **Task ID:** TK-007X
 **Spec ID:** S-004D
 **Slice:** The Owner critiques, revises and confirms exact wording, then explicitly hands confirmed cards to promotion
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: The answer controls are Confirm, Rework wording, Change the why and Change; every answer except confirming the recommended one is refused until a note is typed; there is no Not now or Decline; Change the why answers appear in a filterable Whys list. A question with alternatives preselects the recommended one and Confirm confirms the selection; a Spec delivery approval is approved by Confirm and sent back with the note otherwise. Progressive answers, Change requests, agent revisions, exact approval snapshots, repeated rounds and explicit promotion requests survive restart; a knowledge-only promotion creates no Spec or Task.
 **Planned verification:** Red first in `tools/test-dashboard-board.mjs` and `tools/test-dashboard-workflow.mjs`: a non-confirm answer without a note is accepted, the legacy values are relabeled, and a promotion can start from an unconfirmed or stale card. Green: the four controls and adapted alternatives on the server and page through one shared helper; legacy answers read with their original labels and statuses; approval snapshots bind the exact wording and hash; a stale browser action or stale approval cannot overwrite or promote newer content; a Change awaiting revision blocks promotion; ending a round starts nothing; ordered Record → Publish → Map → Publish → Plan → Publish receipts with a visible no-op reason for knowledge-only Map and Plan; restart reconstructs identical state. Then the disposable-copy browser flow and the Full Runbook suite on the committed candidate.
+**Claimed by:** claude-dashboard-director
 
 ## Scope
 
