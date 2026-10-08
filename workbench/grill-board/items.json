@@ -3430,6 +3430,13 @@
           "changes": [
             "brief"
           ]
+        },
+        {
+          "revision": 5,
+          "gradeRevision": 1,
+          "at": "2026-10-08T17:06:34.420Z",
+          "by": "claude-worker-d",
+          "reason": "graded: TK-007N confirm-ddr batch: Priority from each record's accepted state, Value from the capability it governs"
         }
       ],
       "brief": {
@@ -3441,7 +3448,16 @@
         "changes": "**Before:** the accepted decision text in the complete draft below.\n\n**Confirm:** no text change.\n\n**Correct:** your note supplies the replacement decision; an agent shows the revised text and reconciles its affected owners.\n\n**Decline:** deprecate the record with your stated reason.",
         "artifacts": "**The Workbench aligns to the owner's concept and delivers on it recursively** — The existing decision record whose complete text is shown below.",
         "history": "### Delivery is recursive: the owner approves or sends back, and the loop runs until the concept is realized (WHY-A1)\n\n**Source question status:** locked\n\n**decision · 2026-10-03T11:58:17.055Z:**\n\nLOCKED WHY-A1 (Delivery is recursive: the owner approves or sends back, and the loop runs until the concept is realized): owner pressed \"Confirm this why\" on the round-4 card, saved 2026-10-03T11:05:17.174Z (review page version 6). Text: Claim: Delivery is recursive: the owner approves or sends back, and the loop runs until the concept is realized | Why: One turn of the loop may not produce something viable, and sending it back is how the system fixes the work without the owner specifying it a second time.\n\n### Delivery is recursive: the owner approves or sends back, and the loop runs until the concept is realized (WHY-A1)\n\n**Question status in Blueprint teardown: DDR and landmark candidates for owner review:** locked\n\n**decision · 2026-10-03T11:58:17.055Z:**\n\nLOCKED WHY-A1 (Delivery is recursive: the owner approves or sends back, and the loop runs until the concept is realized): owner pressed \"Confirm this why\" on the round-4 card, saved 2026-10-03T11:05:17.174Z (review page version 6). Text: Claim: Delivery is recursive: the owner approves or sends back, and the loop runs until the concept is realized | Why: One turn of the loop may not produce something viable, and sending it back is how the system fixes the work without the owner specifying it a second time.\n\nRetained local source: workbench/sessions/notepads/grilling/blueprint-teardown-2026-10-02.json. This record is working context, not a new decision."
-      }
+      },
+      "priority": {
+        "grade": "P3",
+        "reason": "Secondary: The Workbench aligns to the owner's concept and delivers on it recursively (DDR-000A) (workbench/docs/ddr/000A-the-workbench-aligns-to-the-owner-s-concept-and-delivers-on-it-recursively.md) is already accepted and canonical; this asks only whether its wording matches your intent, and no Spec or Task waits on the answer."
+      },
+      "value": {
+        "grade": "V2",
+        "reason": "Strategic Value: governs the whole recursive delivery loop (Journey, approve or send back, repeat until the concept is realized), the core return of the Workbench, delivered across the workflow, QA and lifecycle Specs (high investment)."
+      },
+      "gradeRevision": 1
     },
     {
       "id": "GB-0035",
@@ -3516,6 +3532,13 @@
           "changes": [
             "brief"
           ]
+        },
+        {
+          "revision": 5,
+          "gradeRevision": 1,
+          "at": "2026-10-08T17:06:34.421Z",
+          "by": "claude-worker-d",
+          "reason": "graded: TK-007N confirm-ddr batch: Priority from each record's accepted state, Value from the capability it governs"
         }
       ],
       "brief": {
@@ -3527,7 +3550,16 @@
         "changes": "**Before:** the accepted decision text in the complete draft below.\n\n**Confirm:** no text change.\n\n**Correct:** your note supplies the replacement decision; an agent shows the revised text and reconciles its affected owners.\n\n**Decline:** deprecate the record with your stated reason.",
         "artifacts": "**Only a confirmed concept is mapped, planned or implemented** — The existing decision record whose complete text is shown below.",
         "history": "### Only a confirmed concept is mapped, planned or implemented (WHY-A2)\n\n**Source question status:** locked\n\n**decision · 2026-10-03T11:58:17.183Z:**\n\nLOCKED WHY-A2 (Only a confirmed concept is mapped, planned or implemented): owner pressed \"Confirm this why\" on the round-4 card, saved 2026-10-03T11:06:00.448Z (review page version 6). Text: Claim: Only a confirmed concept is mapped, planned or implemented | Why: Nothing should land as durable before the owner has approved how it works, which is the same reason Prototype lands nothing in enduring context.\n\n### Only a confirmed concept is mapped, planned or implemented (WHY-A2)\n\n**Question status in Blueprint teardown: DDR and landmark candidates for owner review:** locked\n\n**decision · 2026-10-03T11:58:17.183Z:**\n\nLOCKED WHY-A2 (Only a confirmed concept is mapped, planned or implemented): owner pressed \"Confirm this why\" on the round-4 card, saved 2026-10-03T11:06:00.448Z (review page version 6). Text: Claim: Only a confirmed concept is mapped, planned or implemented | Why: Nothing should land as durable before the owner has approved how it works, which is the same reason Prototype lands nothing in enduring context.\n\nRetained local source: workbench/sessions/notepads/grilling/blueprint-teardown-2026-10-02.json. This record is working context, not a new decision."
-      }
+      },
+      "priority": {
+        "grade": "P3",
+        "reason": "Secondary: Only a confirmed concept is mapped, planned or implemented (DDR-000B) (workbench/docs/ddr/000B-only-a-confirmed-concept-is-mapped-planned-or-implemented.md) is already accepted and canonical; this asks only whether its wording matches your intent, and no Spec or Task waits on the answer."
+      },
+      "value": {
+        "grade": "V1",
+        "reason": "Quick Win: only a confirmed concept is mapped, planned or implemented, so nothing durable lands before you approve how it works (high return); a gate rule in the existing workflow (low investment)."
+      },
+      "gradeRevision": 1
     },
     {
       "id": "GB-0036",
@@ -3593,6 +3625,13 @@
           "changes": [
             "brief"
           ]
+        },
+        {
+          "revision": 4,
+          "gradeRevision": 1,
+          "at": "2026-10-08T17:06:34.421Z",
+          "by": "claude-worker-d",
+          "reason": "graded: TK-007N confirm-ddr batch: Priority from each record's accepted state, Value from the capability it governs"
         }
       ],
       "brief": {
@@ -3604,7 +3643,16 @@
         "changes": "**Before:** the accepted decision text in the complete draft below.\n\n**Confirm:** no text change.\n\n**Correct:** your note supplies the replacement decision; an agent shows the revised text and reconciles its affected owners.\n\n**Decline:** deprecate the record with your stated reason.",
         "artifacts": "**Confirming a concept authorizes the agents to carry it to its endpoint** — The existing decision record whose complete text is shown below.",
         "history": "### Confirmation is the authorization: agents carry the concept to its endpoint and never invent a gate or an assignment (WHY-A3)\n\n**Source question status:** locked\n\n**decision · 2026-10-03T11:58:17.245Z:**\n\nLOCKED WHY-A3 (Confirmation is the authorization: agents carry the concept to its endpoint and never invent a gate or an assignment): owner pressed \"Confirm this why\" on the round-4 card, saved 2026-10-03T11:06:18.158Z (review page version 6). Text: Claim: Confirmation is the authorization: agents carry the concept to its endpoint and never invent a gate or an assignment | Why: The readback already names the concept, its direction, cost, reason and what gets created, so a second approval adds a stop the owner never asked for; the owner wants to step in only to align or unblock.\n\n### Confirmation is the authorization: agents carry the concept to its endpoint and never invent a gate or an assignment (WHY-A3)\n\n**Question status in Blueprint teardown: DDR and landmark candidates for owner review:** locked\n\n**decision · 2026-10-03T11:58:17.245Z:**\n\nLOCKED WHY-A3 (Confirmation is the authorization: agents carry the concept to its endpoint and never invent a gate or an assignment): owner pressed \"Confirm this why\" on the round-4 card, saved 2026-10-03T11:06:18.158Z (review page version 6). Text: Claim: Confirmation is the authorization: agents carry the concept to its endpoint and never invent a gate or an assignment | Why: The readback already names the concept, its direction, cost, reason and what gets created, so a second approval adds a stop the owner never asked for; the owner wants to step in only to align or unblock.\n\nRetained local source: workbench/sessions/notepads/grilling/blueprint-teardown-2026-10-02.json. This record is working context, not a new decision."
-      }
+      },
+      "priority": {
+        "grade": "P3",
+        "reason": "Secondary: Confirming a concept authorizes the agents to carry it to its endpoint (DDR-000C) (workbench/docs/ddr/000C-confirming-a-concept-authorizes-the-agents-to-carry-it-to-its-endpoint.md) is already accepted and canonical; this asks only whether its wording matches your intent, and no Spec or Task waits on the answer."
+      },
+      "value": {
+        "grade": "V1",
+        "reason": "Quick Win: your confirmation authorizes agents to carry work to its endpoint without manufactured owner gates (high return); a rule agents apply, not new machinery (low investment)."
+      },
+      "gradeRevision": 1
     },
     {
       "id": "GB-0037",
@@ -3670,6 +3718,13 @@
           "changes": [
             "brief"
           ]
+        },
+        {
+          "revision": 4,
+          "gradeRevision": 1,
+          "at": "2026-10-08T17:06:34.421Z",
+          "by": "claude-worker-d",
+          "reason": "graded: TK-007N confirm-ddr batch: Priority from each record's accepted state, Value from the capability it governs"
         }
       ],
       "brief": {
@@ -3681,7 +3736,16 @@
         "changes": "**Before:** the accepted decision text in the complete draft below.\n\n**Confirm:** no text change.\n\n**Correct:** your note supplies the replacement decision; an agent shows the revised text and reconciles its affected owners.\n\n**Decline:** deprecate the record with your stated reason.",
         "artifacts": "**Prototype needs no map and lands nothing in enduring context** — The existing decision record whose complete text is shown below.",
         "history": "### Prototype code enters the product only when it meets the same requirements as any other work (WHY-A5)\n\n**Source question status:** locked\n\n**decision · 2026-10-03T11:58:17.308Z:**\n\nLOCKED WHY-A5 (Prototype code enters the product only when it meets the same requirements as any other work): owner pressed \"Confirm this why\" on the round-4 card, saved 2026-10-03T11:06:29.457Z (review page version 6). Text: Claim: Prototype code enters the product only when it meets the same requirements as any other work | Why: Prototype code has not passed the checks that make other work trustworthy, so it enters the product only through them.\n\n### Prototype code enters the product only when it meets the same requirements as any other work (WHY-A5)\n\n**Question status in Blueprint teardown: DDR and landmark candidates for owner review:** locked\n\n**decision · 2026-10-03T11:58:17.308Z:**\n\nLOCKED WHY-A5 (Prototype code enters the product only when it meets the same requirements as any other work): owner pressed \"Confirm this why\" on the round-4 card, saved 2026-10-03T11:06:29.457Z (review page version 6). Text: Claim: Prototype code enters the product only when it meets the same requirements as any other work | Why: Prototype code has not passed the checks that make other work trustworthy, so it enters the product only through them.\n\nRetained local source: workbench/sessions/notepads/grilling/blueprint-teardown-2026-10-02.json. This record is working context, not a new decision."
-      }
+      },
+      "priority": {
+        "grade": "P3",
+        "reason": "Secondary: Prototype needs no map and lands nothing in enduring context (DDR-000D) (workbench/docs/ddr/000D-prototype-needs-no-map-and-lands-nothing-in-enduring-context.md) is already accepted and canonical; this asks only whether its wording matches your intent, and no Spec or Task waits on the answer. The record itself notes two accepted ADRs (ADR-000G, ADR-000X) that place prototype and list verbs differently; the terms work carries that list."
+      },
+      "value": {
+        "grade": "V3",
+        "reason": "Fill-In: Prototype is an optional verb whose output lands nothing durable (modest return); it needs only the verb row and placement rule (low investment)."
+      },
+      "gradeRevision": 1
     },
     {
       "id": "GB-0038",
@@ -3747,6 +3811,13 @@
           "changes": [
             "brief"
           ]
+        },
+        {
+          "revision": 4,
+          "gradeRevision": 1,
+          "at": "2026-10-08T17:06:34.421Z",
+          "by": "claude-worker-d",
+          "reason": "graded: TK-007N confirm-ddr batch: Priority from each record's accepted state, Value from the capability it governs"
         }
       ],
       "brief": {
@@ -3758,7 +3829,16 @@
         "changes": "**Before:** the accepted decision text in the complete draft below.\n\n**Confirm:** no text change.\n\n**Correct:** your note supplies the replacement decision; an agent shows the revised text and reconciles its affected owners.\n\n**Decline:** deprecate the record with your stated reason.",
         "artifacts": "**Every session works inside its smart zone and spends its tokens efficiently** — The existing decision record whose complete text is shown below.",
         "history": "### Every agent works inside its smart zone (BT-D18)\n\n**Source question status:** locked\n\n**decision · 2026-10-03T12:35:01.220Z:**\n\nLOCKED BT-D18 (Every agent works inside its smart zone): owner pressed \"Confirm\" on the round-6 card, saved 2026-10-03T12:24:49.811Z (review page version 7). Text: Work is divided and sized so every session does its part inside the smart zone. That is why work divides into landmarks, Specs and Tasks, why it is mapped and planned before it is implemented, and why the Journey runs as it does. Work larger than one smart zone is split at a natural boundary and handed to a fresh session. Every session spends its tokens on the work, not on rediscovery or ceremony, and leaves proof of the progress it made. Its last sentence (\"Every session spends its tokens on the work ... leaves proof of the progress it made\", folded in from BT-D20) is removed by the owner's BT-D20 correction on the same round; it locks without it, pending the round-7 readback of BT-D20.\n\n### Every run spends its tokens on progress, and shows it (BT-D20)\n\n**Source question status:** locked\n\n**source_record · 2026-10-03T12:35:01.368Z:**\n\nOwner correction on the round-6 card BT-D20 (Every run spends its tokens on progress, and shows it), saved 2026-10-03T12:25:29.711Z, verbatim: \"This feels like wishful thinking. I dont know if or how would could prove this.\"\n\n**source_record · 2026-10-03T12:44:16.142Z:**\n\nOwner correction on the round-7 card BT-D20, saved 2026-10-03T12:41:21.037Z, verbatim: \"Woah, this is entirely different from what I read. The blueprint can have a goal that every session spends its tokens efficiently. It was your \\\"must prove progress\\\" or something. That was too bound and specific. That was why it was wishful thinking. Its the same as saying artifacts are only allowed 8000 characters. If we need 8100, we are screwed. Its rule beating in the opposite direction.\"\n\n**decision · 2026-10-03T12:46:14.623Z:**\n\nLOCKED BT-D20 (Every session spends its tokens efficiently): owner confirmed in chat 2026-10-03, verbatim \"Yes, approved.\" Text: The goal stays: every session spends its tokens efficiently. The too-specific promise that every run leaves proof of the progress it made is dropped, because a hard rule like that beats the work in the opposite direction. BT-D18's last sentence is 'Every session spends its tokens efficiently, on the work rather than on rediscovery or ceremony.' The short page's smart-zone outcome is 'Work is mapped and planned so every session stays in the smart zone and spends its tokens efficiently.'\n\n### One Task per chat; a fresh chat for the next Task (WHY-B1a)\n\n**Source question status:** locked\n\n**decision · 2026-10-03T11:58:17.692Z:**\n\nLOCKED WHY-B1a (One Task per chat; a fresh chat for the next Task): owner pressed \"Confirm this why\" on the round-4 card, saved 2026-10-03T11:23:51.548Z (review page version 6). Text: Claim: One Task per chat; a fresh chat for the next Task | Why: A chat does one Task, cleans up and ends, so every Task starts inside a fresh smart zone instead of inheriting a context the last Task already filled.\n\n### Every agent works inside its smart zone (BT-D18)\n\n**Question status in Blueprint teardown: DDR and landmark candidates for owner review:** locked\n\n**decision · 2026-10-03T12:35:01.220Z:**\n\nLOCKED BT-D18 (Every agent works inside its smart zone): owner pressed \"Confirm\" on the round-6 card, saved 2026-10-03T12:24:49.811Z (review page version 7). Text: Work is divided and sized so every session does its part inside the smart zone. That is why work divides into landmarks, Specs and Tasks, why it is mapped and planned before it is implemented, and why the Journey runs as it does. Work larger than one smart zone is split at a natural boundary and handed to a fresh session. Every session spends its tokens on the work, not on rediscovery or ceremony, and leaves proof of the progress it made. Its last sentence (\"Every session spends its tokens on the work ... leaves proof of the progress it made\", folded in from BT-D20) is removed by the owner's BT-D20 correction on the same round; it locks without it, pending the round-7 readback of BT-D20.\n\nRetained local source: workbench/sessions/notepads/grilling/blueprint-teardown-2026-10-02.json. This record is working context, not a new decision.\n\n### Every run spends its tokens on progress, and shows it (BT-D20)\n\n**Question status in Blueprint teardown: DDR and landmark candidates for owner review:** locked\n\n**source_record · 2026-10-03T12:35:01.368Z:**\n\nOwner correction on the round-6 card BT-D20 (Every run spends its tokens on progress, and shows it), saved 2026-10-03T12:25:29.711Z, verbatim: \"This feels like wishful thinking. I dont know if or how would could prove this.\"\n\n**source_record · 2026-10-03T12:44:16.142Z:**\n\nOwner correction on the round-7 card BT-D20, saved 2026-10-03T12:41:21.037Z, verbatim: \"Woah, this is entirely different from what I read. The blueprint can have a goal that every session spends its tokens efficiently. It was your \\\"must prove progress\\\" or something. That was too bound and specific. That was why it was wishful thinking. Its the same as saying artifacts are only allowed 8000 characters. If we need 8100, we are screwed. Its rule beating in the opposite direction.\"\n\n**decision · 2026-10-03T12:46:14.623Z:**\n\nLOCKED BT-D20 (Every session spends its tokens efficiently): owner confirmed in chat 2026-10-03, verbatim \"Yes, approved.\" Text: The goal stays: every session spends its tokens efficiently. The too-specific promise that every run leaves proof of the progress it made is dropped, because a hard rule like that beats the work in the opposite direction. BT-D18's last sentence is 'Every session spends its tokens efficiently, on the work rather than on rediscovery or ceremony.' The short page's smart-zone outcome is 'Work is mapped and planned so every session stays in the smart zone and spends its tokens efficiently.'\n\nRetained local source: workbench/sessions/notepads/grilling/blueprint-teardown-2026-10-02.json. This record is working context, not a new decision.\n\n### One Task per chat; a fresh chat for the next Task (WHY-B1a)\n\n**Question status in Blueprint teardown: DDR and landmark candidates for owner review:** locked\n\n**decision · 2026-10-03T11:58:17.692Z:**\n\nLOCKED WHY-B1a (One Task per chat; a fresh chat for the next Task): owner pressed \"Confirm this why\" on the round-4 card, saved 2026-10-03T11:23:51.548Z (review page version 6). Text: Claim: One Task per chat; a fresh chat for the next Task | Why: A chat does one Task, cleans up and ends, so every Task starts inside a fresh smart zone instead of inheriting a context the last Task already filled.\n\nRetained local source: workbench/sessions/notepads/grilling/blueprint-teardown-2026-10-02.json. This record is working context, not a new decision."
-      }
+      },
+      "priority": {
+        "grade": "P3",
+        "reason": "Secondary: Every session works inside its smart zone and spends its tokens efficiently (DDR-000E) (workbench/docs/ddr/000E-every-session-works-inside-its-smart-zone-and-spends-its-tokens-efficiently.md) is already accepted and canonical; this asks only whether its wording matches your intent, and no Spec or Task waits on the answer."
+      },
+      "value": {
+        "grade": "V1",
+        "reason": "Quick Win: sizing every session inside its smart zone is why work divides into landmarks, Specs and Tasks (high return), and that structure already exists (low added investment)."
+      },
+      "gradeRevision": 1
     },
     {
       "id": "GB-0039",
@@ -3824,6 +3904,13 @@
           "changes": [
             "brief"
           ]
+        },
+        {
+          "revision": 4,
+          "gradeRevision": 1,
+          "at": "2026-10-08T17:06:34.421Z",
+          "by": "claude-worker-d",
+          "reason": "graded: TK-007N confirm-ddr batch: Priority from each record's accepted state, Value from the capability it governs"
         }
       ],
       "brief": {
@@ -3835,7 +3922,16 @@
         "changes": "**Before:** the accepted decision text in the complete draft below.\n\n**Confirm:** no text change.\n\n**Correct:** your note supplies the replacement decision; an agent shows the revised text and reconciles its affected owners.\n\n**Decline:** deprecate the record with your stated reason.",
         "artifacts": "**A fresh session loads only the context its work needs** — The existing decision record whose complete text is shown below.",
         "history": "### An agent loads only the context its work needs (BT-D19)\n\n**Source question status:** locked\n\n**decision · 2026-10-03T12:35:01.295Z:**\n\nLOCKED BT-D19 (An agent loads only the context its work needs): owner pressed \"Confirm\" on the round-6 card, saved 2026-10-03T12:24:55.884Z (review page version 7). Text: Through progressive disclosure, a fresh session loads only the context its work needs and recovers the owner's intent, settled decisions, unfinished obligations and open questions without the owner reconstructing the conversation.\n\n### An agent loads only the context its work needs (BT-D19)\n\n**Question status in Blueprint teardown: DDR and landmark candidates for owner review:** locked\n\n**decision · 2026-10-03T12:35:01.295Z:**\n\nLOCKED BT-D19 (An agent loads only the context its work needs): owner pressed \"Confirm\" on the round-6 card, saved 2026-10-03T12:24:55.884Z (review page version 7). Text: Through progressive disclosure, a fresh session loads only the context its work needs and recovers the owner's intent, settled decisions, unfinished obligations and open questions without the owner reconstructing the conversation.\n\nRetained local source: workbench/sessions/notepads/grilling/blueprint-teardown-2026-10-02.json. This record is working context, not a new decision."
-      }
+      },
+      "priority": {
+        "grade": "P3",
+        "reason": "Secondary: A fresh session loads only the context its work needs (DDR-000F) (workbench/docs/ddr/000F-a-fresh-session-loads-only-the-context-its-work-needs.md) is already accepted and canonical; this asks only whether its wording matches your intent, and no Spec or Task waits on the answer."
+      },
+      "value": {
+        "grade": "V2",
+        "reason": "Strategic Value: a fresh session recovering intent, decisions and obligations without your reconstruction (high return) depends on progressive disclosure through the Contract carrier rewrite (S-004C) across many Tasks (high investment)."
+      },
+      "gradeRevision": 1
     },
     {
       "id": "GB-0040",
@@ -3901,6 +3997,13 @@
           "changes": [
             "brief"
           ]
+        },
+        {
+          "revision": 4,
+          "gradeRevision": 1,
+          "at": "2026-10-08T17:06:34.421Z",
+          "by": "claude-worker-d",
+          "reason": "graded: TK-007N confirm-ddr batch: Priority from each record's accepted state, Value from the capability it governs"
         }
       ],
       "brief": {
@@ -3912,7 +4015,16 @@
         "changes": "**Before:** the accepted decision text in the complete draft below.\n\n**Confirm:** no text change.\n\n**Correct:** your note supplies the replacement decision; an agent shows the revised text and reconciles its affected owners.\n\n**Decline:** deprecate the record with your stated reason.",
         "artifacts": "**Every kind of truth has one maintained home** — The existing decision record whose complete text is shown below.",
         "history": "### Every kind of truth has one maintained home; nothing is kept twice (route once, never copy) (WHY-B8)\n\n**Source question status:** locked\n\n**decision · 2026-10-03T11:58:17.818Z:**\n\nLOCKED WHY-B8 (Every kind of truth has one maintained home; nothing is kept twice (route once, never copy)): owner pressed \"Confirm this why\" on the round-4 card, saved 2026-10-03T11:24:01.279Z (review page version 6). Text: Claim: Every kind of truth has one maintained home; nothing is kept twice (route once, never copy) | Why: A truth kept in two homes pulls agents in different directions, so each truth is written once and everything else routes to it.\n\n### Every kind of truth has one maintained home; nothing is kept twice (route once, never copy) (WHY-B8)\n\n**Question status in Blueprint teardown: DDR and landmark candidates for owner review:** locked\n\n**decision · 2026-10-03T11:58:17.818Z:**\n\nLOCKED WHY-B8 (Every kind of truth has one maintained home; nothing is kept twice (route once, never copy)): owner pressed \"Confirm this why\" on the round-4 card, saved 2026-10-03T11:24:01.279Z (review page version 6). Text: Claim: Every kind of truth has one maintained home; nothing is kept twice (route once, never copy) | Why: A truth kept in two homes pulls agents in different directions, so each truth is written once and everything else routes to it.\n\nRetained local source: workbench/sessions/notepads/grilling/blueprint-teardown-2026-10-02.json. This record is working context, not a new decision."
-      }
+      },
+      "priority": {
+        "grade": "P3",
+        "reason": "Secondary: Every kind of truth has one maintained home (DDR-000G) (workbench/docs/ddr/000G-every-kind-of-truth-has-one-maintained-home.md) is already accepted and canonical; this asks only whether its wording matches your intent, and no Spec or Task waits on the answer."
+      },
+      "value": {
+        "grade": "V2",
+        "reason": "Strategic Value: one maintained home per kind of truth stops agents being pulled two ways (high return); realizing it needs the ownership routes the Lexicon retirement moves into ARCHITECTURE.md (S-004O) and an ownership map (high investment)."
+      },
+      "gradeRevision": 1
     },
     {
       "id": "GB-0041",
@@ -3978,6 +4090,13 @@
           "changes": [
             "brief"
           ]
+        },
+        {
+          "revision": 4,
+          "gradeRevision": 1,
+          "at": "2026-10-08T17:06:34.421Z",
+          "by": "claude-worker-d",
+          "reason": "graded: TK-007N confirm-ddr batch: Priority from each record's accepted state, Value from the capability it governs"
         }
       ],
       "brief": {
@@ -3989,7 +4108,16 @@
         "changes": "**Before:** the accepted decision text in the complete draft below.\n\n**Confirm:** no text change.\n\n**Correct:** your note supplies the replacement decision; an agent shows the revised text and reconciles its affected owners.\n\n**Decline:** deprecate the record with your stated reason.",
         "artifacts": "**The context lives in GitHub, so work can move to the cloud at any time** — The existing decision record whose complete text is shown below.",
         "history": "### Any provider can use the workbench: plain files and small local tools, two discovery paths, no provider-specific control plane (WHY-C6)\n\n**Source question status:** locked\n\n**decision · 2026-10-03T11:58:18.008Z:**\n\nLOCKED WHY-C6 (Any provider can use the workbench: plain files and small local tools, two discovery paths, no provider-specific control plane): owner pressed \"Confirm this why\" on the round-4 card, saved 2026-10-03T11:29:37.316Z (review page version 6). Text: Claim: Any provider can use the workbench: plain files and small local tools, two discovery paths, no provider-specific control plane | Why: Claude Code and Codex are both harnesses the owner runs, and the workbench is what they both use, so it lives in plain repository files and small tools any provider can drive with one action. Owner note, verbatim: \"With the understanding we are only working with claude and codex. so I dont know if it works with gemini and the antigravity harness, or even outside of the claude and codex harness, like just in the Terminal and CLI. but those would be longer term goals.\" Per the note, the supported harnesses today are Claude Code and Codex only; others are longer-term goals, so the page says Claude Code and Codex rather than any harness.\n\n### Any provider can use the workbench: plain files and small local tools, two discovery paths, no provider-specific control plane (WHY-C6)\n\n**Question status in Blueprint teardown: DDR and landmark candidates for owner review:** locked\n\n**decision · 2026-10-03T11:58:18.008Z:**\n\nLOCKED WHY-C6 (Any provider can use the workbench: plain files and small local tools, two discovery paths, no provider-specific control plane): owner pressed \"Confirm this why\" on the round-4 card, saved 2026-10-03T11:29:37.316Z (review page version 6). Text: Claim: Any provider can use the workbench: plain files and small local tools, two discovery paths, no provider-specific control plane | Why: Claude Code and Codex are both harnesses the owner runs, and the workbench is what they both use, so it lives in plain repository files and small tools any provider can drive with one action. Owner note, verbatim: \"With the understanding we are only working with claude and codex. so I dont know if it works with gemini and the antigravity harness, or even outside of the claude and codex harness, like just in the Terminal and CLI. but those would be longer term goals.\" Per the note, the supported harnesses today are Claude Code and Codex only; others are longer-term goals, so the page says Claude Code and Codex rather than any harness.\n\nRetained local source: workbench/sessions/notepads/grilling/blueprint-teardown-2026-10-02.json. This record is working context, not a new decision."
-      }
+      },
+      "priority": {
+        "grade": "P3",
+        "reason": "Secondary: The context lives in GitHub, so work can move to the cloud at any time (DDR-000H) (workbench/docs/ddr/000H-the-context-lives-in-github-so-work-can-move-to-the-cloud-at-any-time.md) is already accepted and canonical; this asks only whether its wording matches your intent, and no Spec or Task waits on the answer."
+      },
+      "value": {
+        "grade": "V2",
+        "reason": "Strategic Value: moving work to the cloud at any time from GitHub alone (high return) is delivered by Portable Workbench (S-00V) and the GitHub Coordination Specs (high investment)."
+      },
+      "gradeRevision": 1
     },
     {
       "id": "GB-0042",
@@ -4055,6 +4183,13 @@
           "changes": [
             "brief"
           ]
+        },
+        {
+          "revision": 4,
+          "gradeRevision": 1,
+          "at": "2026-10-08T17:06:34.421Z",
+          "by": "claude-worker-d",
+          "reason": "graded: TK-007N confirm-ddr batch: Priority from each record's accepted state, Value from the capability it governs"
         }
       ],
       "brief": {
@@ -4066,7 +4201,16 @@
         "changes": "**Before:** the accepted decision text in the complete draft below.\n\n**Confirm:** no text change.\n\n**Correct:** your note supplies the replacement decision; an agent shows the revised text and reconciles its affected owners.\n\n**Decline:** deprecate the record with your stated reason.",
         "artifacts": "**Many agents work one project in parallel, across the cloud and the owner's devices** — The existing decision record whose complete text is shown below.",
         "history": "### Many agents work one project in parallel, across the cloud and the owner's devices (WHY-C2)\n\n**Source question status:** locked\n\n**decision · 2026-10-03T11:58:17.883Z:**\n\nLOCKED WHY-C2 (Many agents work one project in parallel, across the cloud and the owner's devices): owner pressed \"Confirm this why\" on the round-4 card, saved 2026-10-03T11:25:50.718Z (review page version 6). Text: Claim: Many agents work one project in parallel, across the cloud and the owner's devices | Why: Parallel work is how the owner steps away after confirming and comes back to a finished product: one agent in one session cannot carry a confirmed concept to its endpoint inside its smart zone, so the work is divided and run at once.\n\n### Agents in different harnesses, Claude Code and Codex, delegate work and exchange results (WHY-C4)\n\n**Source question status:** locked\n\n**decision · 2026-10-03T11:58:17.946Z:**\n\nLOCKED WHY-C4 (Agents in different harnesses, Claude Code and Codex, delegate work and exchange results): owner pressed \"Confirm this why\" on the round-4 card, saved 2026-10-03T11:25:59.883Z (review page version 6). Text: Claim: Agents in different harnesses, Claude Code and Codex, delegate work and exchange results | Why: Claude Code and Codex are the harnesses the owner actually runs, and the workbench is the management system both use, so work has to pass between them without the owner relaying it.\n\n### Many agents work one project in parallel, across the cloud and the owner's devices (WHY-C2)\n\n**Question status in Blueprint teardown: DDR and landmark candidates for owner review:** locked\n\n**decision · 2026-10-03T11:58:17.883Z:**\n\nLOCKED WHY-C2 (Many agents work one project in parallel, across the cloud and the owner's devices): owner pressed \"Confirm this why\" on the round-4 card, saved 2026-10-03T11:25:50.718Z (review page version 6). Text: Claim: Many agents work one project in parallel, across the cloud and the owner's devices | Why: Parallel work is how the owner steps away after confirming and comes back to a finished product: one agent in one session cannot carry a confirmed concept to its endpoint inside its smart zone, so the work is divided and run at once.\n\nRetained local source: workbench/sessions/notepads/grilling/blueprint-teardown-2026-10-02.json. This record is working context, not a new decision.\n\n### Agents in different harnesses, Claude Code and Codex, delegate work and exchange results (WHY-C4)\n\n**Question status in Blueprint teardown: DDR and landmark candidates for owner review:** locked\n\n**decision · 2026-10-03T11:58:17.946Z:**\n\nLOCKED WHY-C4 (Agents in different harnesses, Claude Code and Codex, delegate work and exchange results): owner pressed \"Confirm this why\" on the round-4 card, saved 2026-10-03T11:25:59.883Z (review page version 6). Text: Claim: Agents in different harnesses, Claude Code and Codex, delegate work and exchange results | Why: Claude Code and Codex are the harnesses the owner actually runs, and the workbench is the management system both use, so work has to pass between them without the owner relaying it.\n\nRetained local source: workbench/sessions/notepads/grilling/blueprint-teardown-2026-10-02.json. This record is working context, not a new decision."
-      }
+      },
+      "priority": {
+        "grade": "P3",
+        "reason": "Secondary: Many agents work one project in parallel, across the cloud and the owner's devices (DDR-000I) (workbench/docs/ddr/000I-many-agents-work-one-project-in-parallel-across-the-cloud-and-the-owner-s-devices.md) is already accepted and canonical; this asks only whether its wording matches your intent, and no Spec or Task waits on the answer."
+      },
+      "value": {
+        "grade": "V2",
+        "reason": "Strategic Value: coordinated parallel work across cloud worktrees and your devices (high return) needs the GitHub Coordination package, S-003P to S-003V, most still planned (high investment)."
+      },
+      "gradeRevision": 1
     },
     {
       "id": "GB-0043",
@@ -4132,6 +4276,13 @@
           "changes": [
             "brief"
           ]
+        },
+        {
+          "revision": 4,
+          "gradeRevision": 1,
+          "at": "2026-10-08T17:06:34.421Z",
+          "by": "claude-worker-d",
+          "reason": "graded: TK-007N confirm-ddr batch: Priority from each record's accepted state, Value from the capability it governs"
         }
       ],
       "brief": {
@@ -4143,7 +4294,16 @@
         "changes": "**Before:** the accepted decision text in the complete draft below.\n\n**Confirm:** no text change.\n\n**Correct:** your note supplies the replacement decision; an agent shows the revised text and reconciles its affected owners.\n\n**Decline:** deprecate the record with your stated reason.",
         "artifacts": "**The behaviors agents need ship inside every room** — The existing decision record whose complete text is shown below.",
         "history": "### Existing source account\n\nStatus: accepted (it sits at the top level of workbench/docs/ddr, which is the accepted roster; REGISTER.md lists it accepted). Date: 2026-10-03. canonicalized_in: BLUEPRINT.md. Landmark: Work from anywhere. Landed on integration in PR #292 (merge 64c2c524). Provenance: the Blueprint teardown grilling of 2026-10-02 to 2026-10-03: question GAP-6 (behaviors ship with the room), locked 2026-10-03 (\"Add it\" on the round-4 card, with the note quoted above); reason from the owner's own words, question WHY-C7. Overlap with the accepted skills-lane decision handled under the locked no-repeats rule (question BT-Q1).\n\nNo exact source-question link was recovered for this item from the ledger or linked card. The source account is evidence; it is not a newly confirmed owner answer."
-      }
+      },
+      "priority": {
+        "grade": "P3",
+        "reason": "Secondary: The behaviors agents need ship inside every room (DDR-000J) (workbench/docs/ddr/000J-the-behaviors-agents-need-ship-inside-every-room.md) is already accepted and canonical; this asks only whether its wording matches your intent, and no Spec or Task waits on the answer."
+      },
+      "value": {
+        "grade": "V1",
+        "reason": "Quick Win: behaviors found from a fresh clone with no personal-catalog dependency (high return); already shipped through the skills lane, Core skills ship in the workbench skills lane (ADR-000M) (low remaining investment)."
+      },
+      "gradeRevision": 1
     },
     {
       "id": "GB-0044",
@@ -4209,6 +4369,13 @@
           "changes": [
             "brief"
           ]
+        },
+        {
+          "revision": 4,
+          "gradeRevision": 1,
+          "at": "2026-10-08T17:06:34.421Z",
+          "by": "claude-worker-d",
+          "reason": "graded: TK-007N confirm-ddr batch: Priority from each record's accepted state, Value from the capability it governs"
         }
       ],
       "brief": {
@@ -4220,7 +4387,16 @@
         "changes": "**Before:** the accepted decision text in the complete draft below.\n\n**Confirm:** no text change.\n\n**Correct:** your note supplies the replacement decision; an agent shows the revised text and reconciles its affected owners.\n\n**Decline:** deprecate the record with your stated reason.",
         "artifacts": "**A handoff is the readable map to the high-fidelity context** — The existing decision record whose complete text is shown below.",
         "history": "### Existing source account\n\nStatus: accepted (it sits at the top level of workbench/docs/ddr, which is the accepted roster; REGISTER.md lists it accepted). Date: 2026-10-03. canonicalized_in: BLUEPRINT.md. Landmark: Enduring context. Landed on integration in PR #292 (merge 64c2c524). Provenance: the Blueprint teardown grilling of 2026-10-02 to 2026-10-03: question BT-D11 (a handoff is the readable map), locked 2026-10-03 on the owner's confirmed round-2 readback; reason from the owner's own words, question WHY-B5.\n\nNo exact source-question link was recovered for this item from the ledger or linked card. The source account is evidence; it is not a newly confirmed owner answer."
-      }
+      },
+      "priority": {
+        "grade": "P3",
+        "reason": "Secondary: A handoff is the readable map to the high-fidelity context (DDR-000K) (workbench/docs/ddr/000K-a-handoff-is-the-readable-map-to-the-high-fidelity-context.md) is already accepted and canonical; this asks only whether its wording matches your intent, and no Spec or Task waits on the answer."
+      },
+      "value": {
+        "grade": "V1",
+        "reason": "Quick Win: a readable Markdown map into high-fidelity context saves a new chat from redoing work (high return); delivered by the skill-sized handoff rebuild, S-01A (low investment)."
+      },
+      "gradeRevision": 1
     },
     {
       "id": "GB-0045",
@@ -4286,6 +4462,13 @@
           "changes": [
             "brief"
           ]
+        },
+        {
+          "revision": 4,
+          "gradeRevision": 1,
+          "at": "2026-10-08T17:06:34.421Z",
+          "by": "claude-worker-d",
+          "reason": "graded: TK-007N confirm-ddr batch: Priority from each record's accepted state, Value from the capability it governs"
         }
       ],
       "brief": {
@@ -4297,7 +4480,16 @@
         "changes": "**Before:** the accepted decision text in the complete draft below.\n\n**Confirm:** no text change.\n\n**Correct:** your note supplies the replacement decision; an agent shows the revised text and reconciles its affected owners.\n\n**Decline:** deprecate the record with your stated reason.",
         "artifacts": "**Agents work the workbench through one-action controls** — The existing decision record whose complete text is shown below.",
         "history": "### Agents work the workbench through one-action controls (BT-D0)\n\n**Source question status:** locked\n\n**decision · 2026-10-03T12:35:01.144Z:**\n\nLOCKED BT-D0 (Agents work the workbench through one-action controls): owner pressed \"Confirm\" on the round-6 card, saved 2026-10-03T12:25:37.258Z (review page version 7). Text: Agents work the workbench through controls, each one action, and open the underlying record only to verify a claim, audit, debug a control, or when a control is missing or disagrees with its record.\n\n### Is \"push buttons on the Workbench\" a Blueprint principle, and how is it worded so it does not fight the State Resolution rule that verified source says what is implemented? (CTL-1)\n\n**Source question status:** locked\n\n**source_record · 2026-10-02T02:01:27.529Z:**\n\nOwner answer, verbatim (pasted into the chat that asked CTL-1): \"Yes, but it is not a Blueprint principle. It is a destination decision, so it is a DDR. The one-page Blueprint cites it in one sentence under Integrated System Design. That is the whole Blueprint footprint.\n\nThe DDR's decision text, worded so it cannot fight State Resolution:\n\nAgents operate the Workbench through controls that record, resolve, project or retrieve bounded information. A control reports; it never manufactures authority. An agent opens the underlying record directly to verify a claim, audit, debug a control, or when a control is missing or disagrees with its record. Verified source and tests still say what is implemented.\"\n\n**decision · 2026-10-02T02:01:33.992Z:**\n\nCTL-1 LOCKED: Yes, the control-surface idea is adopted, but it is NOT a Blueprint principle and NOT an ADR. It is a destination decision, so it is a DDR, and it is the first worked example of a DDR. The Blueprint footprint is exactly one sentence citing that DDR under Integrated System Design (the owner calls the Blueprint 'one-page'; see DDR-10). DDR decision text, owner-worded: 'Agents operate the Workbench through controls that record, resolve, project or retrieve bounded information. A control reports; it never manufactures authority. An agent opens the underlying record directly to verify a claim, audit, debug a control, or when a control is missing or disagrees with its record. Verified source and tests still say what is implemented.' This supersedes the proposal-010 impact line ('one Blueprint paragraph, one ADR (control-surface principle), Lexicon rows'); the ADR for the control surface is not needed, the ADR that introduces the DDR type still is (FND-Q21C). Consequences recorded, not authored: (a) the verification clause is kept and now also states 'a control never manufactures authority', which matches AGENTS.md State Resolution and its 'a tool reports without manufacturing authority'; (b) it tests the DDR-2 scope test: the owner put 'how agents operate the Workbench' on the destination side, not the architecture side; (c) it pre-answers part of DDR-5: the Blueprint cites a DDR in one sentence and carries no decision text of its own; (d) CTL-6 (when to open a drawer) is largely answered by the owner-worded decision text and should be re-asked only to confirm or to add cases.\n\n**decision · 2026-10-02T02:47:43.957Z:**\n\nCTL-1 stays LOCKED; this entry restates decision-002 with one part withdrawn. Withdrawn: the Blueprint cites the control-surface DDR in one sentence under Integrated System Design. Reason: DDR-5A, the Blueprint links no WBID-bearing record and the DDR has a WBID. Unchanged: the control-surface idea is a DDR, the first worked example of one, not a Blueprint principle and not an ADR; the ADR that introduces the DDR type is still required by FND-Q21C. DDR decision text, owner-worded: 'Agents operate the Workbench through controls that record, resolve, project or retrieve bounded information. A control reports; it never manufactures authority. An agent opens the underlying record directly to verify a claim, audit, debug a control, or when a control is missing or disagrees with its record. Verified source and tests still say what is implemented.' Whether the Blueprint states the control-surface idea as an unlinked plain sentence is not decided; it belongs in the Blueprint only if it is part of what the product is. Consequences from decision-002 (a) to (d) otherwise stand, except that (c) 'the Blueprint cites a DDR in one sentence' is replaced by DDR-5 and DDR-5A.\n\n### Agents work the workbench through one-action controls (BT-D0)\n\n**Question status in Blueprint teardown: DDR and landmark candidates for owner review:** locked\n\n**decision · 2026-10-03T12:35:01.144Z:**\n\nLOCKED BT-D0 (Agents work the workbench through one-action controls): owner pressed \"Confirm\" on the round-6 card, saved 2026-10-03T12:25:37.258Z (review page version 7). Text: Agents work the workbench through controls, each one action, and open the underlying record only to verify a claim, audit, debug a control, or when a control is missing or disagrees with its record.\n\nRetained local source: workbench/sessions/notepads/grilling/blueprint-teardown-2026-10-02.json. This record is working context, not a new decision.\n\n### Is \"push buttons on the Workbench\" a Blueprint principle, and how is it worded so it does not fight the State Resolution rule that verified source says what is implemented? (CTL-1)\n\n**Question status in Destination Decision Records and the Workbench control surface:** locked\n\n**Agent proposal, not an owner answer · 2026-10-02T01:11:00.686Z:**\n\nRecommended answer: Yes, under Integrated System Design: an agent operates the Workbench through controls that record, resolve, project or retrieve bounded information; it opens the underlying record directly to verify, audit, debug, or when a control is missing or disagrees with the record. That second clause is the State Resolution rule and must stay.\nWhy: Three independent landed designs already follow the pattern (notepad, Tracker, JSON board). Naming it is describing something true. Omitting the verification clause would make controls a second authority.\nImpact: One Blueprint paragraph, one ADR (control-surface principle), Lexicon rows.\n\n**source_record · 2026-10-02T02:01:27.529Z:**\n\nOwner answer, verbatim (pasted into the chat that asked CTL-1): \"Yes, but it is not a Blueprint principle. It is a destination decision, so it is a DDR. The one-page Blueprint cites it in one sentence under Integrated System Design. That is the whole Blueprint footprint.\n\nThe DDR's decision text, worded so it cannot fight State Resolution:\n\nAgents operate the Workbench through controls that record, resolve, project or retrieve bounded information. A control reports; it never manufactures authority. An agent opens the underlying record directly to verify a claim, audit, debug a control, or when a control is missing or disagrees with its record. Verified source and tests still say what is implemented.\"\n\n**decision · 2026-10-02T02:01:33.992Z:**\n\nCTL-1 LOCKED: Yes, the control-surface idea is adopted, but it is NOT a Blueprint principle and NOT an ADR. It is a destination decision, so it is a DDR, and it is the first worked example of a DDR. The Blueprint footprint is exactly one sentence citing that DDR under Integrated System Design (the owner calls the Blueprint 'one-page'; see DDR-10). DDR decision text, owner-worded: 'Agents operate the Workbench through controls that record, resolve, project or retrieve bounded information. A control reports; it never manufactures authority. An agent opens the underlying record directly to verify a claim, audit, debug a control, or when a control is missing or disagrees with its record. Verified source and tests still say what is implemented.' This supersedes the proposal-010 impact line ('one Blueprint paragraph, one ADR (control-surface principle), Lexicon rows'); the ADR for the control surface is not needed, the ADR that introduces the DDR type still is (FND-Q21C). Consequences recorded, not authored: (a) the verification clause is kept and now also states 'a control never manufactures authority', which matches AGENTS.md State Resolution and its 'a tool reports without manufacturing authority'; (b) it tests the DDR-2 scope test: the owner put 'how agents operate the Workbench' on the destination side, not the architecture side; (c) it pre-answers part of DDR-5: the Blueprint cites a DDR in one sentence and carries no decision text of its own; (d) CTL-6 (when to open a drawer) is largely answered by the owner-worded decision text and should be re-asked only to confirm or to add cases.\n\n**decision · 2026-10-02T02:47:43.957Z:**\n\nCTL-1 stays LOCKED; this entry restates decision-002 with one part withdrawn. Withdrawn: the Blueprint cites the control-surface DDR in one sentence under Integrated System Design. Reason: DDR-5A, the Blueprint links no WBID-bearing record and the DDR has a WBID. Unchanged: the control-surface idea is a DDR, the first worked example of one, not a Blueprint principle and not an ADR; the ADR that introduces the DDR type is still required by FND-Q21C. DDR decision text, owner-worded: 'Agents operate the Workbench through controls that record, resolve, project or retrieve bounded information. A control reports; it never manufactures authority. An agent opens the underlying record directly to verify a claim, audit, debug a control, or when a control is missing or disagrees with its record. Verified source and tests still say what is implemented.' Whether the Blueprint states the control-surface idea as an unlinked plain sentence is not decided; it belongs in the Blueprint only if it is part of what the product is. Consequences from decision-002 (a) to (d) otherwise stand, except that (c) 'the Blueprint cites a DDR in one sentence' is replaced by DDR-5 and DDR-5A.\n\nRetained local source: workbench/sessions/notepads/grilling/ddr-and-control-surface-2026-10-01.json. This record is working context, not a new decision."
-      }
+      },
+      "priority": {
+        "grade": "P3",
+        "reason": "Secondary: Agents work the workbench through one-action controls (DDR-000L) (workbench/docs/ddr/000L-agents-work-the-workbench-through-one-action-controls.md) is already accepted and canonical; this asks only whether its wording matches your intent, and no Spec or Task waits on the answer."
+      },
+      "value": {
+        "grade": "V2",
+        "reason": "Strategic Value: agents act through one-action controls and open records only to verify or debug (high return); controls across every record kind are a broad build (high investment)."
+      },
+      "gradeRevision": 1
     },
     {
       "id": "GB-0046",
@@ -4363,6 +4555,13 @@
           "changes": [
             "brief"
           ]
+        },
+        {
+          "revision": 4,
+          "gradeRevision": 1,
+          "at": "2026-10-08T17:06:34.421Z",
+          "by": "claude-worker-d",
+          "reason": "graded: TK-007N confirm-ddr batch: Priority from each record's accepted state, Value from the capability it governs"
         }
       ],
       "brief": {
@@ -4374,7 +4573,16 @@
         "changes": "**Before:** the accepted decision text in the complete draft below.\n\n**Confirm:** no text change.\n\n**Correct:** your note supplies the replacement decision; an agent shows the revised text and reconciles its affected owners.\n\n**Decline:** deprecate the record with your stated reason.",
         "artifacts": "**Working artifacts are scaffolding, cleared away once their knowledge is kept** — The existing decision record whose complete text is shown below.",
         "history": "### Working artifacts are scaffolding, cleared away once their knowledge is kept (BT-D6)\n\n**Source question status:** locked\n\n**decision · 2026-10-03T12:35:01.515Z:**\n\nLOCKED BT-D6 (Working artifacts are scaffolding, cleared away once their knowledge is kept): owner pressed \"Confirm\" on the round-6 card, saved 2026-10-03T12:25:48.658Z (review page version 7). Text: Scaffolding is cleared away at Clean Up once its knowledge, unfinished obligations and needed evidence have reached their durable owners; a Spec or Task only after its change is verified on main. Nothing is archived. A later gap becomes a new Spec under the landmark or the Blueprint, never a revived record.\n\n### A later gap is a new Spec; the Wiki is not the destination (WHY-B6a)\n\n**Source question status:** locked\n\n**source_record · 2026-10-03T11:58:17.754Z:**\n\nOwner correction on the round-4 card WHY-B6a (A later gap is a corrective Task against the Wiki claim, never a revived Spec), saved 2026-10-03T11:37:57.569Z, verbatim: \"Same as with a task, we would just create a new spec based on the Landmark or blueprint. and in the weird case we could reopen a landmark, just create a new one, or a spec based on the blueprint. The wiki doesnt describe the destination. It holds knowledge, facts, opinions, Summaries, entity pages, concept pages, comparisons, overviews, and synthesis. It doesnt hold a destination for us to create a map or plan from. Evidence backing up the direction we want to head on the map, and to support the plan yes. But the wiki is not the source of the destination.\"\n\n**decision · 2026-10-03T12:35:04.099Z:**\n\nLOCKED WHY-B6a (A later gap is a new Spec; the Wiki is not the destination): owner pressed \"Confirm\" on the round-6 card, saved 2026-10-03T12:27:22.895Z (review page version 7). Text: A later gap against delivered work becomes a new Spec under its landmark or the Blueprint; in the rare case, a landmark is reopened or a new one made. It is never a revived Spec and never a correction anchored to a Wiki claim. The Wiki holds knowledge, facts, opinions, summaries, entity and concept pages, comparisons, overviews and synthesis, and evidence for the direction and the plan, but it is not the source of the destination. Promotion changes AGENTS, the Lexicon Task and Destination Packet rows, and the Wiki-claim corrective records in the tooling.\n\n### Working artifacts are scaffolding, cleared away once their knowledge is kept (BT-D6)\n\n**Question status in Blueprint teardown: DDR and landmark candidates for owner review:** locked\n\n**decision · 2026-10-03T12:35:01.515Z:**\n\nLOCKED BT-D6 (Working artifacts are scaffolding, cleared away once their knowledge is kept): owner pressed \"Confirm\" on the round-6 card, saved 2026-10-03T12:25:48.658Z (review page version 7). Text: Scaffolding is cleared away at Clean Up once its knowledge, unfinished obligations and needed evidence have reached their durable owners; a Spec or Task only after its change is verified on main. Nothing is archived. A later gap becomes a new Spec under the landmark or the Blueprint, never a revived record.\n\nRetained local source: workbench/sessions/notepads/grilling/blueprint-teardown-2026-10-02.json. This record is working context, not a new decision.\n\n### A later gap is a new Spec; the Wiki is not the destination (WHY-B6a)\n\n**Question status in Blueprint teardown: DDR and landmark candidates for owner review:** locked\n\n**source_record · 2026-10-03T11:58:17.754Z:**\n\nOwner correction on the round-4 card WHY-B6a (A later gap is a corrective Task against the Wiki claim, never a revived Spec), saved 2026-10-03T11:37:57.569Z, verbatim: \"Same as with a task, we would just create a new spec based on the Landmark or blueprint. and in the weird case we could reopen a landmark, just create a new one, or a spec based on the blueprint. The wiki doesnt describe the destination. It holds knowledge, facts, opinions, Summaries, entity pages, concept pages, comparisons, overviews, and synthesis. It doesnt hold a destination for us to create a map or plan from. Evidence backing up the direction we want to head on the map, and to support the plan yes. But the wiki is not the source of the destination.\"\n\n**decision · 2026-10-03T12:35:04.099Z:**\n\nLOCKED WHY-B6a (A later gap is a new Spec; the Wiki is not the destination): owner pressed \"Confirm\" on the round-6 card, saved 2026-10-03T12:27:22.895Z (review page version 7). Text: A later gap against delivered work becomes a new Spec under its landmark or the Blueprint; in the rare case, a landmark is reopened or a new one made. It is never a revived Spec and never a correction anchored to a Wiki claim. The Wiki holds knowledge, facts, opinions, summaries, entity and concept pages, comparisons, overviews and synthesis, and evidence for the direction and the plan, but it is not the source of the destination. Promotion changes AGENTS, the Lexicon Task and Destination Packet rows, and the Wiki-claim corrective records in the tooling.\n\nRetained local source: workbench/sessions/notepads/grilling/blueprint-teardown-2026-10-02.json. This record is working context, not a new decision."
-      }
+      },
+      "priority": {
+        "grade": "P3",
+        "reason": "Secondary: Working artifacts are scaffolding, cleared away once their knowledge is kept (DDR-000M) (workbench/docs/ddr/000M-working-artifacts-are-scaffolding-cleared-away-once-their-knowledge-is-kept.md) is already accepted and canonical; this asks only whether its wording matches your intent, and no Spec or Task waits on the answer. The record notes ADR-000I and ADR-000G still describe the later-repair rule it replaces; Corrective Work Rules (S-004F) carries that change."
+      },
+      "value": {
+        "grade": "V2",
+        "reason": "Strategic Value: clearing scaffolding once its knowledge is kept keeps the active surface current (high return); it rests on the retirement lifecycle and legacy migration Specs, S-00I and S-00Q (high investment)."
+      },
+      "gradeRevision": 1
     },
     {
       "id": "GB-0047",
@@ -4440,6 +4648,13 @@
           "changes": [
             "brief"
           ]
+        },
+        {
+          "revision": 4,
+          "gradeRevision": 1,
+          "at": "2026-10-08T17:06:34.421Z",
+          "by": "claude-worker-d",
+          "reason": "graded: TK-007N confirm-ddr batch: Priority from each record's accepted state, Value from the capability it governs"
         }
       ],
       "brief": {
@@ -4451,7 +4666,16 @@
         "changes": "**Before:** the accepted decision text in the complete draft below.\n\n**Confirm:** no text change.\n\n**Correct:** your note supplies the replacement decision; an agent shows the revised text and reconciles its affected owners.\n\n**Decline:** deprecate the record with your stated reason.",
         "artifacts": "**Every room's Blueprint is the four-part short page** — The existing decision record whose complete text is shown below.",
         "history": "### Every room's Blueprint takes the same four-part shape (WHY-B11a)\n\n**Source question status:** locked\n\n**decision · 2026-10-03T11:58:17.628Z:**\n\nLOCKED WHY-B11a (Every room's Blueprint takes the same four-part shape): owner pressed \"Confirm this why\" on the round-4 card, saved 2026-10-03T11:38:08.869Z (review page version 6). Text: Claim: Every room's Blueprint takes the same four-part shape | Why: What a workbench's artifacts are is set by LLM Workbench and a project changes only what they say, so every room gets the same Blueprint shape and owns the words on it.\n\n### Every room's Blueprint takes the same four-part shape (WHY-B11a)\n\n**Question status in Blueprint teardown: DDR and landmark candidates for owner review:** locked\n\n**decision · 2026-10-03T11:58:17.628Z:**\n\nLOCKED WHY-B11a (Every room's Blueprint takes the same four-part shape): owner pressed \"Confirm this why\" on the round-4 card, saved 2026-10-03T11:38:08.869Z (review page version 6). Text: Claim: Every room's Blueprint takes the same four-part shape | Why: What a workbench's artifacts are is set by LLM Workbench and a project changes only what they say, so every room gets the same Blueprint shape and owns the words on it.\n\nRetained local source: workbench/sessions/notepads/grilling/blueprint-teardown-2026-10-02.json. This record is working context, not a new decision."
-      }
+      },
+      "priority": {
+        "grade": "P3",
+        "reason": "Secondary: Every room's Blueprint is the four-part short page (DDR-000N) (workbench/docs/ddr/000N-every-room-s-blueprint-is-the-four-part-short-page.md) is already accepted and canonical; this asks only whether its wording matches your intent, and no Spec or Task waits on the answer."
+      },
+      "value": {
+        "grade": "V1",
+        "reason": "Quick Win: every room's Blueprint shares the four-part short page (high return for consistent rooms); delivered by Blueprint Short Page, S-004H (low investment)."
+      },
+      "gradeRevision": 1
     },
     {
       "id": "GB-0048",
@@ -4517,6 +4741,13 @@
           "changes": [
             "brief"
           ]
+        },
+        {
+          "revision": 4,
+          "gradeRevision": 1,
+          "at": "2026-10-08T17:06:34.421Z",
+          "by": "claude-worker-d",
+          "reason": "graded: TK-007N confirm-ddr batch: Priority from each record's accepted state, Value from the capability it governs"
         }
       ],
       "brief": {
@@ -4528,7 +4759,16 @@
         "changes": "**Before:** the accepted decision text in the complete draft below.\n\n**Confirm:** no text change.\n\n**Correct:** your note supplies the replacement decision; an agent shows the revised text and reconciles its affected owners.\n\n**Decline:** deprecate the record with your stated reason.",
         "artifacts": "**The Blueprint is a high-level summary of the direction and makes us ask questions** — The existing decision record whose complete text is shown below.",
         "history": "### What the Blueprint is for (BT-S14)\n\n**Source question status:** locked\n\n**decision · 2026-10-03T12:35:01.663Z:**\n\nLOCKED BT-S14 (What the Blueprint is for): owner pressed \"Confirm\" on the round-6 card, saved 2026-10-03T12:26:24.491Z (review page version 7). Text: The Blueprint is a high-level summary of the direction we want to head and the choices that got us this far. Each sentence can serve as a map toward an implementation plan, sometimes through maps at several scales; a sentence big enough to need its own map becomes a landmark. A decision is placed by asking whether it maps to a destination at the Blueprint's scale or to a more bounded one. The Blueprint makes us ask questions; it does not give definite answers. Definite answers and their details live on other artifacts, and a decision record answers why for one specific decision.\n\n### What the Blueprint is for (BT-S14)\n\n**Question status in Blueprint teardown: DDR and landmark candidates for owner review:** locked\n\n**Agent proposal, not an owner answer · 2026-10-03T11:58:19.717Z:**\n\nROUND-6 READBACK, pending owner confirmation (new; from the owner's STR-1 and STR-3 notes). TITLE: What the Blueprint is for. TEXT: The Blueprint is a high-level summary of the direction we want to head and the choices that got us this far. Each sentence can serve as a map toward an implementation plan, sometimes through maps at several scales; a sentence big enough to need its own map becomes a landmark. A decision is placed by asking whether it maps to a destination at the Blueprint's scale or to a more bounded one. The Blueprint makes us ask questions; it does not give definite answers. Definite answers and their details live on other artifacts, and a decision record answers why for one specific decision.\n\n**decision · 2026-10-03T12:35:01.663Z:**\n\nLOCKED BT-S14 (What the Blueprint is for): owner pressed \"Confirm\" on the round-6 card, saved 2026-10-03T12:26:24.491Z (review page version 7). Text: The Blueprint is a high-level summary of the direction we want to head and the choices that got us this far. Each sentence can serve as a map toward an implementation plan, sometimes through maps at several scales; a sentence big enough to need its own map becomes a landmark. A decision is placed by asking whether it maps to a destination at the Blueprint's scale or to a more bounded one. The Blueprint makes us ask questions; it does not give definite answers. Definite answers and their details live on other artifacts, and a decision record answers why for one specific decision.\n\nRetained local source: workbench/sessions/notepads/grilling/blueprint-teardown-2026-10-02.json. This record is working context, not a new decision."
-      }
+      },
+      "priority": {
+        "grade": "P3",
+        "reason": "Secondary: The Blueprint is a high-level summary of the direction and makes us ask questions (DDR-000O) (workbench/docs/ddr/000O-the-blueprint-is-a-high-level-summary-of-the-direction-and-makes-us-ask-questions.md) is already accepted and canonical; this asks only whether its wording matches your intent, and no Spec or Task waits on the answer."
+      },
+      "value": {
+        "grade": "V1",
+        "reason": "Quick Win: the Blueprint stays a high-level summary that prompts questions while decision records hold answers (high return); a placement rule over existing artifacts (low investment)."
+      },
+      "gradeRevision": 1
     },
     {
       "id": "GB-0049",
@@ -4594,6 +4834,13 @@
           "changes": [
             "brief"
           ]
+        },
+        {
+          "revision": 4,
+          "gradeRevision": 1,
+          "at": "2026-10-08T17:06:34.421Z",
+          "by": "claude-worker-d",
+          "reason": "graded: TK-007N confirm-ddr batch: Priority from each record's accepted state, Value from the capability it governs"
         }
       ],
       "brief": {
@@ -4605,7 +4852,16 @@
         "changes": "**Before:** the accepted decision text in the complete draft below.\n\n**Confirm:** no text change.\n\n**Correct:** your note supplies the replacement decision; an agent shows the revised text and reconciles its affected owners.\n\n**Decline:** deprecate the record with your stated reason.",
         "artifacts": "**LLM Workbench is the producer and the Workbench Template is its product** — The existing decision record whose complete text is shown below.",
         "history": "### Existing source account\n\nStatus: accepted (it sits at the top level of workbench/docs/ddr, which is the accepted roster; REGISTER.md lists it accepted). Date: 2026-10-03. canonicalized_in: BLUEPRINT.md. Landmark: Workbench Template. Landed on integration in PR #292 (merge 64c2c524). Provenance: the Blueprint teardown grilling of 2026-10-02 to 2026-10-03: question BT-D8 (producer and product), locked 2026-10-03, with its why confirmed in round 4, question WHY-D1.\n\nNo exact source-question link was recovered for this item from the ledger or linked card. The source account is evidence; it is not a newly confirmed owner answer."
-      }
+      },
+      "priority": {
+        "grade": "P3",
+        "reason": "Secondary: LLM Workbench is the producer and the Workbench Template is its product (DDR-000P) (workbench/docs/ddr/000P-llm-workbench-is-the-producer-and-the-workbench-template-is-its-product.md) is already accepted and canonical; this asks only whether its wording matches your intent, and no Spec or Task waits on the answer."
+      },
+      "value": {
+        "grade": "V1",
+        "reason": "Quick Win: names the Template as the product whose working is the measure of delivery (high return); the Template Upgrade Release Gate already exists, S-00F (low added investment)."
+      },
+      "gradeRevision": 1
     },
     {
       "id": "GB-0050",
@@ -4671,6 +4927,13 @@
           "changes": [
             "brief"
           ]
+        },
+        {
+          "revision": 4,
+          "gradeRevision": 1,
+          "at": "2026-10-08T17:06:34.421Z",
+          "by": "claude-worker-d",
+          "reason": "graded: TK-007N confirm-ddr batch: Priority from each record's accepted state, Value from the capability it governs"
         }
       ],
       "brief": {
@@ -4682,7 +4945,16 @@
         "changes": "**Before:** the accepted decision text in the complete draft below.\n\n**Confirm:** no text change.\n\n**Correct:** your note supplies the replacement decision; an agent shows the revised text and reconciles its affected owners.\n\n**Decline:** deprecate the record with your stated reason.",
         "artifacts": "**A release is proven by the Template building a real product in one pass** — The existing decision record whose complete text is shown below.",
         "history": "### The release proof builds Puffer Pond (WHY-D2a)\n\n**Source question status:** locked\n\n**source_record · 2026-10-03T11:58:18.387Z:**\n\nOwner correction on the round-4 card WHY-D2a (The release proof builds a website, from a prewritten grilling script, with the Template deployed in the cloud), saved 2026-10-03T11:39:13.692Z, verbatim: \"https://github.com/KaydenClark/Puffer-Pond\n\nHere is the website we test making.\"\n\n**decision · 2026-10-03T12:35:04.248Z:**\n\nLOCKED WHY-D2a (The release proof builds Puffer Pond): owner pressed \"Confirm\" on the round-6 card, saved 2026-10-03T12:27:28.165Z (review page version 7). Text: The release proof builds Puffer Pond (github.com/KaydenClark/Puffer-Pond), the small full-screen living pond illustration, from the prewritten grilling script, with the Template deployed in the cloud. The why stands: a website is a product you can judge viable by using it, so Approve stays your only step, and running it in the cloud from a script proves the pass needs nothing from your machine or memory.\n\n### The release proof builds Puffer Pond (WHY-D2a)\n\n**Question status in Blueprint teardown: DDR and landmark candidates for owner review:** locked\n\n**source_record · 2026-10-03T11:58:18.387Z:**\n\nOwner correction on the round-4 card WHY-D2a (The release proof builds a website, from a prewritten grilling script, with the Template deployed in the cloud), saved 2026-10-03T11:39:13.692Z, verbatim: \"https://github.com/KaydenClark/Puffer-Pond\n\nHere is the website we test making.\"\n\n**decision · 2026-10-03T12:35:04.248Z:**\n\nLOCKED WHY-D2a (The release proof builds Puffer Pond): owner pressed \"Confirm\" on the round-6 card, saved 2026-10-03T12:27:28.165Z (review page version 7). Text: The release proof builds Puffer Pond (github.com/KaydenClark/Puffer-Pond), the small full-screen living pond illustration, from the prewritten grilling script, with the Template deployed in the cloud. The why stands: a website is a product you can judge viable by using it, so Approve stays your only step, and running it in the cloud from a script proves the pass needs nothing from your machine or memory.\n\nRetained local source: workbench/sessions/notepads/grilling/blueprint-teardown-2026-10-02.json. This record is working context, not a new decision."
-      }
+      },
+      "priority": {
+        "grade": "P2",
+        "reason": "Committed: A release is proven by the Template building a real product in one pass (DDR-000Q) (workbench/docs/ddr/000Q-a-release-is-proven-by-the-template-building-a-real-product-in-one-pass.md) is accepted but its workflow list still reads 'Complete', which your Delivered lock replaced; Workbench v4.0.0 Release (S-00O) names its correction as an open owner decision (graded Interrupt on 'Correct the release proof decision record's verb list', GB-0026), and Template Release Proof Puffer Pond (S-004I) plans from it."
+      },
+      "value": {
+        "grade": "V2",
+        "reason": "Strategic Value: a release proven by the cloud-deployed Template building a real product in one pass (high return) requires the planned release-proof Spec, S-004I, with its cloud form and script (high investment)."
+      },
+      "gradeRevision": 1
     },
     {
       "id": "GB-0051",
@@ -4748,6 +5020,13 @@
           "changes": [
             "brief"
           ]
+        },
+        {
+          "revision": 4,
+          "gradeRevision": 1,
+          "at": "2026-10-08T17:06:34.421Z",
+          "by": "claude-worker-d",
+          "reason": "graded: TK-007N confirm-ddr batch: Priority from each record's accepted state, Value from the capability it governs"
         }
       ],
       "brief": {
@@ -4759,7 +5038,16 @@
         "changes": "**Before:** the accepted decision text in the complete draft below.\n\n**Confirm:** no text change.\n\n**Correct:** your note supplies the replacement decision; an agent shows the revised text and reconciles its affected owners.\n\n**Decline:** deprecate the record with your stated reason.",
         "artifacts": "**LLM Workbench owns what a workbench is; the project owns what it says and may add without tearing apart what works** — The existing decision record whose complete text is shown below.",
         "history": "### LLM Workbench owns what a workbench is; the project owns what it says (BT-D9)\n\n**Source question status:** locked\n\n**decision · 2026-10-03T12:35:01.590Z:**\n\nLOCKED BT-D9 (LLM Workbench owns what a workbench is; the project owns what it says): owner pressed \"Confirm\" on the round-6 card, saved 2026-10-03T12:25:53.117Z (review page version 7). Text: A workbench's identity and structure belong to LLM Workbench, because LLM Workbench is in charge of its versions: which artifacts a workbench has, what each is for and how it works. A project that uses the workbench uses all of it; it cannot drop AGENTS.md, the Lexicon or the Taskboard because it does not want them. What those artifacts say belongs to the project: it creates, updates and maintains its own instructions, Runbook, Blueprint and records, because LLM Workbench cannot know what they need to say. When a project genuinely needs to change how an artifact works, it records why, visibly, so the change can be audited. A project moves to a new version only when the owner asks.\n\n### A project moves to a new workbench version only when the owner asks (WHY-D4a)\n\n**Source question status:** locked\n\n**decision · 2026-10-03T11:58:18.448Z:**\n\nLOCKED WHY-D4a (A project moves to a new workbench version only when the owner asks): owner pressed \"Confirm this why\" on the round-4 card, saved 2026-10-03T11:39:25.902Z (review page version 6). Text: Claim: A project moves to a new workbench version only when the owner asks | Why: One installed version has to stay troubleshootable as one thing, and the owner decides when changes ship; an update that arrived on its own would break both.\n\n### The workbench improves from its own use; improvement is shown on real work, never by a score (WHY-D8)\n\n**Source question status:** locked\n\n**decision · 2026-10-03T11:58:18.639Z:**\n\nLOCKED WHY-D8 (The workbench improves from its own use; improvement is shown on real work, never by a score): owner pressed \"Confirm this why\" on the round-4 card, saved 2026-10-03T11:48:29.501Z (review page version 6). Text: Claim: The workbench improves from its own use; improvement is shown on real work, never by a score | Why: Each workbench is the ever-improving one it is building, because the earlier ones broke; improvement is shown on real work because a score was gamed as soon as it existed. Owner note, verbatim: \"Yes, if a deployed needs a new skill, or to change what is on their runbook. They can.\" Per the note, a deployed room may add a skill or change its Runbook content.\n\n### LLM Workbench owns what a workbench is; the project owns what it says (BT-D9)\n\n**Question status in Blueprint teardown: DDR and landmark candidates for owner review:** locked\n\n**decision · 2026-10-03T12:35:01.590Z:**\n\nLOCKED BT-D9 (LLM Workbench owns what a workbench is; the project owns what it says): owner pressed \"Confirm\" on the round-6 card, saved 2026-10-03T12:25:53.117Z (review page version 7). Text: A workbench's identity and structure belong to LLM Workbench, because LLM Workbench is in charge of its versions: which artifacts a workbench has, what each is for and how it works. A project that uses the workbench uses all of it; it cannot drop AGENTS.md, the Lexicon or the Taskboard because it does not want them. What those artifacts say belongs to the project: it creates, updates and maintains its own instructions, Runbook, Blueprint and records, because LLM Workbench cannot know what they need to say. When a project genuinely needs to change how an artifact works, it records why, visibly, so the change can be audited. A project moves to a new version only when the owner asks.\n\nRetained local source: workbench/sessions/notepads/grilling/blueprint-teardown-2026-10-02.json. This record is working context, not a new decision.\n\n### A project moves to a new workbench version only when the owner asks (WHY-D4a)\n\n**Question status in Blueprint teardown: DDR and landmark candidates for owner review:** locked\n\n**decision · 2026-10-03T11:58:18.448Z:**\n\nLOCKED WHY-D4a (A project moves to a new workbench version only when the owner asks): owner pressed \"Confirm this why\" on the round-4 card, saved 2026-10-03T11:39:25.902Z (review page version 6). Text: Claim: A project moves to a new workbench version only when the owner asks | Why: One installed version has to stay troubleshootable as one thing, and the owner decides when changes ship; an update that arrived on its own would break both.\n\nRetained local source: workbench/sessions/notepads/grilling/blueprint-teardown-2026-10-02.json. This record is working context, not a new decision.\n\n### The workbench improves from its own use; improvement is shown on real work, never by a score (WHY-D8)\n\n**Question status in Blueprint teardown: DDR and landmark candidates for owner review:** locked\n\n**decision · 2026-10-03T11:58:18.639Z:**\n\nLOCKED WHY-D8 (The workbench improves from its own use; improvement is shown on real work, never by a score): owner pressed \"Confirm this why\" on the round-4 card, saved 2026-10-03T11:48:29.501Z (review page version 6). Text: Claim: The workbench improves from its own use; improvement is shown on real work, never by a score | Why: Each workbench is the ever-improving one it is building, because the earlier ones broke; improvement is shown on real work because a score was gamed as soon as it existed. Owner note, verbatim: \"Yes, if a deployed needs a new skill, or to change what is on their runbook. They can.\" Per the note, a deployed room may add a skill or change its Runbook content.\n\nRetained local source: workbench/sessions/notepads/grilling/blueprint-teardown-2026-10-02.json. This record is working context, not a new decision."
-      }
+      },
+      "priority": {
+        "grade": "P3",
+        "reason": "Secondary: LLM Workbench owns what a workbench is; the project owns what it says and may add without tearing apart what works (DDR-000R) (workbench/docs/ddr/000R-llm-workbench-owns-what-a-workbench-is-the-project-owns-what-it-says-and-may-add-without-tearing-apart-what-works.md) is already accepted and canonical; this asks only whether its wording matches your intent, and no Spec or Task waits on the answer."
+      },
+      "value": {
+        "grade": "V1",
+        "reason": "Quick Win: LLM Workbench owns what a workbench is while each project owns what its artifacts say (high return: rooms upgrade without losing their content), building on existing divergence and preservation decisions (low added investment)."
+      },
+      "gradeRevision": 1
     },
     {
       "id": "GB-0052",
@@ -4825,6 +5113,13 @@
           "changes": [
             "brief"
           ]
+        },
+        {
+          "revision": 4,
+          "gradeRevision": 1,
+          "at": "2026-10-08T17:06:34.421Z",
+          "by": "claude-worker-d",
+          "reason": "graded: TK-007N confirm-ddr batch: Priority from each record's accepted state, Value from the capability it governs"
         }
       ],
       "brief": {
@@ -4836,7 +5131,16 @@
         "changes": "**Before:** the accepted decision text in the complete draft below.\n\n**Confirm:** no text change.\n\n**Correct:** your note supplies the replacement decision; an agent shows the revised text and reconciles its affected owners.\n\n**Decline:** deprecate the record with your stated reason.",
         "artifacts": "**Setup drafts everything it can and grilling confirms it** — The existing decision record whose complete text is shown below.",
         "history": "### Setup drafts everything it can; grilling confirms it (BT-D5)\n\n**Source question status:** locked\n\n**decision · 2026-10-03T12:35:01.441Z:**\n\nLOCKED BT-D5 (Setup drafts everything it can; grilling confirms it): owner pressed \"Confirm\" on the round-6 card, saved 2026-10-03T12:25:45.430Z (review page version 7). Text: Setting up a workbench writes a starting Blueprint from whatever the owner gives, even one line such as \"a project about dogs\", and sets the Template up as completely as it can. Adopting an existing project reviews it and drafts the Blueprint, decision records, landmarks and whatever else the existing context supports. Either way, the next step is a grilling session in which the owner confirms or corrects what was drafted, and nothing setup drafted counts as confirmed until then.\n\n### Setup drafts everything it can; grilling confirms it (BT-D5)\n\n**Question status in Blueprint teardown: DDR and landmark candidates for owner review:** locked\n\n**decision · 2026-10-03T12:35:01.441Z:**\n\nLOCKED BT-D5 (Setup drafts everything it can; grilling confirms it): owner pressed \"Confirm\" on the round-6 card, saved 2026-10-03T12:25:45.430Z (review page version 7). Text: Setting up a workbench writes a starting Blueprint from whatever the owner gives, even one line such as \"a project about dogs\", and sets the Template up as completely as it can. Adopting an existing project reviews it and drafts the Blueprint, decision records, landmarks and whatever else the existing context supports. Either way, the next step is a grilling session in which the owner confirms or corrects what was drafted, and nothing setup drafted counts as confirmed until then.\n\nRetained local source: workbench/sessions/notepads/grilling/blueprint-teardown-2026-10-02.json. This record is working context, not a new decision."
-      }
+      },
+      "priority": {
+        "grade": "P3",
+        "reason": "Secondary: Setup drafts everything it can and grilling confirms it (DDR-000S) (workbench/docs/ddr/000S-setup-drafts-everything-it-can-and-grilling-confirms-it.md) is already accepted and canonical; this asks only whether its wording matches your intent, and no Spec or Task waits on the answer."
+      },
+      "value": {
+        "grade": "V1",
+        "reason": "Quick Win: setup drafts everything it can and grilling confirms it, so no room starts with a blank Blueprint (high return); a change to genesis and adoption behavior (low investment)."
+      },
+      "gradeRevision": 1
     },
     {
       "id": "GB-0053",
@@ -4902,6 +5206,13 @@
           "changes": [
             "brief"
           ]
+        },
+        {
+          "revision": 4,
+          "gradeRevision": 1,
+          "at": "2026-10-08T17:06:34.421Z",
+          "by": "claude-worker-d",
+          "reason": "graded: TK-007N confirm-ddr batch: Priority from each record's accepted state, Value from the capability it governs"
         }
       ],
       "brief": {
@@ -4913,7 +5224,16 @@
         "changes": "**Before:** the accepted decision text in the complete draft below.\n\n**Confirm:** no text change.\n\n**Correct:** your note supplies the replacement decision; an agent shows the revised text and reconciles its affected owners.\n\n**Decline:** deprecate the record with your stated reason.",
         "artifacts": "**The workbench is an agentic management system, not a harness** — The existing decision record whose complete text is shown below.",
         "history": "### Vocabulary: is 'harness' now only Claude Code, Codex and their kind, so the Workbench is never called a harness; and is 'room' the project, not the workbench? Lexicon Workbench row and BLUEPRINT.md:5 'portable operating harness' change at promotion. | LOCKED: harness keeps its dictionary meaning (Claude Code and Codex already have harnesses); room has always meant project; the workbench is an agentic management system, not the operating harness. (BT-S1)\n\n**Source question status:** locked\n\n**decision · 2026-10-03T09:04:16.445Z:**\n\nLOCKED BT-S1 (vocabulary). Owner, chat 2026-10-03, verbatim: \"Room has always meant project. What is inaccurate about what was written and needed correction was Claude code and codex already have harnesses. What we are building is an agentic management system. So a workbench is NOT the operating harness. The workbench is an agentic management system claude code and codex uses to align my ideas and implement my design concepts. Harness should mean the same thing it always has.\" He pasted the AI Coding Dictionary 'Harness' entry as that meaning: everything around the model that turns it into an agent (tools, system prompt, context-window management, permissions, hooks); the harness runs the agent loop; examples Claude Code, Cursor, Codex CLI, Claude.ai. Agent's framing corrected: 'room' does not move; it always meant project. The drift is the Lexicon's Workbench row ('A room: the operating harness...') and BLUEPRINT.md:5 ('portable operating harness'), both wrong on the same point. Promotion consequences, not interview edits: Lexicon Workbench row -> agentic management system; add a Harness row with the dictionary meaning and the aihero.dev source; retire 'operating harness' pointing at Workbench; repo uses of 'harness' meaning the workbench (CLAUDE.md 'dogfoods its own harness', the update-harness skill, the harness-review skill family, landmark Harness Feedback Review LMK-000W) are misnomers to disposition at that promotion, not decided here.\n\n### Vocabulary: is 'harness' now only Claude Code, Codex and their kind, so the Workbench is never called a harness; and is 'room' the project, not the workbench? Lexicon Workbench row and BLUEPRINT.md:5 'portable operating harness' change at promotion. | LOCKED: harness keeps its dictionary meaning (Claude Code and Codex already have harnesses); room has always meant project; the workbench is an agentic management system, not the operating harness. (BT-S1)\n\n**Question status in Blueprint teardown: DDR and landmark candidates for owner review:** locked\n\n**decision · 2026-10-03T09:04:16.445Z:**\n\nLOCKED BT-S1 (vocabulary). Owner, chat 2026-10-03, verbatim: \"Room has always meant project. What is inaccurate about what was written and needed correction was Claude code and codex already have harnesses. What we are building is an agentic management system. So a workbench is NOT the operating harness. The workbench is an agentic management system claude code and codex uses to align my ideas and implement my design concepts. Harness should mean the same thing it always has.\" He pasted the AI Coding Dictionary 'Harness' entry as that meaning: everything around the model that turns it into an agent (tools, system prompt, context-window management, permissions, hooks); the harness runs the agent loop; examples Claude Code, Cursor, Codex CLI, Claude.ai. Agent's framing corrected: 'room' does not move; it always meant project. The drift is the Lexicon's Workbench row ('A room: the operating harness...') and BLUEPRINT.md:5 ('portable operating harness'), both wrong on the same point. Promotion consequences, not interview edits: Lexicon Workbench row -> agentic management system; add a Harness row with the dictionary meaning and the aihero.dev source; retire 'operating harness' pointing at Workbench; repo uses of 'harness' meaning the workbench (CLAUDE.md 'dogfoods its own harness', the update-harness skill, the harness-review skill family, landmark Harness Feedback Review LMK-000W) are misnomers to disposition at that promotion, not decided here.\n\nRetained local source: workbench/sessions/notepads/grilling/blueprint-teardown-2026-10-02.json. This record is working context, not a new decision."
-      }
+      },
+      "priority": {
+        "grade": "P3",
+        "reason": "Secondary: The workbench is an agentic management system, not a harness (DDR-000T) (workbench/docs/ddr/000T-the-workbench-is-an-agentic-management-system-not-a-harness.md) is already accepted and canonical; this asks only whether its wording matches your intent, and no Spec or Task waits on the answer. The later Harness engineering is the philosophy decision (DDR-000Z) states this record stands unchanged."
+      },
+      "value": {
+        "grade": "V1",
+        "reason": "Quick Win: describing the Workbench as an agentic management system, with harness keeping its usual meaning, prevents a mistaken identity in every description (high return) through wording changes (low investment)."
+      },
+      "gradeRevision": 1
     },
     {
       "id": "GB-0054",
@@ -4979,6 +5299,13 @@
           "changes": [
             "brief"
           ]
+        },
+        {
+          "revision": 4,
+          "gradeRevision": 1,
+          "at": "2026-10-08T17:06:34.421Z",
+          "by": "claude-worker-d",
+          "reason": "graded: TK-007N confirm-ddr batch: Priority from each record's accepted state, Value from the capability it governs"
         }
       ],
       "brief": {
@@ -4990,7 +5317,16 @@
         "changes": "**Before:** the accepted decision text in the complete draft below.\n\n**Confirm:** no text change.\n\n**Correct:** your note supplies the replacement decision; an agent shows the revised text and reconciles its affected owners.\n\n**Decline:** deprecate the record with your stated reason.",
         "artifacts": "**A project is a room and the workbench is the table in it** — The existing decision record whose complete text is shown below.",
         "history": "### Existing source account\n\nStatus: accepted (it sits at the top level of workbench/docs/ddr, which is the accepted roster; REGISTER.md lists it accepted). Date: 2026-10-03. canonicalized_in: BLUEPRINT.md. Landmark: none, Blueprint level. Landed on integration in PR #292 (merge 64c2c524). Provenance: the Blueprint teardown grilling of 2026-10-02 to 2026-10-03: question BT-D14 (a project is a room, the workbench its table), locked 2026-10-03 on the owner's confirmed round-2 readback with the management-system and dependency sentences from the owner's chat answer; reasons from the owner's own words, question WHY-D6.\n\nNo exact source-question link was recovered for this item from the ledger or linked card. The source account is evidence; it is not a newly confirmed owner answer."
-      }
+      },
+      "priority": {
+        "grade": "P3",
+        "reason": "Secondary: A project is a room and the workbench is the table in it (DDR-000U) (workbench/docs/ddr/000U-a-project-is-a-room-and-the-workbench-is-the-table-in-it.md) is already accepted and canonical; this asks only whether its wording matches your intent, and no Spec or Task waits on the answer."
+      },
+      "value": {
+        "grade": "V3",
+        "reason": "Fill-In: the room-and-table metaphor explains the relationship (modest return); it changes Lexicon rows only (low investment)."
+      },
+      "gradeRevision": 1
     },
     {
       "id": "GB-0055",
@@ -5056,6 +5392,13 @@
           "changes": [
             "brief"
           ]
+        },
+        {
+          "revision": 4,
+          "gradeRevision": 1,
+          "at": "2026-10-08T17:06:34.421Z",
+          "by": "claude-worker-d",
+          "reason": "graded: TK-007N confirm-ddr batch: Priority from each record's accepted state, Value from the capability it governs"
         }
       ],
       "brief": {
@@ -5067,7 +5410,16 @@
         "changes": "**Before:** the accepted decision text in the complete draft below.\n\n**Confirm:** no text change.\n\n**Correct:** your note supplies the replacement decision; an agent shows the revised text and reconciles its affected owners.\n\n**Decline:** deprecate the record with your stated reason.",
         "artifacts": "**Gaps are flagged, never faked** — The existing decision record whose complete text is shown below.",
         "history": "### Done claims say what happened; gaps are flagged, never faked, never claimed from a file's presence (WHY-A7)\n\n**Source question status:** locked\n\n**decision · 2026-10-03T11:58:17.372Z:**\n\nLOCKED WHY-A7 (Done claims say what happened; gaps are flagged, never faked, never claimed from a file's presence): owner pressed \"Confirm this why\" on the round-4 card, saved 2026-10-03T11:07:25.971Z (review page version 6). Text: Claim: Done claims say what happened; gaps are flagged, never faked, never claimed from a file's presence | Why: A false claim of done wipes out the proof of progress the whole structure exists for, and hides the very gap sitrep is meant to show the owner.\n\n### Done claims say what happened; gaps are flagged, never faked, never claimed from a file's presence (WHY-A7)\n\n**Question status in Blueprint teardown: DDR and landmark candidates for owner review:** locked\n\n**decision · 2026-10-03T11:58:17.372Z:**\n\nLOCKED WHY-A7 (Done claims say what happened; gaps are flagged, never faked, never claimed from a file's presence): owner pressed \"Confirm this why\" on the round-4 card, saved 2026-10-03T11:07:25.971Z (review page version 6). Text: Claim: Done claims say what happened; gaps are flagged, never faked, never claimed from a file's presence | Why: A false claim of done wipes out the proof of progress the whole structure exists for, and hides the very gap sitrep is meant to show the owner.\n\nRetained local source: workbench/sessions/notepads/grilling/blueprint-teardown-2026-10-02.json. This record is working context, not a new decision."
-      }
+      },
+      "priority": {
+        "grade": "P3",
+        "reason": "Secondary: Gaps are flagged, never faked (DDR-000V) (workbench/docs/ddr/000V-gaps-are-flagged-never-faked.md) is already accepted and canonical; this asks only whether its wording matches your intent, and no Spec or Task waits on the answer."
+      },
+      "value": {
+        "grade": "V1",
+        "reason": "Quick Win: every done claim says what actually happened and gaps are flagged, protecting proof of progress (high return); claim discipline over existing checks (low investment)."
+      },
+      "gradeRevision": 1
     },
     {
       "id": "GB-0056",
@@ -5133,6 +5485,13 @@
           "changes": [
             "brief"
           ]
+        },
+        {
+          "revision": 4,
+          "gradeRevision": 1,
+          "at": "2026-10-08T17:06:34.421Z",
+          "by": "claude-worker-d",
+          "reason": "graded: TK-007N confirm-ddr batch: Priority from each record's accepted state, Value from the capability it governs"
         }
       ],
       "brief": {
@@ -5144,7 +5503,16 @@
         "changes": "**Before:** the accepted decision text in the complete draft below.\n\n**Confirm:** no text change.\n\n**Correct:** your note supplies the replacement decision; an agent shows the revised text and reconciles its affected owners.\n\n**Decline:** deprecate the record with your stated reason.",
         "artifacts": "**Rooms nest and a parent workbench owns what its children share** — The existing decision record whose complete text is shown below.",
         "history": "### Nesting is a decision record (WHY-D7)\n\n**Source question status:** locked\n\n**source_record · 2026-10-03T11:58:18.576Z:**\n\nOwner correction on the round-4 card WHY-D7 (Rooms nest, and a parent workbench owns what its children share), saved 2026-10-03T11:41:26.465Z, verbatim: \"This is bounded and situational. It does not land on the final blueprint. We do need this record though. a DDR.\"\n\n**decision · 2026-10-03T12:35:04.320Z:**\n\nLOCKED WHY-D7 (Nesting is a decision record): owner pressed \"Confirm\" on the round-6 card, saved 2026-10-03T12:27:42.449Z (review page version 7). Text: Same readback as GAP-5: bounded and situational, kept as a decision record, not on the Blueprint.\n\n### Nesting is a decision record (WHY-D7)\n\n**Question status in Blueprint teardown: DDR and landmark candidates for owner review:** locked\n\n**source_record · 2026-10-03T11:58:18.576Z:**\n\nOwner correction on the round-4 card WHY-D7 (Rooms nest, and a parent workbench owns what its children share), saved 2026-10-03T11:41:26.465Z, verbatim: \"This is bounded and situational. It does not land on the final blueprint. We do need this record though. a DDR.\"\n\n**decision · 2026-10-03T12:35:04.320Z:**\n\nLOCKED WHY-D7 (Nesting is a decision record): owner pressed \"Confirm\" on the round-6 card, saved 2026-10-03T12:27:42.449Z (review page version 7). Text: Same readback as GAP-5: bounded and situational, kept as a decision record, not on the Blueprint.\n\nRetained local source: workbench/sessions/notepads/grilling/blueprint-teardown-2026-10-02.json. This record is working context, not a new decision."
-      }
+      },
+      "priority": {
+        "grade": "P3",
+        "reason": "Secondary: Rooms nest and a parent workbench owns what its children share (DDR-000W) (workbench/docs/ddr/000W-rooms-nest-and-a-parent-workbench-owns-what-its-children-share.md) is already accepted and canonical; this asks only whether its wording matches your intent, and no Spec or Task waits on the answer."
+      },
+      "value": {
+        "grade": "V3",
+        "reason": "Fill-In: nesting is, in the record's own words, bounded and situational (low present return); recorded in the Lexicon with no mechanism authored (low investment)."
+      },
+      "gradeRevision": 1
     },
     {
       "id": "GB-0057",
@@ -5210,6 +5578,13 @@
           "changes": [
             "brief"
           ]
+        },
+        {
+          "revision": 4,
+          "gradeRevision": 1,
+          "at": "2026-10-08T17:06:34.421Z",
+          "by": "claude-worker-d",
+          "reason": "graded: TK-007N confirm-ddr batch: Priority from each record's accepted state, Value from the capability it governs"
         }
       ],
       "brief": {
@@ -5221,7 +5596,16 @@
         "changes": "**Before:** the accepted decision text in the complete draft below.\n\n**Confirm:** no text change.\n\n**Correct:** your note supplies the replacement decision; an agent shows the revised text and reconciles its affected owners.\n\n**Decline:** deprecate the record with your stated reason.",
         "artifacts": "**Every workbench is built to run as one room among many in an autonomous factory, the Foundry** — The existing decision record whose complete text is shown below.",
         "history": "### Say what the Foundry relationship means (WHY-D10a)\n\n**Source question status:** locked\n\n**source_record · 2026-10-03T11:58:18.198Z:**\n\nOwner correction on the round-4 card WHY-D10a (Not a portfolio scheduler, not a replacement for Command Information Center, no Foundry machinery), saved 2026-10-03T11:46:11.923Z, verbatim: \"This doesnt belong on the blueprint stated like this. The workbench is not the foundry yes, but say what that means. The workbench is a management system. the foundry was an autonomous factory. how they related is the Foundry was a factory of many rooms, each with a workbench producing work. The workbench is still designed to work like this. and we will still need it for the foundry. The foundry needs us to prove it works through.\"\n\n**source_record · 2026-10-03T12:35:04.173Z:**\n\nOwner correction on the round-6 card WHY-D10a (Say what the Foundry relationship means), saved 2026-10-03T12:29:18.062Z, verbatim: \"The command info would fall under the same reasoning to remove it. you would have to define what the CIC for that to mean anything to agent reading the BLUEPRINT. So remove it, or explain what you mean.\"\n\n**decision · 2026-10-03T12:44:16.017Z:**\n\nLOCKED WHY-D10a (Command Information Center leaves the page): owner pressed \"Confirm\" on the round-7 card, saved 2026-10-03T12:41:57.161Z. Text: The Command Information Center line is removed because a name the page does not explain means nothing to an agent reading it. The non-goal becomes 'Not a general-purpose project-management application or personal task manager.' The Foundry sentence stays as confirmed in draft 5.\n\n### Say what the Foundry relationship means (WHY-D10a)\n\n**Question status in Blueprint teardown: DDR and landmark candidates for owner review:** locked\n\n**source_record · 2026-10-03T11:58:18.198Z:**\n\nOwner correction on the round-4 card WHY-D10a (Not a portfolio scheduler, not a replacement for Command Information Center, no Foundry machinery), saved 2026-10-03T11:46:11.923Z, verbatim: \"This doesnt belong on the blueprint stated like this. The workbench is not the foundry yes, but say what that means. The workbench is a management system. the foundry was an autonomous factory. how they related is the Foundry was a factory of many rooms, each with a workbench producing work. The workbench is still designed to work like this. and we will still need it for the foundry. The foundry needs us to prove it works through.\"\n\n**source_record · 2026-10-03T12:35:04.173Z:**\n\nOwner correction on the round-6 card WHY-D10a (Say what the Foundry relationship means), saved 2026-10-03T12:29:18.062Z, verbatim: \"The command info would fall under the same reasoning to remove it. you would have to define what the CIC for that to mean anything to agent reading the BLUEPRINT. So remove it, or explain what you mean.\"\n\n**decision · 2026-10-03T12:44:16.017Z:**\n\nLOCKED WHY-D10a (Command Information Center leaves the page): owner pressed \"Confirm\" on the round-7 card, saved 2026-10-03T12:41:57.161Z. Text: The Command Information Center line is removed because a name the page does not explain means nothing to an agent reading it. The non-goal becomes 'Not a general-purpose project-management application or personal task manager.' The Foundry sentence stays as confirmed in draft 5.\n\nRetained local source: workbench/sessions/notepads/grilling/blueprint-teardown-2026-10-02.json. This record is working context, not a new decision."
-      }
+      },
+      "priority": {
+        "grade": "P3",
+        "reason": "Secondary: Every workbench is built to run as one room among many in an autonomous factory, the Foundry (DDR-000X) (workbench/docs/ddr/000X-every-workbench-is-built-to-run-as-one-room-among-many-in-an-autonomous-factory-the-foundry.md) is already accepted and canonical; this asks only whether its wording matches your intent, and no Spec or Task waits on the answer."
+      },
+      "value": {
+        "grade": "V2",
+        "reason": "Strategic Value: building every workbench to run as one room in the Foundry keeps the factory path open (high return), but the unattended coordinator it implies is deferred past v4 until single-Task execution is proven consistent, per What evidence should precede building an unattended coordinator (DQC-003A) (high investment)."
+      },
+      "gradeRevision": 1
     },
     {
       "id": "GB-0058",
@@ -5287,6 +5671,13 @@
           "changes": [
             "brief"
           ]
+        },
+        {
+          "revision": 4,
+          "gradeRevision": 1,
+          "at": "2026-10-08T17:06:34.421Z",
+          "by": "claude-worker-d",
+          "reason": "graded: TK-007N confirm-ddr batch: Priority from each record's accepted state, Value from the capability it governs"
         }
       ],
       "brief": {
@@ -5298,7 +5689,16 @@
         "changes": "**Before:** the accepted decision text in the complete draft below.\n\n**Confirm:** no text change.\n\n**Correct:** your note supplies the replacement decision; an agent shows the revised text and reconciles its affected owners.\n\n**Decline:** deprecate the record with your stated reason.",
         "artifacts": "**A miss found by a check continues the same Task unless the fix rewrites it** — The existing decision record whose complete text is shown below.",
         "history": "### Same Task unless the fix rewrites it (WHY-A9)\n\n**Source question status:** locked\n\n**source_record · 2026-10-03T11:58:17.503Z:**\n\nOwner correction on the round-4 card WHY-A9 (A Task that misses its step is not reopened: its record stays, a new Task fixes what the check found), saved 2026-10-03T11:18:36.407Z, verbatim: \"If the fix is different than just continuing, and we have to rewrite the task. then yes. otherwise. just use the same task, with an adjusted handoff.\"\n\n**decision · 2026-10-03T12:35:04.027Z:**\n\nLOCKED WHY-A9 (Same Task unless the fix rewrites it): owner pressed \"Confirm\" on the round-6 card, saved 2026-10-03T12:27:09.865Z (review page version 7). Text: When a check finds a miss and the fix is more of the same work, the same Task continues with an adjusted handoff. A new Task is opened only when the fix changes the Task enough that it has to be rewritten. Why, my inference: a new Task is worth its overhead only when the work itself changed. Promotion changes the AGENTS corrective-Task rule and the spec-workbench verdict behavior that creates one corrective Task per finding.\n\n### Same Task unless the fix rewrites it (WHY-A9)\n\n**Question status in Blueprint teardown: DDR and landmark candidates for owner review:** locked\n\n**source_record · 2026-10-03T11:58:17.503Z:**\n\nOwner correction on the round-4 card WHY-A9 (A Task that misses its step is not reopened: its record stays, a new Task fixes what the check found), saved 2026-10-03T11:18:36.407Z, verbatim: \"If the fix is different than just continuing, and we have to rewrite the task. then yes. otherwise. just use the same task, with an adjusted handoff.\"\n\n**decision · 2026-10-03T12:35:04.027Z:**\n\nLOCKED WHY-A9 (Same Task unless the fix rewrites it): owner pressed \"Confirm\" on the round-6 card, saved 2026-10-03T12:27:09.865Z (review page version 7). Text: When a check finds a miss and the fix is more of the same work, the same Task continues with an adjusted handoff. A new Task is opened only when the fix changes the Task enough that it has to be rewritten. Why, my inference: a new Task is worth its overhead only when the work itself changed. Promotion changes the AGENTS corrective-Task rule and the spec-workbench verdict behavior that creates one corrective Task per finding.\n\nRetained local source: workbench/sessions/notepads/grilling/blueprint-teardown-2026-10-02.json. This record is working context, not a new decision."
-      }
+      },
+      "priority": {
+        "grade": "P3",
+        "reason": "Secondary: A miss found by a check continues the same Task unless the fix rewrites it (DDR-000Y) (workbench/docs/ddr/000Y-a-miss-found-by-a-check-continues-the-same-task-unless-the-fix-rewrites-it.md) is already accepted and canonical; this asks only whether its wording matches your intent, and no Spec or Task waits on the answer."
+      },
+      "value": {
+        "grade": "V1",
+        "reason": "Quick Win: a miss continues the same Task unless the fix rewrites it, avoiding unwanted corrective Tasks (high return); delivered by the bounded Corrective Work Rules Spec, S-004F (low investment)."
+      },
+      "gradeRevision": 1
     },
     {
       "id": "GB-0059",
@@ -5364,6 +5764,13 @@
           "changes": [
             "brief"
           ]
+        },
+        {
+          "revision": 4,
+          "gradeRevision": 1,
+          "at": "2026-10-08T17:06:34.421Z",
+          "by": "claude-worker-d",
+          "reason": "graded: TK-007N confirm-ddr batch: Priority from each record's accepted state, Value from the capability it governs"
         }
       ],
       "brief": {
@@ -5375,7 +5782,16 @@
         "changes": "**Before:** the accepted decision text in the complete draft below.\n\n**Confirm:** no text change.\n\n**Correct:** your note supplies the replacement decision; an agent shows the revised text and reconciles its affected owners.\n\n**Decline:** deprecate the record with your stated reason.",
         "artifacts": "**The Wiki is the evolving synthesis every agent reads and updates** — The Wiki is a directory of agent-written Markdown that every agent reads and\nupdates: summaries, entity pages, concept pages, comparisons, an overview and\nan evolving synthesis.",
         "history": "### Existing source account\n\nArchitectural decision record (ADR), not a DDR. Status: accepted (top level of workbench/docs/adr; REGISTER.md lists it accepted). Date: 2026-10-01. canonicalized_in: LEXICON.md, AGENTS.md, BLUEPRINT.md, RUNBOOK.md, workbench/specs/Wiki Evolving-Synthesis Migration (S-003W)-wiki-evolving-synthesis-migration/SPEC.md. The record says you confirmed its points in a grilling on 2026-10-01 and asked for them to be promoted. Landed on integration in PR #266 (merge d9f969e9). Provenance: owner-confirmed grilling of 2026-10-01 under the objective \"wiki-definition-and-use\", answering the handoff `workbench/sessions/handoffs/wiki-definition-and-use-2026-10-01.md`, compared against Andrej Karpathy's \"LLM Wiki\" idea file (gist 442a6bf5). The comparison that preceded the grilling found fifty complete Specs with no feature article, fifty-one per-Spec articles filed as design concepts, and no ingest, query or semantic lint operation in the Workbench.\n\nNo exact source-question link was recovered for this item from the ledger or linked card. The source account is evidence; it is not a newly confirmed owner answer."
-      }
+      },
+      "priority": {
+        "grade": "P3",
+        "reason": "Secondary: The Wiki is the evolving synthesis every agent reads and updates (ADR-000R) (workbench/docs/adr/000R-the-wiki-is-the-evolving-synthesis-every-agent-reads-and-updates.md) is already accepted and canonical; this asks only whether its wording matches your intent, and no Spec or Task waits on the answer."
+      },
+      "value": {
+        "grade": "V2",
+        "reason": "Strategic Value: the Wiki as the evolving synthesis every agent reads and updates (high return); its file, tooling and record migration is a separate Spec, Wiki Evolving-Synthesis Migration (S-003W) (high investment)."
+      },
+      "gradeRevision": 1
     },
     {
       "id": "GB-0060",
@@ -5441,6 +5857,13 @@
           "changes": [
             "brief"
           ]
+        },
+        {
+          "revision": 4,
+          "gradeRevision": 1,
+          "at": "2026-10-08T17:06:34.421Z",
+          "by": "claude-worker-d",
+          "reason": "graded: TK-007N confirm-ddr batch: Priority from each record's accepted state, Value from the capability it governs"
         }
       ],
       "brief": {
@@ -5452,7 +5875,16 @@
         "changes": "**Before:** the accepted decision text in the complete draft below.\n\n**Confirm:** no text change.\n\n**Correct:** your note supplies the replacement decision; an agent shows the revised text and reconciles its affected owners.\n\n**Decline:** deprecate the record with your stated reason.",
         "artifacts": "**Destination Decision Records are decision records beside ADRs** — The Workbench keeps two kinds of **decision record**.",
         "history": "### Existing source account\n\nArchitectural decision record (ADR), not a DDR. Status: accepted (top level of workbench/docs/adr; REGISTER.md lists it accepted). Date: 2026-10-02. canonicalized_in: LEXICON.md. The record says you confirmed its points in a grilling on 2026-10-01 and asked for them to be promoted. Landed on integration in PR #267 (merge 8a9eadd3). Provenance: owner-confirmed grilling of 2026-10-01 under the objective \"ddr-and-control-surface\", which began when the owner proposed a sibling to the ADR that would give Destination Question Cards a durable main source. It builds on [ADR-000A](000A-active-adr-decisions-and-destination-blueprints.md) (active decisions as Canon) and [ADR-000G](000G-blueprint-spec-and-task-are-three-altitudes-of-one-delivery-chain.md) (the Blueprint, Spec and Task chain).\n\nNo exact source-question link was recovered for this item from the ledger or linked card. The source account is evidence; it is not a newly confirmed owner answer."
-      }
+      },
+      "priority": {
+        "grade": "P3",
+        "reason": "Secondary: Destination Decision Records are decision records beside ADRs (ADR-000S) (workbench/docs/adr/000S-destination-decision-records-are-decision-records-beside-adrs.md) is already accepted and canonical; this asks only whether its wording matches your intent, and no Spec or Task waits on the answer."
+      },
+      "value": {
+        "grade": "V2",
+        "reason": "Strategic Value: a durable owner for destination choices beside ADRs (high return); delivered by Decision Record Tooling, S-003X, a new collection, commands and register (high investment)."
+      },
+      "gradeRevision": 1
     },
     {
       "id": "GB-0061",
@@ -5518,6 +5950,13 @@
           "changes": [
             "brief"
           ]
+        },
+        {
+          "revision": 4,
+          "gradeRevision": 1,
+          "at": "2026-10-08T17:06:34.421Z",
+          "by": "claude-worker-d",
+          "reason": "graded: TK-007N confirm-ddr batch: Priority from each record's accepted state, Value from the capability it governs"
         }
       ],
       "brief": {
@@ -5529,7 +5968,16 @@
         "changes": "**Before:** the accepted decision text in the complete draft below.\n\n**Confirm:** no text change.\n\n**Correct:** your note supplies the replacement decision; an agent shows the revised text and reconciles its affected owners.\n\n**Decline:** deprecate the record with your stated reason.",
         "artifacts": "**Records share one set of read words: list, show, search, history and inspect** — Every kind of record the Workbench keeps is to answer the same kinds of read\nwith the same words, so an agent asks a notepad, a Destination Question Card, a\nlandmark, a Spec, an ADR or a DDR the same way.",
         "history": "### Existing source account\n\nArchitectural decision record (ADR), not a DDR. Status: accepted (top level of workbench/docs/adr; REGISTER.md lists it accepted). Date: 2026-10-02. canonicalized_in: LEXICON.md. The record says you confirmed its points in a grilling on 2026-10-01 and asked for them to be promoted. Landed on integration in PR #267 (merge 8a9eadd3). Provenance: owner-confirmed grilling of 2026-10-01 under the objective \"ddr-and-control-surface\", which asked whether the AI community has a standard read set for a store read by many agents and then set the words above. The sources above were read on 2026-10-01, except the LangGraph store reference, which was taken from search results; the Letta documentation and the CoALA paper could not be read through the research tool and are not relied on.\n\nNo exact source-question link was recovered for this item from the ledger or linked card. The source account is evidence; it is not a newly confirmed owner answer."
-      }
+      },
+      "priority": {
+        "grade": "P3",
+        "reason": "Secondary: Records share one set of read words: list, show, search, history and inspect (ADR-000T) (workbench/docs/adr/000T-records-share-one-set-of-read-words-list-show-search-history-and-inspect.md) is already accepted and canonical; this asks only whether its wording matches your intent, and no Spec or Task waits on the answer."
+      },
+      "value": {
+        "grade": "V1",
+        "reason": "Quick Win: one set of read words across every record kind (high return); a tool gains the words only when a Spec touches it (low investment), per the record."
+      },
+      "gradeRevision": 1
     },
     {
       "id": "GB-0062",
@@ -5595,6 +6043,13 @@
           "changes": [
             "brief"
           ]
+        },
+        {
+          "revision": 4,
+          "gradeRevision": 1,
+          "at": "2026-10-08T17:06:34.421Z",
+          "by": "claude-worker-d",
+          "reason": "graded: TK-007N confirm-ddr batch: Priority from each record's accepted state, Value from the capability it governs"
         }
       ],
       "brief": {
@@ -5606,7 +6061,16 @@
         "changes": "**Before:** the accepted decision text in the complete draft below.\n\n**Confirm:** no text change.\n\n**Correct:** your note supplies the replacement decision; an agent shows the revised text and reconciles its affected owners.\n\n**Decline:** deprecate the record with your stated reason.",
         "artifacts": "**Landmarks are LANDMARK.md artifacts one size above Specs** — A landmark becomes a destination-facing architecture artifact, `LANDMARK.md`,\nwith a visible identifier and the full artifact treatment a `SPEC.md` has.",
         "history": "### Existing source account\n\nArchitectural decision record (ADR), not a DDR. Status: accepted (top level of workbench/docs/adr; REGISTER.md lists it accepted). Date: 2026-10-02. canonicalized_in: LEXICON.md. The record says you confirmed its points in a grilling on 2026-10-02 and asked for them to be promoted. Landed on integration in PR #268 (merge 8ff48e68). Provenance: owner-confirmed grilling of 2026-10-02 under the objective \"ddr-and-control-surface\", continuing the decision-record session of 2026-10-01 that produced [ADR-000S](000S-destination-decision-records-are-decision-records-beside-adrs.md). The owner's earlier landmark definition of 2026-09-25, which made landmark files JSON, is superseded for the landmark record only.\n\nNo exact source-question link was recovered for this item from the ledger or linked card. The source account is evidence; it is not a newly confirmed owner answer."
-      }
+      },
+      "priority": {
+        "grade": "P3",
+        "reason": "Secondary: Landmarks are LANDMARK.md artifacts one size above Specs (ADR-000U) (workbench/docs/adr/000U-landmarks-are-landmark-md-artifacts-one-size-above-specs.md) is already accepted and canonical; this asks only whether its wording matches your intent, and no Spec or Task waits on the answer."
+      },
+      "value": {
+        "grade": "V2",
+        "reason": "Strategic Value: landmarks as LANDMARK.md artifacts one size above Specs, 'specs for specs' (high return); delivered by the LANDMARK.md runtime and migration Specs, S-003Z and S-004A (high investment)."
+      },
+      "gradeRevision": 1
     },
     {
       "id": "GB-0063",
@@ -5672,6 +6136,13 @@
           "changes": [
             "brief"
           ]
+        },
+        {
+          "revision": 4,
+          "gradeRevision": 1,
+          "at": "2026-10-08T17:06:34.421Z",
+          "by": "claude-worker-d",
+          "reason": "graded: TK-007N confirm-ddr batch: Priority from each record's accepted state, Value from the capability it governs"
         }
       ],
       "brief": {
@@ -5683,7 +6154,16 @@
         "changes": "**Before:** the accepted decision text in the complete draft below.\n\n**Confirm:** no text change.\n\n**Correct:** your note supplies the replacement decision; an agent shows the revised text and reconciles its affected owners.\n\n**Decline:** deprecate the record with your stated reason.",
         "artifacts": "**Captain, Director, Dispatcher and Worker scope work and role skills own each job** — The role ladder gains a level for the landmark\n([ADR-000U](000U-landmarks-are-landmark-md-artifacts-one-size-above-specs.md))\nand each role's job moves out of the always-loaded Contract into its role\nskill.",
         "history": "### Existing source account\n\nArchitectural decision record (ADR), not a DDR. Status: accepted (top level of workbench/docs/adr; REGISTER.md lists it accepted). Date: 2026-10-02. canonicalized_in: LEXICON.md. The record says you confirmed its points in a grilling on 2026-10-02 and asked for them to be promoted. Landed on integration in PR #268 (merge 8ff48e68). Provenance: owner-confirmed grilling of 2026-10-02 under the objective \"ddr-and-control-surface\".\n\nNo exact source-question link was recovered for this item from the ledger or linked card. The source account is evidence; it is not a newly confirmed owner answer."
-      }
+      },
+      "priority": {
+        "grade": "P3",
+        "reason": "Secondary: Captain, Director, Dispatcher and Worker scope work and role skills own each job (ADR-000V) (workbench/docs/adr/000V-captain-director-dispatcher-and-worker-scope-work-and-role-skills-own-each-job.md) is already accepted and canonical; this asks only whether its wording matches your intent, and no Spec or Task waits on the answer."
+      },
+      "value": {
+        "grade": "V2",
+        "reason": "Strategic Value: the role ladder gains a landmark level and each job moves into its role skill (high return); needs the Captain role, rescoped Director and role skills, S-004B (high investment)."
+      },
+      "gradeRevision": 1
     },
     {
       "id": "GB-0064",
@@ -5749,6 +6229,13 @@
           "changes": [
             "brief"
           ]
+        },
+        {
+          "revision": 4,
+          "gradeRevision": 1,
+          "at": "2026-10-08T17:06:34.421Z",
+          "by": "claude-worker-d",
+          "reason": "graded: TK-007N confirm-ddr batch: Priority from each record's accepted state, Value from the capability it governs"
         }
       ],
       "brief": {
@@ -5760,7 +6247,16 @@
         "changes": "**Before:** the accepted decision text in the complete draft below.\n\n**Confirm:** no text change.\n\n**Correct:** your note supplies the replacement decision; an agent shows the revised text and reconciles its affected owners.\n\n**Decline:** deprecate the record with your stated reason.",
         "artifacts": "**Contract carriers are briefs that point to skills and authority flows through the pointer** — The Contract carriers follow progressive disclosure.",
         "history": "### Existing source account\n\nArchitectural decision record (ADR), not a DDR. Status: accepted (top level of workbench/docs/adr; REGISTER.md lists it accepted). Date: 2026-10-02. canonicalized_in: LEXICON.md. The record says you confirmed its points in a grilling on 2026-10-02 and asked for them to be promoted. Landed on integration in PR #268 (merge 8ff48e68). Provenance: owner-confirmed grilling of 2026-10-02 under the objective \"ddr-and-control-surface\". The dictionary definitions were supplied by the owner from the AI Coding Dictionary at aihero.dev.\n\nNo exact source-question link was recovered for this item from the ledger or linked card. The source account is evidence; it is not a newly confirmed owner answer."
-      }
+      },
+      "priority": {
+        "grade": "P3",
+        "reason": "Secondary: Contract carriers are briefs that point to skills and authority flows through the pointer (ADR-000W) (workbench/docs/adr/000W-contract-carriers-are-briefs-that-point-to-skills-and-authority-flows-through-the-pointer.md) is already accepted and canonical; this asks only whether its wording matches your intent, and no Spec or Task waits on the answer. AGENTS.md is the map and the only Contract file (DDR-001C) has since narrowed its three carriers to one while keeping the pointer rule, so a wording review should read both."
+      },
+      "value": {
+        "grade": "V2",
+        "reason": "Strategic Value: Contract carriers become short briefs pointing to skills (high return for every turn's context); the carrier rewrite, S-004C, spans many Tasks (high investment)."
+      },
+      "gradeRevision": 1
     },
     {
       "id": "GB-0065",
@@ -5826,6 +6322,13 @@
           "changes": [
             "brief"
           ]
+        },
+        {
+          "revision": 4,
+          "gradeRevision": 1,
+          "at": "2026-10-08T17:06:34.421Z",
+          "by": "claude-worker-d",
+          "reason": "graded: TK-007N confirm-ddr batch: Priority from each record's accepted state, Value from the capability it governs"
         }
       ],
       "brief": {
@@ -5837,7 +6340,16 @@
         "changes": "**Before:** the accepted decision text in the complete draft below.\n\n**Confirm:** no text change.\n\n**Correct:** your note supplies the replacement decision; an agent shows the revised text and reconciles its affected owners.\n\n**Decline:** deprecate the record with your stated reason.",
         "artifacts": "**The workflow is eight verbs and each verb writes the plane its claims live on** — The owner confirmed these points in a grilling on 2026-10-02:",
         "history": "### Existing source account\n\nArchitectural decision record (ADR), not a DDR. Status: accepted (top level of workbench/docs/adr; REGISTER.md lists it accepted). Date: 2026-10-02. canonicalized_in: LEXICON.md, BLUEPRINT.md. The record says you confirmed its points in a grilling on 2026-10-02 and asked for them to be promoted. Landed on integration in PR #270 (merge 5adcbaad). Provenance: owner-confirmed grilling of 2026-10-02 under the objective \"skill-workflow-redesign\".\n\nNo exact source-question link was recovered for this item from the ledger or linked card. The source account is evidence; it is not a newly confirmed owner answer."
-      }
+      },
+      "priority": {
+        "grade": "P3",
+        "reason": "Secondary: The workflow is eight verbs and each verb writes the plane its claims live on (ADR-000X) (workbench/docs/adr/000X-the-workflow-is-eight-verbs-and-each-verb-writes-the-plane-its-claims-live-on.md) is already accepted and canonical; this asks only whether its wording matches your intent, and no Spec or Task waits on the answer. Prototype needs no map (DDR-000D) records that this ADR lists eight verbs without Prototype and that the later lock governs; the terms work carries the verb list."
+      },
+      "value": {
+        "grade": "V2",
+        "reason": "Strategic Value: one workflow of named verbs, each writing its own plane (high return); rolling the verbs through skills, controls, templates and Tracker steps is still unowned coordinated work (high investment)."
+      },
+      "gradeRevision": 1
     },
     {
       "id": "GB-0066",
@@ -5903,6 +6415,13 @@
           "changes": [
             "brief"
           ]
+        },
+        {
+          "revision": 4,
+          "gradeRevision": 1,
+          "at": "2026-10-08T17:06:34.421Z",
+          "by": "claude-worker-d",
+          "reason": "graded: TK-007N confirm-ddr batch: Priority from each record's accepted state, Value from the capability it governs"
         }
       ],
       "brief": {
@@ -5914,7 +6433,16 @@
         "changes": "**Before:** the accepted decision text in the complete draft below.\n\n**Confirm:** no text change.\n\n**Correct:** your note supplies the replacement decision; an agent shows the revised text and reconciles its affected owners.\n\n**Decline:** deprecate the record with your stated reason.",
         "artifacts": "**A locked and confirmed answer is promoted without further ceremony** — The owner confirmed these points in a grilling on 2026-10-02:",
         "history": "### Existing source account\n\nArchitectural decision record (ADR), not a DDR. Status: accepted (top level of workbench/docs/adr; REGISTER.md lists it accepted). Date: 2026-10-02. canonicalized_in: LEXICON.md. The record says you confirmed its points in a grilling on 2026-10-02 and asked for them to be promoted. Landed on integration in PR #270 (merge 5adcbaad). Provenance: owner-confirmed grilling of 2026-10-02 under the objective \"skill-workflow-redesign\".\n\nNo exact source-question link was recovered for this item from the ledger or linked card. The source account is evidence; it is not a newly confirmed owner answer."
-      }
+      },
+      "priority": {
+        "grade": "P3",
+        "reason": "Secondary: A locked and confirmed answer is promoted without further ceremony (ADR-000Y) (workbench/docs/adr/000Y-a-locked-and-confirmed-answer-is-promoted-without-further-ceremony.md) is already accepted and canonical; this asks only whether its wording matches your intent, and no Spec or Task waits on the answer."
+      },
+      "value": {
+        "grade": "V1",
+        "reason": "Quick Win: a locked and confirmed answer is promoted without further ceremony (high return: no re-asking); a rule the promote skill applies (low investment)."
+      },
+      "gradeRevision": 1
     },
     {
       "id": "GB-0067",
