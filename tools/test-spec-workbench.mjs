@@ -3054,6 +3054,12 @@ function initLifecycleFixture(dir) {
   const workbenchVersion = JSON.parse(fs.readFileSync(path.join(repoToolRoot(), 'workbench', 'manifest.json'), 'utf8')).workbenchVersion;
   const init = spawnSync(process.execPath, [layoutTool, 'init', '--project', dir, '--provenance', 'genesis', '--version', workbenchVersion], { encoding: 'utf8' });
   assert.equal(init.status, 0, init.stdout + init.stderr);
+  // These lifecycle fixtures test other findings, with a confirmed runtime
+  // surface so exact doctor assertions retain their intended scope.
+  const manifestPath = path.join(dir, 'workbench', 'manifest.json');
+  const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+  manifest.legibility = Object.fromEntries(['run', 'operate', 'inspect', 'errors', 'journey', 'measure'].map((entry) => [entry, `fixture ${entry}`]));
+  fs.writeFileSync(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`);
   // No `spec-catalog` markers: this fixture takes the destination-only
   // `CATALOG.md` render path (the real room's own shape), not the legacy
   // BLUEPRINT-embedded one, so the Retired heading is exercised where the

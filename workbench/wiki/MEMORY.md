@@ -57,8 +57,8 @@ skill. This router does not copy their state or the local grilling queue.
 
 ## Skills Reference
 
-The individual pages below explain core skills and link to their executable or
-planned source. They are curated context, not instruction authority. Each
+The individual pages below explain core skills and Workbench maintainer operations,
+and link to their executable or planned source. They are curated context, not instruction authority. Each
 linked page names its individual delivery Spec. Other core skill articles
 belong to their individual Specs as they are authored.
 
@@ -70,6 +70,7 @@ belong to their individual Specs as they are authored.
 - [Workbench runtime](skill-workbench-runtime.md) - read what the installed tools report and repair what they name
 - [To-docs](skill-to-docs.md) - route settled truth to the owner that holds it
 - [Promote](skill-promote.md) - move settled working claims into their durable owners
+- [Promote Decision](skill-promote-decision.md) - delegate one confirmed decision through Record, Map, Plan and stage publication
 - [Checkpoint](skill-checkpoint.md) - route a retired request to current continuity
 - [Auditor](skill-auditor.md) - check named claims against pinned evidence
 - [Builder](skill-builder.md) - deliver one assigned result with checkable proof
@@ -104,6 +105,8 @@ optional private session transport and the configured-host capability floor.
 This route copies no task state here.
 
 ## Consequential Decision Record And Grill Board
+
+- [Optional project Grill Board](optional-project-grill-board.md) - explains isolated project deployment of the existing page and answer protocol, including its portability and access limits
 
 - [Consequential Decision Record (shared Grill Board)](../grill-board/README.md) - the owner's current package review, bundling questions, named owners, proposals, consequences and original question history
 

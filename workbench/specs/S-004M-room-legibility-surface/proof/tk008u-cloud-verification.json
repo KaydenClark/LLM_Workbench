@@ -1,0 +1,863 @@
+{
+  "task": "TK-008U",
+  "spec": "S-004M Room Legibility Surface",
+  "assemblyTarget": "integration",
+  "base": "d0fb161c1ff36caf936758b7492f7ef7fce8176e",
+  "implementationCandidate": "6049f79af3c7c0515c1aabab6873f881ca254725",
+  "red": {
+    "candidate": "5a1974a5",
+    "command": "node --test --test-name-pattern='legibility findings' tools/test-diagnostics.mjs",
+    "result": "Expected failure: zero legibility findings instead of one"
+  },
+  "green": {
+    "diagnostics": "37/37",
+    "layout": "82/82",
+    "demo": "node --test --test-name-pattern='legibility findings' tools/test-diagnostics.mjs"
+  },
+  "suite": {
+    "initial": [
+      {
+        "command": "node tools/test-skill-catalog.mjs",
+        "exit": 0,
+        "seconds": 0.2
+      },
+      {
+        "command": "node tools/test-skill-inspection.mjs",
+        "exit": 0,
+        "seconds": 0.1
+      },
+      {
+        "command": "node tools/test-spec-assembly-selection.mjs",
+        "exit": 0,
+        "seconds": 1.4
+      },
+      {
+        "command": "node tools/test-domain-modeling-skill.mjs",
+        "exit": 0,
+        "seconds": 0.1
+      },
+      {
+        "command": "node tools/test-core-composition.mjs",
+        "exit": 0,
+        "seconds": 1.6
+      },
+      {
+        "command": "node tools/test-project-evidence.mjs",
+        "exit": 0,
+        "seconds": 0.7
+      },
+      {
+        "command": "node tools/test-skills-lane.mjs",
+        "exit": 0,
+        "seconds": 4.8
+      },
+      {
+        "command": "node tools/test-blueprint-contract.mjs",
+        "exit": 0,
+        "seconds": 0.1
+      },
+      {
+        "command": "node tools/test-session-transport.mjs",
+        "exit": 0,
+        "seconds": 7.5
+      },
+      {
+        "command": "node tools/test-genesis-from-decisions.mjs",
+        "exit": 0,
+        "seconds": 15.0
+      },
+      {
+        "command": "node tools/test-configured-host.mjs",
+        "exit": 0,
+        "seconds": 6.9
+      },
+      {
+        "command": "node tools/test-workbench-adoption.mjs",
+        "exit": 0,
+        "seconds": 5.3
+      },
+      {
+        "command": "node tools/test-core-skill-installer.mjs",
+        "exit": 0,
+        "seconds": 10.2
+      },
+      {
+        "command": "node tools/test-workbench-upgrade.mjs",
+        "exit": 0,
+        "seconds": 11.9
+      },
+      {
+        "command": "node tools/test-workbench-tools.mjs",
+        "exit": 1,
+        "seconds": 9.8
+      },
+      {
+        "command": "node tools/test-governance-core.mjs",
+        "exit": 0,
+        "seconds": 0.1
+      },
+      {
+        "command": "node tools/test-branch-closeout.mjs",
+        "exit": 0,
+        "seconds": 2.2
+      },
+      {
+        "command": "node tools/test-adr.mjs",
+        "exit": 0,
+        "seconds": 7.9
+      },
+      {
+        "command": "node tools/test-wiki.mjs",
+        "exit": 0,
+        "seconds": 5.5
+      },
+      {
+        "command": "node tools/test-sessions.mjs",
+        "exit": 0,
+        "seconds": 2.2
+      },
+      {
+        "command": "node tools/test-visible-ids.mjs",
+        "exit": 0,
+        "seconds": 1.0
+      },
+      {
+        "command": "node tools/test-workbench-identity.mjs",
+        "exit": 0,
+        "seconds": 2.1
+      },
+      {
+        "command": "node tools/test-notepads.mjs",
+        "exit": 0,
+        "seconds": 6.6
+      },
+      {
+        "command": "node tools/test-direct-promotion.mjs",
+        "exit": 0,
+        "seconds": 2.2
+      },
+      {
+        "command": "node tools/test-visible-id-consumers.mjs",
+        "exit": 0,
+        "seconds": 7.0
+      },
+      {
+        "command": "node tools/test-cross-provider-fixture.mjs",
+        "exit": 0,
+        "seconds": 1.3
+      },
+      {
+        "command": "node tools/test-portability-matrix.mjs",
+        "exit": 0,
+        "seconds": 0.4
+      },
+      {
+        "command": "node tools/test-workbench-dogfood.mjs",
+        "exit": 0,
+        "seconds": 10.1
+      },
+      {
+        "command": "node tools/test-evaluate-workbench.mjs",
+        "exit": 0,
+        "seconds": 0.6
+      },
+      {
+        "command": "node tools/test-guardrail-audit.mjs",
+        "exit": 0,
+        "seconds": 0.3
+      },
+      {
+        "command": "node tools/test-context-tools.mjs",
+        "exit": 0,
+        "seconds": 0.2
+      },
+      {
+        "command": "node tools/test-outcome-trials.mjs",
+        "exit": 0,
+        "seconds": 0.4
+      },
+      {
+        "command": "node tools/test-eval-runner.mjs",
+        "exit": 0,
+        "seconds": 0.4
+      },
+      {
+        "command": "node tools/test-feedback-automation.mjs",
+        "exit": 0,
+        "seconds": 0.3
+      },
+      {
+        "command": "node tools/test-symlink-invocation.mjs",
+        "exit": 0,
+        "seconds": 1.1
+      },
+      {
+        "command": "node tools/test-workbench-round-trip.mjs",
+        "exit": 0,
+        "seconds": 17.9
+      },
+      {
+        "command": "node tools/test-control-fidelity.mjs",
+        "exit": 0,
+        "seconds": 2.3
+      },
+      {
+        "command": "node tools/test-controls-vocabulary-sweep.mjs",
+        "exit": 0,
+        "seconds": 0.1
+      },
+      {
+        "command": "node tools/test-spec-workbench.mjs",
+        "exit": 0,
+        "seconds": 75.3
+      },
+      {
+        "command": "node tools/test-carrier-landing.mjs",
+        "exit": 0,
+        "seconds": 1.4
+      },
+      {
+        "command": "node tools/test-runbook-index.mjs",
+        "exit": 0,
+        "seconds": 1.1
+      },
+      {
+        "command": "node tools/test-landmark-wiki.mjs",
+        "exit": 1,
+        "seconds": 4.5
+      },
+      {
+        "command": "node tools/test-self-drift.mjs",
+        "exit": 0,
+        "seconds": 0.3
+      },
+      {
+        "command": "node tools/test-feedback-inventory.mjs",
+        "exit": 0,
+        "seconds": 0.1
+      },
+      {
+        "command": "node tools/test-grilling-ledger.mjs",
+        "exit": 0,
+        "seconds": 0.2
+      },
+      {
+        "command": "node tools/test-grill-board.mjs",
+        "exit": 0,
+        "seconds": 0.7
+      },
+      {
+        "command": "node tools/test-spec-citation-anchors.mjs",
+        "exit": 0,
+        "seconds": 9.8
+      },
+      {
+        "command": "python3 evals/tasks/task_b_path_safety/test_grade.py",
+        "exit": 0,
+        "seconds": 0.6
+      },
+      {
+        "command": "node tools/evaluate-workbench.mjs --path templates --include-controls",
+        "exit": 0,
+        "seconds": 0.1
+      },
+      {
+        "command": "node workbench/tools/spec-workbench.mjs doctor",
+        "exit": 0,
+        "seconds": 2.1
+      },
+      {
+        "command": "node tools/test-spec-report.mjs",
+        "exit": 0,
+        "seconds": 14.7
+      },
+      {
+        "command": "python3 tools/test-check-append-only.py",
+        "exit": 124,
+        "seconds": 240.0
+      }
+    ],
+    "reruns": [
+      {
+        "command": "node tools/test-workbench-tools.mjs",
+        "result": "34/34 PASS",
+        "context": "umask 022; initial cloud umask0077 creates 0600 fixtures while installer normalizes0644"
+      },
+      {
+        "command": "node tools/test-landmark-wiki.mjs",
+        "result": "79/79 PASS",
+        "context": "isolated TMPDIR under /var/tmp outside sandbox; synthetic temporary-parent .git misroutes fixture discovery"
+      },
+      {
+        "command": "python3 -u tools/test-check-append-only.py",
+        "result": "PASS: clean baseline and all eight corruption cases",
+        "context": "Initial 240-second harness timeout; rerun without that artificial deadline"
+      }
+    ],
+    "remaining": "none for TK-008U",
+    "finalResult": "54/54 required Runbook commands PASS, including the two separately run targeted suites and the three documented reruns"
+  },
+  "guardrail": {
+    "preScore": 73,
+    "postScore": 73,
+    "remainingRecommendations": [
+      "Repeated real outcome trials",
+      "Compare identical tasks against controls and prior/current harnesses",
+      "Keep dated verification in owning Spec",
+      "Refresh outcome benchmark",
+      "Report uncertainty across repeated trials"
+    ],
+    "limit": "Static/context evidence only; no agent-outcome improvement claimed"
+  },
+  "semanticDriftCheck": {
+    "scope": "Touched controls, Spec/Task state, manifest declarations, diagnostic registry, update routes, Wiki article and projection routing; no new contradictory route or status identified. Existing baseline findings remain.",
+    "cleanUpdate": false
+  },
+  "docs": {
+    "updated": [
+      "workbench/skills/workbench-runtime/SKILL.md",
+      "workbench/wiki/features/manifest-schema-2-lanes-and-managed-runtime.md"
+    ],
+    "validation": "Wiki validator PASS; touched article read against linked Spec, manifest, source and router; historical verification date preserved."
+  },
+  "qa": "Judged all six entries, absent/empty/placeholder/pending/malformed states, advisory exit and task selection, unchanged update manifests. No declared command is executed. Whole-Spec setup drafting and dedicated article remain in later Tasks; no Spec or owner approval.",
+  "preDriftReceipt": {
+    "schemaVersion": 1,
+    "operation": "workbench-self-drift",
+    "phase": "pre",
+    "sourceRevision": "d0fb161c1ff36caf936758b7492f7ef7fce8176e",
+    "dirty": false,
+    "workbenchVersion": "v3.2.1",
+    "findings": [
+      {
+        "code": "stale-claim",
+        "artifact": "specs",
+        "claim": "S-003W has an in-progress task last updated 2026-10-04",
+        "expected": "current owner and verified identity",
+        "observed": "S-003W has an in-progress task last updated 2026-10-04",
+        "correction": "S-003W has an in-progress task last updated 2026-10-04",
+        "classification": "stale",
+        "severity": "attention",
+        "effect": "blocks-clean-update",
+        "diagnosticEffect": "none"
+      },
+      {
+        "code": "blocked-slice",
+        "artifact": "specs",
+        "claim": "S-004E/TK-005Z waits on TK-005Y",
+        "expected": "current owner and verified identity",
+        "observed": "S-004E/TK-005Z waits on TK-005Y",
+        "correction": "S-004E/TK-005Z waits on TK-005Y",
+        "classification": "stale",
+        "severity": "error",
+        "effect": "blocks-clean-update",
+        "diagnosticEffect": "selected-slice"
+      },
+      {
+        "code": "blocked-slice",
+        "artifact": "specs",
+        "claim": "S-004L/TK-006W waits on TK-006V",
+        "expected": "current owner and verified identity",
+        "observed": "S-004L/TK-006W waits on TK-006V",
+        "correction": "S-004L/TK-006W waits on TK-006V",
+        "classification": "stale",
+        "severity": "error",
+        "effect": "blocks-clean-update",
+        "diagnosticEffect": "selected-slice"
+      },
+      {
+        "code": "blocked-slice",
+        "artifact": "specs",
+        "claim": "S-004M/TK-008V waits on TK-008U",
+        "expected": "current owner and verified identity",
+        "observed": "S-004M/TK-008V waits on TK-008U",
+        "correction": "S-004M/TK-008V waits on TK-008U",
+        "classification": "stale",
+        "severity": "error",
+        "effect": "blocks-clean-update",
+        "diagnosticEffect": "selected-slice"
+      },
+      {
+        "code": "blocked-slice",
+        "artifact": "specs",
+        "claim": "S-004M/TK-008W waits on TK-008V",
+        "expected": "current owner and verified identity",
+        "observed": "S-004M/TK-008W waits on TK-008V",
+        "correction": "S-004M/TK-008W waits on TK-008V",
+        "classification": "stale",
+        "severity": "error",
+        "effect": "blocks-clean-update",
+        "diagnosticEffect": "selected-slice"
+      },
+      {
+        "code": "blocked-slice",
+        "artifact": "specs",
+        "claim": "S-004M/TK-008X waits on TK-008W",
+        "expected": "current owner and verified identity",
+        "observed": "S-004M/TK-008X waits on TK-008W",
+        "correction": "S-004M/TK-008X waits on TK-008W",
+        "classification": "stale",
+        "severity": "error",
+        "effect": "blocks-clean-update",
+        "diagnosticEffect": "selected-slice"
+      },
+      {
+        "code": "blocked-slice",
+        "artifact": "specs",
+        "claim": "S-004O/TK-009D waits on TK-009C",
+        "expected": "current owner and verified identity",
+        "observed": "S-004O/TK-009D waits on TK-009C",
+        "correction": "S-004O/TK-009D waits on TK-009C",
+        "classification": "stale",
+        "severity": "error",
+        "effect": "blocks-clean-update",
+        "diagnosticEffect": "selected-slice"
+      },
+      {
+        "code": "blocked-slice",
+        "artifact": "specs",
+        "claim": "S-004O/TK-009E waits on TK-009C",
+        "expected": "current owner and verified identity",
+        "observed": "S-004O/TK-009E waits on TK-009C",
+        "correction": "S-004O/TK-009E waits on TK-009C",
+        "classification": "stale",
+        "severity": "error",
+        "effect": "blocks-clean-update",
+        "diagnosticEffect": "selected-slice"
+      },
+      {
+        "code": "blocked-slice",
+        "artifact": "specs",
+        "claim": "S-004O/TK-009F waits on TK-009B, TK-009C, TK-009D",
+        "expected": "current owner and verified identity",
+        "observed": "S-004O/TK-009F waits on TK-009B, TK-009C, TK-009D",
+        "correction": "S-004O/TK-009F waits on TK-009B, TK-009C, TK-009D",
+        "classification": "stale",
+        "severity": "error",
+        "effect": "blocks-clean-update",
+        "diagnosticEffect": "selected-slice"
+      },
+      {
+        "code": "blocked-slice",
+        "artifact": "specs",
+        "claim": "S-004O/TK-009G waits on TK-009B, TK-009C, TK-009F",
+        "expected": "current owner and verified identity",
+        "observed": "S-004O/TK-009G waits on TK-009B, TK-009C, TK-009F",
+        "correction": "S-004O/TK-009G waits on TK-009B, TK-009C, TK-009F",
+        "classification": "stale",
+        "severity": "error",
+        "effect": "blocks-clean-update",
+        "diagnosticEffect": "selected-slice"
+      },
+      {
+        "code": "blocked-slice",
+        "artifact": "specs",
+        "claim": "S-004O/TK-009H waits on TK-009E, TK-009G",
+        "expected": "current owner and verified identity",
+        "observed": "S-004O/TK-009H waits on TK-009E, TK-009G",
+        "correction": "S-004O/TK-009H waits on TK-009E, TK-009G",
+        "classification": "stale",
+        "severity": "error",
+        "effect": "blocks-clean-update",
+        "diagnosticEffect": "selected-slice"
+      },
+      {
+        "code": "stale-claim",
+        "artifact": "specs",
+        "claim": "S-00Q has an in-progress task last updated 2026-09-19",
+        "expected": "current owner and verified identity",
+        "observed": "S-00Q has an in-progress task last updated 2026-09-19",
+        "correction": "S-00Q has an in-progress task last updated 2026-09-19",
+        "classification": "stale",
+        "severity": "attention",
+        "effect": "blocks-clean-update",
+        "diagnosticEffect": "none"
+      },
+      {
+        "code": "stale-claim",
+        "artifact": "specs",
+        "claim": "S-01H has an in-progress task last updated 2026-10-03",
+        "expected": "current owner and verified identity",
+        "observed": "S-01H has an in-progress task last updated 2026-10-03",
+        "correction": "S-01H has an in-progress task last updated 2026-10-03",
+        "classification": "stale",
+        "severity": "attention",
+        "effect": "blocks-clean-update",
+        "diagnosticEffect": "none"
+      },
+      {
+        "code": "stale-claim",
+        "artifact": "specs",
+        "claim": "S-01P has an in-progress task last updated 2026-10-03",
+        "expected": "current owner and verified identity",
+        "observed": "S-01P has an in-progress task last updated 2026-10-03",
+        "correction": "S-01P has an in-progress task last updated 2026-10-03",
+        "classification": "stale",
+        "severity": "attention",
+        "effect": "blocks-clean-update",
+        "diagnosticEffect": "none"
+      },
+      {
+        "code": "stale-claim",
+        "artifact": "specs",
+        "claim": "S-01S has an in-progress task last updated 2026-10-03",
+        "expected": "current owner and verified identity",
+        "observed": "S-01S has an in-progress task last updated 2026-10-03",
+        "correction": "S-01S has an in-progress task last updated 2026-10-03",
+        "classification": "stale",
+        "severity": "attention",
+        "effect": "blocks-clean-update",
+        "diagnosticEffect": "none"
+      },
+      {
+        "code": "stale-seed",
+        "artifact": "workbench/feedback/REPORT_FORMAT.md",
+        "claim": "workbench/feedback/REPORT_FORMAT.md was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+        "expected": "current owner and verified identity",
+        "observed": "workbench/feedback/REPORT_FORMAT.md was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+        "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+        "classification": "historical",
+        "severity": "attention",
+        "effect": "limitation",
+        "diagnosticEffect": "none"
+      },
+      {
+        "code": "stale-seed",
+        "artifact": "workbench/sessions/notepads/templates/notepad.schema.json",
+        "claim": "workbench/sessions/notepads/templates/notepad.schema.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+        "expected": "current owner and verified identity",
+        "observed": "workbench/sessions/notepads/templates/notepad.schema.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+        "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+        "classification": "historical",
+        "severity": "attention",
+        "effect": "limitation",
+        "diagnosticEffect": "none"
+      },
+      {
+        "code": "stale-seed",
+        "artifact": "workbench/sessions/notepads/templates/work.example.json",
+        "claim": "workbench/sessions/notepads/templates/work.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+        "expected": "current owner and verified identity",
+        "observed": "workbench/sessions/notepads/templates/work.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+        "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+        "classification": "historical",
+        "severity": "attention",
+        "effect": "limitation",
+        "diagnosticEffect": "none"
+      },
+      {
+        "code": "stale-seed",
+        "artifact": "workbench/sessions/notepads/templates/grilling.example.json",
+        "claim": "workbench/sessions/notepads/templates/grilling.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+        "expected": "current owner and verified identity",
+        "observed": "workbench/sessions/notepads/templates/grilling.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+        "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+        "classification": "historical",
+        "severity": "attention",
+        "effect": "limitation",
+        "diagnosticEffect": "none"
+      },
+      {
+        "code": "stale-seed",
+        "artifact": "workbench/sessions/notepads/templates/handoff.example.json",
+        "claim": "workbench/sessions/notepads/templates/handoff.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+        "expected": "current owner and verified identity",
+        "observed": "workbench/sessions/notepads/templates/handoff.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+        "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+        "classification": "historical",
+        "severity": "attention",
+        "effect": "limitation",
+        "diagnosticEffect": "none"
+      },
+      {
+        "code": "unverified-provenance",
+        "artifact": "manifest",
+        "claim": "workbench/manifest.json provenance.source.release \"v3.1.0\" disagrees with workbenchVersion v3.2.1",
+        "expected": "current owner and verified identity",
+        "observed": "workbench/manifest.json provenance.source.release \"v3.1.0\" disagrees with workbenchVersion v3.2.1",
+        "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+        "classification": "historical",
+        "severity": "attention",
+        "effect": "limitation",
+        "diagnosticEffect": "none"
+      }
+    ],
+    "machineResult": "blocked",
+    "cleanUpdate": false,
+    "limitations": [
+      "Machine evidence does not establish semantic freshness. Review current-facing claims against their owners and record a no-memory cold-start read-back.",
+      "Target-project drift is a separate operation.",
+      "Installed-source files do not prove native host callability; no installation or repair is performed."
+    ]
+  },
+  "postDriftReceipt": {
+    "schemaVersion": 1,
+    "operation": "workbench-self-drift",
+    "phase": "post",
+    "sourceRevision": "6049f79af3c7c0515c1aabab6873f881ca254725",
+    "dirty": false,
+    "workbenchVersion": "v3.2.1",
+    "findings": [
+      {
+        "code": "stale-claim",
+        "artifact": "specs",
+        "claim": "S-003W has an in-progress task last updated 2026-10-04",
+        "expected": "current owner and verified identity",
+        "observed": "S-003W has an in-progress task last updated 2026-10-04",
+        "correction": "S-003W has an in-progress task last updated 2026-10-04",
+        "classification": "stale",
+        "severity": "attention",
+        "effect": "blocks-clean-update",
+        "diagnosticEffect": "none"
+      },
+      {
+        "code": "blocked-slice",
+        "artifact": "specs",
+        "claim": "S-004E/TK-005Z waits on TK-005Y",
+        "expected": "current owner and verified identity",
+        "observed": "S-004E/TK-005Z waits on TK-005Y",
+        "correction": "S-004E/TK-005Z waits on TK-005Y",
+        "classification": "stale",
+        "severity": "error",
+        "effect": "blocks-clean-update",
+        "diagnosticEffect": "selected-slice"
+      },
+      {
+        "code": "blocked-slice",
+        "artifact": "specs",
+        "claim": "S-004L/TK-006W waits on TK-006V",
+        "expected": "current owner and verified identity",
+        "observed": "S-004L/TK-006W waits on TK-006V",
+        "correction": "S-004L/TK-006W waits on TK-006V",
+        "classification": "stale",
+        "severity": "error",
+        "effect": "blocks-clean-update",
+        "diagnosticEffect": "selected-slice"
+      },
+      {
+        "code": "blocked-slice",
+        "artifact": "specs",
+        "claim": "S-004M/TK-008V waits on TK-008U",
+        "expected": "current owner and verified identity",
+        "observed": "S-004M/TK-008V waits on TK-008U",
+        "correction": "S-004M/TK-008V waits on TK-008U",
+        "classification": "stale",
+        "severity": "error",
+        "effect": "blocks-clean-update",
+        "diagnosticEffect": "selected-slice"
+      },
+      {
+        "code": "blocked-slice",
+        "artifact": "specs",
+        "claim": "S-004M/TK-008W waits on TK-008V",
+        "expected": "current owner and verified identity",
+        "observed": "S-004M/TK-008W waits on TK-008V",
+        "correction": "S-004M/TK-008W waits on TK-008V",
+        "classification": "stale",
+        "severity": "error",
+        "effect": "blocks-clean-update",
+        "diagnosticEffect": "selected-slice"
+      },
+      {
+        "code": "blocked-slice",
+        "artifact": "specs",
+        "claim": "S-004M/TK-008X waits on TK-008W",
+        "expected": "current owner and verified identity",
+        "observed": "S-004M/TK-008X waits on TK-008W",
+        "correction": "S-004M/TK-008X waits on TK-008W",
+        "classification": "stale",
+        "severity": "error",
+        "effect": "blocks-clean-update",
+        "diagnosticEffect": "selected-slice"
+      },
+      {
+        "code": "blocked-slice",
+        "artifact": "specs",
+        "claim": "S-004O/TK-009D waits on TK-009C",
+        "expected": "current owner and verified identity",
+        "observed": "S-004O/TK-009D waits on TK-009C",
+        "correction": "S-004O/TK-009D waits on TK-009C",
+        "classification": "stale",
+        "severity": "error",
+        "effect": "blocks-clean-update",
+        "diagnosticEffect": "selected-slice"
+      },
+      {
+        "code": "blocked-slice",
+        "artifact": "specs",
+        "claim": "S-004O/TK-009E waits on TK-009C",
+        "expected": "current owner and verified identity",
+        "observed": "S-004O/TK-009E waits on TK-009C",
+        "correction": "S-004O/TK-009E waits on TK-009C",
+        "classification": "stale",
+        "severity": "error",
+        "effect": "blocks-clean-update",
+        "diagnosticEffect": "selected-slice"
+      },
+      {
+        "code": "blocked-slice",
+        "artifact": "specs",
+        "claim": "S-004O/TK-009F waits on TK-009B, TK-009C, TK-009D",
+        "expected": "current owner and verified identity",
+        "observed": "S-004O/TK-009F waits on TK-009B, TK-009C, TK-009D",
+        "correction": "S-004O/TK-009F waits on TK-009B, TK-009C, TK-009D",
+        "classification": "stale",
+        "severity": "error",
+        "effect": "blocks-clean-update",
+        "diagnosticEffect": "selected-slice"
+      },
+      {
+        "code": "blocked-slice",
+        "artifact": "specs",
+        "claim": "S-004O/TK-009G waits on TK-009B, TK-009C, TK-009F",
+        "expected": "current owner and verified identity",
+        "observed": "S-004O/TK-009G waits on TK-009B, TK-009C, TK-009F",
+        "correction": "S-004O/TK-009G waits on TK-009B, TK-009C, TK-009F",
+        "classification": "stale",
+        "severity": "error",
+        "effect": "blocks-clean-update",
+        "diagnosticEffect": "selected-slice"
+      },
+      {
+        "code": "blocked-slice",
+        "artifact": "specs",
+        "claim": "S-004O/TK-009H waits on TK-009E, TK-009G",
+        "expected": "current owner and verified identity",
+        "observed": "S-004O/TK-009H waits on TK-009E, TK-009G",
+        "correction": "S-004O/TK-009H waits on TK-009E, TK-009G",
+        "classification": "stale",
+        "severity": "error",
+        "effect": "blocks-clean-update",
+        "diagnosticEffect": "selected-slice"
+      },
+      {
+        "code": "stale-claim",
+        "artifact": "specs",
+        "claim": "S-00Q has an in-progress task last updated 2026-09-19",
+        "expected": "current owner and verified identity",
+        "observed": "S-00Q has an in-progress task last updated 2026-09-19",
+        "correction": "S-00Q has an in-progress task last updated 2026-09-19",
+        "classification": "stale",
+        "severity": "attention",
+        "effect": "blocks-clean-update",
+        "diagnosticEffect": "none"
+      },
+      {
+        "code": "stale-claim",
+        "artifact": "specs",
+        "claim": "S-01H has an in-progress task last updated 2026-10-03",
+        "expected": "current owner and verified identity",
+        "observed": "S-01H has an in-progress task last updated 2026-10-03",
+        "correction": "S-01H has an in-progress task last updated 2026-10-03",
+        "classification": "stale",
+        "severity": "attention",
+        "effect": "blocks-clean-update",
+        "diagnosticEffect": "none"
+      },
+      {
+        "code": "stale-claim",
+        "artifact": "specs",
+        "claim": "S-01P has an in-progress task last updated 2026-10-03",
+        "expected": "current owner and verified identity",
+        "observed": "S-01P has an in-progress task last updated 2026-10-03",
+        "correction": "S-01P has an in-progress task last updated 2026-10-03",
+        "classification": "stale",
+        "severity": "attention",
+        "effect": "blocks-clean-update",
+        "diagnosticEffect": "none"
+      },
+      {
+        "code": "stale-claim",
+        "artifact": "specs",
+        "claim": "S-01S has an in-progress task last updated 2026-10-03",
+        "expected": "current owner and verified identity",
+        "observed": "S-01S has an in-progress task last updated 2026-10-03",
+        "correction": "S-01S has an in-progress task last updated 2026-10-03",
+        "classification": "stale",
+        "severity": "attention",
+        "effect": "blocks-clean-update",
+        "diagnosticEffect": "none"
+      },
+      {
+        "code": "stale-seed",
+        "artifact": "workbench/feedback/REPORT_FORMAT.md",
+        "claim": "workbench/feedback/REPORT_FORMAT.md was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+        "expected": "current owner and verified identity",
+        "observed": "workbench/feedback/REPORT_FORMAT.md was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+        "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+        "classification": "historical",
+        "severity": "attention",
+        "effect": "limitation",
+        "diagnosticEffect": "none"
+      },
+      {
+        "code": "stale-seed",
+        "artifact": "workbench/sessions/notepads/templates/notepad.schema.json",
+        "claim": "workbench/sessions/notepads/templates/notepad.schema.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+        "expected": "current owner and verified identity",
+        "observed": "workbench/sessions/notepads/templates/notepad.schema.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+        "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+        "classification": "historical",
+        "severity": "attention",
+        "effect": "limitation",
+        "diagnosticEffect": "none"
+      },
+      {
+        "code": "stale-seed",
+        "artifact": "workbench/sessions/notepads/templates/work.example.json",
+        "claim": "workbench/sessions/notepads/templates/work.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+        "expected": "current owner and verified identity",
+        "observed": "workbench/sessions/notepads/templates/work.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+        "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+        "classification": "historical",
+        "severity": "attention",
+        "effect": "limitation",
+        "diagnosticEffect": "none"
+      },
+      {
+        "code": "stale-seed",
+        "artifact": "workbench/sessions/notepads/templates/grilling.example.json",
+        "claim": "workbench/sessions/notepads/templates/grilling.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+        "expected": "current owner and verified identity",
+        "observed": "workbench/sessions/notepads/templates/grilling.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+        "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+        "classification": "historical",
+        "severity": "attention",
+        "effect": "limitation",
+        "diagnosticEffect": "none"
+      },
+      {
+        "code": "stale-seed",
+        "artifact": "workbench/sessions/notepads/templates/handoff.example.json",
+        "claim": "workbench/sessions/notepads/templates/handoff.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+        "expected": "current owner and verified identity",
+        "observed": "workbench/sessions/notepads/templates/handoff.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+        "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+        "classification": "historical",
+        "severity": "attention",
+        "effect": "limitation",
+        "diagnosticEffect": "none"
+      },
+      {
+        "code": "unverified-provenance",
+        "artifact": "manifest",
+        "claim": "workbench/manifest.json provenance.source.release \"v3.1.0\" disagrees with workbenchVersion v3.2.1",
+        "expected": "current owner and verified identity",
+        "observed": "workbench/manifest.json provenance.source.release \"v3.1.0\" disagrees with workbenchVersion v3.2.1",
+        "correction": "Preserve historical adoption/seed source identity; inspect current owner and managed installation separately. Missing old seed targets require receipt reconciliation, not restoration of retired artifacts.",
+        "classification": "historical",
+        "severity": "attention",
+        "effect": "limitation",
+        "diagnosticEffect": "none"
+      }
+    ],
+    "machineResult": "blocked",
+    "cleanUpdate": false,
+    "limitations": [
+      "Machine evidence does not establish semantic freshness. Review current-facing claims against their owners and record a no-memory cold-start read-back.",
+      "Target-project drift is a separate operation.",
+      "Installed-source files do not prove native host callability; no installation or repair is performed."
+    ]
+  },
+  "pullRequest": "https://github.com/KaydenClark/LLM_Workbench/pull/433"
+}

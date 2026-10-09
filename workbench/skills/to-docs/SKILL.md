@@ -7,7 +7,13 @@ description: Route settled conversation truth into existing Workbench documentat
 
 Persist an already-settled conversation. Do not start a new interview. First
 state the proposed destinations, then update only owners whose durable truth
-changed:
+changed.
+
+As the Record Worker for `promote-decision`, use the assigned decision's source,
+confirmed revision, rationale, corrections and endpoint. Return exact owner
+changes, commits and checks to its publisher before Map begins. The selected
+claims primitive remains [`promote`](../promote/SKILL.md); standalone `to-docs`
+keeps its requested documentation endpoint.
 
 For a v3 project, first read `workbench/manifest.json`. It declares the support
 lanes; do not create a root `specs/`, project-local `skills/` core shadow, or parallel
@@ -146,8 +152,12 @@ empty reason. Each move drops a leftover `status` key (the folder is the
 lifecycle), refuses a dirty Git tree so the candidate shows only the move,
 records the move as a `git mv` rename (a plain rename outside Git), rewrites
 live Markdown links to the moved record across the root controls, Wiki, skills,
-team templates, both decision-record collections and every Spec and Task
-record while leaving and counting references inside append-only evidence
+team templates, Grill Board README, both decision-record collections and every
+Spec and Task record. When the record's directory changes, its outgoing relative
+links are rebased too, including links to an unmoved `GLOSSARY.md`, Spec or Wiki
+page; query strings, fragments and URI encoding are preserved. Root reference
+repair includes `GLOSSARY.md` when present and `LEXICON.md` in unmigrated rooms.
+Each move leaves and counts references inside append-only evidence
 sections, regenerates both registers and stages the result. A refused move
 writes nothing. No separate approval ceremony is added.
 

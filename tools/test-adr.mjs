@@ -579,10 +579,12 @@ test('every intra-ADR link in the real corpus resolves literally, and the re-cou
   // ADR-000X (the workflow verbs) adds one linked record; ADR-000Y (promotion) links none.
   // S-004F TK-005Q: the corrective-work amendments in ADR-000F, ADR-000G, ADR-000H, ADR-000I, ADR-000R and ADR-000U add seven edges to the destination records.
   // S-003Y TK-006J: ADR-000Z narrows ADR-000L, one more linked record and one more edge.
-  assert.equal(filesWithLink, 48, 're-count of ADR files carrying an intra-ADR link at this candidate');
+  // S-005C: the Promote Decision proposal links the confirmation DDR, adding
+  // one carrying record and one literal edge (49/121, re-counted from 48/120).
+  assert.equal(filesWithLink, 49, 're-count of ADR files carrying an intra-ADR link at this candidate');
   // S-004H TK-008C: ADR-000G's workflow-map route moved from the Blueprint's retired Desired Lifecycle to the workflow Wiki page, one more counted edge.
   // S-004G TK-006F: the ADR-000X amendment links ADR-000A and the release proof decision, two more edges.
-  assert.equal(totalLinks, 120, 're-count of total intra-ADR link edges at this candidate');
+  assert.equal(totalLinks, 121, 're-count of total intra-ADR link edges at this candidate');
 });
 
 // S-00I TK-001 review correction: a link is validated literally, never
@@ -1225,6 +1227,116 @@ test('accept moves a proposed ADR and DDR out of proposed/ by a Git rename, drop
     assert.match(moved, /\(000A-current-architecture\.md\)/, 'the moved record\'s own link is recomputed for its new folder');
     assert.equal(listAdrs(dir).find((record) => record.number === '000C').status, 'accepted');
     assert.deepEqual(validateDecisionRecords(dir).filter((item) => item.severity === 'error' || item.code === 'stale-register'), []);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+for (const kind of ['adr', 'ddr']) test(`accept and deprecate preserve ${kind.toUpperCase()} outgoing non-decision links without rewriting evidence or unrelated files`, () => {
+  const dir = lifecycleRoom();
+  try {
+    const name = kind === 'adr' ? '000C-proposed-architecture.md' : '000C-proposed-destination.md';
+    const proposed = path.join(dir, 'workbench', 'docs', kind, 'proposed', name);
+    const glossary = '# Glossary\n\n## Workflow verbs\n';
+    fs.writeFileSync(path.join(dir, 'GLOSSARY.md'), glossary);
+    const wiki = path.join(dir, 'workbench', 'wiki', 'reference notes.md');
+    fs.writeFileSync(wiki, '# Reference notes\n');
+    const links = [
+      '[glossary](../../../../GLOSSARY.md?view=source#workflow-verbs)',
+      '[Spec](../../../specs/S-0ZZ-fixture/SPEC.md#outcome)',
+      '[Wiki](../../../wiki/reference%20notes.md)',
+      '[Wiki directory](../../../wiki/)',
+      '[angle](<../../../wiki/reference%20notes.md?view=source#details>)',
+      '[title](../../../wiki/reference%20notes.md?view=source#details "Title (unchanged)")',
+      '[Reference\nnotes](../../../wiki/reference%20notes.md)',
+      '[same page](#decision)',
+      '[web](https://example.com/reference)',
+      '[network](//example.com/reference)',
+      '[absolute](/reference.md)',
+      '[host](codex://threads/example)',
+      '[mail](mailto:owner@example.com)'
+    ].join('\n');
+    const evidence = '## Append-Only Evidence And Execution Log\n\nHistorical [glossary](../../../../GLOSSARY.md#workflow-verbs).\n';
+    fs.appendFileSync(proposed, `\n${links}\n\n${evidence}`);
+    const unrelated = fs.readFileSync(path.join(dir, 'workbench', 'specs', 'S-0ZZ-fixture', 'SPEC.md'), 'utf8');
+    gitCommitAll(dir, 'Seed outgoing non-decision links');
+
+    const accepted = acceptRecord(dir, `${kind.toUpperCase()}-000C`);
+    const content = fs.readFileSync(path.join(dir, accepted.to), 'utf8');
+    assert.ok(content.includes('[glossary](../../../GLOSSARY.md?view=source#workflow-verbs)'), 'a root target keeps its query and fragment');
+    assert.ok(content.includes('[Spec](../../specs/S-0ZZ-fixture/SPEC.md#outcome)'), 'an unmoved Spec still needs rebasing');
+    assert.ok(content.includes('[Wiki](../../wiki/reference%20notes.md)'), 'URI encoding is preserved');
+    assert.ok(content.includes('[Wiki directory](../../wiki/)'), 'directory-route syntax is preserved');
+    assert.ok(content.includes('[angle](<../../wiki/reference%20notes.md?view=source#details>)'), 'angle wrappers and URL suffixes are preserved');
+    assert.ok(content.includes('[title](../../wiki/reference%20notes.md?view=source#details "Title (unchanged)")'), 'link titles remain separate and byte-identical');
+    assert.ok(content.includes('[Reference\nnotes](../../wiki/reference%20notes.md)'), 'multiline link labels remain supported and unchanged');
+    for (const link of links.split('\n').slice(8)) assert.ok(content.includes(link), `non-relative target remains unchanged: ${link}`);
+    assert.ok(content.endsWith(evidence), 'append-only evidence stays byte-identical');
+    assert.equal(accepted.historicalReferencesLeft[accepted.to], 1);
+    assert.equal(fs.readFileSync(path.join(dir, 'GLOSSARY.md'), 'utf8'), glossary, 'moving a record never authors vocabulary');
+    assert.equal(fs.readFileSync(path.join(dir, 'workbench', 'specs', 'S-0ZZ-fixture', 'SPEC.md'), 'utf8'), unrelated, 'an unmoved, unrelated referrer is not normalized');
+    gitCommitAll(dir, 'Accept the linked record');
+
+    const archived = deprecateRecord(dir, `${kind.toUpperCase()}-000C`, 'Diagnostic choice retired');
+    const archivedContent = fs.readFileSync(path.join(dir, archived.to), 'utf8');
+    assert.ok(archivedContent.includes(links), 'archiving rebases every live relative target back to its original depth');
+    assert.ok(archivedContent.endsWith(evidence), 'archive transition still preserves historical evidence');
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+for (const kind of ['adr', 'ddr']) test(`accept and deprecate repair Grill Board README incoming ${kind.toUpperCase()} references while preserving its evidence`, () => {
+  const dir = lifecycleRoom();
+  try {
+    const name = kind === 'adr' ? '000C-proposed-architecture.md' : '000C-proposed-destination.md';
+    const board = path.join(dir, 'workbench', 'grill-board', 'README.md');
+    fs.mkdirSync(path.dirname(board), { recursive: true });
+    const oldLink = `[decision](../docs/${kind}/proposed/${name}#decision)`;
+    const evidence = `## Append-Only Evidence And Execution Log\n\nHistorical ${oldLink}.\n`;
+    fs.writeFileSync(board, `# Grill Board\n\nLive ${oldLink}.\n\n${evidence}`);
+    const glossary = path.join(dir, 'GLOSSARY.md');
+    fs.writeFileSync(glossary, `# Glossary\n\nSource [decision](workbench/docs/${kind}/proposed/${name}#decision).\n`);
+    gitCommitAll(dir, 'Seed the board reference');
+
+    const accepted = acceptRecord(dir, `${kind.toUpperCase()}-000C`);
+    const content = fs.readFileSync(board, 'utf8');
+    assert.ok(content.includes(`Live [decision](../docs/${kind}/${name}#decision).`));
+    assert.ok(content.endsWith(evidence), 'board evidence stays byte-identical');
+    assert.equal(accepted.referencesRewritten['workbench/grill-board/README.md'], 1);
+    assert.equal(accepted.historicalReferencesLeft['workbench/grill-board/README.md'], 1);
+    assert.ok(fs.readFileSync(glossary, 'utf8').includes(`Source [decision](workbench/docs/${kind}/${name}#decision).`), 'current glossary references are included without a vocabulary migration');
+    gitCommitAll(dir, 'Accept the board decision');
+
+    deprecateRecord(dir, `${kind.toUpperCase()}-000C`, 'Diagnostic choice retired');
+    assert.ok(fs.readFileSync(board, 'utf8').includes(`Live [decision](../docs/${kind}/archive/${name}#decision).`));
+    assert.ok(fs.readFileSync(board, 'utf8').endsWith(evidence));
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('migrate-folders preserves outgoing non-decision targets and repairs the board without rewriting evidence', () => {
+  const dir = gitFixture();
+  try {
+    const collection = path.join(dir, 'workbench', 'docs', 'adr');
+    fs.writeFileSync(path.join(dir, 'GLOSSARY.md'), '# Glossary\n');
+    const evidence = '## Append-Only Evidence And Execution Log\n\nHistorical [glossary](../../../GLOSSARY.md).\n';
+    fs.writeFileSync(path.join(collection, '000C-choice.md'), adr('proposed', '', `Live [glossary](../../../GLOSSARY.md).\n\n${evidence}`));
+    const board = path.join(dir, 'workbench', 'grill-board', 'README.md');
+    fs.mkdirSync(path.dirname(board), { recursive: true });
+    const boardEvidence = '## Append-Only Evidence And Execution Log\n\nHistorical [choice](../docs/adr/000C-choice.md).\n';
+    fs.writeFileSync(board, `# Board\n\nLive [choice](../docs/adr/000C-choice.md).\n\n${boardEvidence}`);
+    gitCommitAll(dir, 'Seed the migration references');
+
+    const result = migrateLifecycleFolders(dir);
+    const moved = fs.readFileSync(path.join(collection, 'proposed', '000C-choice.md'), 'utf8');
+    assert.ok(moved.includes('Live [glossary](../../../../GLOSSARY.md).'));
+    assert.ok(moved.includes(evidence), 'migration leaves the record evidence unchanged');
+    assert.ok(fs.readFileSync(board, 'utf8').includes('Live [choice](../docs/adr/proposed/000C-choice.md).'));
+    assert.ok(fs.readFileSync(board, 'utf8').endsWith(boardEvidence));
+    assert.equal(result.historicalReferencesLeft['workbench/docs/adr/proposed/000C-choice.md'], 1);
+    assert.equal(result.historicalReferencesLeft['workbench/grill-board/README.md'], 1);
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }

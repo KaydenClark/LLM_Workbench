@@ -30,6 +30,11 @@ const cases = [
   { tool: 'run-outcome-trials.mjs', expect: /--task is required/ },
   { tool: 'score-outcome-trials.mjs', expect: /result file is required/ },
   { tool: 'new-research-project.mjs', expect: /--slug or a positional slug/ },
+  // A `path.resolve(argv[1]) === fileURLToPath(import.meta.url)` guard has the
+  // same fault: path.resolve does not follow symlinks (seen via macOS /tmp).
+  { tool: 'grill-board.mjs', expect: /"code":"invalid-invocation"/ },
+  { tool: 'socket-contract.mjs', expect: /Usage: socket-contract\.mjs/ },
+  { tool: 'team-coordination-demo.mjs', expect: /"acceptedLanes"/ },
 ];
 
 try {

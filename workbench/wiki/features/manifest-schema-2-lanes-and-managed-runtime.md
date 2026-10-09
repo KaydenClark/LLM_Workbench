@@ -7,6 +7,9 @@ provenance:
   - Owner-directed one-article-per-Spec migration, 2026-09-19
   - Moved into the features collection and restructured as a feature article by Wiki Evolving-Synthesis Migration (S-003W) Task TK-002 (Move And Retype The Remaining Per-Spec Articles) using wiki.mjs move-note, 2026-10-04
 source_paths:
+  - workbench/specs/S-004M-room-legibility-surface/SPEC.md
+  - workbench/tools/workbench-layout.mjs
+  - workbench/tools/diagnostics.mjs
   - workbench/specs/S-004Q-managed-runtime-growth-rollback/SPEC.md
   - workbench/specs/retired/S-023-manifest-schema-2-and-managed-runtime/SPEC.md
   - workbench/manifest.json
@@ -63,6 +66,18 @@ Recovery restores a historical generation, rather than upgrading it. The histori
 
 ## Limits
 
+The optional `legibility` block routes agents to the room's own run, operate,
+inspect, errors, journey and measure commands, paths or pointers. Doctor reports
+missing, empty or bracketed-placeholder entries as `legibility-undeclared` and
+`confirmation: "pending"` as `legibility-unconfirmed`. Both are attention
+findings that block nothing. A confirmed complete block is silent; malformed
+blocks retain the existing `invalid-manifest` error. After grilling confirms
+the surface, `workbench-layout.mjs declare-legibility` records all six entries
+without `--pending`. A pointer grants no permission to execute a command.
+Existing-room updates preserve the block or its absence. The
+[Room Legibility Surface Spec (S-004M)](../../specs/S-004M-room-legibility-surface/SPEC.md)
+owns the remaining setup-drafting and dedicated article work.
+
 - The original ten-tool and seven-collection inventories describe that
   release. The current manifest and installer own today's sets.
 - The original session contract permitted privacy-checked checkpoint copies.
@@ -87,6 +102,8 @@ Recovery restores a historical generation, rather than upgrading it. The histori
 - [Manifest schema 2 declares six lanes and every machine-used collection (ADR-0032)](../../docs/adr/0032-manifest-schema-2-declares-lanes-and-collections.md)
 
 ## History
+
+- 2026-10-07: Room Legibility Surface doctor Task (TK-008U) added the advisory runtime-surface diagnostics and their repair route. The focused doctor test checks the declared, undeclared, placeholder, pending and malformed cases; this update does not reverify the older capability history.
 
 - 2026-09-19: Created on explicit owner direction for one article per legacy Spec. Preserved useful knowledge and historical limits; no source record retired or discarded.
 - 2026-10-04: Moved from `design-concepts/spec-S-023-manifest-and-managed-runtime.md` into the features collection under this name with `wiki.mjs move-note`, retyped `feature` and restructured into the four feature sections from its existing prose, for the Wiki Evolving-Synthesis Migration Spec (S-003W) Task TK-002 (Move And Retype The Remaining Per-Spec Articles). Every live link to it was rewritten by the move; no claim was changed. This move checked that the named current source paths (the first entry names the Spec's eventual retired route, which does not exist yet) and the immutable commit exist, not the behavior of the capability itself.

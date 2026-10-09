@@ -1,0 +1,226 @@
+[
+  {
+    "code": "stale-claim",
+    "severity": "attention",
+    "scope": "specs",
+    "blocks": "none",
+    "message": "S-003W has an in-progress task last updated 2026-10-04",
+    "specId": "S-003W"
+  },
+  {
+    "code": "blocked-slice",
+    "severity": "error",
+    "scope": "specs",
+    "blocks": "selected-slice",
+    "message": "S-004D/TK-007M waits on TK-007L",
+    "specId": "S-004D",
+    "taskId": "TK-007M"
+  },
+  {
+    "code": "blocked-slice",
+    "severity": "error",
+    "scope": "specs",
+    "blocks": "selected-slice",
+    "message": "S-004D/TK-007N waits on TK-007L",
+    "specId": "S-004D",
+    "taskId": "TK-007N"
+  },
+  {
+    "code": "blocked-slice",
+    "severity": "error",
+    "scope": "specs",
+    "blocks": "selected-slice",
+    "message": "S-004D/TK-007O waits on TK-007M, TK-007N",
+    "specId": "S-004D",
+    "taskId": "TK-007O"
+  },
+  {
+    "code": "blocked-slice",
+    "severity": "error",
+    "scope": "specs",
+    "blocks": "selected-slice",
+    "message": "S-004E/TK-005Z waits on TK-005Y",
+    "specId": "S-004E",
+    "taskId": "TK-005Z"
+  },
+  {
+    "code": "blocked-slice",
+    "severity": "error",
+    "scope": "specs",
+    "blocks": "selected-slice",
+    "message": "S-004L/TK-006W waits on TK-006V",
+    "specId": "S-004L",
+    "taskId": "TK-006W"
+  },
+  {
+    "code": "blocked-slice",
+    "severity": "error",
+    "scope": "specs",
+    "blocks": "selected-slice",
+    "message": "S-004M/TK-008W waits on TK-008V",
+    "specId": "S-004M",
+    "taskId": "TK-008W"
+  },
+  {
+    "code": "blocked-slice",
+    "severity": "error",
+    "scope": "specs",
+    "blocks": "selected-slice",
+    "message": "S-004M/TK-008X waits on TK-008W",
+    "specId": "S-004M",
+    "taskId": "TK-008X"
+  },
+  {
+    "code": "blocked-slice",
+    "severity": "error",
+    "scope": "specs",
+    "blocks": "selected-slice",
+    "message": "S-004O/TK-009D waits on TK-009C",
+    "specId": "S-004O",
+    "taskId": "TK-009D"
+  },
+  {
+    "code": "blocked-slice",
+    "severity": "error",
+    "scope": "specs",
+    "blocks": "selected-slice",
+    "message": "S-004O/TK-009E waits on TK-009C",
+    "specId": "S-004O",
+    "taskId": "TK-009E"
+  },
+  {
+    "code": "blocked-slice",
+    "severity": "error",
+    "scope": "specs",
+    "blocks": "selected-slice",
+    "message": "S-004O/TK-009F waits on TK-009B, TK-009C, TK-009D",
+    "specId": "S-004O",
+    "taskId": "TK-009F"
+  },
+  {
+    "code": "blocked-slice",
+    "severity": "error",
+    "scope": "specs",
+    "blocks": "selected-slice",
+    "message": "S-004O/TK-009G waits on TK-009B, TK-009C, TK-009F",
+    "specId": "S-004O",
+    "taskId": "TK-009G"
+  },
+  {
+    "code": "blocked-slice",
+    "severity": "error",
+    "scope": "specs",
+    "blocks": "selected-slice",
+    "message": "S-004O/TK-009H waits on TK-009E, TK-009G",
+    "specId": "S-004O",
+    "taskId": "TK-009H"
+  },
+  {
+    "code": "stale-claim",
+    "severity": "attention",
+    "scope": "specs",
+    "blocks": "none",
+    "message": "S-004O has an in-progress task last updated 2026-10-07",
+    "specId": "S-004O"
+  },
+  {
+    "code": "stale-claim",
+    "severity": "attention",
+    "scope": "specs",
+    "blocks": "none",
+    "message": "S-00Q has an in-progress task last updated 2026-09-19",
+    "specId": "S-00Q"
+  },
+  {
+    "code": "stale-claim",
+    "severity": "attention",
+    "scope": "specs",
+    "blocks": "none",
+    "message": "S-01H has an in-progress task last updated 2026-10-03",
+    "specId": "S-01H"
+  },
+  {
+    "code": "stale-claim",
+    "severity": "attention",
+    "scope": "specs",
+    "blocks": "none",
+    "message": "S-01P has an in-progress task last updated 2026-10-03",
+    "specId": "S-01P"
+  },
+  {
+    "code": "stale-claim",
+    "severity": "attention",
+    "scope": "specs",
+    "blocks": "none",
+    "message": "S-01S has an in-progress task last updated 2026-10-03",
+    "specId": "S-01S"
+  },
+  {
+    "code": "stale-seed",
+    "severity": "attention",
+    "scope": "feedback",
+    "blocks": "none",
+    "message": "workbench/feedback/REPORT_FORMAT.md was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+    "document": "workbench/feedback/REPORT_FORMAT.md",
+    "release": "v3.1.4",
+    "expected": "v3.2.1"
+  },
+  {
+    "code": "stale-seed",
+    "severity": "attention",
+    "scope": "feedback",
+    "blocks": "none",
+    "message": "workbench/sessions/notepads/templates/notepad.schema.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+    "document": "workbench/sessions/notepads/templates/notepad.schema.json",
+    "release": "v3.1.4",
+    "expected": "v3.2.1"
+  },
+  {
+    "code": "stale-seed",
+    "severity": "attention",
+    "scope": "feedback",
+    "blocks": "none",
+    "message": "workbench/sessions/notepads/templates/work.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+    "document": "workbench/sessions/notepads/templates/work.example.json",
+    "release": "v3.1.4",
+    "expected": "v3.2.1"
+  },
+  {
+    "code": "stale-seed",
+    "severity": "attention",
+    "scope": "feedback",
+    "blocks": "none",
+    "message": "workbench/sessions/notepads/templates/grilling.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+    "document": "workbench/sessions/notepads/templates/grilling.example.json",
+    "release": "v3.1.4",
+    "expected": "v3.2.1"
+  },
+  {
+    "code": "stale-seed",
+    "severity": "attention",
+    "scope": "feedback",
+    "blocks": "none",
+    "message": "workbench/sessions/notepads/templates/handoff.example.json was seeded from v3.1.4 but the manifest runs v3.2.1; re-copy it from the v3.2.1 release",
+    "document": "workbench/sessions/notepads/templates/handoff.example.json",
+    "release": "v3.1.4",
+    "expected": "v3.2.1"
+  },
+  {
+    "code": "unverified-provenance",
+    "severity": "attention",
+    "scope": "manifest",
+    "blocks": "none",
+    "message": "workbench/manifest.json provenance.source.release \"v3.1.0\" disagrees with workbenchVersion v3.2.1",
+    "field": "release",
+    "release": "v3.1.0",
+    "expected": "v3.2.1"
+  },
+  {
+    "code": "integration-branch-missing",
+    "severity": "error",
+    "scope": "git",
+    "blocks": "none",
+    "message": "declared integration branch integration resolves neither as a local head nor on a remote; create it from main",
+    "branch": "integration"
+  }
+]

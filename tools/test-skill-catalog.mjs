@@ -63,6 +63,37 @@ assert.deepEqual(catalogNames, coreSkills,
 // maintainer skills its manifest declares sit beside the closed core, are
 // catalogued in their own region and never join the core or its policy.
 const maintainerSkills = readMaintainerSkills(root);
+
+// S-005C: the one-decision coordinator is a Workbench maintainer operation.
+// These checks hold instruction structure and routes, not agent execution.
+assert.ok(maintainerSkills.includes('promote-decision'), 'promote-decision must be declared as a maintainer skill');
+assert.ok(!coreSkills.includes('promote-decision'), 'promote-decision must remain outside Core');
+for (const adapter of ['.agents/skills', '.claude/skills']) {
+  assert.equal(fs.realpathSync(path.join(root, adapter, 'promote-decision')),
+    fs.realpathSync(path.join(skillsRoot, 'promote-decision')), 'lane adapters must resolve to the decision coordinator');
+}
+const promoteDecision = read('workbench/skills/promote-decision/SKILL.md');
+assert.match(promoteDecision, /name: promote-decision/);
+assert.match(promoteDecision, /one confirmed decision/);
+assert.match(promoteDecision, /Confirm -> Record -> Publish -> Map -> Publish -> Plan -> Publish/);
+for (const term of ['source', 'ID', 'revision', 'confirmed readback', 'rationale', 'corrections', 'endpoint', 'Subagent Workers', 'publisher', 'one writer', 'to-docs', 'to-spec', 'to-tasks', 'containment', 'interrupted']) {
+  assert.ok(promoteDecision.includes(term), `promote-decision must retain ${term}`);
+}
+let promotionStageEnd = -1;
+for (const stage of ['Confirm the intent', 'Recover progress', 'Dispatch a Record Worker', 'Dispatch a publisher', 'Dispatch a Map Worker', 'Dispatch a Plan Worker', 'Return the result']) {
+  const position = promoteDecision.indexOf(`**${stage}.**`);
+  assert.ok(position > promotionStageEnd, `promote-decision must order ${stage}`);
+  promotionStageEnd = position;
+}
+assert.match(read('RUNBOOK.md'), /promote-decision\/SKILL\.md#steps/);
+assert.match(read('workbench/skills/grill-me/SKILL.md'), /one .*promote-decision.*run per decision/);
+assert.match(read('workbench/grill-board/README.md'), /item and revision/);
+for (const [skill, stage] of [['to-docs', 'Record Worker'], ['to-spec', 'Map\nWorker'], ['to-tasks', 'Plan Worker']]) {
+  const caller = read(`workbench/skills/${skill}/SKILL.md`);
+  assert.ok(caller.includes(stage) && caller.includes('promote-decision'), `${skill} must retain its delegated stage and coordinator route`);
+}
+assert.doesNotMatch(read('templates/RUNBOOK.md'), /promote-decision\/SKILL\.md/, 'portable templates must not point to a Workbench-only maintainer skill');
+
 const maintainerRegion = catalog.match(
   /<!-- maintainer-skills:start -->([\s\S]*?)<!-- maintainer-skills:end -->/
 );

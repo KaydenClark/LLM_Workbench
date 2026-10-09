@@ -60,6 +60,11 @@ core bundle or named in `skillPolicy.required`; a generated room has none. An
 operations index row in `RUNBOOK.md` that points to one makes it bind for that
 operation in this repository, like any pointed lane skill.
 
+`promote-decision`, like `implement-spec`, has a Workbench-only first delivery.
+Generic templates share its verb meanings, while keeping the portable core
+selected-claim route. They have no pointer to this absent maintainer skill;
+its orchestration entry belongs to this repository's Runbook and lane adapters.
+
 <!-- maintainer-skills:start -->
 | Skill | Purpose |
 |---|---|
@@ -67,6 +72,8 @@ operation in this repository, like any pointed lane skill.
 | `workbench-room-checks` | Check the routes that lay out, install, adopt, upgrade and update a room, plus the self-drift, carrier line-landing, GitHub binding and socket contract checks. |
 | `workbench-evaluation` | Evaluate a harness change and run the feedback loop: claims, design, commands, feedback intake, the automated gate, run outcomes and manual reports. |
 | `implement-spec` | Orchestrate a sliced Spec through Workers and assembly to a PR ready for integration review; Workbench-only first delivery. |
+| `promote-decision` | Orchestrate one confirmed decision through delegated Record, Map, Plan and stage publication; Workbench-only first delivery. |
+| `readback` | Read an answer, concept or direction back for confirmation or correction at any time; Workbench-only first delivery. |
 <!-- maintainer-skills:end -->
 
 ## Normal setup

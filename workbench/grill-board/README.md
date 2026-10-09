@@ -45,6 +45,20 @@ that Spec is the destination this page grows into (the owner, 2026-10-04), and
 its Current Verified State maps what the page already delivers and what is
 still to come. There is one board, not two.
 
+## Priority and Value — confirmed design, awaiting delivery
+
+The Owner confirmed on 2026-10-07 that P/V should make the board's questions
+visible and filterable into an answering queue the Owner chooses. The shared
+meanings live in the [Lexicon](../../LEXICON.md#priority-and-value); rationale
+and source lineage live in the [Grill Board P/V decision](../docs/ddr/001L-priority-and-value-help-the-owner-choose-grill-board-questions.md).
+
+The [Shared Interactive Workbench Board Spec](../specs/S-004D-shared-interactive-board/SPEC.md#priority-and-value-for-answering-questions)
+owns the numbered red P / amber V badges, click-open grade explanations, full
+central question view, independent filters and the answer-to-card-update cycle.
+Those controls are **planned**, not available in the current page. The first
+proof is confined to this board and its questions; DQC classifications are deferred.
+Continue using the existing filters and batches until this slice is delivered.
+
 ## Agents: read this before touching anything here
 
 **You do not edit these files by hand, and you never edit the owner's file.**
@@ -219,6 +233,16 @@ carries the applied verdicts into Git.
 1. `node tools/grill-board.mjs status` then `pending` (add `--json`
    for the full records). Each pending row names the item, the owner's verdict
    label, his note and the item revision he answered.
+   The dispatcher checks each item and revision against the live source. For
+   each individually confirmed decision, start one
+   [`promote-decision`](../skills/promote-decision/SKILL.md) run with the project
+   root, source pointer, ID, confirmed revision, rationale, corrections and
+   endpoint. Pending, deferred and stale answers stay outside that frontier;
+   reuse a decision already published at the same revision. An unfinished batch
+   may contain confirmed items ready to advance.
+   Order dependent decisions and shared owners, keep one writer per owner and
+   serialize publication. Compatible decisions can run concurrently; batch
+   membership never combines their authoring or publication boundaries.
 2. Route each verdict by item kind:
 
    | Kind | Verdict | Where it lands |
@@ -227,8 +251,8 @@ carries the applied verdicts into Git.
    | `approve-spec` | Send back | `approve ... --finding "<his note>"` creates the corrective Task |
    | `approve-spec` | Return to Align | `approve ... --destination-change "<his note>"` |
    | `approve-spec` | Drop this Spec | propose supersession or retirement in the Spec's evidence; `add` a confirm item naming the exact move before doing it |
-   | `owner-decision` / `choice` | Confirm | record the proposal's text in the owner it names (Spec Decisions, ADR/DDR, Lexicon row, Runbook) and clear the `owner:*` blocker if the item names one |
-   | `owner-decision` / `choice` | Correct | record **his note's words** there instead |
+   | `owner-decision` / `choice` | Confirm | the Record Worker records the confirmed proposal in its named owners; clear a named `owner:*` blocker only when that decision resolves it |
+   | `owner-decision` / `choice` | Correct | the Record Worker carries **his note's words** and the corrected confirmed revision |
    | `confirm-dqc` | Confirm | the `landmark-tracker.mjs revise` command the proposal spells out (check `--expect-revision` against a fresh `show`) |
    | `confirm-dqc` | Correct | the same `revise` with `--answer`/`--correction` carrying his words |
    | `confirm-ddr` | Confirm | nothing changes; `apply` with where "accepted record unchanged" |
@@ -238,8 +262,11 @@ carries the applied verdicts into Git.
    | any | Not now | leave it; do not `apply` |
    | any | Decline | record the decline where the item would have landed (evidence row, DQC correction, Spec note), then `apply` |
 
-3. One PR per batch is fine. Commit the `items.json` changes with the work they
-   record. Run `node tools/test-grill-board.mjs` before pushing.
+3. The dispatcher retains the board's `apply` bookkeeping for each current
+   answer and commits `items.json` with the work it records. Local application
+   does not prove publication: each promotion returns its own integration
+   containment and owner read-back. Run `node tools/test-grill-board.mjs` before
+   pushing. This routing adds no background scheduler or agent-refresh service.
 4. Anything your work raises that needs the owner becomes a new item through
    `add --file new-items.json --by <you>` (the file holds `{"items":[...]}` in
    the shape of the existing items, without `id`, `revision`, `status`,

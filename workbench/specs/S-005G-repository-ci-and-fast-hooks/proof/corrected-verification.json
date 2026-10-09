@@ -1,0 +1,16 @@
+{
+  "codeCandidate": "65dcac7658f78a0eaaccd6f72efaa83b19cfd5bc",
+  "changesDuringSuite": "none",
+  "canonicalSuite": {
+    "passed": 55,
+    "commands": 55,
+    "seconds": 948.2,
+    "logSha256": "64770edf737850c850999cf9a6568947edeb7b228e1ad0bea64fd504f9ddbd79"
+  },
+  "guardrailScore": 73,
+  "cleanUpdate": false,
+  "snapshotStage": "local verification before reviewed publication",
+  "hostedCI": "not observed at this checkpoint",
+  "canonicalHookInstall": "not installed at this checkpoint",
+  "nativeReadbackCandidate": "ffa941905c0667c92065d58894f78f35302b31be"
+}

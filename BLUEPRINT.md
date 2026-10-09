@@ -22,6 +22,7 @@ The agents, in Claude Code and Codex, on any of the owner's devices or in the cl
 
 ## Promised outcomes
 
+- The Owner can evaluate Grill Board questions by separate Priority and Value classifications, inspect their reasons when needed, and filter them into an answering queue of the Owner's choosing.
 - Review climbs a ladder: a Task is proven by automation, a Spec is reviewed by an agent that did not build it, a landmark passes integrated automated review, and the owner judges the concept. Work reaches the owner's Human QA at the landmark, after every automated check and review has passed it.
 - An agent pays context only for information that can change what it does next; everything else is reached by a pointer when the work needs it.
 - Many agents work one project at once, on any of the owner's devices or in the cloud, and combine their checked results.

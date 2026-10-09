@@ -1,0 +1,49 @@
+{
+  "codeCandidate": "1711be148b6b0d734c84531b3a122000dfa536c6",
+  "changesDuringSuite": "none",
+  "canonicalSuite": {
+    "passed": 55,
+    "commands": 55,
+    "seconds": 955.8,
+    "durationEvidence": "initial log birth/mtime plus continuation monotonic runtime",
+    "segments": [
+      {
+        "commands": "1-49",
+        "passed": 49,
+        "log": "round-three-sandbox-suite.txt.gz",
+        "uncompressedLogSha256": "2d980d37436946b0b9ef1a430a09db5f495bde50b2661e4c53918f6a953069bc",
+        "seconds": 676.2
+      },
+      {
+        "commands": "50-55",
+        "passed": 6,
+        "log": "round-three-suite-continuation.txt.gz",
+        "uncompressedLogSha256": "a0304696d1904cf2fcec3693c6f9cc0ba500ac45515d2fdecd9ba337157feaa3",
+        "seconds": 279.6
+      }
+    ],
+    "initialFailedAttempt": {
+      "command": 50,
+      "reason": "sandbox denied existing localhost listener with EPERM",
+      "correction": "same command and remaining canonical commands run with required permission on unchanged source"
+    }
+  },
+  "focused": {
+    "ADR": {
+      "passed": 62,
+      "tests": 62
+    },
+    "realGitHooks": {
+      "passed": 5,
+      "tests": 5
+    }
+  },
+  "guardrailScore": 73,
+  "selfDrift": {
+    "findings": 23,
+    "unchangedFromBaseline": true,
+    "cleanUpdate": false
+  },
+  "hostedCI": "not observed before publication",
+  "canonicalHookInstall": "not installed before reviewed integration delivery"
+}

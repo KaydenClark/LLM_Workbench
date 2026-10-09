@@ -6,13 +6,16 @@ knowledge_role: curated
 provenance:
   - Owner-confirmed grilling of 2026-10-02 on the workflow verbs and which verb writes each artifact
 source_paths:
+  - RUNBOOK.md
+  - workbench/skills/promote-decision/SKILL.md
+  - workbench/docs/adr/proposed/001A-promote-publishes-confirmed-documentation-specs-and-task-plans-before-implementation.md
   - LEXICON.md
   - BLUEPRINT.md
   - workbench/docs/adr/000X-the-workflow-is-eight-verbs-and-each-verb-writes-the-plane-its-claims-live-on.md
   - workbench/docs/adr/000Y-a-locked-and-confirmed-answer-is-promoted-without-further-ceremony.md
 parent: none
-authorized_by: the owner's promotion of the 2026-10-02 grilling
-last_verified: 2026-10-05
+authorized_by: the owner-confirmed workflow reference update of 2026-10-08; earlier source: the owner's promotion of the 2026-10-02 grilling
+last_verified: 2026-10-08
 ---
 
 # The Workflow Verbs
@@ -30,10 +33,24 @@ nothing; the Lexicon holds the definitions.
 
 ## The delivery workflow
 
-The delivery workflow reads Idea, Align, Confirm, Map, Plan, Journey, Review,
-Verify, Approve, Delivered, Clean Up. Delivered replaced Complete as the verb for approved work
-that is on main. A send-back at Approve returns to Align at the scope the
-failure implicates.
+The maintained [Runbook reference and diagram](../../../RUNBOOK.md#workflows)
+line up the owner-confirmed parent workflows and their verbs. Confirm ends
+Explore; Promote starts from that confirmed concept and publishes Record, Map
+and Plan in sequence. Judge retains independent Review, verification on
+integration and owner approval; Complete retains owner-approved main delivery
+and cleanup. The reference is the home for ordering and skill routes, while
+this page explains the verbs and their history. A send-back at Approve returns
+to Align at the scope the failure implicates.
+
+## Promoting a confirmed decision
+
+The [Promote Decision skill](../../skills/promote-decision/SKILL.md) carries one
+confirmed decision through Record, Map and Plan, with each stage published
+before the next depends on it. Record is the `to-docs` operation. A nearer
+endpoint limits the run; pending questions remain in their working source.
+The [proposed Promote Decision record](../../docs/adr/proposed/001A-promote-publishes-confirmed-documentation-specs-and-task-plans-before-implementation.md)
+records this design and its rationale. This Workbench maintainer operation
+prepares shared decisions and plans; implementation follows its own workflow.
 
 ## The loop
 
@@ -89,9 +106,11 @@ The owner's workflow map of 2026-09-24 no longer sits on the Blueprint: it
 moved to [the workflow page](idea-to-delivery-workflow.md), written in the
 verbs. The Landmark Tracker still prints the earlier step names and its Specs and tests
 use them, and the [landmark tracker page](landmark-tracker.md) describes the
-tool as it is. Which skill owns which verb, and where separate-context review
-(the Lexicon's Automated review), owner Human QA and promotion to main sit among
-Review, Verify and Approve, are not yet decided beyond what the Lexicon rows say.
+tool as it is. The current
+[Runbook reference](../../../RUNBOOK.md#workflows) names the confirmed skill
+routes and the placement of independent Review, integration Verify and owner
+Approve. The separately owned carrier rewrite still reconciles the Runbook's
+accepted reference-only home with the binding procedures currently in force.
 The Lexicon rows changed no command, status, folder or gate: the `complete`
 command and status and the `S-###:delivered` blocker qualifier keep their names,
 and renaming them is the owner's call.
@@ -120,3 +139,7 @@ and renaming them is the owner's call.
   Rows Spec).
 - 2026-10-05: the owner added QA and Submit to the Journey and moved Review
   after it, with a failed Review going back to Map, Plan and Journey.
+
+- 2026-10-07: linked the one-decision Record, Map, Plan and publication operation, retaining the earlier workflow history.
+
+- 2026-10-08: the owner-confirmed workflow reference update routes the current map and diagram to the Runbook, preserving the later gates and historical accounts.

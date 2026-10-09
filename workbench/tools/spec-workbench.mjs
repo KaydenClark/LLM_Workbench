@@ -5,7 +5,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
-import { insideWorkTree, managedRuntimeDrift, permissionScopeDrift, permissionScopeMessage, provenanceFindings, readAtRef, readRepositoryState, resolveBranchRefs, seededDocumentFindings, validateManifest } from './workbench-layout.mjs';
+import { insideWorkTree, legibilityFindings, managedRuntimeDrift, permissionScopeDrift, permissionScopeMessage, provenanceFindings, readAtRef, readRepositoryState, resolveBranchRefs, seededDocumentFindings, validateManifest } from './workbench-layout.mjs';
 import { isMainModule } from './workbench-paths.mjs';
 import { escapeMarkdownTableCell, parseMarkdownTableRow } from './markdown-table.mjs';
 import { parseSpecPacket } from './spec-packet.mjs';
@@ -1555,6 +1555,7 @@ function collectionFindings(root) {
   // registered `none` and block nothing.
   findings.push(...seededDocumentFindings(root));
   findings.push(...provenanceFindings(root));
+  findings.push(...legibilityFindings(root));
   // The runtime a room executes is checked against the receipt that installed
   // it, from the room itself; a lane with no receipt is not a managed runtime
   // and is the Genesis readiness gate's business, not doctor's.

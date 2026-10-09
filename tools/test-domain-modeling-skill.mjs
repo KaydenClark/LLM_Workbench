@@ -8,7 +8,8 @@
 // vocabulary routing, ADR or DDR by the scope test through to-docs, companion
 // rather than dependency, one vocabulary owner) are each present with a
 // reason; the source pin and credit are kept; no shadow terminology or
-// decision store is created. It also checks the skill is declared in the
+// decision store is created; the upstream MIT notice ships inside the skill
+// directory so every room that installs the lane receives it. It also checks the skill is declared in the
 // bundle, discovered through both tracked adapters and reached from the
 // operations index. Structural checks prove routing, not conversation.
 import assert from 'node:assert/strict';
@@ -23,6 +24,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const lane = 'workbench/skills/domain-modeling';
 const skillPath = `${lane}/SKILL.md`;
 const formatPath = `${lane}/GLOSSARY-FORMAT.md`;
+const noticePath = `${lane}/NOTICE.md`;
 const PIN = 'd81f3a183412e71a5b1e84ca21bc1a35eea03a60';
 // sha256 of `skills/engineering/domain-modeling/GLOSSARY-FORMAT.md` at PIN.
 const UPSTREAM_FORMAT_SHA256 = '21dcc40cdec8e151a829b98ab1517c1867bc444e3665134a98c6983411996801';
@@ -48,6 +50,24 @@ function sections(text) {
   return found.map((heading, position) => {
     const end = position + 1 < found.length ? found[position + 1].line : lines.length;
     return { ...heading, body: flat(lines.slice(heading.line + 1, end).join('\n')) };
+  });
+}
+// The top-level bullets of one section, each with its bold label and its own
+// flattened text, so a claim is checked inside the bullet that makes it.
+function bullets(text, title) {
+  const lines = text.split('\n');
+  const start = lines.findIndex((line) => line === `## ${title}`);
+  assert.ok(start >= 0, `${skillPath} has a "${title}" section`);
+  const items = [];
+  for (const line of lines.slice(start + 1)) {
+    if (/^#{1,6} /.test(line)) break;
+    if (/^- /.test(line)) items.push([line]);
+    else if (items.length > 0 && /^\s+\S/.test(line)) items.at(-1).push(line);
+    else if (items.length > 0 && line.trim() !== '') items.push(null);
+  }
+  return items.filter(Boolean).map((item) => {
+    const body = flat(item.join(' ').replace(/^- /, ''));
+    return { label: body.match(/^\*\*(.+?)\*\*/)?.[1] ?? '', body };
   });
 }
 const section = (text, title) => {
@@ -119,10 +139,33 @@ test("Matt's glossary format is kept verbatim beneath a Workbench adapter note",
   assert.ok(start > 0, 'an adapter note precedes the upstream format');
   const upstream = format.slice(start);
   assert.equal(crypto.createHash('sha256').update(upstream).digest('hex'), UPSTREAM_FORMAT_SHA256, `the upstream format at ${PIN} is preserved byte for byte`);
-  const note = flat(format.slice(0, start));
+  const note = flat(format.slice(0, start).replace(/^> ?/gm, ''));
   assert.ok(note.includes(PIN), 'the adapter note pins the source revision');
   assert.match(note, /promot/i, 'glossary entries are written by promotion, not by this skill');
   assert.match(note, /GLOSSARY-MAP\.md/, 'the adapter note says how a context map is treated');
+  assert.ok(note.includes('](NOTICE.md)'), 'the adapter note points at the notice that ships beside it');
+  assert.match(note, /create a root `GLOSSARY\.md` lazily[^.]*does not apply/, "upstream's lazy glossary creation is explicitly set aside");
+  assert.match(note, /promotion creates or updates/i, 'promotion, not this skill, creates or updates the owner');
+});
+
+test('the upstream MIT notice ships inside the skill directory', () => {
+  assert.ok(exists(noticePath), `${noticePath} exists, so every room that installs the lane receives the notice`);
+  const notice = read(noticePath);
+  const flatNotice = flat(notice);
+  for (const line of [
+    'Copyright (c) 2026 Matt Pocock',
+    'Permission is hereby granted, free of charge, to any person obtaining a copy',
+    'The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.',
+    'THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND'
+  ]) assert.ok(flatNotice.includes(line), `the notice carries: ${line}`);
+  const license = notice.slice(notice.indexOf('MIT License\n'));
+  const repositoryNotice = read('THIRD_PARTY_NOTICES.md');
+  assert.ok(repositoryNotice.includes(license.trimEnd()), 'the in-directory license text matches the repository notice verbatim');
+  assert.ok(flatNotice.includes(PIN), 'the notice pins the upstream revision');
+  assert.ok(flatNotice.includes('skills/engineering/domain-modeling'), 'the notice names the upstream path');
+  for (const file of ['`SKILL.md`', '`GLOSSARY-FORMAT.md`']) assert.ok(flatNotice.includes(file), `the notice says how ${file} derives from upstream`);
+  const credit = flat(section(skill(), 'Source and credit'));
+  assert.ok(credit.includes('](NOTICE.md)'), 'the credit points at the in-directory notice');
 });
 
 test('upstream consequences are traced to named owners before a choice settles, bounded', () => {
@@ -133,6 +176,16 @@ test('upstream consequences are traced to named owners before a choice settles, 
   assert.match(trace, /before .*settles/i, 'the trace runs before the name, boundary or relationship settles');
   assert.match(trace, /name, boundary or relationship/);
   assert.match(trace, /file or line/, 'each consequence names the file or line behind it');
+  assert.match(trace, /Name each owner you list by its path, and a test by its file and test name/,
+    'every listed owner is named by its path, and a test by its file and test name');
+  assert.match(trace, /"the tests" names nothing/, 'a vague "the tests" does not count as tracing them');
+  // Scenario 1 run 4 listed the decision record and the Spec by title alone.
+  assert.match(trace, /A Spec, decision record or Wiki page needs its path as much as a source file does/,
+    'a document owner is named by path, not only by its title');
+  assert.match(trace, /a title alone is nothing to open/, 'a title without its path does not count as naming the owner');
+  assert.match(trace, /every trace, including a later one/, 'a later trace that repeats owners still names their paths');
+  // Run 5's later trace listed the decision record by its label and dropped the path.
+  assert.match(trace, /Lead each listed owner's line with its path/, 'the path comes first on each listed owner, before any label');
   assert.match(trace, /could change the choice/, 'only consequences that could change the choice are raised');
   assert.match(trace, /bounded/i);
   assert.match(trace, /not an audit/, 'the trace is not a whole-room audit');
@@ -147,6 +200,18 @@ test('pending meaning stays in the notepad; settled meaning reaches its owner on
   assert.match(capture, /explicit confirmation/i, 'only explicit confirmation settles meaning');
   assert.match(capture, /`promote` skill/, 'promotion carries settled meaning to its owner');
   assert.match(capture, /no inline/i, 'the skill makes no inline write');
+  assert.ok(capture.includes("Matt's source updates the glossary inline the moment a term resolves; here there is no inline write."),
+    "the contrast with Matt's inline update keeps 'here there is no inline write'");
+  assert.ok(capture.includes('No inline glossary, Lexicon, Spec, control or decision-record write happens while aligning, so the tracked room diff stays empty until promotion.'),
+    'the full write boundary names every owner and keeps the room diff empty until promotion');
+  assert.match(capture, /Settled meaning reaches its owner through the ordinary promotion route \(the \[`promote` skill\]\([^)]+\), or `to-docs` within an authorized documentation pass\)/,
+    'settled meaning moves only by promote, or to-docs in an authorized pass');
+  assert.match(capture, /confirmed canonical vocabulary to `GLOSSARY\.md`, or to `LEXICON\.md` where the room has no glossary yet/,
+    'with no glossary, confirmed vocabulary is promoted to the current Lexicon');
+  assert.match(capture, /Saving is not settling: only the owner's explicit confirmation settles a meaning/,
+    'saving is not settling; only explicit owner confirmation settles meaning');
+  assert.doesNotMatch(capture, /confirmation is optional|saving settles/i, 'saving never settles meaning');
+  assert.match(capture, /Don't batch these up: capture them as they happen/, "Matt's capture timing is kept for the notepad");
   for (const owner of ['`GLOSSARY.md`', 'Spec', 'Wiki']) assert.ok(capture.includes(owner), `promotion routes to ${owner}`);
   assert.doesNotMatch(flat(text), /update `GLOSSARY\.md` right there/i, "Matt's inline glossary update is replaced");
   assert.doesNotMatch(flat(text), /create one when the first term is resolved/i, 'the skill does not create the glossary itself');
@@ -159,6 +224,7 @@ test('decision records are offered sparingly and chosen as ADR or DDR by the sco
   for (const condition of ['Hard to reverse', 'Surprising without context', 'real trade-off']) assert.ok(offer.includes(condition), `the offer requires ${condition}`);
   assert.match(offer, /say which test failed/, 'a failed offer names the test that failed');
   assert.match(offer, /rebuilt differently/, 'the scope test asks whether the choice survives a different architecture');
+  assert.match(offer, /rebuilt differently\? Yes selects a DDR[^;]*; no selects an ADR/, 'still holds if rebuilt differently selects a DDR; otherwise an ADR');
   assert.match(offer, /DDR/);
   assert.match(offer, /ADR/);
   assert.match(offer, /`to-docs`/, 'records are written through to-docs');
@@ -174,19 +240,46 @@ test('the skill is a companion, keeps one vocabulary owner and records each adap
   assert.match(flat(text), /grilling .*complete[s]? without it/i, 'grilling and the question-card flow complete without it');
   const grilling = flat(read('workbench/skills/grilling/SKILL.md'));
   assert.doesNotMatch(grilling, /(must|always) (invoke|load|use) `?domain-modeling/i, 'grilling does not require the skill');
-  const adapters = section(text, 'Workbench adapters');
-  for (const adapter of ['consequence', 'notepad', '`LEXICON.md`', 'DDR', 'companion', 'vocabulary owner']) {
-    assert.ok(adapters.includes(adapter), `the adapters section records ${adapter}`);
+  // Each named change is its own bullet, and that bullet carries its own
+  // reason: a label left behind without its explanation fails here.
+  const adapters = bullets(text, 'Workbench adapters');
+  for (const [change, label, detail] of [
+    ['the rewritten description and trigger', /^Description and trigger/i, /GLOSSARY\.md/],
+    ['the upstream consequence trace', /consequence trace/i, /downstream/i],
+    ['notepad capture and promotion, with capture timing kept', /notepad and promotion/i, /as they happen/i],
+    ['vocabulary owner routing over the file-structure trees', /^Vocabulary owner routing/i, /`LEXICON\.md`.*file-structure|file-structure.*`LEXICON\.md`/],
+    ['the dropped lazy file creation', /^No lazy file creation/i, /create a glossary/i],
+    ['one question at a time inside grilling', /^One question at a time/i, /readback/i],
+    ['quoting the definition and its file', /^Quoting the definition and its file/i, /source/i],
+    ['reading tests as well as code', /tests as well/i, /contradiction/i],
+    ['State Resolution classes', /^State Resolution/i, /source-versus-Canon/i],
+    ['ADR or DDR by the scope test', /ADR or DDR/, /`to-docs`/],
+    ['saying which test failed', /which test failed/i, /record/i],
+    ['a companion, not a dependency', /companion/i, /grilling/i],
+    ['one vocabulary owner', /^One vocabulary owner/i, /second glossary/i],
+    ['the form changes', /^Form$/, /rewrapped/i]
+  ]) {
+    const matching = adapters.filter((item) => label.test(item.label));
+    assert.equal(matching.length, 1, `exactly one adapter bullet records ${change}`);
+    const [item] = matching;
+    assert.match(item.body, detail, `the adapter for ${change} names what it changes`);
+    const reason = item.body.match(/\bbecause\b(.*)$/)?.[1] ?? '';
+    assert.ok(reason.trim().split(/\s+/).length >= 4, `the adapter for ${change} states its own reason`);
   }
-  assert.ok((adapters.match(/ because /g) ?? []).length >= 5, 'each adapter states its reason');
+  for (const item of adapters) {
+    assert.match(item.body, /\bbecause\s+\S+(\s+\S+){3}/, `every adapter bullet states its reason: "${item.label}"`);
+  }
+  for (const policy of [/supplies a method, never authority/i, /not evidence that a feature exists/i]) {
+    assert.doesNotMatch(flat(text), policy, 'unrelated Workbench policy stays out of the imported body');
+  }
   const credit = flat(section(text, 'Source and credit'));
-  for (const token of [PIN, 'mattpocock/skills', 'Matt Pocock', 'MIT', 'THIRD_PARTY_NOTICES.md']) assert.ok(credit.includes(token), `the credit keeps ${token}`);
+  for (const token of [PIN, 'mattpocock/skills', 'Matt Pocock', 'MIT', 'NOTICE.md']) assert.ok(credit.includes(token), `the credit keeps ${token}`);
   assert.match(read('THIRD_PARTY_NOTICES.md'), /Copyright \(c\) 2026 Matt Pocock/, 'the notice owner carries the upstream license');
 });
 
 test('no shadow terminology or decision store, and nothing that only this repository has', () => {
   const text = skill();
-  assert.deepEqual(fs.readdirSync(path.join(root, lane)).sort(), ['GLOSSARY-FORMAT.md', 'SKILL.md'], 'the lane directory holds the skill and its format only');
+  assert.deepEqual(fs.readdirSync(path.join(root, lane)).sort(), ['GLOSSARY-FORMAT.md', 'NOTICE.md', 'SKILL.md'], 'the lane directory holds the skill, its format and the upstream notice only');
   for (const shadow of [/CONTEXT\.md/, /UBIQUITOUS_LANGUAGE\.md/, /(?<!workbench\/)docs\/adr\//, /ADR-FORMAT\.md/]) {
     assert.doesNotMatch(text, shadow, `the skill names no ${shadow} store`);
   }
