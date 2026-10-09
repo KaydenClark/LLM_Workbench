@@ -10,15 +10,17 @@ source_paths:
   - tools/grill-board-project.mjs
   - tools/test-grill-board-deploy.mjs
   - workbench/specs/S-005H-optional-project-grill-board/SPEC.md
+  - workbench/specs/S-004D-shared-interactive-board/SPEC.md
 last_verified: 2026-10-09
 ---
 
 # Optional project Grill Board
 
 The optional component gives an adopted project its own framing and local
-owner-answer storage while reusing the existing Grill Board page and protocol.
-It does not import the producer's questions, install the broader Dashboard or
-create a second question system. The [project deployment guide](../docs/project-grill-board.md)
+owner-answer storage while reusing the Workbench Dashboard's Grilling Board page
+and protocol, including its Tracker, Taskboard, Drafts and Wiki sections reading
+the project's own files. It does not import the producer's questions, install the
+Dashboard's always-open service or create a second question system. The [project deployment guide](../docs/project-grill-board.md)
 owns installation, configuration and commands; the [optional project deployment
 Spec (S-005H)](../specs/S-005H-optional-project-grill-board/SPEC.md) owns acceptance
 and delivery evidence.
@@ -63,3 +65,9 @@ standard adoption/template behavior or mandatory dependency for other rooms.
 
 - 2026-10-09: Corrected PR443 findings on idempotent configuration, linked input
   parents and target-origin identity; preserved deployment and owner-answer boundaries.
+
+- 2026-10-09: The deployed page became the Dashboard's Grilling Board page when the
+  Dashboard branch (S-004D, PR #440) was merged forward with integration: the module scanner
+  now reads import statements rather than words in strings, and the project title
+  replaces the page header, the browser tab and every section title. The deployed
+  comments and promotion block needs the project manifest's notepads collection.

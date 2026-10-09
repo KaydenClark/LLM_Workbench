@@ -480,6 +480,19 @@ was too hard to understand and is a defect to fix, not a verdict.
   established Glossary from the Lexicon retirement (PR #431) reaches this
   baseline; the Dashboard reads either route.
 
+- **The optional project deployment copies this page.** The Grill Board
+  deployment into an adopted project (S-005H, owner `codex-board-corrections`)
+  copies `workbench/grill-board/index.html` and its module closure at a pinned
+  commit, so landing this Spec on integration changes what that deployment
+  installs. It keeps working with this page: its module scanner follows import
+  statements only (the words `from "related"` inside a message in
+  `landmark-tracker.mjs` were read as an external package), and its page seams
+  name this page's title, brand and browser-tab title, so a project's own title
+  replaces all three. A deployed Board shows these sections over the project's
+  own files; its comments, change requests and promotion need the project
+  manifest's notepads collection. This Spec records the compatibility only; the
+  component files, their test and their guide belong to S-005H.
+
 ## Open Design Choices
 
 Settle and record each within the slice that needs it:

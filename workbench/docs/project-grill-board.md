@@ -6,6 +6,18 @@ The source must be a clean checkout at the exact reviewed commit. Node 18 or
 newer and Git are sufficient; no packages, service, hooks or credentials are
 installed. Never install into a producer Board or overwrite an existing Board.
 
+The page is the Workbench Dashboard's Grilling Board page, with the Dashboard's
+five sections: the Grilling Board itself, and the Destination Tracker, Taskboard,
+Drafts to approve and Wiki, which read the project's own Specs, Tasks, Wiki and
+decision records. A section whose source the project does not have shows its own
+error and nothing else. Comments, change requests and promotion save to the
+project's native notepads collection, so they need `workbench/manifest.json` to
+declare `collections.notepads`; without it that block shows `missing-owner` and
+the rest of the Board works. The deployment installs the page and its module
+closure only: the Dashboard's always-open service is not installed, and the
+project's title replaces the Workbench Dashboard name in the page header, the
+browser tab and every section title.
+
 Create an ordinary configuration file outside the Board directory, with no
 symlinked parent directories (the existing macOS system aliases remain supported):
 
