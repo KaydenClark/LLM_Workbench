@@ -1,0 +1,7 @@
+{
+  "sourceRevision": "bd325f88b918820bf83d1c76016364f4c9736199",
+  "phase": "post",
+  "findingCount": 24,
+  "cleanUpdate": false,
+  "interpretation": "After native Task close, no S-005H finding. 24 inherited findings retained versus25 prebaseline. Component-local records/projections reconciled; whole-Workbench clean update not claimed."
+}

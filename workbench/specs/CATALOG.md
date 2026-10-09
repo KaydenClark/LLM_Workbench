@@ -176,6 +176,7 @@ Derived from stable specs; includes completed history.
 | [S-005E - Reusable Readback Skill](S-005E-readback-skill/SPEC.md) | The owner can invoke /readback at any time to confirm or correct how an answer, concept or direction is understood. | active |
 | [S-005F - Maintained Workflow Reference](S-005F-workflow-reference/SPEC.md) | RUNBOOK.md is the easy-to-reference home for existing workflows expressed as ordered verbs, with scenario and skill pointers. | active |
 | [S-005G - Repository CI And Fast Hooks](S-005G-repository-ci-and-fast-hooks/SPEC.md) | Integration PRs and integration updates run the canonical required suite; this repository alone has fast offline staged whitespace and JavaScript syntax checks at commit. | active |
+| [S-005H - Optional project Grilling Board deployment](S-005H-optional-project-grill-board/SPEC.md) | Deploy the existing Grilling Board optionally into an adopted project with safe initialization, project framing, links and isolated owner answers. | active |
 
 ### Retired
 
