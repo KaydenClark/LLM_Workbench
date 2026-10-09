@@ -3,11 +3,11 @@
 **Task ID:** TK-001
 **Spec ID:** S-005H
 **Slice:** Optional receipt-backed Board component with safe project initialization and configured existing Board behavior
-**Status:** in-progress
+**Status:** done
 **Blockers:** none
 **Destination:** spec-acceptance: S-005H Acceptance Criteria
 **Claimed by:** codex-board-worker, codex-board-corrections
-**Proof:** All56 required checks pass at clean code e65c2d6a in816.9s;32 deployment checks;exact-head GitHub CI SUCCESS;disposable owner answer/history/revise/stale/refreshed-confirm/apply and isolation browser proof;corrected literal rendering smoke.
+**Proof:** Corrected code 523bf7a273b7421f799f5abcd321cc43beac07ca: GitHub CI run 37890421252 full canonical suite SUCCESS. Local full run 54/56, then unchanged runtime 34/34 and landmark Wiki 79/79 reruns pass after fetching historical fixture and isolating temporary roots. Deployment 37/37; producer 16/16; self-drift retains 24 baseline findings; guardrail 73/100.
 
 ## Receipt
 
@@ -21,6 +21,7 @@
 | 6 | codex/optional-grill-board-deployment | e65c2d6a1bea03da1c2f3a5ffbe06f79b7ef497d | ahead 0 behind 0 | 3 | Corrected code e65c2d6a: all 56 required commands passed in 816.9s;32 deployment checks;exact-head GitHub verify SUCCESS run37880958152;third browser exact literal title/frame and readable draft/source passed. Prior answer/history/isolation browser proof retained. | Source acceptance checked from actual proof;Completion Result bounded to component;verification-summary.json and browser-qa.md updated. | Final independent assembled review,integration merge/readback/CI and required RingWorld feature refresh;owner Human QA and PC route remain separate. | e773afc0e756567bc2ec0822711988919ae8f5c7ff667a2b1c783ad9ab7fd10e |
 | 7 | codex/optional-grill-board-deployment | ae784fa4bd1fdd3770581aa111143fb9092c1ed1 | ahead 0 behind 0 | 0 | All56 required checks pass at clean code e65c2d6a in816.9s;32 deployment checks;exact-head GitHub CI SUCCESS;disposable owner answer/history/revise/stale/refreshed-confirm/apply and isolation browser proof;corrected literal rendering smoke. | Optional guide/Runbook/Wiki;verified acceptance and bounded Completion Result;proof/verification-summary.json and proof/browser-qa.md. | Independent final assembled review then integration merge/readback/CI and required RingWorld feature refresh;owner Human QA and PC route separate. | eeb2a9369b49bc8e2ef7e5b92d245c8830b73a4550bbb5e57d96ca745ab12c05 |
 | 8 | codex/board-deployment-review-fixes | f98f375dd18c852b096dd59849addd4f45dfd866 | none | 7 | RED: reordered keys rejected, linked config parent accepted, and mismatched repository accepted. GREEN: 37 public deployment checks including byte preservation, nested key order, array changes, HTTPS/SSH identity and runtime origin drift. Full suite pending. | Optional deployment guide, existing Wiki capability and corrective Spec context updated. Templates unchanged because optional explicit installation is outside standard managed deployment. | Required full suite, fresh independent assembled review, integration and exact-head CI, then separately owned RingWorld refresh. | 67befe535fbc6f754ed4899af8b6c9a1dd5db3fa67c586733e6dcd8bebdd37ab |
+| 9 | codex/board-deployment-review-fixes | 523bf7a273b7421f799f5abcd321cc43beac07ca | none | 0 | Corrected code 523bf7a273b7421f799f5abcd321cc43beac07ca: GitHub CI run 37890421252 full canonical suite SUCCESS. Local full run 54/56, then unchanged runtime 34/34 and landmark Wiki 79/79 reruns pass after fetching historical fixture and isolating temporary roots. Deployment 37/37; producer 16/16; self-drift retains 24 baseline findings; guardrail 73/100. | Existing optional deployment guide and Wiki updated; all 150 Wiki pages independently read with inherited drift retained. Correction proof summary records exact checks and limits. | Fresh assembled review, reviewed PR447 integration and post-merge CI, then separately owned RingWorld preservation refresh. Owner Human QA and main promotion remain open. | 7d473e5bb0e609c5ee8be63a92f1b6b9c5db2a3c5423714f977413e8130ec078 |
 
 ## Continuation
 
