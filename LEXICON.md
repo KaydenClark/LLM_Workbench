@@ -244,6 +244,31 @@ The [Grill Board P/V decision](workbench/docs/ddr/001L-priority-and-value-help-t
 applies these meanings to answering questions; its planned capability is owned
 by [Shared Interactive Workbench Board](workbench/specs/S-004D-shared-interactive-board/SPEC.md#priority-and-value-for-answering-questions).
 
+### Dashboard Colors
+
+The Workbench Dashboard, whose first working form is the Grill Board, uses
+five hues as its only signals. Each hue answers one question the owner asks of
+any card in any Dashboard section, and each comes in two weights: **strong**
+(needs the owner now, or happening now) and **soft** (the same meaning, at
+rest). Greys are the page, not signals; done, history, backlog and the grade-4
+badges take no hue, and selection, focus, Save and Next are ink.
+
+| Hue | Question it answers | Carries |
+|---|---|---|
+| **Priority** (orange) | How soon? | The P1–P4 badges, nothing else |
+| **Value** (yellow) | How much is it worth? | The V1–V4 badges, nothing else |
+| **Yours** (blue) | Is the ball with me? | What waits on the owner; soft when the owner parked it |
+| **Agents** (green) | Are agents carrying it? | Confirm, what agents hold or say; soft when they finished |
+| **Returned** (purple) | Did it come back? | Revisit, a change verdict, Blocked, a failed Review |
+
+Grades use only their hue's two colors: 1 strong, 2 soft, 3 outline, 4 grey.
+A filled dot is live and a hollow dot is at rest. The destination decision is
+[The Dashboard colors by five questions, each strong or soft (DDR-001Q)](workbench/docs/ddr/proposed/001Q-the-dashboard-colors-by-five-questions-each-strong-or-soft.md);
+the mapping per section, theme values and contrast method are explained in
+the [Dashboard color system](workbench/wiki/design-concepts/dashboard-color-system.md)
+Wiki page; the badge colors are a requirement of
+[Shared Interactive Workbench Board](workbench/specs/S-004D-shared-interactive-board/SPEC.md#priority-and-value-for-answering-questions).
+
 ### Feedback Dispositions
 
 Every feedback finding has exactly one disposition from this closed set, recorded

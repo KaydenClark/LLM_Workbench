@@ -127,6 +127,8 @@ The Grill Board is the first working form of the
 [Shared Interactive Workbench Board (S-004D)](../specs/S-004D-shared-interactive-board/SPEC.md),
 the destination it grows into.
 
+- [Dashboard color system](design-concepts/dashboard-color-system.md) - the five hues the Dashboard uses as its only signals, each answering one question and each strong or soft, with the per-section mapping, theme values and contrast method
+
 The question-by-question ledger of every unique grilling question put to the
 owner is a session record, not a Wiki page: it lives in the sessions lane as
 `workbench/sessions/grilling-destination-audit-ledger.json` while its rows
