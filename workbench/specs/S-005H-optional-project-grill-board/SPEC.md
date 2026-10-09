@@ -9,7 +9,7 @@
 **Catalog description:** Deploy the existing Grilling Board optionally into an adopted project with safe initialization, project framing, links and isolated owner answers.
 **Blockers:** none
 **Latest event:** TK-001 closed with proof.
-**Next gate:** Confirm acceptance criteria and completion result.
+**Next gate:** Owner Human QA and main promotion remain owner-only; downstream deployment proof belongs to the pilot.
 **Baseline:** green - source evaluator self-test passes, local score 113 at integration e81fe43fdc6273221dbb484c3f7dd9a49b523e0a; doctor has no all/selection blockers, existing drift retained.
 
 ## Outcome
@@ -101,9 +101,10 @@ code at e65c2d6a passed 32 public deployment checks, all 56 required checks in
 covers full current/draft sources, answer history, revision, stale refusal,
 fresh confirmation/application, same-origin isolation and literal framing.
 The two independent preflight findings were corrected with failing regressions
-then green checks. This result is component verification only. Separate final
-review, integration identity/CI and the RingWorld refresh remain delivery gates;
-owner Human QA, main promotion and PC access are not asserted.
+then green checks. This result is component verification only. Independent review, integration
+identity/CI and the RingWorld refresh require their own delivery proof under
+the obligations above. Owner Human QA, main promotion and PC access are not
+asserted by this result.
 
 ## Remaining Limitations
 
