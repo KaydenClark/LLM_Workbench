@@ -284,13 +284,16 @@ identifiers, question text and paths only.
 - **Grilling Board**: the questions; see the answer controls and P/V above.
   An opened question shows its title, the question, the closed P and V
   badges, one row of links (Wiki sources, decision records and the card's
-  sources, styled as links), the recommended answer and the answer controls.
-  Everything else starts as one closed line that opens on click: what it
-  concerns, why it matters, what would change, consequences, current text and
-  full proposal, related cards and grilling history, proposed wording, history,
-  and the comments-and-promotion block, whose closed line names the card's
-  workflow state (the owner, 2026-10-09: "hide bits of the card from me that
-  are not as important until I need them").
+  sources, styled as links), the recommended answer, the why (**Why this
+  choice matters**) in a panel of the same weight directly under it, and the
+  answer controls. **What this concerns**, **What would change** and
+  **Consequences and tradeoffs** start open and collapse on click (the owner,
+  2026-10-09: "Those are what I read every time"; he collapses one only when he
+  wants a lighter card). Everything else starts as one closed line that opens
+  on click: current text and full proposal, related cards and grilling history,
+  proposed wording, history, and the comments-and-promotion block, whose
+  closed line names the card's workflow state (the owner, 2026-10-09: "hide
+  bits of the card from me that are not as important until I need them").
   Type a note, choose an answer; changes save as you go (the card says
   "Saved <time>"), except on a card with an answer conflict or a retired answer
   word, where the card asks you to choose an answer first. A save refused because the question changed (409) keeps your
