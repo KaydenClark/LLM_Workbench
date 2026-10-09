@@ -67,7 +67,7 @@ const js = value => JSON.stringify(value).replace(/</g,'\\u003c').replace(/>/g,'
 function seam(html, expression, replacement, count = 1) {
   const matches = html.match(expression);
   if (!matches || matches.length !== count) fail('Producer page configuration seam drifted; deployment refused');
-  return html.replace(expression, replacement);
+  return html.replace(expression, () => replacement);
 }
 export function renderProjectPage(page, config) {
   validateConfig(config);
@@ -191,8 +191,8 @@ export async function main(argv) {
   if (!['status','pending','show','add','revise','apply','withdraw','validate'].includes(argv[0])) fail('Use serve/status/pending/show/add/revise/apply/withdraw/validate');
   guardWrites(root);
   for (const flag of ['--file','--draft-file','--options-file','--brief-file']) {
-    const inputIndex=argv.indexOf(flag);
-    if (inputIndex>=0) { if (!argv[inputIndex+1] || argv[inputIndex+1].startsWith('--')) fail(`${flag} needs an ordinary file`); ordinaryInput(argv[inputIndex+1]); }
+    const input=flags[flag.slice(2)];
+    if (input !== undefined) { if (typeof input !== 'string') fail(`${flag} needs an ordinary file`); ordinaryInput(input); }
   }
   if (argv[0]==='show') {
     const item=projectView(root,config).items.find(candidate=>candidate.id===positional[1]);

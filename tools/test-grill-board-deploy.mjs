@@ -35,11 +35,67 @@ try {
   check('receipt verifies source identity, hashes, configured rendering',()=>{const {receipt}=verifyProject(target);assert.equal(receipt.source.repository,'https://github.com/KaydenClark/LLM_Workbench.git');assert.ok(Object.keys(receipt.files).length>=10);const page=fs.readFileSync(boardFile('index.html'),'utf8');assert.match(page,/Gun decisions &lt;\/script&gt;/);assert.ok(!page.includes('topic.numbers'));assert.ok(!page.includes('GB-0180'));assert.ok(page.includes('grill-board:ringworld-guns:batch'));assert.ok(page.includes('grill-board:ringworld-guns:theme'));assert.ok(page.includes('\\u003c/script\\u003e'));assert.ok(!page.includes('what the Workbench is'));});
   const runtime=boardFile('runtime/tools/grill-board-project.mjs');
   const cli=args=>execFileSync('node',[runtime,...args,'--path',target],{encoding:'utf8'});
-  const incoming=path.join(temp,'incoming.json');fs.writeFileSync(incoming,JSON.stringify([{key:'pistol-sizing',group:'pistol',kind:'choice',title:'Pistol art',question:'Approve this art?',current:'Original art',proposal:'Corrected candidate',draft:'# Draft\n<img src=x onerror=alert(1)>',sources:[{label:'Gun context',path:'GUNS.md',ref:commit},{label:'Draft file',path:'DRAFT.md',ref:'untracked'}],tags:[]}]));
+  const namedTexts={
+    'workbench/specs/S-FIX-guns/SPEC.md':'# Gun capability\nCurrent requirements',
+    'workbench/specs/S-FIX-guns/tasks/TK-FIX/TASK.md':'# Pistol correction\nCurrent task context',
+    'workbench/wiki/gun-context.md':'# Gun knowledge\nCurrent project context'
+  };
+  const adoptedManifest={schemaVersion:2,workbenchVersion:'v3.2.1',lanes:{docs:'workbench/docs',specs:'workbench/specs',wiki:'workbench/wiki',sessions:'workbench/sessions',feedback:'workbench/feedback',tools:'workbench/tools',skills:'workbench/skills'},collections:{adr:'workbench/docs/adr',ddr:'workbench/docs/ddr','design-concepts':'workbench/wiki/design-concepts',features:'workbench/wiki/features',guidebooks:'workbench/wiki/guidebooks',archive:'workbench/wiki/archive'},wiki:{profile:'project'}};
+  fs.writeFileSync(path.join(target,'workbench/manifest.json'),JSON.stringify(adoptedManifest));
+  for(const [relative,text] of Object.entries(namedTexts)){const file=path.join(target,relative);fs.mkdirSync(path.dirname(file),{recursive:true});fs.writeFileSync(file,text);}
+  for(const collection of ['workbench/docs/adr','workbench/docs/ddr'])fs.mkdirSync(path.join(target,collection),{recursive:true});
+  const incoming=path.join(temp,'incoming.json');fs.writeFileSync(incoming,JSON.stringify([{key:'pistol-sizing',group:'pistol',kind:'choice',title:'Pistol art',question:'Approve this art?',current:'Original art',proposal:'Corrected candidate',draft:'# Draft\n<img src=x onerror=alert(1)>',sources:[{label:'Gun context',path:'GUNS.md',ref:commit},{label:'Draft file',path:'DRAFT.md',ref:'untracked'},...Object.keys(namedTexts).map(relative=>({label:relative,path:relative,ref:'untracked'}))],tags:[]}]));
   fs.writeFileSync(path.join(target,'GUNS.md'),'# Current gun context\nSilver pistol');fs.writeFileSync(path.join(target,'DRAFT.md'),'# Draft only\nNo approval yet');
   check('installed add/status CLI reuses protocol including symlink entry',()=>{cli(['add','--file',incoming,'--by','fixture']);const link=path.join(temp,'project-board-link.mjs');fs.symlinkSync(runtime,link);const status=JSON.parse(execFileSync('node',[link,'status','--path',target,'--json'],{encoding:'utf8'}));assert.equal(status.total,1);});
   check('show JSON and structured text use configured project source links',()=>{for(const args of [['show','GB-0001','--json'],['show','GB-0001']]){const output=cli(args);const item=JSON.parse(output);assert.equal(item.links[0].url,`${config.repository}/blob/${commit}/GUNS.md`);assert.equal(item.links[1].url,null);assert.ok(!output.includes('https://github.com/KaydenClark/LLM_Workbench/blob/'));}});
   check('read commands retain producer path precedence and missing-id errors',()=>{const alias=path.join(temp,'cli-target-link');fs.symlinkSync(target,alias);const result=JSON.parse(execFileSync('node',[runtime,'show','--path',alias,'--path',target,'GB-0001','--json'],{encoding:'utf8'}));assert.equal(result.id,'GB-0001');assert.notEqual(spawnSync('node',[runtime,'show','GB-0001','--path',target,'--path',alias]).status,0);assert.notEqual(spawnSync('node',[runtime,'show','--path',target]).status,0);assert.notEqual(spawnSync('node',[runtime,'show','GB-9999','--path',target]).status,0);});
+  check('effective final duplicate input flags reject linked files and parents without mutation',()=>{
+    const inputs=path.join(temp,'duplicate-inputs');fs.mkdirSync(inputs);
+    const content={
+      '--file':JSON.stringify([{key:'duplicate-guard',group:'pistol',kind:'choice',title:'New item',question:'Question?',current:'Current',proposal:'Proposal',sources:[],tags:[]}]),
+      '--draft-file':'# Exact draft',
+      '--options-file':JSON.stringify([{value:'confirm',label:'Confirm'}]),
+      '--brief-file':JSON.stringify({scope:'TASK',summary:'Summary',why:'Why',recommendation:'Recommendation',impact:'Impact',changes:'Changes',history:'History',artifacts:'Artifacts'})
+    };
+    for(const [flag,text] of Object.entries(content)){
+      const ordinary=path.join(inputs,flag.slice(2));fs.writeFileSync(ordinary,text);
+      const leaf=ordinary+'.link';fs.symlinkSync(ordinary,leaf);
+      const parent=ordinary+'.parent';fs.symlinkSync(inputs,parent);
+      for(const linked of [leaf,path.join(parent,flag.slice(2))]){
+        const args=flag==='--file'?['add']:['revise','GB-0001','--reason','Guard test'];
+        const before=snapshot(target);
+        const result=spawnSync('node',[runtime,...args,flag,ordinary,flag,linked,'--by','fixture','--path',target],{encoding:'utf8'});
+        assert.notEqual(result.status,0,`${flag}: unvalidated final input was accepted`);
+        assert.match(result.stderr,/Unsafe/);assert.deepEqual(snapshot(target),before);
+      }
+    }
+  });
+  check('ordinary duplicate input flags use the effective final value',()=>{
+    const repeated=project('ordinary-repeated');init(repeated);
+    const run=args=>execFileSync('node',[boardFile('runtime/tools/grill-board-project.mjs',repeated),...args,'--path',repeated,'--by','fixture'],{encoding:'utf8'});
+    const first=path.join(temp,'ordinary-first.json'),last=path.join(temp,'ordinary-last.json');
+    const item={key:'last-value',group:'pistol',kind:'choice',title:'Final title',question:'Final question?',current:'Current',proposal:'Proposal',sources:[],tags:[]};
+    fs.writeFileSync(first,JSON.stringify([{...item,key:'ignored-value'}]));fs.writeFileSync(last,JSON.stringify([item]));run(['add','--file',first,'--file',last]);
+    assert.equal(JSON.parse(fs.readFileSync(boardFile('items.json',repeated))).items[0].key,'last-value');
+    const content={
+      '--draft-file':['First draft','Final draft'],
+      '--options-file':[JSON.stringify([{value:'decline',label:'First'}]),JSON.stringify([{value:'confirm',label:'Final'}])],
+      '--brief-file':[JSON.stringify({scope:'TASK',summary:'First',why:'Why',recommendation:'Recommendation',impact:'Impact',changes:'Changes',history:'History',artifacts:'Artifacts'}),JSON.stringify({scope:'TASK',summary:'Final',why:'Why',recommendation:'Recommendation',impact:'Impact',changes:'Changes',history:'History',artifacts:'Artifacts'})]
+    };
+    for(const [flag,texts] of Object.entries(content)){fs.writeFileSync(first,texts[0]);fs.writeFileSync(last,texts[1]);run(['revise','GB-0001','--reason','Effective final input',flag,first,flag,last]);}
+    const updated=JSON.parse(fs.readFileSync(boardFile('items.json',repeated))).items[0];assert.equal(updated.draft,'Final draft');assert.equal(updated.options[0].label,'Final');assert.equal(updated.brief.summary,'Final');
+  });
+  check('literal configuration dollar tokens survive initialization and script serialization',()=>{
+    const literalConfig={...config,title:"Project $& $` $' decisions",instance:'literal-config',topics:[{...config.topics[0],title:"Guns $& $` $'",frame:"Think $& $` $' literally",outcome:"Keep $& $` $' as data"}]};
+    const literalProject=project('literal-config');
+    initializeProject({project:literalProject,source,commit,config:literalConfig});
+    const html=fs.readFileSync(boardFile('index.html',literalProject),'utf8');
+    assert.ok(html.includes("<title>Project $&amp; $` $&#39; decisions · Grill Board</title>"));
+    assert.ok(html.includes("<strong>Project $&amp; $` $&#39; decisions</strong>"));
+    assert.equal((html.match(/const TOPICS =/g)||[]).length,1);
+    const topics=JSON.parse(html.match(/  const TOPICS = (.*);/)[1]);
+    assert.deepEqual(topics[0],literalConfig.topics[0]);
+  });
   check('linked CLI inputs refuse without altering Board',()=>{const linked=path.join(temp,'linked-input.json');fs.symlinkSync(incoming,linked);const before=snapshot(target);assert.throws(()=>cli(['add','--file',linked,'--by','fixture']),/Unsafe/);assert.deepEqual(snapshot(target),before);});
   let server=createProjectServer(target);server.listen(0,'127.0.0.1');await once(server,'listening');const port=server.address().port;const base=`http://127.0.0.1:${port}`;
   const fetchJson=async(route,options)=>{const response=await fetch(base+route,options);return{response,body:await response.json()};};
@@ -70,5 +126,17 @@ try {
   check('linked project parent and forced tracked answers refused',()=>{const alias=path.join(temp,'parent-alias');fs.symlinkSync(temp,alias);assert.throws(()=>verifyProject(path.join(alias,'target')),/Unsafe/);git(target,['add','-f','workbench/grill-board/answers.json']);assert.throws(()=>verifyProject(target),/never be tracked/);git(target,['rm','--cached','-q','workbench/grill-board/answers.json']);});
   check('receipt and unsafe relative entry refuse without writes',()=>{const file=boardFile('deployment.json');const saved=fs.readFileSync(file);const receipt=JSON.parse(saved);receipt.files['../escape']='a'.repeat(64);fs.writeFileSync(file,JSON.stringify(receipt));reject(target,()=>init(target),/Unsafe/);fs.writeFileSync(file,saved);});
   check('clean clone retains executable component but no local answers',()=>{git(target,['add','.']);git(target,['commit','-qm','Project Board fixture']);const cloned=path.join(temp,'clone');git(temp,['clone','-q','--no-hardlinks',target,cloned]);assert.ok(!fs.existsSync(boardFile('answers.json',cloned)));verifyProject(cloned);fs.renameSync(source,path.join(temp,'source-hidden'));const status=JSON.parse(execFileSync('node',[boardFile('runtime/tools/grill-board-project.mjs',cloned),'status','--path',cloned,'--json'],{encoding:'utf8'}));assert.equal(status.total,1);fs.renameSync(path.join(temp,'source-hidden'),source);});
+  const cloned=path.join(temp,'clone');
+  fs.renameSync(source,path.join(temp,'source-hidden'));
+  const installed=await import(pathToFileURL(boardFile('runtime/tools/grill-board-project.mjs',cloned)));
+  const clonedServer=installed.createProjectServer(cloned);clonedServer.listen(0,'127.0.0.1');await once(clonedServer,'listening');
+  try{
+    const clonedBase=`http://127.0.0.1:${clonedServer.address().port}`;
+    for(const [relative,text] of Object.entries(namedTexts)){
+      const response=await fetch(`${clonedBase}/api/file?path=${encodeURIComponent(relative)}`);assert.equal(response.status,200);assert.equal((await response.json()).text,text);
+    }
+    const artifacts=await fetch(`${clonedBase}/api/artifacts`);assert.equal(artifacts.status,200);
+    assert.ok(!fs.existsSync(boardFile('answers.json',cloned)));count++;console.log(`ok ${count} - clean cloned HTTP runtime reads named Spec Task and Wiki sources without producer checkout`);
+  }finally{await new Promise(resolve=>clonedServer.close(resolve));fs.renameSync(path.join(temp,'source-hidden'),source);}
   console.log(`${count} optional project Board checks passed`);
 } finally {fs.rmSync(temp,{recursive:true,force:true});}
