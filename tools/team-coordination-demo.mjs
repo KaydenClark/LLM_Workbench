@@ -2,7 +2,7 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { isMainModule } from '../workbench/tools/workbench-paths.mjs';
 
 export function runTeamCoordinationDemo() {
   const fixture = fs.mkdtempSync(path.join(os.tmpdir(), 'team-coordination-demo-'));
@@ -53,6 +53,6 @@ export function assertDisjoint(lanes) {
   }
 }
 
-if (process.argv[1] === fileURLToPath(import.meta.url)) {
+if (isMainModule(import.meta.url)) {
   console.log(JSON.stringify(runTeamCoordinationDemo(), null, 2));
 }
