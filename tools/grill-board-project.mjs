@@ -65,17 +65,12 @@ export function validateConfig(config) {
 // GitHub repository identities are case-insensitive across HTTPS and SSH remotes.
 function githubIdentity(repository) {
   if (typeof repository !== 'string') return null;
-  const scp=repository.match(/^git@github\.com:([A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+?)\/?$/i);
-  let identity=scp?.[1];
-  if (!identity) {
-    let url;
-    try { url=new URL(repository); } catch { return null; }
-    if (!['https:','ssh:'].includes(url.protocol) || url.hostname.toLowerCase()!=='github.com' || url.password || url.search || url.hash) return null;
-    if (url.protocol==='ssh:' ? url.username!=='git' : url.username) return null;
-    if (url.port && Number(url.port)===0) return null;
-    identity=url.pathname.match(/^\/([A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+?)\/?$/)?.[1];
-  }
-  return identity ? identity.replace(/\.git$/i,'').toLowerCase() : null;
+  // Match Git's URI and SCP forms literally: WHATWG URL repairs malformed
+  // HTTPS prefixes and dot segments that Git can interpret differently.
+  const match=repository.match(/^(?:(?:https:\/\/|ssh:\/\/git@)github\.com(?::([0-9]+))?\/|git@github\.com:)([A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+?)\/?$/i);
+  if (!match) return null;
+  if (match[1] && (Number(match[1])<1 || Number(match[1])>65535)) return null;
+  return match[2].replace(/\.git$/i,'').toLowerCase();
 }
 export function validateProjectRepository(root, config) {
   let origin;
