@@ -193,8 +193,11 @@ rather than a versioned Cellar path; `print` says which it chose.
 Rules that keep the board trustworthy across sessions:
 
 1. **An item is never deleted or renumbered.** Its `GB-####` identity and its
-   `key` are stable. Something that no longer applies is `withdraw`n with a
-   reason, which keeps it visible under "Withdrawn".
+   `key` are stable. Something that no longer needs the owner (merged into
+   another card, already answered, overtaken, or never an owner question) is
+   `withdraw`n with a reason. A reason that says "Folded into GB-####" shows as
+   **Merged into GB-####**; any other shows as **Settled**. Withdrawn never
+   means decided against.
 2. **A changed proposal is a `revise`.** It bumps the item's revision so the
    owner's earlier answer shows as "Re-answer". Never quietly rewrite what the
    owner already answered.
@@ -373,8 +376,10 @@ Three kinds of attention cut across those topics:
   card understanding and the preserved grilling ledger.
 
 The workflow counts are **To answer**, **Revisit**, **Answered · awaiting an
-agent**, **Applied**, **Not now (earlier answers)**, and **Withdrawn**. Each
-item counts once. Not now holds only answers saved with that earlier word at
+agent**, **Applied**, **Not now (earlier answers)**, and **Settled elsewhere
+(history)**. Each item counts once. The main board, its topic counts and its
+answered total leave settled cards out, because they need no attention; only
+the history lane lists them (owner correction, 2026-10-09). Not now holds only answers saved with that earlier word at
 the current revision, while a changed revision goes to Revisit. Answered means
 a current applicable answer was saved; Applied means an agent recorded where it
 landed. These are review progress, not implementation or delivery stages.
@@ -384,7 +389,8 @@ batch, or use checkboxes to choose any set. The page opens one full question
 at a time. The batch membership stays fixed as answers save. Notes without an
 answer, earlier Not now answers, stale answers and unsaved edits do not count
 as answered.
-Withdrawn items are counted separately and need no answer. **Your part of this
+A batch chosen earlier that holds a settled card counts it as settled
+elsewhere; it needs no answer. **Your part of this
 batch is done** is a stopping point, not proof that agents applied the answers.
 
 Pause a batch to browse another slice; resume it or release it before starting
@@ -556,7 +562,7 @@ pulling new board code into the served checkout, restart the service:
 | Re-answer | the owner answered an earlier revision; an agent changed the item since |
 | Answered | the owner answered; no agent has carried it yet |
 | Applied | an agent carried the answer and recorded where |
-| Withdrawn | an agent retired the item with a reason; the owner can still read it |
+| Settled / Merged into GB-#### | stored status `withdrawn`: an agent took it off the owner's list with a reason (merged, answered, overtaken or not an owner question); hidden from the main board, readable in the history lane |
 
 These are answer statuses. Promotion has its own per-card workflow states
 (in grilling, confirmed, handoff requested, recorded, published, mapped,

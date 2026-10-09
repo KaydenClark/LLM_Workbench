@@ -343,7 +343,7 @@ test('the CLI exposes no command that writes answers.json and reports with exit 
 
 function sliceModel() {
   const html = fs.readFileSync(path.join(repo, 'workbench/grill-board/index.html'), 'utf8');
-  const script = html.match(/<script>([\s\S]*?)<\/script>/)[1].replace('Promise.all([load()', 'window.sliceTest = { topicFor, intentFor, laneFor, sliceCounts, batchProgress, matchesSlice, state, TOPICS, latestAssessment, gradeDetail }; Promise.all([load()');
+  const script = html.match(/<script>([\s\S]*?)<\/script>/)[1].replace('Promise.all([load()', 'window.sliceTest = { topicFor, intentFor, laneFor, sliceCounts, batchProgress, matchesSlice, settledLabel, state, TOPICS, LANES, STATUS_LABEL, latestAssessment, gradeDetail }; Promise.all([load()');
   const context = vm.createContext({ document: { getElementById: () => ({}), documentElement: { dataset: {} } }, window: { addEventListener() {} }, setInterval() {}, URL, URLSearchParams, fetch: () => new Promise(() => {}) });
   vm.runInContext(script, context);
   return context.window.sliceTest;
@@ -361,6 +361,23 @@ test('board slices separate owner work, review, and exploration without losing a
   assert.equal(model.intentFor({ kind: 'choice' }), 'explore');
   assert.equal(model.matchesSlice({ id: 'GB-0018', kind: 'owner-decision', derivedStatus: 'pending', title: 'Maintainer procedures' }, { topic: 'context', intent: 'unblock', lane: 'pending', query: 'maintainer' }), true);
   assert.equal(model.matchesSlice({ id: 'GB-0018', kind: 'owner-decision', derivedStatus: 'pending' }, { topic: 'workflow' }), false);
+});
+
+// Owner correction, 2026-10-09: a withdrawn card was settled elsewhere, not
+// decided against. It is labelled for what happened to it and stays off the
+// main board; only the history lane lists it.
+test('settled cards are labelled for what happened and leave the main board', () => {
+  const model = sliceModel();
+  const folded = { id: 'GB-0182', derivedStatus: 'withdrawn', history: [{ reason: 'withdrawn: Folded into GB-0009, which now asks the stewardship rule.' }] };
+  const answered = { id: 'GB-0115', derivedStatus: 'withdrawn', history: [{ reason: 'withdrawn: Already decided: the owner gave Human QA approval.' }] };
+  assert.equal(model.settledLabel(folded), 'Merged into GB-0009');
+  assert.equal(model.settledLabel(answered), 'Settled');
+  assert.ok(!/withdrawn/i.test(model.STATUS_LABEL.withdrawn));
+  assert.ok(!/withdrawn/i.test(model.LANES.withdrawn));
+  assert.equal(model.matchesSlice(answered, { lane: 'all' }), false, 'the main board hides settled cards');
+  assert.equal(model.matchesSlice(answered, {}), false);
+  assert.equal(model.matchesSlice(answered, { lane: 'withdrawn' }), true, 'the history lane still lists them');
+  assert.equal(model.matchesSlice({ id: 'GB-0009', derivedStatus: 'pending' }, { lane: 'all' }), true);
 });
 
 test('workflow counts partition items and a parked or unsaved answer never finishes a batch', () => {
