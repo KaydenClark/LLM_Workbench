@@ -29,13 +29,18 @@ symlinked parent directories (the existing macOS system aliases remain supported
 ```
 
 Use the project's own title, canonical HTTPS GitHub repository URL, unique
-instance name and manually selected unused port. The repository must match the
-target checkout's origin. HTTPS and SSH GitHub origins (including valid explicit
-URI ports), optional `.git` suffixes,
-and case differences identify the same repository. Missing, local-only,
+instance name and manually selected unused port. The target must be the Git
+checkout root, including a linked worktree; a nested non-repository directory
+is refused. The repository must match that checkout's origin. HTTPS and SSH
+GitHub origins (including valid explicit URI ports), optional `.git` suffixes,
+and host/owner/repository case differences identify the same repository. URI
+schemes and the SSH user remain lowercase. Malformed raw origins, invalid ports
+and empty or dot-only identity segments are refused. Missing, local-only,
 non-GitHub or mismatched origins refuse initialization and runtime verification;
-a local-copy clone must retain its project's GitHub origin before using the Board. Topic membership uses item
-`group`, never producer question numbers. Each group belongs to one topic.
+a local-copy clone must retain its project's GitHub origin before using the Board.
+
+Topic membership uses item `group`, never producer question numbers. Each group
+belongs to one topic.
 The inherited Other topics fallback remains in the renderer; installed questions
 must use a configured group. Configuration strings are escaped as data, including
 embedded script delimiters.

@@ -32,6 +32,25 @@ const reject=(directory,fn,pattern)=>{const before=snapshot(directory);assert.th
 const input=path.join(temp,'config.json');fs.writeFileSync(input,JSON.stringify(config));
 try {
   check('public initializer creates empty Board and no answers',()=>{const result=JSON.parse(execFileSync('node',[path.join(source,'tools/grill-board-deploy.mjs'),'init','--project',target,'--source',source,'--commit',commit,'--config',input],{encoding:'utf8'}));assert.equal(result.status,'initialized');assert.deepEqual(JSON.parse(fs.readFileSync(boardFile('items.json'))).items,[]);assert.ok(!fs.existsSync(boardFile('answers.json')));assert.equal(result.source.commit,commit);});
+  check('nested non-repository targets refuse before Board writes',()=>{
+    const parent=project('nested-parent');const nested=path.join(parent,'nested');
+    fs.mkdirSync(path.join(nested,'workbench'),{recursive:true});fs.writeFileSync(path.join(nested,'workbench/manifest.json'),'{}');
+    reject(parent,()=>init(nested),/project.*root|root.*project/i);
+  });
+  check('nested repositories linked worktrees and space-containing roots are accepted',()=>{
+    const parent=project('root-forms');const nested=project('root-forms/nested');
+    assert.equal(init(nested).status,'initialized');verifyProject(nested);
+    git(parent,['add','workbench/manifest.json']);git(parent,['commit','-qm','Worktree fixture root']);
+    const linked=path.join(temp,'linked worktree');git(parent,['worktree','add','--detach',linked,'HEAD']);
+    assert.equal(init(linked).status,'initialized');verifyProject(linked);
+    const spaced=project(' root with spaces ');assert.equal(init(spaced).status,'initialized');verifyProject(spaced);
+  });
+  check('dot-only repository identities refuse before target writes',()=>{
+    for(const [index,repository] of ['https://github.com/../RingWorld','https://github.com/./RingWorld','https://github.com/KaydenClark/..','https://github.com/KaydenClark/...','https://github.com/KaydenClark/.git','https://github.com/KaydenClark/..git'].entries()){
+      const directory=project(`dot-identity-${index}`);git(directory,['remote','set-url','origin',repository]);
+      reject(directory,()=>initializeProject({project:directory,source,commit,config:{...config,repository}}),/Repository|repository/i);
+    }
+  });
   check('repository mismatch refuses initialization without writes',()=>{
     const directory=project('wrong-repository');
     reject(directory,()=>initializeProject({project:directory,source,commit,config:{...config,repository:'https://github.com/Other/Project'}}),/repository.*origin|origin.*repository/i);
@@ -44,7 +63,7 @@ try {
   });
   check('missing unsupported and changed origins refuse without Board mutation',()=>{
     const missing=project('missing-origin');git(missing,['remote','remove','origin']);reject(missing,()=>init(missing),/origin/i);
-    for(const [index,origin] of ['/local/clone','https://example.invalid/KaydenClark/RingWorld.git','https://github.com/Other/Project.git','ssh://git@github.com:65536/KaydenClark/RingWorld.git','ssh://git@github.com:0/KaydenClark/RingWorld.git','ssh://git@github.com:not-a-port/KaydenClark/RingWorld.git','ssh://other@github.com:22/KaydenClark/RingWorld.git','ssh://git@github.com:22/Other/Project.git','https:github.com/KaydenClark/RingWorld.git','https:/github.com/KaydenClark/RingWorld.git','https:///github.com/KaydenClark/RingWorld.git','https://github.com/Other/../KaydenClark/RingWorld.git','https://github.com\\KaydenClark/RingWorld.git','https://github.com\t/KaydenClark/RingWorld.git','ssh://git@github.com:/KaydenClark/RingWorld.git','https://github.com/KaydenClark/RingWorld.git?','https://github.com/KaydenClark/RingWorld.git#'].entries()){
+    for(const [index,origin] of ['/local/clone','https://example.invalid/KaydenClark/RingWorld.git','https://github.com/Other/Project.git','ssh://git@github.com:65536/KaydenClark/RingWorld.git','ssh://git@github.com:0/KaydenClark/RingWorld.git','ssh://git@github.com:not-a-port/KaydenClark/RingWorld.git','ssh://other@github.com:22/KaydenClark/RingWorld.git','ssh://git@github.com:22/Other/Project.git','https:github.com/KaydenClark/RingWorld.git','https:/github.com/KaydenClark/RingWorld.git','https:///github.com/KaydenClark/RingWorld.git','https://github.com/Other/../KaydenClark/RingWorld.git','https://github.com\\KaydenClark/RingWorld.git','https://github.com\t/KaydenClark/RingWorld.git','ssh://git@github.com:/KaydenClark/RingWorld.git','https://github.com/KaydenClark/RingWorld.git?','https://github.com/KaydenClark/RingWorld.git#','HTTPS://github.com/KaydenClark/RingWorld.git','SSH://git@github.com/KaydenClark/RingWorld.git','ssh://GIT@github.com/KaydenClark/RingWorld.git','GIT@github.com:KaydenClark/RingWorld.git',' https://github.com/KaydenClark/RingWorld.git','https://github.com/KaydenClark/RingWorld.git ','https://github.com/KaydenClark/RingWorld.git\r'].entries()){
       const directory=project(`invalid-origin-${index}`);git(directory,['remote','set-url','origin',origin]);reject(directory,()=>init(directory),/origin/i);
     }
     const before=snapshot(target);git(target,['remote','set-url','origin','git@github.com:Other/Project.git']);

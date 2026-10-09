@@ -9,7 +9,7 @@
 **Catalog description:** Deploy the existing Grilling Board optionally into an adopted project with safe initialization, project framing, links and isolated owner answers.
 **Blockers:** none
 **Latest event:** TK-001 claimed by codex-board-corrections.
-**Next gate:** Verify and close the explicit-port corrective continuation, then fresh assembled review and PR447 delivery gates.
+**Next gate:** Verify and close the origin/root validation continuation, then fresh assembled review and PR447 delivery gates.
 **Baseline:** green - source evaluator self-test passes, local score 113 at integration e81fe43fdc6273221dbb484c3f7dd9a49b523e0a; doctor has no all/selection blockers, existing drift retained.
 
 ## Outcome
@@ -115,6 +115,7 @@ Do not alter existing producer question/answer stores or S-004D.
 | 2026-10-09 | verification correction | Qualify CI checkout identity in the preceding proof | GitHub run 37890421252 is associated with head 523bf7a2 but executes synthetic merge 7110082f3b81aa52d6a48045d12c43d2d246efa3; both trees are de499b41ca10e6a81dd302bed6986825fd2b8251, GitHub comparison has zero changed files, and the job reports all 56 commands passing in 677.7 seconds. | Current Completion Result and corrective verification summary corrected; previous evidence rows preserved. | Final assembled review, integration and downstream pilot gates remain. |
 | 2026-10-09 | review | Review verdict: pass at 1db47d00f1f1adbaafc9733b5fe1edd92dd4a03f [2d841eb8bdc5] #3 | none; three bounded defects corrected. Independently verified 37 deployment and 16 producer checks, original local 54/56 plus successful unchanged reruns, GitHub 56-command synthetic-merge tree-equivalence proof, all 150 Wiki pages and 167 linked cards, native complete/no gaps, doctor and clean candidate. Inherited drift and final-head CI/integration/pilot gates remain. | Codex fresh read-only context review_board_deployment_corrections; inherited model, specific model ID unavailable | 2 |
 | 2026-10-09 | review | Review verdict: fail at 893e1828f636ae5a0f9786bc5221b380abf3ae41 [2d841eb8bdc5] #4 | continue TK-001: PR447 automated review found valid SSH GitHub origin URIs with explicit ports rejected. Normalize valid URI ports and prove supported and invalid forms without weakening repository identity checks. | Codex GitHub automated review of 523bf7a, PR447 review 5466342446 | 1 |
+| 2026-10-09 | review | Review verdict: fail at 9aada29fee677899ae8b57607e012c1ac63dd001 [d784513680bb] #5 | continue TK-001: PR447 automated review found nested non-repository directories inherit the enclosing Git origin. Require selected target to equal the Git checkout root while retaining linked worktrees; continue TK-001: PR447 automated review found dot-only owner or repository segments accepted. Reject dot segments before provenance or source links can be generated. | Codex GitHub automated review of 9aada29f, PR447 review 5466489395 | 2 |
 
 ## Completion Result
 
@@ -152,7 +153,11 @@ PR447 automatic review subsequently found a valid SSH origin with an explicit
 port was rejected. Verdict 4 continues TK-001 for that bounded compatibility
 case. A failing regression reproduces the refusal; URI parsing now accepts
 valid HTTPS/SSH ports while rejecting invalid ports, different owners and
-unsupported users. Fresh full verification and assembled review are pending.
+unsupported users. Its later review also found nested-root and dot-only identity
+acceptance; verdict 5 continues the same Task. The bounded correction requires
+the selected Git worktree root, rejects empty/dot-only normalized identities,
+and keeps raw whitespace and case-sensitive Git URI syntax intact. Fresh full
+verification and assembled review are pending.
 
 ## Remaining Limitations
 
