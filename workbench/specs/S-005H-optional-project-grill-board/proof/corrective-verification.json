@@ -384,7 +384,14 @@
     "candidate": "523bf7a273b7421f799f5abcd321cc43beac07ca",
     "result": "success",
     "run": "https://github.com/KaydenClark/LLM_Workbench/actions/runs/37890421252",
-    "suite": "All canonical required commands"
+    "suite": "All canonical required commands",
+    "testedCommit": "7110082f3b81aa52d6a48045d12c43d2d246efa3",
+    "testedTree": "de499b41ca10e6a81dd302bed6986825fd2b8251",
+    "headTree": "de499b41ca10e6a81dd302bed6986825fd2b8251",
+    "treeEquivalent": true,
+    "elapsedSeconds": 677.7,
+    "comparison": "https://github.com/KaydenClark/LLM_Workbench/compare/523bf7a273b7421f799f5abcd321cc43beac07ca...7110082f3b81aa52d6a48045d12c43d2d246efa3",
+    "attribution": "GitHub Actions checked out a synthetic PR merge; it has the same tree as the named head, not the same commit identity."
   },
   "selfDrift": {
     "preCount": 24,

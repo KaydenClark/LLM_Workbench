@@ -112,6 +112,8 @@ Do not alter existing producer question/answer stores or S-004D.
 | 2026-10-09 | review | Review verdict: fail at 80b17b65f3238dc205c0c27428a295be7162e7ad [48fe7930e462] #2 | continue TK-001: PR443 automated review found reordered JSON object keys falsely treated as a configuration change; continue TK-001: PR443 automated review found configuration input linked parents accepted; continue TK-001: PR443 automated review found configured repository could differ from target origin | Codex GitHub automated review of b85c0f0, PR443 review 5465787376, received after integration | 3 |
 | 2026-10-09 | TK-001 | Task closed (run 2) | Corrected code 523bf7a273b7421f799f5abcd321cc43beac07ca: GitHub CI run 37890421252 full canonical suite SUCCESS. Local full run 54/56, then unchanged runtime 34/34 and landmark Wiki 79/79 reruns pass after fetching historical fixture and isolating temporary roots. Deployment 37/37; producer 16/16; self-drift retains 24 baseline findings; guardrail 73/100. | Existing optional deployment guide and Wiki updated; all 150 Wiki pages independently read with inherited drift retained. Correction proof summary records exact checks and limits. | Fresh assembled review, reviewed PR447 integration and post-merge CI, then separately owned RingWorld preservation refresh. Owner Human QA and main promotion remain open. |
 
+| 2026-10-09 | verification correction | Qualify CI checkout identity in the preceding proof | GitHub run 37890421252 is associated with head 523bf7a2 but executes synthetic merge 7110082f3b81aa52d6a48045d12c43d2d246efa3; both trees are de499b41ca10e6a81dd302bed6986825fd2b8251, GitHub comparison has zero changed files, and the job reports all 56 commands passing in 677.7 seconds. | Current Completion Result and corrective verification summary corrected; previous evidence rows preserved. | Final assembled review, integration and downstream pilot gates remain. |
+
 ## Completion Result
 
 Original delivery evidence: the component at e65c2d6a passed 32 public deployment checks, all 56 required checks in
@@ -126,7 +128,8 @@ asserted by this result.
 
 Corrective delivery evidence: the three PR443 findings have failing regressions
 and pass the 37-check deployment suite at 523bf7a273b7421f799f5abcd321cc43beac07ca.
-GitHub run 37890421252 passed the complete canonical suite on that exact head.
+GitHub run 37890421252 passed all 56 canonical commands on synthetic merge
+7110082f3b81aa52d6a48045d12c43d2d246efa3, whose tree exactly matches that head.
 The local 56-command run passed 54 commands; both remaining unchanged commands
 passed after fixture setup was corrected. This is complete command coverage,
 not a retroactive claim that the local run was 56/56. The runtime test lacked
