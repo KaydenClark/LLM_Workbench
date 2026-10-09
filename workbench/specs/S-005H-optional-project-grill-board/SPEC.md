@@ -9,7 +9,7 @@
 **Catalog description:** Deploy the existing Grilling Board optionally into an adopted project with safe initialization, project framing, links and isolated owner answers.
 **Blockers:** none
 **Latest event:** TK-001 closed with proof.
-**Next gate:** Fresh assembled review, PR447 integration and exact-head CI, then separately owned RingWorld preservation refresh; owner Human QA/main remain open.
+**Next gate:** PR447 final-head CI, integration containment and post-merge CI, then separately owned RingWorld preservation refresh; owner Human QA/main remain open.
 **Baseline:** green - source evaluator self-test passes, local score 113 at integration e81fe43fdc6273221dbb484c3f7dd9a49b523e0a; doctor has no all/selection blockers, existing drift retained.
 
 ## Outcome
@@ -113,6 +113,7 @@ Do not alter existing producer question/answer stores or S-004D.
 | 2026-10-09 | TK-001 | Task closed (run 2) | Corrected code 523bf7a273b7421f799f5abcd321cc43beac07ca: GitHub CI run 37890421252 full canonical suite SUCCESS. Local full run 54/56, then unchanged runtime 34/34 and landmark Wiki 79/79 reruns pass after fetching historical fixture and isolating temporary roots. Deployment 37/37; producer 16/16; self-drift retains 24 baseline findings; guardrail 73/100. | Existing optional deployment guide and Wiki updated; all 150 Wiki pages independently read with inherited drift retained. Correction proof summary records exact checks and limits. | Fresh assembled review, reviewed PR447 integration and post-merge CI, then separately owned RingWorld preservation refresh. Owner Human QA and main promotion remain open. |
 
 | 2026-10-09 | verification correction | Qualify CI checkout identity in the preceding proof | GitHub run 37890421252 is associated with head 523bf7a2 but executes synthetic merge 7110082f3b81aa52d6a48045d12c43d2d246efa3; both trees are de499b41ca10e6a81dd302bed6986825fd2b8251, GitHub comparison has zero changed files, and the job reports all 56 commands passing in 677.7 seconds. | Current Completion Result and corrective verification summary corrected; previous evidence rows preserved. | Final assembled review, integration and downstream pilot gates remain. |
+| 2026-10-09 | review | Review verdict: pass at 1db47d00f1f1adbaafc9733b5fe1edd92dd4a03f [2d841eb8bdc5] #3 | none; three bounded defects corrected. Independently verified 37 deployment and 16 producer checks, original local 54/56 plus successful unchanged reruns, GitHub 56-command synthetic-merge tree-equivalence proof, all 150 Wiki pages and 167 linked cards, native complete/no gaps, doctor and clean candidate. Inherited drift and final-head CI/integration/pilot gates remain. | Codex fresh read-only context review_board_deployment_corrections; inherited model, specific model ID unavailable | 2 |
 
 ## Completion Result
 
