@@ -8,8 +8,8 @@
 **Updated:** 2026-10-09
 **Catalog description:** Deploy the existing Grilling Board optionally into an adopted project with safe initialization, project framing, links and isolated owner answers.
 **Blockers:** none
-**Latest event:** TK-001 claimed by codex-board-corrections.
-**Next gate:** Verify and close the origin/root validation continuation, then fresh assembled review and PR447 delivery gates.
+**Latest event:** TK-001 closed with proof.
+**Next gate:** Fresh assembled review and final-head CI; PR447 description and final merge await owner permission.
 **Baseline:** green - source evaluator self-test passes, local score 113 at integration e81fe43fdc6273221dbb484c3f7dd9a49b523e0a; doctor has no all/selection blockers, existing drift retained.
 
 ## Outcome
@@ -116,6 +116,7 @@ Do not alter existing producer question/answer stores or S-004D.
 | 2026-10-09 | review | Review verdict: pass at 1db47d00f1f1adbaafc9733b5fe1edd92dd4a03f [2d841eb8bdc5] #3 | none; three bounded defects corrected. Independently verified 37 deployment and 16 producer checks, original local 54/56 plus successful unchanged reruns, GitHub 56-command synthetic-merge tree-equivalence proof, all 150 Wiki pages and 167 linked cards, native complete/no gaps, doctor and clean candidate. Inherited drift and final-head CI/integration/pilot gates remain. | Codex fresh read-only context review_board_deployment_corrections; inherited model, specific model ID unavailable | 2 |
 | 2026-10-09 | review | Review verdict: fail at 893e1828f636ae5a0f9786bc5221b380abf3ae41 [2d841eb8bdc5] #4 | continue TK-001: PR447 automated review found valid SSH GitHub origin URIs with explicit ports rejected. Normalize valid URI ports and prove supported and invalid forms without weakening repository identity checks. | Codex GitHub automated review of 523bf7a, PR447 review 5466342446 | 1 |
 | 2026-10-09 | review | Review verdict: fail at 9aada29fee677899ae8b57607e012c1ac63dd001 [d784513680bb] #5 | continue TK-001: PR447 automated review found nested non-repository directories inherit the enclosing Git origin. Require selected target to equal the Git checkout root while retaining linked worktrees; continue TK-001: PR447 automated review found dot-only owner or repository segments accepted. Reject dot segments before provenance or source links can be generated. | Codex GitHub automated review of 9aada29f, PR447 review 5466489395 | 2 |
+| 2026-10-09 | TK-001 | Task closed (run 3) | Code a14b362a7f3bfb566851bddc88aa364003cbd8ed: canonical GitHub run 37894074727 passed all 56 commands in 887.3 seconds on synthetic merge 25c093698d68cf2f58c311f1b8537882507422a9, with identical tree 0689579a24a6e45ccefe9d67701b9c1d49f150fa. Independent deployment 40/40 and producer 16/16 pass. Local 52 commands passed before interruption; not a local full-suite pass. Earlier unchanged round-trip fixture failure passed three isolated diagnostic reruns and the current canonical CI. Self-drift retains 24 baseline findings; guardrail 73/100. | Optional deployment guide and existing Wiki checked; prior proof preserved; final correction verification records root, port, literal-origin and byte-preservation boundaries. | Fresh assembled review and final-head CI; PR447 description and final merge await owner permission. Integration CI and separate RingWorld preservation refresh remain; owner Human QA, main promotion and PC access are not asserted. |
 
 ## Completion Result
 
@@ -150,14 +151,24 @@ origin drift, sources, owner history/revision and clone-portable runtime.
 No fresh browser or installed RingWorld outcome is claimed in this pass.
 
 PR447 automatic review subsequently found a valid SSH origin with an explicit
-port was rejected. Verdict 4 continues TK-001 for that bounded compatibility
+port was rejected. Verdict 4 continued TK-001 for that bounded compatibility
 case. A failing regression reproduces the refusal; URI parsing now accepts
 valid HTTPS/SSH ports while rejecting invalid ports, different owners and
 unsupported users. Its later review also found nested-root and dot-only identity
-acceptance; verdict 5 continues the same Task. The bounded correction requires
+acceptance; verdict 5 continued the same Task. The bounded correction requires
 the selected Git worktree root, rejects empty/dot-only normalized identities,
-and keeps raw whitespace and case-sensitive Git URI syntax intact. Fresh full
-verification and assembled review are pending.
+and keeps raw whitespace and case-sensitive Git URI syntax intact. At source
+a14b362a7f3bfb566851bddc88aa364003cbd8ed, independent deployment checks pass
+40/40 and producer checks pass 16/16. Canonical CI run 37894074727 passed all
+56 commands in 887.3 seconds at synthetic merge
+25c093698d68cf2f58c311f1b8537882507422a9, whose tree exactly matches that source.
+The local run passed 52 commands before interruption and is not a full pass.
+The earlier unchanged round-trip fixture failure passed three isolated
+diagnostic reruns and the current canonical suite; no unrelated test was weakened.
+TK-001 is closed with that proof. See the [final correction proof](proof/final-corrective-verification.json).
+Fresh assembled review and final-head CI remain required; PR447 description
+and final merge await owner permission. Integration CI and the separately
+branched RingWorld refresh remain delivery obligations.
 
 ## Remaining Limitations
 

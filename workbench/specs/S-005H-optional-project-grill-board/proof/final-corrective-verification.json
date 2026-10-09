@@ -1,0 +1,97 @@
+{
+  "schema": "project-board-correction-proof@1",
+  "base": "80b17b65f3238dc205c0c27428a295be7162e7ad",
+  "codeCandidate": "a14b362a7f3bfb566851bddc88aa364003cbd8ed",
+  "tree": "0689579a24a6e45ccefe9d67701b9c1d49f150fa",
+  "pr": "https://github.com/KaydenClark/LLM_Workbench/pull/447",
+  "scope": "Continuation of TK-001. Original three findings plus validated origin-port, literal-origin, selected-root and normalized-identity corrections. Producer and Dashboard implementation unchanged.",
+  "red": [
+    {
+      "finding": "equivalent object key order",
+      "observed": "Equivalent reordered nested object keys refused as changed configuration."
+    },
+    {
+      "finding": "linked config ancestor",
+      "observed": "Initialization accepted a symlink parent."
+    },
+    {
+      "finding": "repository mismatch",
+      "observed": "Initialization accepted an unrelated configured repository."
+    },
+    {
+      "finding": "explicit URI port",
+      "observed": "Valid ssh://git@github.com:22 origin refused."
+    },
+    {
+      "finding": "literal origin grammar",
+      "observed": "WHATWG parsing repaired malformed Git URL strings before validation."
+    },
+    {
+      "finding": "selected root",
+      "observed": "Nested non-repository target inherited its enclosing checkout identity."
+    },
+    {
+      "finding": "normalized dot identity",
+      "observed": "Dot-only or empty normalized owner/repository identity was accepted."
+    },
+    {
+      "finding": "raw Git syntax",
+      "observed": "Uppercase scheme/user and configured whitespace required literal validation; trailing CR was laundered by output trim."
+    }
+  ],
+  "targeted": {
+    "deploymentGroups": 40,
+    "producerIndependent": 16,
+    "sourceBlob": "64965b15f3ebccd3fb2fe1244c1bfc7763db581c",
+    "testBlob": "6cf837b74a5b94c41d7e9d5e8bc480189e15fbd1"
+  },
+  "canonicalCI": {
+    "run": 37894074727,
+    "job": 113701287563,
+    "url": "https://github.com/KaydenClark/LLM_Workbench/actions/runs/37894074727",
+    "status": "success",
+    "commands": 56,
+    "seconds": 887.3,
+    "checkout": "25c093698d68cf2f58c311f1b8537882507422a9",
+    "treeEquivalentToCodeCandidate": true,
+    "comparisonChangedFiles": 0,
+    "attribution": "Raw job log identifies the synthetic merge; GitHub comparison reports zero changed files and the identical tree. This is not literal feature-head execution."
+  },
+  "localSuite": {
+    "candidate": "a14b362a7f3bfb566851bddc88aa364003cbd8ed",
+    "passed": 52,
+    "total": 56,
+    "completed": false,
+    "seconds": 382.69,
+    "explanation": "Executor interruption after command 52. No failures among completed commands. Not a local full-suite pass; the complete canonical CI is the full gate."
+  },
+  "earlierFailure": {
+    "candidate": "9aada29fee677899ae8b57607e012c1ac63dd001",
+    "run": 37892801341,
+    "command": "node tools/test-workbench-round-trip.mjs",
+    "observed": "Fixture next --json could not read its temporary Git tree. Optional Board files are outside this fixture.",
+    "diagnosis": "Same unchanged test passed locally, three isolated diagnostic runs, and current canonical CI. No test or unrelated implementation changed. Earlier failed run retained as failed."
+  },
+  "review": {
+    "codePreflight": "Independent context rechecked immutable code and source/test bytes; no remaining bounded finding.",
+    "automatic": "Completed for a14b362a without new findings.",
+    "assembled": "Pending immutable closure/proof candidate review; previous verdicts remain historical."
+  },
+  "drift": {
+    "baselineFindings": 24,
+    "postFindings": 24,
+    "cleanUpdate": false,
+    "guardrailBefore": 73,
+    "guardrailAfter": 73,
+    "wholeWikiPagesReviewed": 150,
+    "linkedCardsReviewed": 167,
+    "explanation": "Existing unrelated drift retained. No clean-Workbench or productivity claim."
+  },
+  "limitations": [
+    "Original browser proof remains bounded to unchanged UI; no fresh browser outcome in this correction pass.",
+    "PR447 description and final merge await owner permission; no substitute metadata publication.",
+    "Final-head CI, integration readback and post-merge CI remain required.",
+    "RingWorld refresh will use a separate feature branch preserving the delivered gun runtime; not performed here.",
+    "Owner Human QA, main promotion and PC access are not asserted."
+  ]
+}
