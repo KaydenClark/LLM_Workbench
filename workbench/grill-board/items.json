@@ -24105,6 +24105,110 @@
         "reason": "Mostly reversing folds and moving controls the page already has."
       },
       "gradeRevision": 1
+    },
+    {
+      "id": "GB-0214",
+      "key": "publish-skill-promote-loop",
+      "group": "owner-decisions",
+      "kind": "owner-decision",
+      "title": "The Publish skill and the Promote loop: promote-decision is Record → Publish, promote-spec runs the loop, and five verbs get their meaning",
+      "question": "Is this the split, the loop and the five verb meanings you mean? And does Publish end at the opened PR, or at integration proven to contain it (what the draft skill does today)?",
+      "current": "The Runbook Workflows table says Promote is Record → Publish → Map → Publish → Plan → Publish, with no Publish skill: the Promote Decision skill (promote-decision, Promote Confirmed Decisions Spec S-005C, active at your Human QA) dispatches \"a publisher\" in prose that composes save and the implement branch completion. A Publish skill is drafted on branch claude/publish-skill-draft-2026-10-09 at a03ea1f6 (pin the candidate, sit on fresh integration, open or reuse the PR with the pr skill and the two merge answers, run the Runbook closeout block, read every changed owner back, report), declared as a maintainer skill; nothing points at it yet, and it fails closed on a Record stage with no Spec behind it because the closeout gate knows only a Task PR or a Spec candidate. The Lexicon rows today: Promote carries one confirmed decision through Record, Map and Plan; Record routes a confirmed decision into its owners; Publish makes an authorized record stage available from integration with containment and read-back verified; Confirm is your agreement to a readback; Approve is your Human QA judgment; the verb is Delivered (done on main). Your corrected workflow map (GB-0001, open at revision 6) already reads back \"the Promote step is Record → Publish wherever it appears\" under the parent Chart Course.",
+      "proposal": "Agent proposal (readback of your words, 2026-10-09): split the Promote Decision skill in two. promote-decision becomes Record → Publish for one confirmed decision. promote-spec is the skill as it is today, with the Publish skill added and the Promote loop extended: /record → /publish → /to-spec → /record → /publish → /to-tasks → /record → /publish. The Publish skill draft is the Publish step. The verbs then read: Confirm/Approve = intent/change is aligned and ready for integration/main. Record = that intent/change is recorded and ready to put on integration. Publish = commit and PR that intent to integration. Promote = the workflow loop of recording and publishing durable intent/progress to integration. Deliver = the workflow loop of recording and publishing durable intent/progress to main. Two things the readback could not settle from your words: whether Publish ends at the opened PR or at integration proven to contain it, and whether Deliver (the loop to main) sits beside Delivered (the state, done on main) or replaces it.",
+      "draft": "## The split\n\n| Skill | Loop |\n|---|---|\n| promote-decision | Record → Publish, for one confirmed decision |\n| promote-spec | Record → Publish → to-spec → Record → Publish → to-tasks → Record → Publish |\n\npromote-spec is the Promote Decision skill as it is today (Record, Map, Plan, each published before the next depends on it), with the Publish skill as its Publish step.\n\n## The verbs\n\n| Verb | Meaning (your words) |\n|---|---|\n| Confirm / Approve | intent/change is aligned and ready for integration/main |\n| Record | that intent/change is recorded and ready to put on integration |\n| Publish | commit and PR that intent to integration |\n| Promote | the workflow loop of recording and publishing durable intent/progress to integration |\n| Deliver | the workflow loop of recording and publishing durable intent/progress to main |\n\n## What a Confirm changes\n\n- Lexicon: the Promote, Record, Publish rows change; Confirm and Approve gain the shared meaning; a Deliver row is added or the Delivered row changes, as you answer.\n- Runbook Workflows table and diagram: the Promote parent reads as the loop above; GB-0001's Chart Course readback is revised to match.\n- Skills lane: promote-decision shrinks to Record → Publish; promote-spec is created from today's promote-decision with the Publish skill in step 4; the Publish skill draft lands and both point at it.\n- Runbook operations index: the Publish row points at the Publish skill.\n\n## Open in the readback\n\n1. Publish = \"commit and PR to integration\". The draft skill also merges the PR, proves integration contains the exact candidate and reads every changed owner back. Does Publish end at the opened PR, or at that proven landing?\n2. A Record stage with no Spec behind it (a decision that changes the Lexicon, the Wiki or an ADR) has no form the closeout gate knows. Which gate does it run: the two merge answers validated by the dispatching agent, like a Task PR, or something else?\n3. Deliver is a loop to main; Delivered is today's verb for the state done on main. Both, or one?",
+      "options": [
+        {
+          "value": "confirm",
+          "label": "Confirm",
+          "hint": "Take the readback as written; answer the three open points in your note."
+        },
+        {
+          "value": "return_reworded",
+          "label": "Rework wording",
+          "hint": "The intent is right; your note says how the wording should read."
+        },
+        {
+          "value": "correct",
+          "label": "Change",
+          "hint": "Your note says what to change; your words replace the proposal."
+        }
+      ],
+      "sources": [
+        {
+          "label": "Runbook Workflows table (Promote row)",
+          "path": "RUNBOOK.md",
+          "ref": "bcb8cfa0"
+        },
+        {
+          "label": "Lexicon: Promote, Record, Publish, Confirm, Approve, Delivered rows",
+          "path": "LEXICON.md",
+          "ref": "bcb8cfa0"
+        },
+        {
+          "label": "Promote Decision skill (promote-decision)",
+          "path": "workbench/skills/promote-decision/SKILL.md",
+          "ref": "bcb8cfa0"
+        },
+        {
+          "label": "Publish skill draft, branch claude/publish-skill-draft-2026-10-09",
+          "path": "workbench/skills/publish/SKILL.md",
+          "ref": "a03ea1f6"
+        },
+        {
+          "label": "Promote Confirmed Decisions Spec (S-005C)",
+          "path": "workbench/specs/S-005C-promote-confirmed-decisions/SPEC.md",
+          "ref": "bcb8cfa0"
+        },
+        {
+          "label": "Your corrected workflow map (GB-0001)",
+          "path": "workbench/grill-board/items.json",
+          "ref": "67d9006b"
+        }
+      ],
+      "tags": [
+        "workflow-verbs",
+        "promote",
+        "publish",
+        "S-005C",
+        "lexicon"
+      ],
+      "revision": 1,
+      "status": "open",
+      "applied": null,
+      "history": [
+        {
+          "revision": 1,
+          "at": "2026-10-09T15:26:35.214Z",
+          "by": "claude",
+          "reason": "Owner direction 2026-10-09: the Publish skill and the promote-decision/promote-spec split go on the board as a P1V1 readback"
+        },
+        {
+          "revision": 1,
+          "gradeRevision": 1,
+          "at": "2026-10-09T15:26:35.355Z",
+          "by": "claude",
+          "reason": "graded: Owner graded this P1V1 on 2026-10-09"
+        }
+      ],
+      "brief": {
+        "scope": "BLUEPRINT",
+        "summary": "The Promote Decision skill splits into promote-decision (Record → Publish) and promote-spec (the loop), the drafted Publish skill is the Publish step, and Confirm/Approve, Record, Publish, Promote and Deliver get one meaning each.",
+        "why": "Your words, 2026-10-09: this should be a P1V1 to fix on the grilling board. There was already a note to break promote-decision into promote-decision and promote-spec, so promote-decision is Record → Publish and promote-spec is the skill as it is today with the Publish skill added and the loop extended. That way the verbs can be used plainly: Confirm/Approve, Record, Publish, Promote, Deliver.",
+        "recommendation": "Agent proposal: confirm the split, the loop and the five meanings as read back in the draft, and answer the three open points in your note: where Publish ends, which gate a Spec-less Record stage runs, and Deliver beside or instead of Delivered.",
+        "impact": "Every promotion run changes shape: one confirmed decision takes the short loop, a capability takes the long one, and each Publish is one skill with one proof. GB-0001's Chart Course readback is revised to match. Until answered, the Publish draft sits unwired and promote-decision keeps publishing in prose.",
+        "changes": "Lexicon rows (Promote, Record, Publish, Confirm, Approve, Deliver/Delivered); the Runbook Workflows table, diagram and operations index Publish row; the skills lane (promote-decision shrinks, promote-spec is created, the Publish skill lands); GB-0001 revised; the Promote Confirmed Decisions Spec (S-005C) or a successor Spec owns the delivery.",
+        "history": "Promote Decision confirmed as one thin skill 2026-10-07 (ADR-001A proposed, S-005C delivered PR #434, at your Human QA). The five parent workflows confirmed 2026-10-09 (GB-0026). Your round-1 Change the why on the map (GB-0001) made the Promote step Record → Publish under Chart Course. The Publish skill was drafted 2026-10-09 from the Lexicon Publish row and the Runbook closeout, then you set this direction and graded it P1V1.",
+        "artifacts": "Promote Decision skill (promote-decision); the Publish skill draft (branch claude/publish-skill-draft-2026-10-09, a03ea1f6); Promote Confirmed Decisions Spec (S-005C); the Runbook Workflows table; the Lexicon verb rows; your corrected workflow map (GB-0001)."
+      },
+      "priority": {
+        "grade": "P1",
+        "reason": "You graded it P1V1 on 2026-10-09. The Publish skill draft, the promote-decision split and five verb meanings wait on this one answer, and promote-decision cannot publish a Record stage through a Publish skill until Publish is settled."
+      },
+      "value": {
+        "grade": "V1",
+        "reason": "One answer settles five verb rows, one skill split and the already-drafted Publish skill; the build after it is small."
+      },
+      "gradeRevision": 1
     }
   ]
 }
