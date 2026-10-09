@@ -1,0 +1,23 @@
+{
+  "phase": "post",
+  "sourceRevision": "22d3f06d61a1dab7aa6b219f50b0c308b7fce160",
+  "dirty": true,
+  "cleanUpdate": false,
+  "beforeFindingCount": 25,
+  "afterFindingCount": 24,
+  "beforeCodes": {
+    "stale-claim": 6,
+    "blocked-slice": 12,
+    "stale-seed": 5,
+    "unverified-provenance": 1,
+    "integration-branch-missing": 1
+  },
+  "afterCodes": {
+    "stale-claim": 6,
+    "blocked-slice": 12,
+    "stale-seed": 5,
+    "unverified-provenance": 1
+  },
+  "guardrailScore": 73,
+  "interpretation": "Existing source drift retained. Only integration-branch-missing disappeared after remote refs were fetched. No whole-Workbench clean-update or productivity claim. Post receipt taken before final orchestration-proof commit."
+}

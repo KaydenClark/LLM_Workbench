@@ -58,8 +58,20 @@ candidate and independent assembled-Spec review before integration.
 - [ ] Public optional deployment initializes and verifies a fresh project, is clone-portable, and refuses unsafe/colliding states without lost data.
 - [ ] Project title/topics, repository links and browser state isolation behave as configured; named gun sources and drafts are readable.
 - [ ] Disposable owner answer/revise/confirm flow preserves words/history, refuses stale application and keeps answers untracked; loopback/source/Markdown protections retained.
-- [ ] Independent review passes immutable candidate; full required verification passes, bounded PR integrates with remote commit and CI evidence.
-- [ ] RingWorld feature deployment uses tested integration source and verifies Board plus all 64 unchanged runtime files; PC access limitation is explicit.
+- [ ] The installed CLI and HTTP views use configured repository links and validate the same selected project; deployment records the exact clean source commit and verifies its shipped bytes.
+
+## Delivery Gates And Post-Integration Obligations
+
+The source acceptance above describes the component that can be reviewed before
+integration. Full required verification and separate immutable-candidate review
+must pass before the bounded PR merges. They are delivery gates, not a claim of
+owner Human QA. Remote integration identity and CI must then be read back.
+
+After that tested integration exists, refresh RingWorld's feature pilot from its
+exact source commit, verify the Board and all 64 unchanged mod files, and report
+the source/runtime identities and PC access limitation. This remains required
+work before final delivery; it cannot truthfully be checked before the source
+has integrated. Preserve the original installation and completed receipts.
 
 ## Verification Procedure
 
