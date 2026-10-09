@@ -26,7 +26,7 @@ export const IMPLEMENTED_STAGE = 'Implemented';
 // The state each receipt count leaves a card in; index 0 is "no receipt yet".
 const RECEIPT_STATES = Object.freeze(['handoff-requested', 'recorded', 'record-published', 'mapped', 'map-published', 'planned', 'plan-published', 'implemented']);
 export const CARD_STATES = Object.freeze({
-  withdrawn: 'Withdrawn',
+  withdrawn: 'Settled elsewhere',
   'in-grilling': 'In grilling',
   'answer-conflict': 'Answer conflict: answer again to settle it',
   confirmed: 'Confirmed; promotion not requested',

@@ -330,7 +330,7 @@
 <div id="term-tip" role="tooltip" hidden></div>
 <script>
 (() => {
-  const STATUS_LABEL = { pending: 'Pending', stale: 'Re-answer', answered: 'Answered', applied: 'Applied', withdrawn: 'Withdrawn', superseded: 'Superseded' };
+  const STATUS_LABEL = { pending: 'Pending', stale: 'Re-answer', answered: 'Answered', applied: 'Applied', withdrawn: 'Settled', superseded: 'Superseded' };
   const SECTIONS = { tracker: 'Destination Tracker', taskboard: 'Taskboard', grilling: 'Grilling Board', drafts: 'Drafts to approve', wiki: 'Wiki' };
   const KIND_LABEL = { 'approve-spec': 'Delivery approval', 'confirm-dqc': 'Confirm understanding', 'confirm-ddr': 'Review existing decision', 'confirm-text': 'Review draft text', choice: 'Choose a direction', 'owner-decision': 'Unblock work' };
   const LANE_TITLES = { backlog: 'Backlog', toDo: 'To do', inProgress: 'In progress', blocked: 'Blocked', needsReview: 'Needs review', complete: 'Complete' };
@@ -361,7 +361,7 @@
     { id: 'release', title: 'Releases, upgrades & proof', frame: 'what should ship, where it is proven, and what an upgrade preserves', outcome: 'A release demonstrated in a real project with remaining gaps visible.', numbers: [21,24,50,104,149,150,151,152,153] },
     { id: 'other', title: 'Other topics', frame: 'the context and consequence of a newly added question', outcome: 'New questions stay reachable while their topic is being organized.', numbers: [] }
   ];
-  const LANES = { all: 'All stages', pending: 'To answer', stale: 'Revisit', answered: 'Answered · awaiting an agent', applied: 'Applied', parked: 'Not now (earlier answers)', withdrawn: 'Withdrawn' };
+  const LANES = { all: 'All stages', pending: 'To answer', stale: 'Revisit', answered: 'Answered · awaiting an agent', applied: 'Applied', parked: 'Not now (earlier answers)', withdrawn: 'Settled elsewhere (history)' };
   const INTENTS = { all: 'Any kind of decision', unblock: 'Unblock / direct work', explore: 'Explore / settle decisions', review: 'Review existing work' };
 
   // ---- Slice model: pure functions the tests load directly. ----
@@ -373,6 +373,15 @@
   // A legacy Not now answer at the current revision stays parked, still unanswered.
   function laneFor(item) {
     return item.derivedStatus === 'pending' && item.answer?.itemRevision === item.revision && item.answer?.verdict === 'defer' ? 'parked' : item.derivedStatus;
+  }
+  // A withdrawn card was settled elsewhere, not decided against: it was merged
+  // into another card, already answered, overtaken or never an owner question
+  // (owner correction, 2026-10-09). It needs no attention, so the main board
+  // leaves it out and only the history lane lists it.
+  function settledLabel(item) {
+    const reason = [...(item.history || [])].reverse().find(entry => /^withdrawn:/.test(entry.reason || ''))?.reason || '';
+    const merged = reason.match(/\bFolded into (GB-\d{4})/);
+    return merged ? `Merged into ${merged[1]}` : 'Settled';
   }
   function sliceCounts(items) {
     const counts = { pending: 0, stale: 0, answered: 0, applied: 0, parked: 0, withdrawn: 0 };
@@ -400,7 +409,7 @@
     if (slice.topic && slice.topic !== 'all' && topicFor(item) !== slice.topic) return false;
     if (slice.intent && slice.intent !== 'all' && intentFor(item) !== slice.intent) return false;
     if (slice.scope && slice.scope !== 'all' && item.brief?.scope !== slice.scope) return false;
-    if (slice.lane && slice.lane !== 'all' && laneFor(item) !== slice.lane) return false;
+    if (slice.lane && slice.lane !== 'all' ? laneFor(item) !== slice.lane : laneFor(item) === 'withdrawn') return false;
     const hay = `${JSON.stringify(item.brief || {})} ${item.id} ${item.title} ${item.question} ${item.current} ${item.proposal} ${item.draft ?? ''} ${(item.tags || []).join(' ')}`.toLowerCase();
     return !slice.query || hay.includes(slice.query);
   }
@@ -736,10 +745,10 @@
   function renderNavigation() {
     const board = state.board, c = sliceCounts(board.items);
     const completed = c.answered + c.applied, active = board.items.length - c.withdrawn;
-    document.getElementById('meta').textContent = `${completed} / ${active} answered · ${c.applied} applied · ${c.withdrawn} withdrawn`;
+    document.getElementById('meta').textContent = `${completed} / ${active} answered · ${c.applied} applied`;
     document.getElementById('progress').innerHTML = `<span style="width:${100 * c.applied / Math.max(1, active)}%;background:var(--applied)" title="Applied ${c.applied}"></span><span style="width:${100 * c.answered / Math.max(1, active)}%;background:var(--ok)" title="Answered ${c.answered}"></span>`;
     const scoped = board.items.filter(item => matchesSlice(item, { ...state, lane: 'all' }));
-    const counts = sliceCounts(scoped);
+    const counts = { ...sliceCounts(scoped), withdrawn: board.items.filter(item => matchesSlice(item, { ...state, lane: 'withdrawn' })).length };
     document.getElementById('filters').innerHTML = Object.entries(LANES).map(([value, label]) => `<button type="button" class="chip" data-lane="${value}" aria-pressed="${state.lane === value}">${label} (${value === 'all' ? scoped.length : counts[value]})</button>`).join('');
     for (const chip of document.querySelectorAll('[data-lane]')) chip.onclick = () => { state.lane = chip.dataset.lane; state.inBatch = false; state.focus = null; state.picked.clear(); render(); };
     document.getElementById('grade-chips').innerHTML = gradeChips();
@@ -756,7 +765,7 @@
     const panel = document.getElementById('batch-panel');
     if (!state.batch) { panel.innerHTML = ''; return; }
     const p = batchProgress();
-    panel.innerHTML = `<div class="batch-panel"><h2>${p.complete ? 'Your part of this batch is done' : 'Your current batch'}</h2><div>${esc(state.batch.title)}</div><p role="status">${p.done} / ${p.total} answered and saved${p.withdrawn ? ` · ${p.withdrawn} withdrawn` : ''}</p><progress value="${p.done + p.withdrawn}" max="${p.total}" aria-label="Batch progress"></progress><p>${p.complete ? 'A good stopping point.' : 'A fixed set of questions: changing filters, saving answers or a regrade never adds or drops one. Notes alone, earlier Not now answers, changed questions and unsaved edits do not count as answered.'}</p><div class="batch-actions"><button class="bulk" type="button" id="batch-toggle">${state.inBatch ? 'Pause and browse other slices' : 'Resume this batch'}</button><button class="bulk" type="button" id="batch-clear">${p.complete ? 'Finish batch' : 'Release this batch'}</button><small>Changing a batch never changes your answers.</small></div></div>`;
+    panel.innerHTML = `<div class="batch-panel"><h2>${p.complete ? 'Your part of this batch is done' : 'Your current batch'}</h2><div>${esc(state.batch.title)}</div><p role="status">${p.done} / ${p.total} answered and saved${p.withdrawn ? ` · ${p.withdrawn} settled elsewhere` : ''}</p><progress value="${p.done + p.withdrawn}" max="${p.total}" aria-label="Batch progress"></progress><p>${p.complete ? 'A good stopping point.' : 'A fixed set of questions: changing filters, saving answers or a regrade never adds or drops one. Notes alone, earlier Not now answers, changed questions and unsaved edits do not count as answered.'}</p><div class="batch-actions"><button class="bulk" type="button" id="batch-toggle">${state.inBatch ? 'Pause and browse other slices' : 'Resume this batch'}</button><button class="bulk" type="button" id="batch-clear">${p.complete ? 'Finish batch' : 'Release this batch'}</button><small>Changing a batch never changes your answers.</small></div></div>`;
     document.getElementById('batch-toggle').onclick = () => { state.inBatch = !state.inBatch; state.focus = null; render(); };
     document.getElementById('batch-clear').onclick = () => { state.batch = null; state.inBatch = false; state.focus = null; persistBatch(); render(); };
   }
@@ -829,7 +838,7 @@
     const actionable = shown.filter(item => ['pending', 'stale', 'parked'].includes(laneFor(item)));
     if (state.inBatch && !state.focus) state.focus = shown.find(item => !['answered', 'applied', 'withdrawn'].includes(item.derivedStatus))?.id || shown[0]?.id;
     const toolbar = state.inBatch ? '<h2>Batch questions</h2><p>Choose any question below. The list stays fixed as you answer.</p>' : `<div class="slice-toolbar"><strong>${shown.length} in ${esc(sliceTitle())}</strong><label for="batch-size">Batch size</label><select id="batch-size">${[3, 5, 10].map(n => `<option value="${n}" ${state.size === n ? 'selected' : ''}>${n} questions</option>`).join('')}</select><button class="primary" type="button" id="start-batch" ${!actionable.length || state.batch ? 'disabled' : ''}>Start next ${Math.min(state.size, actionable.length)}</button><button class="bulk" type="button" id="start-picked" ${!state.picked.size || state.batch ? 'disabled' : ''}>Start selected (${state.picked.size})</button>${state.batch ? '<small>Resume or release your saved batch before starting another.</small>' : ''}</div>`;
-    content.innerHTML = toolbar + (shown.length ? `<div class="question-list">${shown.map(item => `<div class="question-row ${state.focus === item.id ? 'current' : ''}" data-row="${item.id}">${!state.inBatch ? `<input type="checkbox" data-pick="${item.id}" aria-label="Select ${esc(item.title)}" ${state.picked.has(item.id) ? 'checked' : ''}>` : ''}<button type="button" class="row-open" data-open="${item.id}">${esc(item.title)}<small>${item.id} · ${esc(TOPICS.find(t => t.id === topicFor(item)).title)} · ${esc(INTENTS[intentFor(item)])} · ${esc(item.brief?.scope || 'Unspecified scale')}</small></button><span class="row-end"><span class="badge ${item.derivedStatus}">${LANES[laneFor(item)]}</span><span class="grades">${gradeBadges(item)}</span></span></div>`).join('')}</div>` : '<p class="empty">Nothing in this slice. Choose another topic, grade or workflow stage.</p>') + '<div id="focus"></div>';
+    content.innerHTML = toolbar + (shown.length ? `<div class="question-list">${shown.map(item => `<div class="question-row ${state.focus === item.id ? 'current' : ''}" data-row="${item.id}">${!state.inBatch ? `<input type="checkbox" data-pick="${item.id}" aria-label="Select ${esc(item.title)}" ${state.picked.has(item.id) ? 'checked' : ''}>` : ''}<button type="button" class="row-open" data-open="${item.id}">${esc(item.title)}<small>${item.id} · ${esc(TOPICS.find(t => t.id === topicFor(item)).title)} · ${esc(INTENTS[intentFor(item)])} · ${esc(item.brief?.scope || 'Unspecified scale')}</small></button><span class="row-end"><span class="badge ${item.derivedStatus}">${item.derivedStatus === 'withdrawn' ? settledLabel(item) : LANES[laneFor(item)]}</span><span class="grades">${gradeBadges(item)}</span></span></div>`).join('')}</div>` : '<p class="empty">Nothing in this slice. Choose another topic, grade or workflow stage.</p>') + '<div id="focus"></div>';
     for (const button of content.querySelectorAll('[data-open]')) button.onclick = () => { openQuestion(button.dataset.open); document.getElementById('focus').scrollIntoView({ block: 'start' }); };
     for (const checkbox of content.querySelectorAll('[data-pick]')) checkbox.onchange = () => { if (checkbox.checked) state.picked.add(checkbox.dataset.pick); else state.picked.delete(checkbox.dataset.pick); const button = document.getElementById('start-picked'); button.textContent = `Start selected (${state.picked.size})`; button.disabled = !state.picked.size || Boolean(state.batch); };
     if (!state.inBatch) {
@@ -896,7 +905,7 @@
     }).join('');
     const applied = item.applied ? `<div class="applied-box"><strong>Applied</strong> by ${esc(item.applied.by)} on ${new Date(item.applied.at).toLocaleString()}: ${esc(item.applied.where)}${item.applied.agentNote ? ` — ${esc(item.applied.agentNote)}` : ''}<br><small>Your answer then: ${esc(item.answerLabel || item.applied.verdict || '(note only)')}${item.applied.note ? ` — “${esc(item.applied.note)}”` : ''}</small></div>` : '';
     const stale = staleNotice(item);
-    const history = (item.history || []).filter(entry => entry.revision > 1 || /^applied|^withdrawn|^graded|^reassessed/.test(entry.reason || '')).map(entry => `${new Date(entry.at).toLocaleDateString()} · ${esc(entry.by)}: ${esc(entry.reason)}`);
+    const history = (item.history || []).filter(entry => entry.revision > 1 || /^applied|^withdrawn|^graded|^reassessed/.test(entry.reason || '')).map(entry => `${new Date(entry.at).toLocaleDateString()} · ${esc(entry.by)}: ${esc((entry.reason || '').replace(/^withdrawn: /, 'settled elsewhere: '))}`);
     const base = itemBase(item);
     const links = wikiLinks(item) || sources ? `<nav class="link-row" aria-label="Links">${wikiLinks(item)}${sources ? `<span>Sources:</span>${sources}` : ''}</nav>` : '';
     const fold = (summary, body) => body ? `<details class="fold"><summary>${summary}</summary>${body}</details>` : '';
@@ -904,7 +913,7 @@
     // links, the recommendation and the answer controls. Everything else
     // starts collapsed, one line each (owner correction, 2026-10-09).
     return `<article class="item" id="${item.id}" data-id="${item.id}" data-status="${status}" data-revision="${item.revision}">
-      <div class="item-head"><h3>${esc(item.title)}<small class="identity">${item.id} · revision ${item.revision}</small></h3><span><span class="badge ${status}">${STATUS_LABEL[status]}</span><span class="kind">${esc(KIND_LABEL[item.kind] || item.kind)}</span></span></div>
+      <div class="item-head"><h3>${esc(item.title)}<small class="identity">${item.id} · revision ${item.revision}</small></h3><span><span class="badge ${status}">${status === 'withdrawn' ? settledLabel(item) : STATUS_LABEL[status]}</span><span class="kind">${esc(KIND_LABEL[item.kind] || item.kind)}</span></span></div>
       <p class="q">${inlineText(item.question, base)}</p>
       ${gradeDetail(item)}
       ${links}
