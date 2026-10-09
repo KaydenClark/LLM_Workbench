@@ -40,3 +40,13 @@ new empty project with a different instance key served the same127.0.0.1:4767
 origin. Page title was Second disposable project instance and data-theme was
 null, so it did not inherit the first saved theme. No real answers were touched.
 Second screenshot: optional-board-browser-isolation.jpg. Both servers stopped.
+
+## Corrected candidate browser smoke
+
+Source e65c2d6a1bea03da1c2f3a5ffbe06f79b7ef497d: a third fresh disposable
+project displayed the exact title `RingWorld literal $& gun review` and frame
+`Cost $' and $` and $& review`. Those replacement tokens stayed literal data.
+The configured gun question, draft and full named source dialog were readable;
+script markup remained inert. No answer was written. Screenshot:
+optional-board-corrected-render.jpg. All three temporary servers stopped;
+existing localhost service on 4646 was untouched.

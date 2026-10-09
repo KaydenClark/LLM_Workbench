@@ -55,10 +55,10 @@ candidate and independent assembled-Spec review before integration.
 
 ## Acceptance Criteria
 
-- [ ] Public optional deployment initializes and verifies a fresh project, is clone-portable, and refuses unsafe/colliding states without lost data.
-- [ ] Project title/topics, repository links and browser state isolation behave as configured; named gun sources and drafts are readable.
-- [ ] Disposable owner answer/revise/confirm flow preserves words/history, refuses stale application and keeps answers untracked; loopback/source/Markdown protections retained.
-- [ ] The installed CLI and HTTP views use configured repository links and validate the same selected project; deployment records the exact clean source commit and verifies its shipped bytes.
+- [x] Public optional deployment initializes and verifies a fresh project, is clone-portable, and refuses unsafe/colliding states without lost data.
+- [x] Project title/topics, repository links and browser state isolation behave as configured; named gun sources and drafts are readable.
+- [x] Disposable owner answer/revise/confirm flow preserves words/history, refuses stale application and keeps answers untracked; loopback/source/Markdown protections retained.
+- [x] The installed CLI and HTTP views use configured repository links and validate the same selected project; deployment records the exact clean source commit and verifies its shipped bytes.
 
 ## Delivery Gates And Post-Integration Obligations
 
@@ -91,6 +91,18 @@ Do not alter existing producer question/answer stores or S-004D.
 | Date | Task | Event | Verification | Docs | Remaining gap |
 |---|---|---|---|---|---|
 | 2026-10-09 | TK-001 | Coordinate and pin source before writes | Auth KaydenClark; integration e81fe43f; open PR440/441 exact overlap inspected; baseline evaluator passes; doctor no all/selection blocker; pre self-drift cleanUpdate false, 25 existing findings | Separate Spec and component lane; dashboard handoff read | Component delivery, full checks, review, integration and pilot pending |
+
+## Completion Result
+
+The optional component meets the four source acceptance criteria. Corrected
+code at e65c2d6a passed 32 public deployment checks, all 56 required checks in
+816.9 seconds, and the exact-head GitHub verify job. Disposable browser proof
+covers full current/draft sources, answer history, revision, stale refusal,
+fresh confirmation/application, same-origin isolation and literal framing.
+The two independent preflight findings were corrected with failing regressions
+then green checks. This result is component verification only. Separate final
+review, integration identity/CI and the RingWorld refresh remain delivery gates;
+owner Human QA, main promotion and PC access are not asserted.
 
 ## Remaining Limitations
 
