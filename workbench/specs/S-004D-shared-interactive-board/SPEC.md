@@ -1,16 +1,16 @@
-# S-004D - Shared Interactive Workbench Board
+# S-004D - Workbench Dashboard
 
 **Spec ID:** S-004D
 **Status:** active
 **Priority:** 2
-**Owner:** unassigned
+**Owner:** claude-dashboard-director
 **Stance:** Builder
-**Updated:** 2026-10-07
-**Catalog description:** The Grill Board's P/V-filtered answering queue, growing into connected Taskboard and Tracker cards, discussion and update requests with distinct source and progress semantics.
+**Updated:** 2026-10-09
+**Catalog description:** The owner's local Dashboard: Destination Tracker, Taskboard, Grilling Board, Drafts to approve and Wiki, with progressive grilling, exact wording approvals and explicit promotion handoffs.
 **Release scope:** In scope since the owner's 2026-10-04 answer; no release is assigned.
 **Blockers:** none
-**Latest event:** 2026-10-07: activated at the Plan stage of the DDR-001L promote-decision run; the bounded Grill Board P/V proof is cut into four unclaimed Tasks (TK-007L to TK-007O) from live Actuality at integration 9edbed8a. The wider shared-board capabilities stay uncut.
-**Next gate:** TK-007L (grade schema, operation, badges and central detail) is ready to claim; TK-007M (filters and batches) and TK-007N (inventory grades) follow it in parallel, then TK-007O (answer-to-card-update cycle and real-board scenario). DQC P/V and the wider board capabilities stay outside this proof.
+**Latest event:** 2026-10-09: draft PR #440's two conflicts with integration are resolved by merging integration forward (`ee1975d7`; RUNBOOK.md keeps both Full suite line sets and items.json keeps this branch's side, which already carried every integration item at a later revision), the optional project deployment (S-005H) now accepts this page (its module scanner and page seams), and the owner's correction 4 (the why beside the recommendation; the three reading sections open) landed in PR #449; Full suite 60 of 61 on `932738e1` with one load-sensitive failure in `tools/test-notepads.mjs` that passed 4 of 4 reruns on that candidate and on integration. Before that: TK-007Z, the owner's three Grilling Board corrections (P/V chips in place of the Priority and Value dropdowns, the five section links as a left navigation pane, a progressively disclosed card), closed with proof on `claude/grilling-board-ui-corrections-2026-10-09`, PR #445 into `claude/workbench-dashboard-first-pass`, after the reconcile lane's PR #444 (35 open questions) landed on that branch; Full suite 60/60 on candidate `2586e260`. Earlier: TK-007L, TK-007M, TK-007N, TK-007O, TK-007T and TK-007X closed on that branch after fourteen separate-context reviews (see the evidence log). Not delivered until draft PR #440 merges into integration.
+**Next gate:** The draft PR #440 merge into integration after a fresh reviewed candidate: its last passing review covered `fdefa9ca`, which PRs #444, #445 and #449 and the integration merge-forward have since moved past. This branch also carries PR #447's S-005H corrective commits (owned by that Spec's lane), so the fresh candidate includes them. Open after that: TK-007Y (the always-open login service verified after login and a killed process: the Owner's installed service must be restarted or replaced by the Owner), the unchecked acceptance lines (the five-sections line, short of one question whose comma-listed records are unlinked and of decision records named only in Priority or Value reasons, which are not linked; wider shared-board lines, recommended-alternative preselection, applied-approval wording, sampled-path context labels and the nine grouped prompts that live on the unpublished consequential-decision lane), the question-content pass recorded in `proof/question-content-audit-2026-10-08.json`, the owner's call on the folded More filters dropdowns (fold or remove) and on his tentative note about leaving a topic, and Owner Human QA.
 
 > **Citation anchors.** pre=`f6af4c339b543988a3212b1940581157f573818d` post=`f6af4c339b543988a3212b1940581157f573818d`.
 
@@ -22,12 +22,21 @@ request corrections or updates, and see what happened to those requests.
 Taskboard and Tracker share familiar card interactions and can appear together,
 with execution and understanding available as different views.
 
+Its name is the **Workbench Dashboard** (the owner, 2026-10-07): the owner's
+always-open local place to see and manage LLM Workbench, in five sections:
+Destination Tracker, Taskboard, Grilling Board, Drafts to approve and Wiki.
+The destination and its why are in
+[the Workbench Dashboard decision](../../docs/ddr/001O-the-workbench-dashboard-is-the-owner-s-always-open-place-to-see-and-manage-the-workbench.md).
+"Shared Interactive Workbench Board" was this Spec's earlier name. The ID and
+directory slug stay, and the code and tool keep their `grill-board` names.
+
 The [Grill Board](../../grill-board/README.md) is this board's first working
-form, already in use: the owner answers pending items in a local browser page
-and agents carry the answers into their owners. This Spec is the destination it
-grows into. It was activated on 2026-10-07 for the bounded P/V proof below,
-whose four Tasks are cut and unclaimed; the rest of the path from the Grill
-Board to the outcome above has no Task yet.
+form, now its Grilling Board section, already in use: the owner answers
+pending items in a local browser page and agents carry the answers into their
+owners. This Spec is the destination it grows into. The four P/V Tasks cut on
+2026-10-07 keep their slices; TK-007T, TK-007X and TK-007Y, added on
+2026-10-08 from live integration `47215ff10de711bf110c31f5a3f6ea2cf733b5e7`,
+cover the rest of the authorized Dashboard outcome.
 
 The next confirmed board capability lets the Owner evaluate questions by
 Priority and Value and filter them into an answering queue of the Owner's
@@ -42,6 +51,11 @@ without reconstructing everything in chat or adopting a Markdown-reading habit.
 Structured object retrieval already exists; this capability gives the human an
 interface to the same maintained records and operations. Browser presentation
 need not force all underlying artifacts into one storage format.
+
+Every part of the Dashboard is held to the owner's orchestration-tax test
+and Wiki test, recorded in [the decision](../../docs/ddr/001O-the-workbench-dashboard-is-the-owner-s-always-open-place-to-see-and-manage-the-workbench.md): each question
+or concept shown must progress the project and lower the owner's orchestration
+tax, and what the owner needs summarized belongs in the Wiki.
 
 For the P/V proof, the immediate problem is choosing what to answer among
 more than 150 questions by effort and impact. Visible classifications and
@@ -90,6 +104,27 @@ What each Desired Behavior item has today:
 | 6 | Identity across views; no collisions or mixed progress numbers | Partly: stable item identity and one count per item; Task and Spec identities are not shown as cards |
 | 7 | Honest stale and conflicting state; coordinated writers; recovery | Partly: stale answers are refused and shown as Re-answer, and reader text shows revision changes; nothing checks who sends the page's save request, and `items.json` writes are atomic replacements with no cross-writer check |
 | 8 | Bounded agent retrieval through the same operations | Partly: `status`, `pending --json` and `show` serve agents the same records; size and latency are not measured |
+
+### The Dashboard on the director-run branch — re-read 2026-10-08
+
+The table above is dated (`46ad9789`). Re-read on `claude/workbench-dashboard-first-pass`
+(draft PR #440, not yet on integration); the acceptance lines and evidence log
+below are the authority for what is checked:
+
+| # | Desired behavior | On this branch |
+|---|---|---|
+| 1 | Mixed connected cards, execution and understanding views | Partly: five sections; Taskboard and Destination Tracker read the native Spec and Task records and the Landmark Tracker; no combined mixed-card view |
+| 2 | Consistent card inspector | Partly: one inspector for Taskboard and Tracker cards; Spec, Task, decision-record, Wiki and skill readers; a comment or Change request per question card, not per artifact |
+| 3 | Execution lanes and understanding distributions distinct | Yes: separate sections with their own semantics; a done Task never establishes verified understanding |
+| 4 | Comments and update requests with disposition | Partly: one tracked file per comment or Change request on a question card, with its revision and status; promotion dispositions per confirmed card; not yet attached to Taskboard or Tracker artifacts |
+| 5 | Updates through owning operations | Partly: answers, grades and reassessments through validated board operations; promotion receipts link native owners; projections are not refreshed by the board |
+| 6 | Identity across views; no collisions | Partly: Spec-qualified Task identities in the Taskboard section; stable question identities |
+| 7 | Honest stale and conflicting state; coordinated writers | Partly: stale answers, stale approvals and answer conflicts refused or shown; local-only write guards; the notepad revision check is sequential, not a lock |
+| 8 | Bounded agent retrieval | Partly: `pending`, `show`, `status` and the read routes; search and backlink latencies measured (glossary not timed); no token-saving claim |
+
+Owner answers in a room that declares a `notepads` collection now go to the
+git-ignored notepad `grilling/dashboard-answers.json`; earlier `answers.json`
+answers stay readable.
 
 ### Priority and Value: current implementation boundary
 
@@ -182,6 +217,87 @@ not promises about the baseline when Tasks are cut:
    operations. Agents need not browse rendered pages. Measure retrieval size
    and latency before claiming token or performance improvement.
 
+### Workbench Dashboard
+
+Governed by [the Workbench Dashboard decision](../../docs/ddr/001O-the-workbench-dashboard-is-the-owner-s-always-open-place-to-see-and-manage-the-workbench.md). These are
+confirmed requirements, not delivered behavior.
+
+1. **Five sections.** Destination Tracker (Landmarks and Destination Question
+   Cards), Taskboard (Specs and Tasks), Grilling Board (the questions to
+   answer, with P/V), Drafts to approve (current text against proposed
+   wording) and Wiki (the root files, decision records, Wiki pages, glossary and
+   skills). Architecture, Destination and Consequential Decision Records live
+   in the Wiki section, and every question that uses one links to it.
+2. **Answer controls.** The buttons are Confirm, Rework wording, Change the
+   why and Change, with the owner's meanings recorded under
+   Decisions And Contracts below.
+   - Every option except confirming the recommended answer requires a typed
+     note before it can be selected.
+   - There is no Not now and no Decline. An unanswered question stays
+     unanswered; to drop something, the owner uses Change.
+   - Change the why answers collect in a filterable **Whys** list, and the
+     agent fixes the rationale in the owning decision record.
+   - Where the set does not fit, buttons adapt: a question with alternatives,
+     especially a first-round question with no decision yet to confirm, may
+     offer Recommended answer, A, B, C and D; artifacts and other deliverables
+     get fitting buttons too. The recommended alternative is preselected and
+     Confirm confirms the selected one.
+   - On a Spec delivery approval, Confirm approves, and the other answers send
+     it back with the note.
+   - The owner answers when ready and skips the rest; in chat the owner then
+     tells an agent to pick up the answered ones and update the site.
+3. **One connected package.** Context is not duplicated into every question;
+   what a question needs is linked and readable inside the site.
+   Recommendations state the actual choice in plain words, titles first and
+   IDs second. Every term, ID and link resolves to a page, or to a labeled
+   carried excerpt with provenance when the source is a private note. Material
+   is labeled accepted, proposed, current, dated snapshot or carried excerpt,
+   and a conflict that affects an answer is explained. Hover definitions,
+   global search and backlinks ("questions/pages that link here") connect it.
+4. **Drafts to approve.** Show the exact current and proposed wording per
+   file, each change tagged with the question that owns it. Approval binds to
+   that exact wording, and the applying agent lands those exact words.
+5. **Always open.** A macOS login service keeps the Dashboard served at
+   `http://127.0.0.1:4646/` from `/Users/kayden/LLM_Workbench`, starting at
+   login and restarting after a crash. It stays local-only.
+
+### Confirmed Dashboard behavior — 2026-10-08
+
+Kayden's 2026-10-08 assignment of this first pass to a Claude director run
+restates the confirmed behavior below; it adds no new choice.
+
+- The five sections read existing native sources with source-qualified Task
+  identities, separate execution lanes and understanding distributions, current
+  source hashes, evidence, history and readable linked documents. The reader
+  reads `GLOSSARY.md` and `ARCHITECTURE.md` when they reach this baseline,
+  without taking over the Lexicon retirement that delivers them.
+- Show actual proposed artifact drafts beside current text, following
+  [Draft → Critique → Revise → Confirm](../../../RUNBOOK.md#draft--critique--revise--confirm),
+  with critique and revision repeatable as needed. That workflow does not
+  settle the taxonomy of workflows within Explore. A comment, Change or request
+  for revised wording or rationale never approves content. Typed context is
+  required for requests; unanswered questions remain open.
+- Preserve exactly what the owner confirmed: item identity and revision,
+  question, current context, proposed wording, full draft when available,
+  source lineage, note, time and SHA-256. Stale browser actions and stale
+  approvals cannot overwrite or promote newer content.
+- The owner answers progressively over as many grilling rounds as needed,
+  requests question revisions through Change and confirms one concept at a
+  time. Ending a round starts no agent. The owner separately starts promotion
+  for selected confirmed cards or one confirmed card; unconfirmed cards stay in
+  grilling.
+- Promotion creates a recoverable director handoff with visible ordered
+  Record → Publish → Map → Publish → Plan → Publish receipts, evidence and
+  resulting native source links. Existing promotion and review procedures do
+  the work; no dispatch service is implied. A knowledge-only Map or Plan
+  records its existing owner and reason rather than inventing Specs or Tasks.
+  A handoff request, publication, mapped work, a task plan and implementation
+  are distinct displayed states.
+- The producer-room Dashboard stays local and available independently of a
+  chat, with startup, restart and explicit service instructions. Disposable
+  browser data is isolated from owner answers; no actual owner decision is
+  executed for verification.
+
 ### Priority and Value for answering questions
 
 This is a bounded addition to the existing Grill Board, governed by
@@ -200,10 +316,14 @@ CIC labels and meanings. Apply them as follows:
 3. Clicking a question opens all of its information in the central window,
    including P/V and both explanations. Preserve original question text,
    proposal, sources, corrections, answer history and the existing answer controls.
+   Since the owner's 2026-10-09 corrections (below) that information is
+   reachable but progressively disclosed: P/V stay closed badges on the
+   opened card too, and each explanation opens on click.
 4. Add independent P and V filters. P alone includes all Values in that
    Priority; V alone includes all Priorities in that Value; both together
    select their intersection, including P1V2 and P3V1. Combine them with the
    board's existing question filters and Owner-selected fixed-batch behavior.
+   Since 2026-10-09 the filters are P1–P4 and V1–V4 chips, not dropdowns.
    Explicit selection of a slice does not change its grades or inject
    unrelated questions. Decision-group navigation must keep matching member
    questions reachable without inventing one aggregate P/V score for a group.
@@ -215,6 +335,59 @@ CIC labels and meanings. Apply them as follows:
 6. Prove this on the real Grill Board inventory first. DQC P/V, a separate
    automatic recommended-batch feature and a generalized ongoing maintenance
    system are outside this slice. P/V supplies guidance; the Owner chooses the queue.
+
+### Confirmed Grilling Board corrections — 2026-10-09
+
+After the first answering round on draft PR #440, Kayden confirmed three
+corrections to the Grilling Board page in chat on 2026-10-09; TK-007Z carries
+them as corrective work under this still-open Spec. A fourth followed the same
+day, after he had read cards in the changed layout (correction 4 below); it
+has no Task and was made directly on the dashboard branch. His stated goal for them:
+less orchestration tax, an easier page to use and to understand without added
+mental strain.
+
+1. **P/V chips.** "The filters are all tax, none of them are helping me make
+   choices faster. I should be able to select the P or V values here and it
+   dynamically filter." P1–P4 and V1–V4 are clickable chips in the red P and
+   amber V badge colors. Chips in one row combine as OR, the two rows combine
+   as AND, and a row with no chip pressed means every grade; the list and every
+   count update on click. They replace the Priority and Value dropdowns. The
+   kind, topic and scale dropdowns fold under a closed **More filters** line:
+   a reversible default awaiting the owner's call between folding and removal.
+2. **Left navigation.** "Switch where the destination tracker, taskboard,
+   grilling board, drafts, wiki, etc are at the top to on the left side, that
+   should be my navigation pane." The five section links are a persistent
+   left pane; the Grilling Board filters sit under them in the same pane. The
+   `#section=` hash routes and back/forward behavior are unchanged, and a
+   narrow window stacks the pane instead of scrolling sideways.
+3. **Progressive disclosure.** "The Priority and Value need to be collapsed
+   even when I click into the card for more details. We need to progressively
+   disclose that info for me… we should keep them available on the page like
+   the links to the spec, ADR, and draft." An opened card shows only its
+   title, the question, the closed P/V badges (reasons open in place), one
+   compact row of links styled as links, the recommended answer and the answer
+   controls (Confirm, Rework wording, Change the why, Change, with the note
+   box). Current text and full proposal, related cards and grilling history,
+   proposed wording, history and the comments-and-promotion block each start
+   as one closed line; the last names the card's workflow state while closed.
+   What it concerns, what would change and the consequences are not among
+   them: correction 4 keeps those open.
+4. **The why beside the recommendation; the three reading sections open.**
+   "The why needs to be just as prominent as the recommend answer." And:
+   "don't collapse what this concerns, what would change consequences or,
+   trade-offs by default. Those are what I read every time." He may collapse
+   them when he wants a lighter card, but they start open. The opened card
+   shows the why (**Why this choice matters**) as a panel of the same weight
+   directly under the recommended answer, never as a closed line, and **What
+   this concerns**, **What would change** and **Consequences and tradeoffs**
+   as sections that start open and collapse on click. Every other part of the
+   card keeps correction 3's closed line. A question with no recorded why shows
+   that fact in the panel instead of leaving it out.
+
+Not part of this: the owner's tentative note that leaving a topic needs a
+visible control rather than a dropdown, and his unconfirmed note about editable
+owner notes. A "Tax" note from the owner on this page means the item or layout
+was too hard to understand and is a defect to fix, not a verdict.
 
 ## Decisions And Contracts
 
@@ -255,6 +428,70 @@ CIC labels and meanings. Apply them as follows:
   records the Owner's 2026-10-07 readbacks and CIC source lineage. Its first
   proof uses existing board questions; it does not change any DQC owner or
   establish CIC authority to override a project's classifications.
+- **The Workbench Dashboard.** The owner, 2026-10-07: "this larger product
+  site should be called "Workbench Dashboard" [...] right now we need to
+  create the projection surface for me to see everything and make smart
+  choices from on the LLM_Workbench. [...] the site shouldnt close, and I
+  shouldnt need to start a chat to get it open." On sections: "The sections
+  would probably be Destination Tracker, Taskboard, Grilling board, Drafts to
+  approve, Wiki. that would be at least enough for me to know what was
+  missing." The rename keeps the ID `S-004D` and the slug
+  `shared-interactive-board`, a reversible agent choice to avoid link churn.
+- **Answer controls.** The owner, 2026-10-07: "change what the buttons say to
+  "confirm" "rework wording" "change the why" and "change". Confirm means its
+  confirmed. [...] The rest need me to have typed something in the box before
+  I can select them, this is because my notes are required for context." And:
+  "we dont need a not now because that is the point of making this. a website.
+  if I dont want to answer it right now. I dont and move on." And: ""recommended
+  answer" "A" "B" "C" "D" are also acceptable, especially for a first round
+  question where we have not established a decision to confirm. Same goes for
+  Artifacts and other things we deliver. We can be smart about what we put in
+  the buttons." Agent-proposed and owner-confirmed: the preselected
+  recommended alternative, and Confirm or send-back on a Spec delivery approval.
+  The answer words carry the owner's meanings, carried verbatim from the
+  2026-10-07 promotion on `claude/workbench-dashboard` (35a27351), whose
+  Lexicon home this run does not add: Confirm is the Confirm verb, it is
+  confirmed and nothing needs changing; on a question with alternatives it
+  confirms the selected one. The other three:
+
+  | Answer | Meaning |
+  |---|---|
+  | **Rework wording** | Mostly correct; it needs to be restated better. |
+  | **Change the why** | Something about it is correct, but the underlying reason or cause is wrong. |
+  | **Change** | It needs changing, including dropping it. The owner chose Change over Correct: "to me correct means I am telling you its good to go". |
+
+- **The package, Drafts to approve and always open** are agent plan items the
+  owner confirmed on 2026-10-07. It is consistent with local and small
+  hosting. Observed 2026-10-08 (read only): a login service labelled
+  `com.kayden.workbench-dashboard`, installed on 2026-10-07 outside this
+  repository's tooling, already serves the owner's primary checkout on
+  127.0.0.1:4646; replacing it with the generated configuration is the
+  owner's choice.
+- **P/V is part of the Workbench Dashboard build** (the owner, 2026-10-07:
+  "6. confirmed"). DQC P/V stays out.
+- **Producer room first.** The Dashboard is an LLM Workbench producer-room
+  capability; rolling it out to every workbench and running the Workbench
+  from it are future goals recorded in the decision, not this Spec's scope.
+- **Glossary routing (2026-10-08).** Kayden directed: "no more lexicon.md we
+  replaced it with glossary.md, see the domain modeling skill rework." This
+  run therefore adds no Lexicon entries. The Dashboard terms and answer words
+  are recorded in this Spec, and the Draft, Critique and Revise verbs in the
+  [Runbook](../../../RUNBOOK.md#draft--critique--revise--confirm), until the
+  established Glossary from the Lexicon retirement (PR #431) reaches this
+  baseline; the Dashboard reads either route.
+
+- **The optional project deployment copies this page.** The Grill Board
+  deployment into an adopted project (S-005H, owner `codex-board-corrections`)
+  copies `workbench/grill-board/index.html` and its module closure at a pinned
+  commit, so landing this Spec on integration changes what that deployment
+  installs. It keeps working with this page: its module scanner follows import
+  statements only (the words `from "related"` inside a message in
+  `landmark-tracker.mjs` were read as an external package), and its page seams
+  name this page's title, brand and browser-tab title, so a project's own title
+  replaces all three. A deployed Board shows these sections over the project's
+  own files; its comments, change requests and promotion need the project
+  manifest's notepads collection. This Spec records the compatibility only; the
+  component files, their test and their guide belong to S-005H.
 
 ## Open Design Choices
 
@@ -266,6 +503,8 @@ Settle and record each within the slice that needs it:
   how a request reaches an agent or maintainer. Automated dispatch is not
   implied by submitting a comment. (Settled: one file each, in a folder under
   the Grill Board.)
+- Any remote access beyond the local always-open service. Hosting stays local
+  for now; nothing remote is selected.
 - Source adapters, conflict handling and writer coordination shared with CLI
   agents, plus fresh-read and projection-recovery behavior.
 - The current board identity/cutover and Landmark migration contracts. Recheck
@@ -276,14 +515,20 @@ policies. Resolve them within the existing owners before adding executable work.
 
 ## Non-Goals
 
-- Task creation or implementation in this Map pass.
+- Automatic agent activation after answering or confirming, a dispatch
+  service, remote hosting, new credentials and unrelated implementation.
 - DQC P/V, automatic recommended batches, a summed grading score or a new
   periodic maintenance system in the first Grill Board P/V proof.
 - A second board beside the Grill Board.
 - Replacing Taskboard or Tracker sources with a new authoritative mega-board.
 - Flattening execution and understanding into one lifecycle or one percentage.
-- A general Wiki/dictionary website, Lexicon migration, new scheduler, automatic
-  agent dispatch, GitHub Projects cutover, or mandatory third-party service.
+- Rolling the Dashboard out to every workbench, or running the Workbench from
+  it: future goals, not this Spec's scope. Generic templates carry no
+  Dashboard behavior; they gain only the Runbook's Draft → Critique → Revise →
+  Confirm workflow.
+- A second Wiki, dictionary or glossary store: the Wiki section reads the
+  existing owners. Also out: the Lexicon retirement itself, a new scheduler,
+  GitHub Projects cutover, or a mandatory third-party service.
 - Changing permission, review, Human QA, main promotion or retention rules.
 
 ## Dependencies And Blockers
@@ -314,6 +559,22 @@ and a P/V Task lands second reconciles onto the other on fresh integration;
 TK-007N grades the inventory present when it runs, and TK-007M applies its
 group rule to decision-record groups if they have landed.
 
+Coordination recorded 2026-10-08 by the director run, none of them a Task
+blocker:
+
+- **Lexicon retirement, PR #431** (`claude/s004o-lexicon-retirement`, head
+  `03abc895`, draft) delivers `GLOSSARY.md` and `ARCHITECTURE.md`. The
+  Dashboard reads them when present and the existing Lexicon route until then;
+  this run neither takes over nor waits on that migration.
+- **Domain-modeling corrections, PR #425** (`claude/s004j-corrections`) is a
+  separate lane and not a Dashboard dependency.
+- **Consequential-decision grouping** (`codex/consequential-decision-board`,
+  local commit `724a5d52`, still unpublished) holds the nine grouped rationale
+  prompts, including the administrative-reconciliation question whose
+  pointer-only recommendation the 2026-10-07 self-contained-package handoff
+  reported. That content is not on integration, so this run cannot repair it;
+  whichever of that lane and this one lands second reconciles onto the other.
+
 ## Vertical Implementation Slices
 
 Task records live under `tasks/`. The Grill Board is the delivered first
@@ -339,11 +600,31 @@ operation in `tools/grill-board.mjs`, `items.json`, the page
    the real-inventory P3V1 Owner scenario on a disposable copy (acceptance:
    the demonstrated cycle; the browser scenario receipt).
 
-Later shared-board slices stay uncut. When they are authorized, cut them from
-live Actuality along the "Not yet" and "Partly" rows above, growing the Grill
-Board rather than starting a new page; for example, live Taskboard and Tracker
-cards with their distinct dimensions, then discussion attached to artifact
-identities. That sequence is a proposal, not an assignment.
+The wider Workbench Dashboard was cut on 2026-10-08 from integration
+`47215ff1` into three further Tasks, beside the P/V Tasks above:
+
+4. TK-007T: the five sections reading native sources, Drafts to approve,
+   decision-record links into the Wiki section, glossary, backlinks and search.
+5. TK-007X: the answer controls and Whys list, Change and agent revision,
+   exact approval snapshots, repeated rounds and explicit promotion handoffs
+   with visible dispositions.
+6. TK-007Y, after TK-007T and TK-007X: the always-open local service and the
+   disposable-copy demonstration of the complete owner flow.
+
+Director run writer map (2026-10-08). The director is the single writer of
+this Spec, its Task records, the catalog, `TASKBOARD.md` and the decision
+records. Lanes branch from the assembly commit `eb7719c7` on
+`claude/workbench-dashboard-first-pass` and each owns distinct files: owner
+interface and board core (`tools/grill-board.mjs`, `index.html`, the Grill
+Board README and board tests: TK-007L, TK-007M, the TK-007T page half and
+TK-007X controls); native sources (`tools/dashboard-sources.mjs`, the
+Taskboard reader and its tests: the TK-007T source half); owner workflow and
+service (`tools/dashboard-workflow.mjs`, `tools/dashboard-service.mjs` and
+their tests: the TK-007X workflow half and TK-007Y service); and question
+content (`items.json` through the `grade` operation only: TK-007N). Landing
+order: lanes merge into the assembly branch, then TK-007O and TK-007Y are
+demonstrated on the assembled candidate, which takes separate-context review
+before its draft PR into integration.
 
 ## Acceptance Criteria
 
@@ -364,27 +645,70 @@ identities. That sequence is a proposal, not an assignment.
 
 ### P/V proof on the Grill Board
 
-- [ ] Every in-scope live question has valid P1–P4 and V1–V4 grades with reasons
+- [x] Every in-scope live question has valid P1–P4 and V1–V4 grades with reasons
   traceable to its question and governed capability/change. Missing grades
   remain visible as unclassified rather than receiving invented defaults.
-- [ ] Numbered red P and amber V badges appear on the right of question cards;
+- [x] Numbered red P and amber V badges appear on the right of question cards;
   clicking each reveals its own rationale without replacing or answering the
   question. Opening the question centrally shows all information, P/V and reasons.
-- [ ] P1V2, P3V1, P2 alone and V alone return exactly their matching questions.
+- [x] P1V2, P3V1, P2 alone and V alone return exactly their matching questions.
   Clearing filters restores the wider inventory; other board filters still combine.
-- [ ] The Owner can select a fixed answering batch from a P/V-filtered slice,
+- [x] The Owner can select a fixed answering batch from a P/V-filtered slice,
   inspect details, answer, pause/resume and reload without lost drafts,
   changed batch membership, missing history or double-counted questions.
-- [ ] Grade updates through validated operations retain stable identity and
+- [x] Grade updates through validated operations retain stable identity and
   revision/history behavior. Invalid classifications and stale updates are
   refused without losing prior data; agent operations never write Owner answers.
-- [ ] A demonstrated answer-to-card-update cycle shows the agent assessing
+- [x] A demonstrated answer-to-card-update cycle shows the agent assessing
   whether each affected grade's basis changed, retaining grades when it did
   not and recording justified revisions when it did. No periodic DQC work is needed.
-- [ ] Browser checks on a disposable copy of the real inventory show the
+- [x] Browser checks on a disposable copy of the real inventory show the
   Owner's P3V1 -> grade explanation -> central question -> answer -> card-update
   scenario. Record exact source/candidate, matched question identities and
   results; technical tests alone do not establish Owner usefulness or Human QA.
+
+### Workbench Dashboard proof
+
+- [ ] The five sections open from one site, each reading its existing owners;
+  every question that uses a decision record links to it in the Wiki section.
+- [x] The answer controls are Confirm, Rework wording, Change the why and
+  Change; every answer except confirming the recommended one is refused until
+  a note is typed; there is no Not now or Decline; Change the why answers
+  appear in a filterable Whys list.
+- [ ] A question with alternatives preselects the recommended one and Confirm
+  confirms the selection; a Spec delivery approval is approved by Confirm and
+  sent back with the note otherwise.
+- [ ] Every term, ID and link on a sampled question path resolves to a page or
+  a labeled carried excerpt with provenance; labels and answer-affecting
+  conflicts are shown; hover definitions, search and backlinks work.
+- [ ] Drafts to approve shows exact current and proposed wording per file,
+  tagged with its owning question, and an applied approval lands exactly the
+  approved words.
+- [ ] After login, and after the server process is killed, the Dashboard is
+  served at `http://127.0.0.1:4646/` without a chat starting it, and only on
+  the local address.
+- [ ] Owner-path verification on the real inventory shows the owner can
+  understand and answer the nine grouped rationale prompts without asking in
+  chat where things are; technical tests alone do not establish Human QA.
+- [x] Draft → Critique → Revise → Confirm works on a card: a Change request
+  with its note, an agent revision, and a fresh confirmation bound to the
+  revised wording; a comment or Change never counts as approval.
+- [x] The owner explicitly starts promotion for one confirmed card or for
+  selected confirmed cards; answering, confirming or ending a round starts no
+  agent; unconfirmed, stale or Change-pending cards are refused.
+- [x] Each promotion shows ordered Record → Publish → Map → Publish → Plan →
+  Publish receipts with evidence and native source links; a knowledge-only
+  decision shows its no-op reason and gains no Spec or Task.
+
+### Owner corrections of 2026-10-09 (TK-007Z)
+
+- [x] The P1–P4 and V1–V4 chips filter the list on click (OR within a row,
+  AND across rows, no chip means all) and replace the P/V dropdowns; the five
+  section links are a persistent left navigation pane with the Grilling Board
+  filters under them, hash routes intact and no horizontal scroll at a narrow
+  width; an opened card shows only its title, question, closed P/V badges,
+  link row, recommendation and answer controls, with every other part one
+  closed line.
 
 ## Verification Plan
 
@@ -404,6 +728,13 @@ badge popovers, central detail, draft preservation and the fixed queue using
 a disposable copy of the real board; never submit fixture answers to the
 Owner's live `answers.json`. Read grading reasons for semantic fidelity to the
 Lexicon and sources: valid labels alone do not prove a correct assessment.
+
+For the Workbench Dashboard, confirm failing tests first at the answer-
+validation seam (note required, no Decline, preselected alternative), the link
+and term resolution seam and the Drafts to approve wording seam. Browser
+checks use a disposable copy of the real inventory; never write the owner's
+live `answers.json`. Check the login service by its own status and a restart,
+not by a chat-started `serve`.
 
 ## Documentation Impact
 
@@ -430,6 +761,18 @@ header, current-state re-read, dependencies and slice order. It changes no
 runtime, page, inventory, README, Lexicon, template or answer file; each Task
 names the README and test changes its delivery owns.
 
+The 2026-10-08 director run carries the accepted
+[Workbench Dashboard decision](../../docs/ddr/001O-the-workbench-dashboard-is-the-owner-s-always-open-place-to-see-and-manage-the-workbench.md)
+from `claude/workbench-dashboard` (35a27351) with one routing correction: its
+Consequences named the Lexicon as the home of the Dashboard terms, which
+Kayden's Glossary direction withdrew, so the record now names this Spec until
+the Glossary lands. It also carries this Spec's rename and Dashboard
+requirements, the catalog row and the Runbook's Draft → Critique → Revise →
+Confirm workflow with its focused check. The Grill Board README owns the
+browser procedure; generic templates gain only the Runbook workflow, because
+the Dashboard is a producer-room capability until the rollout goal is taken up.
+The Blueprint is unchanged, for the reason the decision gives.
+
 ## Append-Only Evidence And Execution Log
 
 | Date | Event | Evidence and limits |
@@ -445,3 +788,32 @@ names the README and test changes its delivery owns.
 | 2026-10-07 | P/V record carry verified | Committed candidate f5ce6c46fe21ea6d27d8f9bb57e554bf7aaafa65, clean tree: all 54 Runbook Full suite commands exit 0, including `node tools/test-evaluate-workbench.mjs`, `node tools/test-adr.mjs`, `node tools/test-grill-board.mjs`, `python3 tools/test-check-append-only.py` and `node workbench/tools/spec-workbench.mjs doctor` (no blocking finding; its attention findings equal those of integration d9a353590644f957ae24636d13ce9a41ef1987e9 apart from that worktree's detached HEAD). `node workbench/tools/adr.mjs validate` and `node workbench/tools/wiki.mjs validate` pass. The same 54 commands also pass on unmodified integration. These are documentation and record checks only; P/V behavior, the real-board proof and Owner Human QA remain undelivered. |
 | 2026-10-07 | Activated; bounded P/V proof planned | Plan stage of the DDR-001L `promote-decision` run on `claude/plan-ddr-001l-priority-value`, cut from integration 9edbed8a585a99a52368c3c09aa7eb91def6b7ef, under decision-005's authorization of implementation following the current request and its lifecycle. Live board re-read at that base (recorded under Current Verified State). Four Task records written with `next-id` labels confirmed free across every `origin/*` tip and local worktree: TK-007L tracer bullet (no blockers), TK-007M filters and batches and TK-007N inventory grades (each blocked by TK-007L), TK-007O answer-to-card-update cycle and real-board scenario (blocked by TK-007M and TK-007N); all `ready`, Builder, unclaimed. Header gained Priority 2 (this repository's default for an in-scope capability with no release assignment; the Owner's purpose is a board aid, not an interrupt or release gate) and Owner `unassigned` (no Dispatcher is assigned; whoever takes the Spec records themselves), then `convert-tasks S-004D --activate` set Status active. Readings recorded in the Tasks: AC1 covers every open board item including the 35 `confirm-dqc` items, with "deferred" applying to DQC records (TK-007N); requirement 4's decision-group navigation is the page's topic grouping, with no aggregate group P/V (TK-007M). Plan only: no claim, implementation, answer application or Owner Human QA. |
 | 2026-10-07 | P/V plan verified | Committed candidate e88cbec0585adecaa57d5b5782a89b3abe75492e, clean tree: all 54 Runbook Full suite commands exit 0, including `node tools/test-evaluate-workbench.mjs`, `node tools/test-spec-workbench.mjs`, `node tools/test-grill-board.mjs` (run with localhost socket permission), `python3 tools/test-check-append-only.py` and `node workbench/tools/spec-workbench.mjs doctor` (no blocking finding; its new findings are the expected `blocked-slice` dependency entries for TK-007M, TK-007N and TK-007O). `show S-004D --json` reads back Status active, Priority 2, Owner unassigned and all four Tasks `ready` with no claim. These are planning and record checks only: no P/V behavior, real-board proof or Owner Human QA is claimed. |
+| 2026-10-08 | Dashboard reconciliation and writer ownership | Authorized implementation from integration 47215ff10de711bf110c31f5a3f6ea2cf733b5e7. Selectively reuse confirmed DDR-001O and five-section design from claude/workbench-dashboard 35a27351; retain current P/V Tasks and completed PR438/439 work. Branch codex/dashboard-owner-flow published claim b3b87b43126c73f2b0192b08b1b78ca680676b04 for TK-007L. Parent is sole shared state writer; sources and workflow workers own distinct new modules. PR425 domain corrections and PR431 glossary migration remain separate. No owner answer or actual promotion executed. |
+| 2026-10-08 | TK-007L claim transferred to the Claude director run | Kayden assigned the Dashboard first pass to a Claude director run through the local (ignored) handoff `dashboard-claude-director-first-pass-2026-10-08.md`, after Codex stopped every implementation writer. The published claim (`b3b87b43`, `codex-dashboard-owner-flow`) is carried, not released or closed: Owner and Claimed by now name `claude-dashboard-director`. Codex's uncommitted partial work was carried byte-for-byte from its preserved snapshot (26 paths, every SHA-256 matched) as recovery commit `eb7719c7`, without its withdrawn Lexicon entries, and with its three known failing tests recorded there. The documentation candidate `cf352446` was carried as `c5cab404` and `47d09d9d`. Task IDs TK-007T, TK-007X and TK-007Y were checked free across every `origin/*` tip and local worktree before adoption. No owner answer, promotion or Human QA. |
+| 2026-10-08 | Lanes delivered onto the assembly branch | Four Workers on separate branches from `eb7719c7`, one writer per file, merged into `claude/workbench-dashboard-first-pass`. Owner interface and core (`claude/dashboard-lane-ui`): the four answer controls through one shared `answerControls` rule with legacy answers keeping their labels and meanings, note-required non-confirm answers, preselected recommended alternatives where the item names exactly one, Spec delivery approval Confirm/send-back, the Whys list, P/V badges, reasons, independent P and V filters and fixed P/V batches (TK-007L, TK-007M), the five sections with Taskboard and Tracker loaded on demand, Drafts to approve with snapshot match or stale state, Wiki groups, search, backlinks and hover definitions, the promotion timeline from workflow card states, room-relative approval snapshots so the 36 items citing absolute in-room notepad paths can be confirmed without weakening the notepad privacy guard, and the `reassess` operation that tells a retained grade from an unassessed one (TK-007O code half). Native sources (`claude/dashboard-lane-sources`): the preview duplicate guard keeps every parsed field unique document-wide and other labels unique per slice subsection (the carried allowlist relaxation is replaced; all 65 Taskboard tests pass with the three formerly failing refusals unchanged); the source-qualified reader refuses an overwritten identity (613 real cards, eight shared legacy labels kept apart); glossary, backlink and bounded search routes (warm search about 100 ms). Owner workflow and service (`claude/dashboard-lane-workflow`): per-card states from handoff requested to implemented, ordered receipts with knowledge-only no-op reasons, recovery of an interrupted comment write, a read-only service `status` and a disposable restart check. Real inventory (`claude/dashboard-lane-content`): all 171 open questions graded P and V with source-backed reasons through the `grade` operation only, no item revision changed (TK-007N); distribution and the read-only [question content audit](proof/question-content-audit-2026-10-08.json) (99 pointer-only recommendations, 16 wording approvals without a draft, 61 missing or moved source paths, 34 overtaken premises) are recorded for a later content pass. No item was revised and no answer file written. |
+| 2026-10-08 | Owner flow demonstrated on a disposable copy | Fresh demonstration Worker, candidate `a857b658`, real inventory, port 4720, Chromium desktop: [receipt](proof/owner-flow-demo-a857b658.json). Nine of eleven steps passed: Change request, agent revision, confirmation of revised wording, stale approval refused and re-confirmed, two rounds starting no agent, double-click and stale-tab refusals without lost data, single and selected-set promotion including a confirmed alternative, knowledge-only and implementation disposition timelines, restart with byte-identical state, and the TK-007O P3V1 → reason → answer → apply → reassess scenario. Defects found: unsent comment text lost on Back (D1), service `status` attributing the Owner's installed service to another path and port (D4), key-order-dependent action identity (D3), and a versioned Node path in `print` (D5). All four and the UI polish items were fixed test-first in `claude/dashboard-lane-ui` (`60aee463`, `b2222b05`, `2f5c4fe5`, `b8bcec40`, `88954145`) and D1 and D4 re-checked (browser on port 4721; fixture status). Disposable fixture answers only; not Owner Human QA. The Owner's live board on port 4646 and its installed login service were read, never changed. |
+| 2026-10-08 | Early Full suite and vocabulary correction | Full suite on clean candidate `a857b658`: 59 of 60 commands passed; `node tools/test-spec-workbench.mjs` failed its retired-vocabulary sweep on a sources-lane comment and fixture. Corrected without an allow-list entry in `ae47bff3`; `test-spec-workbench` then passed. The final candidate's Full suite and review are recorded separately. |
+| 2026-10-08 | Separate-context review #1: fail; corrected | Candidate `1dfadbecbde191a28f04ae2968e0ed5260fc9d97`: the Full suite passed all 60 commands on a clean detached worktree (2026-10-08T17:53Z to 18:08Z). A fresh, uninvolved reviewer following the code-review skill returned **fail**. Blocking: the new owner write routes accepted cross-site `text/plain` POSTs from any Origin (reproduced with curl on a disposable copy: a comment file and notepad entry were written). Should-fix: the answer-word meanings had no owner after the Lexicon routing correction, and only 3 of the 36 real alternative questions can preselect their recommendation. Notes: the direct workflow CLI disagreed on confirmed alternatives, a `null` body returned 500, answer entries embedded legacy history that the notepad privacy guard could refuse, the README pointed at a missing Lexicon anchor and the old name, and pre-snapshot confirmations need re-confirming. Corrections: every request must carry the board's own Host and every write JSON with no foreign Origin or cross-site fetch (403/415, nothing written on refusal; `13540cc8`), non-object bodies return 400, the CLI shares the board's confirmation rule (`5f00ae4d`), answer entries store only the new answer and chain history (`3b942d66`), the page and README name re-confirmation and comment ownership (`1742fdd7`, `4b3fb108`), and this Spec carries the meanings verbatim (`fc3ffb49`). Recorded as an open content gap, not fixed here: marking the recommended alternative on the other 33 questions needs `revise`, which bumps their revisions and stales existing answers; until then the page says nothing is preselected and every alternative needs a note. The corrected assembly is a new candidate and takes a fresh review. |
+| 2026-10-08 | Separate-context review #2: fail; corrected | Candidate `872e27085d532cb158dfc144482e572b6f543fec`: the Full suite passed all 60 commands on a clean detached worktree (to 2026-10-08T18:23Z). A second fresh reviewer verified the first review's corrections (Host, Origin, Content-Type and cross-site guards held against `null` Origin, trailing-dot and `[::1]` Hosts, form bodies and oversized chunked bodies, with nothing written on refusal) and returned **fail**. Blocking: re-confirming a confirmation saved before snapshots existed was treated as an identical repeat, so it never gained a snapshot and could not be promoted. Should-fix: the answer chain wrote `supersedes` but never checked it, so a newer `answers.json` answer from the old-code service could be silently reordered behind an older notepad answer; and DDR-001O linked its Spec one directory too high. Corrections: a confirmation without a current matching snapshot records a fresh one while true repeats stay idempotent (`a02e6830`); one shared history chain checks `supersedes`, keeps the newest answer current and shows an answer conflict asking the owner to answer again, never dropping an answer (`f06726f2`); the served page refuses framing (`4349a0cb`); the decision link is repaired (`18213a03`). Accepted as noted, not changed: the optional `expectedAnswerAt` for non-page API clients and knowledge-only Map or Plan receipts that also carry Spec or Task links. The corrected assembly takes a fresh review. |
+| 2026-10-08 | Separate-context review #3: fail; corrected | Candidate `cf212a88c8a9ce31ef29d4d44598452c5442dc97`: the Full suite passed all 60 commands on a clean detached worktree (to 2026-10-08T18:38Z). A third fresh reviewer confirmed the earlier corrections held (cross-site, rebinding and framing guards; re-confirmation snapshots; `supersedes` checks with no answer dropped across legacy, notepad and old-server interleavings; legacy answer values; promotion order; duplicate guard and test assertions; private paths; records and 171 grades unchanged in revision) and returned **fail**. Blocking: an answer conflict was shown only on the page, while agent `pending` output, `apply`, rounds and promotion treated the contested answer as settled. Should-fix: re-saving the current answer did not clear a conflict. Notes: earlier-format notepad entries replaced the current answer without a conflict check, and a trimmed answer notepad would chain silently. Corrections (`7b8215d6`, `f274a2a1`): agent output carries the conflict, `apply` refuses `answer-conflict`, a conflicted answer is not a confirmation for rounds, card state or promotion, re-saving records a superseding entry that settles it, earlier-format entries and missing predecessors surface as conflicts, and the README forbids trimming the answer and workflow notepads. The corrected assembly takes a fresh review. |
+| 2026-10-08 | Separate-context review #4: pass | Candidate `07429c50a81d4d4020a6ea1dc7bcb3ed9594e0d1`: the Full suite passed all 60 commands on a clean detached worktree (to 2026-10-08T18:54Z). A fourth fresh reviewer independently re-tested every earlier correction (legacy snapshot re-confirmation, old-server interleaving surfacing an `unchained` conflict in page, `pending`, `status` and `show` while `apply`, rounds and promotion refuse it, re-saving settling it, nothing dropped; Host, Origin, Content-Type, cross-site and framing guards with nothing written on refusal; all 171 open items confirmable and promotable on a copy; browser check of all five sections) and returned **pass** with no blocking finding. Should-fix, corrected in `6e452ba3`, `771c1439`, `7eed51be` and `bca7c7c6`: owner notes containing a home path, email address or token-like text are refused by the notepad privacy guard, so the page now explains the refusal, keeps the words and stops retrying (the guard and the owner's words are unchanged); README lines on write checks, the answer store and the per-kind routing of the new answer words were stale; a malformed answer-notepad entry returned 500; auto-save could settle a conflict without an explicit choice; the generic Runbook named this room's owner and the Non-Goals contradicted the template change. Accepted as noted: a card already promoted keeps its promotion state after a later conflict (the conflict stays visible on the question and to agents), and the approval snapshot binds the question, current text, proposal, draft, sources and evidence rather than the whole brief. After merging, the owner's running service must be restarted to load the new server code. |
+| 2026-10-08 | TK-007L | Task closed | Grade schema and validated grade operation (gradeItems, grade CLI; P1-P4/V1-V4 with reasons, stale gradeRevision refused, revision and answers untouched); red P and amber V badges opening only their own reason; central view with both reasons. tools/test-dashboard-board.mjs 38/38, tools/test-grill-board.mjs 18/18; graded real item checked in the browser on a disposable copy (proof/owner-flow-demo-a857b658.json). Full suite 60/60 on clean candidate 07429c50; separate-context review #4 pass at 07429c50 (Spec evidence) | workbench/grill-board/README.md: grade fields, grade command and why a grade change keeps revision | none |
+| 2026-10-08 | TK-007M | Task closed | Independent P and V filters combined with topic, intent, scale, workflow and search filters; P3+V1 returned exactly the 51 matching real questions; fixed batch started from a P/V slice kept its members across pause, resume and reload (page-model tests in tools/test-dashboard-board.mjs; browser receipt proof/owner-flow-demo-a857b658.json). Full suite 60/60 on clean candidate 07429c50; separate-context review #4 pass at 07429c50 (Spec evidence) | workbench/grill-board/README.md: P/V filters and fixed batches | none |
+| 2026-10-08 | TK-007N | Task closed | All 171 open board questions graded through the grade operation with source-backed Priority and Value reasons (six batches, merge 0f47945f); every item revision unchanged from base; grill-board validate ok; reasons spot-checked by four separate reviewers. Full suite 60/60 on clean candidate 07429c50; separate-context review #4 pass at 07429c50 (Spec evidence) | Docs checked; no update needed: the grades live in items.json and the grade procedure is documented by TK-007L | The 9 withdrawn items stay ungraded by design; question-content repair is recorded in proof/question-content-audit-2026-10-08.json |
+| 2026-10-08 | TK-007T | Task closed | Five sections from native owners: source-qualified Taskboard (613 real cards, legacy labels kept apart, overwritten identity refused, duplicate-field guard strict for every parsed field), Tracker semantics kept distinct, source errors shown without substitutes; Drafts to approve with current beside proposed wording and snapshot match or stale state; Wiki groups, decision-record links, glossary, backlinks and bounded search excluding private collections. tools/test-dashboard-sources.mjs 11/11, tools/test-taskboard-json.mjs 65/65; browser receipt proof/owner-flow-demo-a857b658.json step 1. Full suite 60/60 on clean candidate 07429c50; separate-context review #4 pass at 07429c50 (Spec evidence) | workbench/grill-board/README.md: sections, Drafts to approve, search, backlinks and glossary; RUNBOOK Full suite lists the Dashboard checks | Question content: 99 pointer-only recommendations, 16 wording approvals without a draft and 61 missing or moved source paths remain for a content pass (proof/question-content-audit-2026-10-08.json); the glossary reads GLOSSARY.md once the Lexicon retirement lands |
+| 2026-10-08 | TK-007X | Task closed | Four answer controls through one shared answerControls rule, notes required server-side, retired words refused for new answers and legacy answers keeping labels and status; Whys list; exact approval snapshots with one normalized hash and re-confirmation of legacy confirmations; answer history chained with supersedes and conflicts that stop agents, apply, rounds and promotion; explicit single and selected promotion with ordered receipts, knowledge-only no-op reasons and distinct card states; local-only Host, Origin, content-type, cross-site and framing guards. tools/test-dashboard-board.mjs 38/38, tools/test-dashboard-workflow.mjs 24/24; browser receipt proof/owner-flow-demo-a857b658.json steps 2-9. Full suite 60/60 on clean candidate 07429c50; separate-context review #4 pass at 07429c50 (Spec evidence) | workbench/grill-board/README.md: answer controls, Whys, refused notes, answer store, rounds, promotion, dispositions and conflicts; S-004D Decisions And Contracts carries the answer-word meanings | 33 of the 36 real alternative questions cannot preselect their recommendation until agents mark it with revise, which bumps their revisions; until then every alternative there needs a note |
+| 2026-10-08 | TK-007O | Task closed | reassess operation records a retained or revised P/V assessment with its basis and the answer it followed, using the stale gradeRevision check and never touching revision or answers; fixture cycle with one retained and one revised grade in tools/test-grill-board.mjs; real-inventory P3V1 -> reason -> central question -> answer -> apply -> reassess scenario on a disposable copy (proof/owner-flow-demo-a857b658.json step 10, repeated by the fourth reviewer). Full suite 60/60 on clean candidate 07429c50; separate-context review #4 pass at 07429c50 (Spec evidence) | workbench/grill-board/README.md: answer-processing step to reassess P/V on every card an answer updates | none |
+| 2026-10-08 | Tasks closed after the passing review; acceptance lines checked | Records-only commits after review #4 (`b00915e5` to `f7247969`): TK-007L, TK-007M, TK-007N, TK-007T, TK-007X and TK-007O claimed by `claude-dashboard-director` where needed and closed through `close --task` with their proof, documentation and remaining gaps (TK-007N: withdrawn items stay ungraded and the content audit; TK-007T: the question-content pass and the Glossary route; TK-007X: 33 of 36 alternative questions cannot preselect their recommendation yet). TK-007Y stays `ready`: its destination needs the Owner's always-open service checked after login and a killed process, which this run did not install, replace or restart. Checked: all seven P/V proof lines and five Workbench Dashboard lines (five sections, answer controls, Draft → Critique → Revise → Confirm, explicit promotion, ordered receipts), each backed by the tests, the demonstration receipt and the reviews above. Left unchecked: the seven wider shared-board lines, recommended-alternative preselection, link and label resolution across the whole package, the applied-approval wording line, the always-open service line and the nine grouped prompts' owner-path verification. |
+| 2026-10-08 | Separate-context review #5: fail on records; corrected | Candidate `7d89fe758d19f897538f570bcffb6c12c8840891`: a fifth fresh reviewer confirmed the polish code (refused-note message with no repeat send, no auto-save over a conflict, malformed answer entries returning 400) and the append-only rows, and returned **fail** on records claims made by the director. Corrections, appended here rather than by editing the checksummed close receipts above: (1) the five-sections acceptance line is unchecked again: the page links a decision record only when it appears in a question's `sources`, and briefs and drafts render without a source, so 53 of 171 open questions name decision records they do not link (for example GB-0023 names ADR-000B to ADR-000F and links none); (2) TK-007T's remaining gap also includes that decision-record linking and its own sampled-path resolution clause, which the Spec leaves unchecked; (3) TK-007N's "reasons spot-checked by four separate reviewers" had no repository record: the four review reports, kept in the director session rather than here, spot-checked 16, 12, 9 and 11 grades respectively across all six kinds and found them source-backed, and that is the only sample read of TK-007N's planned verification; (4) TK-007O's "repeated by the fourth reviewer" is withdrawn: the reassess scenario was repeated in the browser by the owner-interface Worker on `8f8ab5e0` (P3V1 → reason → answer → apply → reassess, revision unchanged, gradeRevision 2), not by review #4; (5) TK-007M's batch persistence across pause, resume and reload was shown in that same Worker browser run and in page-model tests, not in the demonstration receipt, which covers the P3V1 filter; (6) TK-007T's cited receipt step 1 records the D1 failure that `2f5c4fe5` fixed and re-checked on port 4721. Notes kept: the privacy-refusal message uses fixed wording for every refused pattern, and one malformed answer entry stops all answering until repaired (fails closed by design). The test that could not fail on the entry name is corrected in a following commit. |
+| 2026-10-08 | Separate-context review #6: fail on an owner-facing claim; corrected | Candidate `e0fe258665c2cf9f7e26c70b9ff7dcdeaa21a208`: the Full suite passed all 60 commands on a clean detached worktree (to 2026-10-08T19:28Z), as it did on `7d89fe75` (to 19:13Z). A sixth fresh reviewer found the checked acceptance lines, the closed Tasks read with the review #5 correction row, the append-only evidence and the corrected test truthful, reproduced the fixed-batch pause, resume and reload on the P3V1 slice in its own browser run, and returned **fail**: the Grill Board README and the page's Wiki section still told the owner that every question links the decision records it uses, which was false for 53 open questions. Corrected by making it true (`b0e96a8f`): decision-record IDs in a question's text, context, proposal, brief and draft link to their cataloged Wiki pages, each question lists its named decision records beside its sources, briefs and drafts resolve relative links against an in-room source, and an uncataloged ID shows as unavailable. On the real inventory all 102 open questions that name a decision record now link every named record (none uncataloged), enforced by a page-model test over the real items and catalog; the five-sections acceptance line is checked again on that basis. Noted: the browser runs cited by the review #5 row's corrections (4) and (5) were the owner-interface Worker's, reported in the director session and not recorded in this repository; TK-007N's planned all-graded regression test was not built, though all 171 open questions are graded. |
+| 2026-10-08 | Separate-context review #7: fail on link coverage; corrected | Candidate `b5a10b58cfe9526f8af47c239886bf9eb67a84af`: a seventh fresh reviewer found the new decision-record links injection-safe (hostile item text and catalog titles produced no markup, `javascript:`, absolute and `..` targets render as unavailable, no nested links, code untouched) and returned **fail**: slash shorthand such as `ADR-000B/C/D` linked only its first record, leaving nine named records unlinked across GB-0023, GB-0025, GB-0105, GB-0152 and GB-0180, so the five-sections line re-checked in the previous row was not yet fully met and that row's "every named record" count was true only for full IDs; and the "Linked from" panel ignored questions that link a record by naming it. The real-inventory test drew its expected IDs from the function under test. Corrected (`8f26410f`, `31001f8b`): one shorthand rule on server and page (each `/X` continuation of one to four capitals or digits ending the word replaces the ID's tail; ordinary slashes stay text), backlinks count exactly the links a question card renders, an independent scanner and a page-to-server cross-check over every open real question, a question-line glossary reset and plain record titles in hovers. Independent recount: 102 open questions name decision records, 276 cataloged named IDs, all linked, none uncataloged; ADR-000F is linked from 15 questions and ADR-000C from 14. The five-sections line rests on this recount. |
+| 2026-10-08 | Separate-context review #8: fail on one record claim; claims narrowed | Candidate `227cb49b0414585854331b3506884bd487f3d4f8`: an eighth fresh reviewer verified the shorthand rule on the real board (eight intended expansions, ordinary slashes untouched), injection and path safety, that the new tests fail when expansion or brief scanning is removed, backlinks at about 0.12–0.14 s per call, the append-only rows, and zero page-to-server link disagreements over all 180 real items, and returned **fail** on one claim: GB-0173's history names "ADR-000F, 000M, 0046", a comma list, so ADR-000M and ADR-0046 are named but not linked. The previous row's "276 cataloged named IDs, all linked" is therefore true only for full identifiers and slash shorthand, and the five-sections line it supported is unchecked again; the remaining gap is that one question's two comma-listed records. The reviewer's ADR-000F and ADR-000C backlink counts (15 and 14) include closed questions; open-only they are 9 and 8. The README now says the server's backlink count matches the card's links on the current board, names the Markdown forms that can still differ (titled or reference links, links inside code) and the comma-list limit, and no longer runs its glossary condition into the backlinks sentence. No code changed in this correction. |
+| 2026-10-08 | Separate-context review #9: fail on page text; corrected | Candidate `83002d280df281c7248f134f8c9211005a949a40` (no code change from `227cb49b`, whose Full suite passed all 60 commands to 2026-10-08T20:01Z): a ninth fresh reviewer found every checked acceptance line, the header, every appended evidence row read with its later corrections, the append-only prefixes and the README's new Linked-from wording true and backed, recounted 102 questions, 276 IDs and GB-0173's two comma-listed records as the only unlinked named records, and returned **fail** on one owner-facing sentence: the Wiki section still told the owner that every decision record a question uses links there. Corrected in the page and in the README's opening Wiki sentence: links come from sources, full identifiers and slash shorthand, and a comma-listed continuation links only its first identifier. Noted: the 15 and 14 backlink counts first recorded in the review #7 row include withdrawn questions (six each); the README's "search needs the sources module" applies to full-text search, since title and identifier search work without it. |
+| 2026-10-08 | Separate-context review #10: fail on page text; corrected | Candidate `68ad8196a2adf48e3d081e74fa58c7b0baf9acc8`: a tenth fresh reviewer re-probed the server guards, explicit promotion, private-file refusals, records, append-only rows and the README's field-by-field wording, found them true, and returned **fail** on the reworded Wiki-section sentence, which promised a link for every decision record a question names while Priority and Value reasons, shown on every card, are not linked: 32 open questions name 18 cataloged records only in a grade reason (for example GB-0004's Priority reason names DDR-001H). Corrected in wording, not code: the page sentence and the README now name the linked fields and say grade reasons are not linked, and the Next gate counts those questions in the five-sections gap. The header's review count is brought up to date. The Full suite passed all 60 commands on `83002d28` (to 2026-10-08T20:13Z). |
+| 2026-10-08 | Separate-context review #11 (exhaustive claims sweep): fail; corrected | Candidate `1a7111c1e81c720adfff936a8d78b10da148e050` (wording only since `68ad8196`, whose Full suite passed all 60 commands to 2026-10-08T20:21Z): an eleventh fresh reviewer enumerated every visible page string, README statement, Runbook and template addition, DDR-001O and the Spec's header, decisions, checked lines and appended rows, verified their checkable numbers, and returned **fail** on two false claims: Drafts to approve said every draft sits beside its file's current text, while 47 of 82 drafts have no single target file; and the README pointed at this Spec's Current Verified State as the map of what the page delivers, which was dated `46ad9789`. Nine smaller imprecisions were listed. Corrected in wording: the Drafts to approve text in the page and README; the README now points at the acceptance lines, Next gate and evidence log, and a dated re-read of the Desired Behavior table on this branch is added above; the `items.json` writer list includes `reassess`; the linked-field lists include `title`; the promotion message no longer implies a director starts on its own; the search fallback, the four approval states and what the snapshot hash covers, the Whys routing, the save-as-you-go exceptions, the two-word label rule and the runtime and template changes are stated as the code does them. |
+| 2026-10-08 | Separate-context review #12: fail on three new sentences; corrected | Candidate `eaa44c82ce07b24ccaf95a4e36b5432e8c99399d` (wording only; the Full suite passed all 60 commands on `1a7111c1` to 2026-10-08T20:29Z): a twelfth fresh reviewer confirmed nine of review #11's eleven corrections true and returned **fail** on three sentences written in that correction. The README said an approval's hash covers the "current text", which read as the target file's contents; the hash covers the question, its Current and Proposal fields, the draft, the source list as paths, labels and refs, the evidence and the revision, and never reads the target file (reproduced: appending to GB-0034's target DDR left its approval current). The re-read table claimed glossary latency was measured; only search and backlink latencies are recorded. The Whys paragraph pointed at a section name that does not exist. Corrected in the README and the re-read table, which also now says "verified understanding". The previous row's statement that the approval states and hash coverage were "stated as the code does them" was not yet true for the hash coverage until this correction. |
+| 2026-10-08 | Separate-context review #13: fail on the header count; corrected | Candidate `1095530ef9735bb8f211a8301b5bff4aea9e7dc6` (wording only; the Full suite passed all 60 commands on `eaa44c82` to 2026-10-08T20:40Z): a thirteenth fresh reviewer found every sentence and table cell changed by review #12's correction true (reproducing approved, stale and superseded approval states on GB-0034, including that appending to the target file leaves an approval current), re-checked the README and visible page text in full, and returned **fail** on one stale claim: the header said "after ten separate-context reviews" while twelve were recorded. The header no longer carries a count. Precision notes corrected: the README's two hash descriptions now name the Current and Proposal fields and the brief's "What this concerns" list as the evidence the hash covers; the page's stale-approval line says the confirmed wording no longer matches the question's current revision (a title-only revise also stales it); the Drafts to approve introduction says confirming freezes the proposed wording shown and that a revised question or draft makes it stale. Accepted as noted: the Drafts to approve approval state checks only the hash and revision, so a card with a pending Change request can show Approved there while the workflow does not count it as confirmed, as the README describes. |
+| 2026-10-08 | Separate-context review #14: pass; Full suite on the reviewed candidate | Candidate `fdefa9cad1ba09ae33de20f2e7e6a2dbb4dbebb2`: the Full suite passed all 60 commands on a clean detached worktree (2026-10-08T20:51Z to 21:06Z; it also passed on `1095530e` to 20:53Z). A fourteenth fresh reviewer confirmed the diff since `1095530e` touches only the Spec, README, two visible page strings and the generated board, with no logic change; found every changed sentence true against the approval snapshot and state code; found the header true without a count and matching the board row; confirmed the review #13 row, the append-only rows, unchanged acceptance lines, TK-007Y `ready`, and no Lexicon or item-revision change; and returned **pass** with no blocking or should-fix finding. Notes kept: the six Tasks were closed before reviews #5 to #13, which "are closed" states as a present fact; and the stale-approval line is exact because every board writer that changes hashed content also bumps the revision. This row and the Next gate are the only changes after the reviewed candidate. |
+| 2026-10-09 | TK-007Z | Task closed | Three red-then-green page tests in tools/test-dashboard-board.mjs; both board test files green; validate ok; browser check at desktop and 375px; Full suite 60/60 on candidate 2586e260 | Grill Board README and S-004D Spec updated; Wiki checked, no page describes the board layout, no update needed | More filters fold awaits the owner's call; All stages still lists withdrawn questions; notes 3 and 5 not built |
+| 2026-10-09 | Owner correction 4: the why beside the recommendation; three reading sections open | Candidate `8f77a741e8739291e65c351b54b8636a62e7af8a`: the Full suite passed all 60 commands on a clean worktree (2026-10-09T06:13Z to 06:28Z). The page test in `tools/test-dashboard-board.mjs` failed against the previous page for the right reason and passes now; all five board test files are green. Looked at on a real card (GB-0003) at desktop width: the why panel sits under the recommended answer with the same weight, the three sections start open and one collapsed on click. Grill Board README and this Spec updated; Wiki checked, no page describes the card layout, no update needed. Limits: this correction has no Task and no separate-context review; the owner's served board on port 4647 reads an older checkout until that checkout moves to this commit. |
+| 2026-10-09 | Draft PR #440 merged forward with integration; the optional project deployment accepts this page | Candidate `932738e1bc73f5bf8ca15014841d64b90d5db1b2`: integration `80b17b65` merged into the dashboard tip `de956ca7` (`ee1975d7`), PR #447's head `893e1828` and the correction 4 commit stacked on it; the two conflicts resolved as the header says. A pairwise comparison of `workbench/grill-board/items.json` found no item changed only on integration and every integration item present here at an equal or later revision, which is why this branch's side was kept. The Full suite ran 61 commands (integration added `test-grill-board-deploy.mjs`); 60 passed and `tools/test-notepads.mjs` failed once on its barrier race, then passed 4 of 4 reruns on this candidate and 4 of 4 on `origin/integration`, so it is recorded as load-sensitive, not caused by this branch (notepad concurrency is a known weak spot owned by S-003Y). `tools/test-grill-board-deploy.mjs` failed on this merge before the fix for two reasons and passes 38 checks after it: the module scanner read the words `from "related"` in a message in `landmark-tracker.mjs` as an external package, and the page seams named the retired title and brand; its answer checks used the retired words correct and decline, which the board now refuses. Looked at end to end: the candidate deployed into a disposable scratch project (not RingWorld, whose files were not read or changed) and served on a spare port; the project's title shows in the header and tab, the why panel and the three open sections render, and all five sections load. The comments and promotion block returned 400 `missing-owner` until the project manifest declared the notepads collection, then 200. Limits: no separate-context review of this candidate yet; the component files belong to S-005H and PR #447 (its lane); whether RingWorld's manifest declares the notepads collection is not checked. |

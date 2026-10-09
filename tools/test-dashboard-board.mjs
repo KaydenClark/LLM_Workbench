@@ -1,0 +1,999 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import vm from 'node:vm';
+import http from 'node:http';
+import * as board from './grill-board.mjs';
+import { appendEntry, readNote } from '../workbench/tools/notepads.mjs';
+import { createWorkflow, chainAnswers } from './dashboard-workflow.mjs';
+import { questionLinkTargets } from './dashboard-sources.mjs';
+function room() {
+ const root=fs.mkdtempSync(path.join(os.tmpdir(),'dashboard-board-test-'));
+ fs.mkdirSync(path.join(root,board.BOARD_DIR),{recursive:true});
+ fs.writeFileSync(board.boardPaths(root).items,JSON.stringify({schema:board.ITEMS_SCHEMA,title:'Fixture',groups:[{id:'one',title:'One'}],items:[]}));
+ board.addItems(root,[{key:'one',group:'one',kind:'confirm-text',title:'A concrete draft',question:'Approve these exact words?',current:'Previous words',proposal:'Use the revised text',draft:'# Proposed\n\nConcrete words.',sources:[{label:'Source',path:'README.md',ref:'abc'}]}],{by:'fixture'});
+ return root;
+}
+test('P/V validated atomic grade updates keep answers and question revision intact',()=>{
+ const root=room();const before=fs.readFileSync(board.boardPaths(root).items);
+ assert.equal(typeof board.gradeItems,'function');
+ const grade={id:'GB-0001',expectedGradeRevision:0,priority:{grade:'P2',reason:'Source: README.md; removes a blocker'},value:{grade:'V1',reason:'Source: README.md; avoids repeated work'}};
+ for (const changes of [{priority:{grade:'P5',reason:'bad'}},{value:{grade:'V0',reason:'bad'}},{value:{grade:'V1',reason:''}},{score:3}]) {
+  assert.throws(()=>board.gradeItems(root,[{...grade,...changes}],{by:'test',reason:'test'}));
+  assert.deepEqual(fs.readFileSync(board.boardPaths(root).items),before);
+ }
+ board.recordAnswer(root,'GB-0001',{verdict:'confirm',note:'Exact text',itemRevision:1});
+ const answers=fs.readFileSync(board.boardPaths(root).answers);
+ board.gradeItems(root,[grade],{by:'test',reason:'Source-backed grades'});
+ assert.equal(board.readItems(root).items[0].revision,1);
+ assert.equal(board.mergeBoard(root).items[0].derivedStatus,'answered');
+ assert.deepEqual(fs.readFileSync(board.boardPaths(root).answers),answers);
+ assert.throws(()=>board.gradeItems(root,[grade],{by:'test',reason:'stale'}),/stale/);
+});
+test('confirmation freezes exact draft; stale browser edits and stale approvals cannot overwrite',()=>{
+ const root=room();
+ const answer=board.recordAnswer(root,'GB-0001',{verdict:'confirm',note:'Confirmed',itemRevision:1,expectedAnswerAt:null});
+ assert.equal(answer.approval.draft,'# Proposed\n\nConcrete words.');
+ assert.ok(answer.approval.hash);
+ assert.throws(()=>board.recordAnswer(root,'GB-0001',{verdict:'rework',note:'Stale tab',itemRevision:1,expectedAnswerAt:null}),/stale/);
+ board.reviseItem(root,'GB-0001',{draft:'# Revised'},{by:'agent',reason:'Critique',expectedRevision:1});
+ assert.throws(()=>board.reviseItem(root,'GB-0001',{draft:'Stale revision'},{by:'agent',reason:'stale',expectedRevision:1}),/stale/);
+ const next=board.recordAnswer(root,'GB-0001',{verdict:'rework',note:'Needs context',itemRevision:2,expectedAnswerAt:answer.at});
+ assert.equal(next.approval,undefined);
+ assert.equal(next.history[0].approval.draft,'# Proposed\n\nConcrete words.');
+});
+test('P/V filters intersect independently and preserve unclassified questions',()=>{
+ const html=fs.readFileSync(new URL('../workbench/grill-board/index.html',import.meta.url),'utf8');
+ const script=html.match(/<script>([\s\S]*?)<\/script>/)[1].replace('Promise.all([load()','window.model={matchesSlice,gradeBadges,state}; Promise.all([load()');
+ const ctx=vm.createContext({document:{getElementById:()=>({}),documentElement:{dataset:{}}},window:{addEventListener(){}},setInterval(){},URL,URLSearchParams,fetch:()=>new Promise(()=>{})});
+ vm.runInContext(script,ctx);
+ const m=ctx.window.model;const item={id:'GB-0001',title:'One',derivedStatus:'pending',priority:{grade:'P1',reason:'Urgent'},value:{grade:'V2',reason:'Useful'}};
+ assert.equal(m.matchesSlice(item,{priority:'P1',value:'V2'}),true);
+ assert.equal(m.matchesSlice(item,{priority:'P1',value:'V1'}),false);
+ assert.equal(m.matchesSlice(item,{priority:'all',value:'V2'}),true);
+ assert.equal(m.matchesSlice({...item,priority:undefined},{priority:'unclassified'}),true);
+ assert.match(m.gradeBadges(item),/P1/);assert.match(m.gradeBadges(item),/Urgent/);
+});
+test('native rooms preserve legacy answers and write new answers only through native notepad',()=>{
+ const root=room();
+ const legacy=board.recordAnswer(root,'GB-0001',{verdict:'confirm',note:'Legacy approval',itemRevision:1});
+ const before=fs.readFileSync(board.boardPaths(root).answers);
+ fs.writeFileSync(path.join(root,'workbench/manifest.json'),JSON.stringify({schemaVersion:2,lanes:{specs:'workbench/specs',wiki:'workbench/wiki'},collections:{notepads:'workbench/sessions/notepads'}}));
+ const updated=board.recordAnswer(root,'GB-0001',{verdict:'confirm',note:'Native approval',itemRevision:1,expectedAnswerAt:legacy.at});
+ assert.deepEqual(fs.readFileSync(board.boardPaths(root).answers),before);
+ assert.equal(board.readAnswers(root).answers['GB-0001'].note,'Native approval');
+ assert.equal(updated.history[0].approval.note,'Legacy approval');
+ assert.ok(fs.existsSync(path.join(root,'workbench/sessions/notepads/grilling/dashboard-answers.json')));
+});
+
+// Answer controls: Confirm, Rework wording, Change the why and Change; a note
+// before every answer except confirming the recommended one; no Not now or
+// Decline for new answers; legacy answers keep their words and meaning.
+function controlsRoom(extra = []) {
+ const root=fs.mkdtempSync(path.join(os.tmpdir(),'dashboard-controls-'));
+ fs.mkdirSync(path.join(root,board.BOARD_DIR),{recursive:true});
+ fs.writeFileSync(board.boardPaths(root).items,JSON.stringify({schema:board.ITEMS_SCHEMA,title:'Fixture',groups:[{id:'one',title:'One'}],items:[]}));
+ const base={group:'one',question:'Which?',current:'Now.',sources:[{label:'Source',path:'README.md',ref:'abc'}]};
+ const legacyMeta=[{value:'correct',label:'Correct with my notes'},{value:'decline',label:'Decline'},{value:'defer',label:'Not now'}];
+ board.addItems(root,[
+  {...base,key:'standard',kind:'owner-decision',title:'Standard question',proposal:'Agent proposal: yes.',draft:'Exact words.'},
+  {...base,key:'flagged',kind:'choice',title:'Flagged alternatives',proposal:'Agent proposal: rename the qualifier.',options:[{value:'keep_both',label:'Keep both'},{value:'rename_qualifier',label:'Rename the qualifier (new Spec)',recommended:true},{value:'rename_verb',label:'Rename the verb instead'},...legacyMeta]},
+  {...base,key:'named',kind:'choice',title:'Recommendation names a label',proposal:'Agent proposal: Keep LMK and show the full name first.',options:[{value:'keep_lmk',label:'Keep LMK'},{value:'new_prefix',label:'Use a new prefix'},...legacyMeta]},
+  {...base,key:'unclear',kind:'choice',title:'Recommendation names no label',proposal:'Agent proposal: do not close this yet.',options:[{value:'close_answered',label:'Already answered, close'},{value:'answer',label:'Answer now (note)'},...legacyMeta]},
+  {...base,key:'spec',kind:'approve-spec',title:'Approve a delivered Spec',proposal:'Approve on evidence.',options:[{value:'approve',label:'Approve'},{value:'finding',label:'Send back'},{value:'destination_change',label:'Return to Align'},{value:'defer',label:'Not now'},{value:'drop',label:'Drop this Spec'},...legacyMeta.slice(0,2)]},
+  ...extra.map(raw=>({...base,...raw}))
+ ],{by:'fixture'});
+ return root;
+}
+const ids={standard:'GB-0001',flagged:'GB-0002',named:'GB-0003',unclear:'GB-0004',spec:'GB-0005'};
+
+test('one shared answerControls helper drives the four answer words and the board view',()=>{
+ const root=controlsRoom();
+ const items=board.readItems(root).items;
+ const standard=board.answerControls(items[0]);
+ assert.equal(standard.mode,'standard');
+ assert.deepEqual(standard.options.map(o=>[o.value,o.label,o.requiresNote]),[['confirm','Confirm',false],['rework','Rework wording',true],['change_why','Change the why',true],['change','Change',true]]);
+ const all=items.flatMap(item=>board.answerControls(item).options.map(o=>o.label));
+ assert.ok(!all.includes('Not now')&&!all.includes('Decline'),'new answers never offer Not now or Decline');
+ const view=board.mergeBoard(root);
+ for (const item of view.items) assert.deepEqual(item.controls,JSON.parse(JSON.stringify(board.answerControls(items.find(i=>i.id===item.id)))),'the page reads the same controls the server enforces');
+});
+
+test('alternatives present Recommended answer then A, B, C with the recommended one preselected',()=>{
+ const root=controlsRoom();
+ const items=board.readItems(root).items;
+ const flagged=board.answerControls(items[1]);
+ assert.equal(flagged.mode,'alternatives');
+ assert.equal(flagged.recommended,'rename_qualifier');
+ assert.deepEqual(flagged.alternatives.map(a=>[a.value,a.marker,a.requiresNote]),[['rename_qualifier','Recommended answer',false],['keep_both','A',true],['rename_verb','B',true]]);
+ assert.ok(!flagged.alternatives.some(a=>['correct','decline','defer'].includes(a.value)),'legacy meta options are not alternatives');
+ assert.deepEqual(flagged.options.map(o=>o.value),['rename_qualifier','keep_both','rename_verb','rework','change_why','change']);
+ const named=board.answerControls(items[2]);
+ assert.equal(named.recommended,'keep_lmk','a recommendation that names exactly one alternative label identifies it');
+ const unclear=board.answerControls(items[3]);
+ assert.equal(unclear.recommended,null);
+ assert.match(unclear.recommendationBasis,/none is preselected/i);
+ assert.deepEqual(unclear.alternatives.map(a=>[a.marker,a.requiresNote]),[['A',true],['B',true]],'without a recommendation every alternative needs a note');
+});
+
+test('recordAnswer enforces notes, refuses legacy and foreign verdicts and freezes only confirmations',()=>{
+ const root=controlsRoom();
+ const refuse=(id,verdict,note,pattern)=>assert.throws(()=>board.recordAnswer(root,id,{verdict,note,itemRevision:1}),pattern);
+ for (const verdict of ['rework','change_why','change']) refuse(ids.standard,verdict,'  ',/note/);
+ for (const verdict of ['defer','decline','correct']) refuse(ids.standard,verdict,'words',/legacy|not an option/);
+ refuse(ids.flagged,'keep_both','',/note/);
+ refuse(ids.flagged,'confirm','',/not an option/);
+ refuse(ids.unclear,'close_answered','',/note/);
+ for (const verdict of ['finding','destination_change','drop','defer','decline']) refuse(ids.spec,verdict,'words',/legacy|not an option/);
+ assert.equal(fs.existsSync(board.boardPaths(root).answers),false,'refused answers write nothing');
+ const rework=board.recordAnswer(root,ids.standard,{verdict:'rework',note:'Say it plainly',itemRevision:1});
+ assert.equal(rework.derivedStatus,'answered');
+ assert.equal(rework.approval,undefined,'a send-back freezes no approval');
+ const confirmed=board.recordAnswer(root,ids.standard,{verdict:'confirm',note:'',itemRevision:1,expectedAnswerAt:rework.at});
+ assert.match(confirmed.approval.hash,/^[a-f0-9]{64}$/);
+ assert.equal(confirmed.approval.draft,'Exact words.');
+ const recommended=board.recordAnswer(root,ids.flagged,{verdict:'rename_qualifier',note:'',itemRevision:1});
+ assert.equal(recommended.approval.verdict,'rename_qualifier','Confirm on alternatives stores the selected alternative');
+ const other=board.recordAnswer(root,ids.named,{verdict:'new_prefix',note:'Collides with nothing',itemRevision:1});
+ assert.equal(other.approval.verdict,'new_prefix');
+ const approved=board.recordAnswer(root,ids.spec,{verdict:'approve',note:'',itemRevision:1});
+ assert.equal(approved.approval.verdict,'approve');
+ const sentBack=board.recordAnswer(root,ids.spec,{verdict:'change',note:'Missing proof',itemRevision:1,expectedAnswerAt:approved.at});
+ assert.equal(sentBack.approval,undefined);
+ assert.equal(board.recordAnswer(root,ids.unclear,{verdict:'',note:'Thinking',itemRevision:1}).derivedStatus,'pending','notes still save progressively without an answer');
+});
+
+test('legacy answers still read with their original words and status semantics',()=>{
+ const root=controlsRoom();
+ const at='2026-10-01T00:00:00.000Z';
+ const legacy=(verdict,note)=>({verdict,note,at,itemRevision:1,history:[]});
+ fs.writeFileSync(board.boardPaths(root).answers,JSON.stringify({schema:board.ANSWERS_SCHEMA,owner:'Kayden',answers:{
+  [ids.standard]:legacy('defer','later'),[ids.flagged]:legacy('decline','no'),[ids.named]:legacy('correct',''),[ids.unclear]:legacy('answer','My answer'),[ids.spec]:legacy('finding','Fix it')
+ }}));
+ const view=Object.fromEntries(board.mergeBoard(root).items.map(item=>[item.id,item]));
+ assert.deepEqual([ids.standard,ids.flagged,ids.named,ids.unclear,ids.spec].map(id=>[view[id].derivedStatus,view[id].answerLabel]),[
+  ['pending','Not now'],['answered','Decline'],['pending','Correct with my notes'],['answered','Answer now (note)'],['answered','Send back']
+ ]);
+ assert.equal(board.answerLabel({kind:'owner-decision',options:null},'correct'),'Correct','default-option legacy words are the original ones');
+ assert.equal(board.answerLabel({kind:'owner-decision',options:null},'decline'),'Decline');
+ assert.equal(board.answerLabel({kind:'owner-decision',options:null},'defer'),'Not now');
+ assert.deepEqual(board.pendingForAgents(root).map(item=>[item.id,item.verdictLabel]),[[ids.flagged,'Decline'],[ids.unclear,'Answer now (note)'],[ids.spec,'Send back']]);
+});
+
+async function serve(root,options){
+ const server=board.createServer(root,options);
+ await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
+ return {base:`http://127.0.0.1:${server.address().port}`,close:()=>new Promise(resolve=>server.close(resolve))};
+}
+
+test('search, backlinks and glossary routes delegate to the sources module and 404 without it',async()=>{
+ const root=controlsRoom();
+ fs.writeFileSync(path.join(root,'README.md'),'# Readme\n');
+ const calls=[];
+ const route=(rootDir,url,context)=>{
+  calls.push({rootDir,path:url.pathname,q:url.searchParams.get('q'),items:context.items.length,read:context.readSource(rootDir,'README.md')});
+  if(url.pathname==='/api/search')return{results:[{kind:'question',id:'GB-0001',title:'Standard question',snippet:'Which?',status:'pending'}]};
+  if(url.pathname==='/api/glossary')return{source:null,terms:[]};
+  return null;
+ };
+ const wired=await serve(root,{dashboardRoute:route});
+ try{
+  const search=await fetch(`${wired.base}/api/search?q=standard`);
+  assert.equal(search.status,200);
+  assert.equal((await search.json()).results[0].id,'GB-0001');
+  assert.deepEqual((await (await fetch(`${wired.base}/api/glossary`)).json()),{source:null,terms:[]});
+  assert.equal((await fetch(`${wired.base}/api/backlinks?path=README.md`)).status,404,'a null route result is not found');
+  assert.equal(calls[0].q,'standard');
+  assert.equal(calls[0].items,5,'the route receives the board items');
+  assert.equal(calls[0].read,'# Readme\n','the route receives the board safe reader');
+ }finally{await wired.close();}
+ const absent=await serve(root,{dashboardRoute:null});
+ try{
+  for (const route of ['/api/search?q=x','/api/backlinks?path=README.md','/api/glossary']) assert.equal((await fetch(absent.base+route)).status,404);
+ }finally{await absent.close();}
+});
+
+test('Drafts to approve groups drafts by target file, lists approvals without drafts and shows stale approval',async()=>{
+ const root=controlsRoom([
+  {key:'ddr',kind:'confirm-ddr',title:'Review a decision record',proposal:'Confirm the record.',draft:'# Decision\n\nProposed words.',sources:[{label:'Record',path:'docs/ddr/000A.md',ref:'abc'},{label:'Register',path:'docs/ddr/REGISTER.md'}]},
+  {key:'dqc',kind:'confirm-dqc',title:'Confirm a destination question',proposal:'Confirm the understanding.'},
+  {key:'withdrawn',kind:'confirm-text',title:'Withdrawn draft',proposal:'Gone.',draft:'Old words.'}
+ ]);
+ board.withdrawItem(root,'GB-0008',{by:'fixture',reason:'superseded'});
+ board.recordAnswer(root,'GB-0006',{verdict:'confirm',note:'',itemRevision:1});
+ let drafts=board.draftsToApprove(root);
+ const target=drafts.groups.find(group=>group.target==='docs/ddr/000A.md');
+ assert.ok(target,'a full-text review is grouped under its target file');
+ assert.deepEqual(target.items.map(item=>[item.id,item.draftKind,item.approval.state]),[['GB-0006','full-text','current']]);
+ assert.match(target.items[0].approval.hash,/^[a-f0-9]{64}$/);
+ const undetermined=drafts.groups.find(group=>group.target===null);
+ assert.deepEqual(undetermined.items.map(item=>item.id),['GB-0001'],'proposed wording without a determinable target file stays listed');
+ assert.deepEqual(drafts.withoutDraft.map(item=>item.id),['GB-0005','GB-0007'],'approval questions without a draft are listed, never given an invented one');
+ assert.ok(!JSON.stringify(drafts).includes('GB-0008'),'withdrawn items are not offered for approval');
+ board.reviseItem(root,'GB-0006',{draft:'# Decision\n\nRevised words.'},{by:'agent',reason:'critique'});
+ drafts=board.draftsToApprove(root);
+ const stale=drafts.groups.find(group=>group.target==='docs/ddr/000A.md').items[0];
+ assert.equal(stale.approval.state,'stale','an approval of earlier wording is visibly stale');
+ assert.notEqual(stale.approval.hash,stale.approval.currentHash);
+ const served=await serve(root,{dashboardRoute:null});
+ try{assert.deepEqual(await (await fetch(`${served.base}/api/drafts`)).json(),JSON.parse(JSON.stringify(board.draftsToApprove(root))));}
+ finally{await served.close();}
+});
+
+// ---- Page model, loaded from the served page in a VM (no browser). ----
+function element() {
+ return {value:'',textContent:'',innerHTML:'',hidden:false,disabled:false,dataset:{},style:{},classList:{toggle(){},add(){},remove(){}},
+  querySelector:()=>null,querySelectorAll:()=>[],setAttribute(){},removeAttribute(){},scrollIntoView(){},focus(){},addEventListener(){}};
+}
+function pageModel({storage={},history=[]}={}) {
+ const html=fs.readFileSync(new URL('../workbench/grill-board/index.html',import.meta.url),'utf8');
+ const script=html.match(/<script>([\s\S]*?)<\/script>/)[1].replace('Promise.all([load()','window.model={state,matchesSlice,topicSummaries,sliceTitle,startBatch,batchProgress,resetSlice,gradeBadges,gradeDetail,answerModel,whysList,confirmedItems,dispositionTimeline,laneFor,rememberComment,commentDraftFor,forgetComment,cardWorkflowHtml,staleNotice,promotionBlocker,openQuestion,hasUnsavedWork,approvalSummary,conflictNotice,saveFailureMessage,autoSaveBlock,noteRefused,markdown,wikiLinks,namedDecisionIds,card,itemBase,inline,toggleGrade,gradeChips,shownItems,setView,el:id=>document.getElementById(id)}; Promise.all([load()');
+ const elements=new Map();
+ const localStorage={getItem:key=>storage[key]??null,setItem:(key,value)=>{storage[key]=String(value);},removeItem:key=>{delete storage[key];}};
+ const ctx=vm.createContext({document:{getElementById:id=>{if(!elements.has(id))elements.set(id,element());return elements.get(id);},querySelectorAll:()=>[],documentElement:{dataset:{}}},window:{addEventListener(){},scrollTo(){},scrollY:0},history:{replaceState:(_state,_title,url)=>history.push(url)},localStorage,setInterval(){},setTimeout,clearTimeout,URL,URLSearchParams,location:{hash:''},fetch:()=>new Promise(()=>{})});
+ vm.runInContext(script,ctx);
+ return {model:ctx.window.model,storage};
+}
+const grade=(p,v)=>({...(p?{priority:{grade:p,reason:`${p} because of its source`}}:{}),...(v?{value:{grade:v,reason:`${v} because of its return`}}:{})});
+function pvInventory() {
+ // id number -> topic: 1 workflow, 17 direction, 14 roles, 5 context, 4 records
+ const rows=[['GB-0001','P1','V2','owner-decision'],['GB-0017','P1','V1','choice'],['GB-0014','P2','V2','owner-decision'],['GB-0005','P3','V1','approve-spec'],['GB-0004','P3','V2','owner-decision'],['GB-0002','P2','V1','choice'],['GB-0006',null,null,'owner-decision'],['GB-0008','P4',null,'choice']];
+ return rows.map(([id,p,v,kind])=>{
+  const item={id,kind,title:`Question ${id}`,question:'Q?',current:'c',proposal:'p',draft:null,options:null,sources:[],links:[],history:[],revision:1,derivedStatus:'pending',status:'open',answer:null,...grade(p,v)};
+  return {...item,controls:board.answerControls(item)};
+ });
+}
+
+test('P/V filters return exactly their members and combine with the other board filters',()=>{
+ const {model}=pageModel();
+ const items=pvInventory();
+ const ids=slice=>items.filter(item=>model.matchesSlice(item,slice)).map(item=>item.id).sort();
+ assert.deepEqual(ids({priority:'P1',value:'V2'}),['GB-0001']);
+ assert.deepEqual(ids({priority:'P3',value:'V1'}),['GB-0005'],'a slice without P1 works');
+ assert.deepEqual(ids({priority:'P2'}),['GB-0002','GB-0014'],'P alone spans every Value');
+ assert.deepEqual(ids({value:'V1'}),['GB-0002','GB-0005','GB-0017'],'V alone spans every Priority');
+ assert.deepEqual(ids({priority:'unclassified'}),['GB-0006']);
+ assert.deepEqual(ids({value:'unclassified'}),['GB-0006','GB-0008'],'missing grades stay reachable, never defaulted');
+ assert.deepEqual(ids({priority:'all',value:'all'}),items.map(item=>item.id).sort(),'clearing restores the whole inventory');
+ assert.deepEqual(ids({value:'V2',topic:'workflow'}),['GB-0001']);
+ assert.deepEqual(ids({value:'V1',intent:'review'}),['GB-0005']);
+ assert.deepEqual(ids({priority:'P2',query:'0014'}),['GB-0014']);
+ items[1].derivedStatus='answered';
+ assert.deepEqual(ids({value:'V1',lane:'pending'}),['GB-0002','GB-0005']);
+ model.state.priorities=['P1']; model.state.values=['V2']; model.state.topic='roles'; model.state.query='x';
+ model.resetSlice();
+ assert.deepEqual([[...model.state.priorities],[...model.state.values],model.state.topic,model.state.query],[[],[],'all',''],'Clear all filters also clears P/V');
+ assert.equal(model.sliceTitle({topic:'all',intent:'all',priority:'P3',value:'V1'}),'All topics · Any kind of decision · P3 · V1');
+});
+
+test('topic navigation keeps matching members reachable without any aggregate P/V score',()=>{
+ const {model}=pageModel();
+ const items=pvInventory();
+ const topics=model.topicSummaries(items,{priority:'all',value:'V2'});
+ assert.deepEqual(JSON.parse(JSON.stringify(topics.flatMap(topic=>topic.members))).sort(),['GB-0001','GB-0004','GB-0014']);
+ for (const topic of topics) {
+  assert.deepEqual(Object.keys(topic).sort(),['counts','done','frame','id','members','outcome','title','total']);
+  assert.ok(!/P[1-4]|V[1-4]|grade|score/i.test(JSON.stringify({counts:topic.counts,done:topic.done,total:topic.total})),'no topic carries a combined grade');
+ }
+});
+
+test('a batch started from a P/V slice keeps its membership through saves, filters, regrades and reload',()=>{
+ const storage={};
+ const first=pageModel({storage}).model;
+ const items=pvInventory();
+ first.state.board={items};
+ first.state.values=['V1'];
+ first.startBatch(items.filter(item=>first.matchesSlice(item)));
+ assert.deepEqual([...first.state.batch.ids],['GB-0017','GB-0005','GB-0002']);
+ assert.match(first.state.batch.title,/V1/);
+ first.state.priorities=['P4']; first.state.values=[];
+ items.find(item=>item.id==='GB-0005').value={grade:'V3',reason:'regraded'};
+ items.find(item=>item.id==='GB-0017').derivedStatus='answered';
+ assert.deepEqual([...first.state.batch.ids],['GB-0017','GB-0005','GB-0002'],'filters, saves and a regrade never change membership');
+ assert.equal(first.batchProgress().done,1);
+ first.state.edits.set('GB-0017',{verdict:'confirm',note:'unsaved'});
+ assert.equal(first.batchProgress().done,0,'an unsaved edit does not count as answered');
+ const reloaded=pageModel({storage}).model;
+ assert.equal(reloaded.state.inBatch,true);
+ assert.deepEqual([...reloaded.state.batch.ids],['GB-0017','GB-0005','GB-0002'],'reload restores the same members');
+ assert.deepEqual({...reloaded.state.batch.revisions},{'GB-0017':1,'GB-0005':1,'GB-0002':1});
+});
+
+test('red P and amber V badges open only their own reason; the central view shows both reasons',()=>{
+ const {model}=pageModel();
+ const item=pvInventory()[0];
+ const badges=model.gradeBadges(item);
+ assert.equal((badges.match(/<details class="grade priority">/g)||[]).length,1);
+ assert.equal((badges.match(/<details class="grade value">/g)||[]).length,1);
+ assert.ok(!/data-open|<details[^>]*open/.test(badges),'badges are closed and do not open the question');
+ const [priority,value]=badges.split('</details>');
+ assert.match(priority,/P1 because of its source/); assert.doesNotMatch(priority,/V2 because/);
+ assert.match(value,/V2 because of its return/); assert.doesNotMatch(value,/P1 because/);
+ assert.match(model.gradeBadges(pvInventory()[6]),/P · Unclassified[\s\S]*V · Unclassified/);
+ const detail=model.gradeDetail(item);
+ assert.match(detail,/Priority P1[\s\S]*P1 because of its source[\s\S]*Value V2[\s\S]*V2 because of its return/);
+ assert.match(model.gradeDetail(pvInventory()[6]),/Priority: Unclassified[\s\S]*none is invented/);
+});
+
+test('the page answer buttons follow the server controls and require a note first',()=>{
+ const {model}=pageModel();
+ const root=controlsRoom();
+ const view=Object.fromEntries(board.mergeBoard(root).items.map(item=>[item.id,item]));
+ const buttons=(id,edit)=>model.answerModel(view[id],edit).buttons.map(b=>({role:b.role,value:b.value,label:b.label,disabled:b.disabled,pressed:b.pressed}));
+ const empty=buttons(ids.standard,{verdict:'',note:''});
+ assert.deepEqual(empty.map(b=>[b.label,b.disabled]),[['Confirm',false],['Rework wording',true],['Change the why',true],['Change',true]]);
+ assert.deepEqual(buttons(ids.standard,{verdict:'',note:'my words'}).map(b=>b.disabled),[false,false,false,false]);
+ const alternatives=buttons(ids.flagged,{verdict:'',note:''});
+ assert.deepEqual(alternatives.filter(b=>b.role==='alternative').map(b=>[b.label,b.pressed,b.disabled]),[['Recommended answer: Rename the qualifier (new Spec)',true,false],['A: Keep both',false,true],['B: Rename the verb instead',false,true]]);
+ assert.equal(alternatives.find(b=>b.role==='confirm').value,'rename_qualifier','Confirm confirms the preselected recommendation');
+ assert.equal(alternatives.find(b=>b.role==='confirm').disabled,false);
+ model.state.selected.set(ids.flagged,'keep_both');
+ const other=buttons(ids.flagged,{verdict:'',note:''});
+ assert.equal(other.find(b=>b.role==='confirm').value,'keep_both');
+ assert.equal(other.find(b=>b.role==='confirm').disabled,true,'confirming another alternative needs a note');
+ assert.equal(buttons(ids.flagged,{verdict:'',note:'Because'}).find(b=>b.role==='confirm').disabled,false);
+ const unclear=model.answerModel(view[ids.unclear],{verdict:'',note:''});
+ assert.equal(unclear.selected,null,'nothing is preselected without a recommendation');
+ assert.match(unclear.recommendationBasis,/none is preselected/);
+ assert.equal(unclear.buttons.find(b=>b.role==='confirm').disabled,true);
+ const approval=buttons(ids.spec,{verdict:'',note:''});
+ assert.deepEqual(approval.map(b=>[b.label,b.value]),[['Confirm','approve'],['Rework wording','rework'],['Change the why','change_why'],['Change','change']]);
+ const labels=Object.keys(view).flatMap(id=>buttons(id,{verdict:'',note:'x'}).map(b=>b.label)).join('|');
+ assert.doesNotMatch(labels,/Not now|Decline/);
+ const legacyItem={...view[ids.standard],answer:{verdict:'decline',note:'no',itemRevision:1,at:'x'},answerLabel:'Decline'};
+ const legacy=model.answerModel(legacyItem);
+ assert.deepEqual({...legacy.legacy},{verdict:'decline',label:'Decline'});
+ assert.ok(legacy.buttons.every(b=>!b.pressed),'a legacy answer presses no new button');
+});
+
+test('the Whys list collects Change the why answers with title, ID, note, revision and status',()=>{
+ const {model}=pageModel();
+ const items=[
+  {id:'GB-0002',title:'Second',revision:3,derivedStatus:'stale',answer:{verdict:'change_why',note:'The reason is the cost',itemRevision:2,at:'2026-10-07T00:00:00Z',history:[{verdict:'change_why',note:'Older reason',itemRevision:1,at:'2026-10-05T00:00:00Z'}]}},
+  {id:'GB-0001',title:'First',revision:1,derivedStatus:'answered',answer:{verdict:'change_why',note:'Wrong cause',itemRevision:1,at:'2026-10-08T00:00:00Z',history:[]}},
+  {id:'GB-0003',title:'Third',revision:1,derivedStatus:'answered',answer:{verdict:'rework',note:'Words',itemRevision:1,at:'2026-10-08T00:00:00Z',history:[]}}
+ ];
+ const rows=model.whysList(items);
+ assert.deepEqual(JSON.parse(JSON.stringify(rows.map(row=>[row.title,row.id,row.note,row.itemRevision,row.status]))),[['First','GB-0001','Wrong cause',1,'answered'],['Second','GB-0002','The reason is the cost',2,'stale'],['Second','GB-0002','Older reason',1,'superseded']]);
+ assert.deepEqual([...model.whysList(items,{status:'stale'}).map(row=>row.id)],['GB-0002']);
+ assert.deepEqual([...model.whysList(items,{query:'cost'}).map(row=>row.note)],['The reason is the cost']);
+});
+
+test('promotion readiness and the disposition timeline come from the workflow card states',()=>{
+ const {model}=pageModel();
+ const items=[{id:'GB-0001',title:'One',revision:1,status:'open'},{id:'GB-0002',title:'Two',revision:1,status:'open'},{id:'GB-0003',title:'Three',revision:1,status:'open'}];
+ model.state.board={items};
+ const request={id:'req-1',requestedAt:'2026-10-08T00:00:00Z',status:'requested',stages:['Record','Publish','Map','Publish','Plan','Publish'],cards:[{id:'GB-0002'}]};
+ const receipt=(stage,extra={})=>({stage,by:'director',at:'2026-10-08T01:00:00Z',links:[],evidence:['README.md'],reason:'',...extra});
+ model.state.workflow={revision:3,comments:[],requests:[request],cards:{
+  'GB-0001':{state:'confirmed',label:'Confirmed; promotion not requested'},
+  'GB-0002':{state:'map-published',label:'Published (map); knowledge-only, no Spec or Task: the Wiki owns it',requestId:'req-1',mapping:{implementationNeeded:false,reason:'the Wiki owns it'}},
+  'GB-0003':{state:'in-grilling',label:'In grilling'}},
+  dispositions:{'GB-0002':{requestId:'req-1',receipts:[receipt('Record'),receipt('Publish'),receipt('Map',{implementationNeeded:false,reason:'the Wiki owns it'}),receipt('Publish')]}}};
+ assert.deepEqual(model.confirmedItems().map(item=>item.id),['GB-0001'],'only cards the workflow reports confirmed are promotable');
+ model.state.edits.set('GB-0001',{verdict:'confirm',note:'unsaved'});
+ assert.deepEqual(model.confirmedItems().map(item=>item.id),[],'an unsaved edit holds promotion back');
+ const timeline=model.dispositionTimeline(request,model.state.workflow.dispositions['GB-0002'],model.state.workflow.cards['GB-0002']);
+ assert.match(timeline,/knowledge-only, no Spec or Task: the Wiki owns it/);
+ assert.equal((timeline.match(/class="done"/g)||[]).length,5,'Requested plus four reached receipts');
+ assert.match(timeline,/No Spec or Task: the Wiki owns it/);
+ assert.match(timeline,/class="next"><strong>Plan/);
+ assert.doesNotMatch(timeline,/Implemented/,'a knowledge-only card shows no implementation step');
+});
+
+test('an unsent comment draft survives every re-render of its card and clears only after sending',()=>{
+ const {model}=pageModel();
+ const item={id:'GB-0034',revision:5,title:'T',status:'open',answer:null,controls:board.answerControls({kind:'owner-decision',options:null})};
+ model.state.board={items:[item]};
+ model.state.workflow={revision:1,comments:[],requests:[],cards:{'GB-0034':{state:'in-grilling',label:'In grilling'}},dispositions:{}};
+ assert.equal(model.commentDraftFor(item),'');
+ model.rememberComment(item,'Say which file owns this.');
+ const html=model.cardWorkflowHtml(item);
+ assert.match(html,/<textarea id="comment-GB-0034"[^>]*>Say which file owns this\.<\/textarea>/,'a re-rendered card restores the unsent text');
+ assert.doesNotMatch(html,/data-comment="comment" disabled/,'the send buttons are enabled for restored text');
+ assert.equal(model.hasUnsavedWork(),true,'leaving the page warns about an unsent comment');
+ assert.equal(model.commentDraftFor({...item,revision:6}),'','a draft belongs to the revision it was written against');
+ model.forgetComment(item);
+ assert.equal(model.commentDraftFor(item),'');
+ assert.match(model.cardWorkflowHtml(item),/data-comment="comment" disabled/);
+ assert.equal(model.hasUnsavedWork(),false);
+});
+
+test('a confirmed re-answer clears the changed-question notice and a pending Change request is named as the blocker',()=>{
+ const {model}=pageModel();
+ const item={id:'GB-0034',revision:6,derivedStatus:'stale',answerLabel:'Confirm',answer:{verdict:'confirm',note:'',itemRevision:5}};
+ assert.match(model.staleNotice(item),/now revision 6; you answered revision 5/);
+ assert.equal(model.staleNotice({...item,derivedStatus:'answered',answer:{...item.answer,itemRevision:6}}),'');
+ model.state.board={items:[item]};
+ model.state.workflow={comments:[{id:'GB-0034',kind:'change',itemRevision:6,text:'Explain the source context.',at:'2026-10-08T17:30:00Z',status:'awaiting revision'}],requests:[],cards:{'GB-0034':{state:'in-grilling'}}};
+ const blocker=model.promotionBlocker(item);
+ assert.match(blocker,/change request/i);
+ assert.match(blocker,/Explain the source context\./);
+ assert.match(blocker,/agent .*revis.*fresh confirmation|revise.*confirm/i);
+ model.state.workflow.comments=[];
+ assert.match(model.promotionBlocker(item),/Only a card the workflow reports as confirmed/);
+});
+
+test('opening a question from the list records it in the address so a reload reopens it',()=>{
+ const history=[];
+ const {model}=pageModel({history});
+ const item=pvInventory()[0];
+ model.state.board={items:[item]};
+ model.openQuestion(item.id);
+ assert.equal(model.state.focus,item.id);
+ assert.deepEqual(history,['#GB-0001']);
+});
+
+// ---- Local-only write guard: no cross-site or DNS-rebinding request writes. ----
+function notepadRoom() {
+ const root=fs.mkdtempSync(path.join(os.tmpdir(),'dashboard-guard-'));
+ fs.mkdirSync(path.join(root,board.BOARD_DIR),{recursive:true});
+ fs.writeFileSync(path.join(root,'workbench/manifest.json'),JSON.stringify({schemaVersion:2,lanes:{sessions:'workbench/sessions'},collections:{notepads:'workbench/sessions/notepads','notepad-templates':'workbench/sessions/notepads/templates',handoffs:'workbench/sessions/handoffs'}}));
+ fs.writeFileSync(path.join(root,'README.md'),'# Owner\n');
+ fs.writeFileSync(board.boardPaths(root).items,JSON.stringify({schema:board.ITEMS_SCHEMA,title:'Fixture',groups:[{id:'one',title:'One'}],items:[]}));
+ board.addItems(root,[1,2].map(n=>({key:`k${n}`,group:'one',kind:'owner-decision',title:`Question ${n}`,question:'Q?',current:'c',proposal:'Agent proposal: p',sources:[{label:'Owner',path:'README.md',ref:'x'}]})),{by:'fixture'});
+ return root;
+}
+function snapshotWrites(root) {
+ const files={};
+ const walk=dir=>{ if(!fs.existsSync(dir))return; for(const entry of fs.readdirSync(dir,{withFileTypes:true})){ const file=path.join(dir,entry.name); if(entry.isDirectory())walk(file); else files[path.relative(root,file)]=fs.readFileSync(file,'utf8'); } };
+ walk(path.join(root,'workbench/grill-board'));
+ walk(path.join(root,'workbench/sessions'));
+ return files;
+}
+function send(port,method,pathname,{headers={},body}={}) {
+ return new Promise((resolve,reject)=>{
+  const request=http.request({host:'127.0.0.1',port,method,path:pathname,headers:{host:`127.0.0.1:${port}`,...headers}},response=>{const chunks=[];response.on('data',c=>chunks.push(c));response.on('end',()=>resolve({status:response.statusCode,headers:response.headers,text:Buffer.concat(chunks).toString('utf8')}));});
+  request.on('error',reject); request.end(body);
+ });
+}
+
+test('write routes refuse non-JSON, foreign Origin, foreign Host and cross-site requests and write nothing',async()=>{
+ const root=notepadRoom();
+ const server=board.createServer(root,{dashboardRoute:null});
+ await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
+ const port=server.address().port;
+ const json={'content-type':'application/json'};
+ try{
+  board.recordAnswer(root,'GB-0002',{verdict:'confirm',note:'',itemRevision:1});
+  const revision=()=>board.workflow(root).read().revision;
+  const routes=[
+   ['PUT','/api/answers/GB-0001',()=>({verdict:'confirm',note:'',itemRevision:1})],
+   ['POST','/api/comments',()=>({id:'GB-0001',itemRevision:1,kind:'comment',text:'From elsewhere',actionId:'a-comment',expectedRevision:revision()})],
+   ['POST','/api/rounds',()=>({actionId:'a-round',expectedRevision:revision()})],
+   ['POST','/api/promotions',()=>({ids:['GB-0002'],revisions:{'GB-0002':1},actionId:'a-promote',expectedRevision:revision()})]
+  ];
+  const bad=[
+   ['text/plain',{'content-type':'text/plain'},415],
+   ['no content type',{},415],
+   ['foreign Origin',{...json,origin:'https://evil.example'},403],
+   ['other local port Origin',{...json,origin:`http://127.0.0.1:${port+1}`},403],
+   ['foreign Host',{...json,host:`evil.example:${port}`},403],
+   ['rebound Host',{...json,host:'attacker.test'},403],
+   ['cross-site fetch',{...json,'sec-fetch-site':'cross-site'},403]
+  ];
+  for(const [method,route,payload] of routes){
+   for(const [name,headers,status] of bad){
+    const before=snapshotWrites(root);
+    const response=await send(port,method,route,{headers,body:JSON.stringify(payload())});
+    assert.equal(response.status,status,`${method} ${route} ${name}: ${response.text}`);
+    assert.deepEqual(snapshotWrites(root),before,`${method} ${route} ${name} wrote nothing`);
+   }
+   for(const origin of [undefined,`http://127.0.0.1:${port}`,`http://localhost:${port}`]){
+    if(origin===`http://localhost:${port}`&&route!=='/api/comments')continue;
+    const headers={...json,...(origin?{origin}:{}),...(origin===`http://localhost:${port}`?{host:`localhost:${port}`}:{}),'sec-fetch-site':'same-origin'};
+    const body=route==='/api/comments'&&origin?{...payload(),actionId:`a-comment-${origin.includes("localhost")?"localhost":"loopback"}`,text:`Same origin ${origin}`}:payload();
+    const response=await send(port,method,route,{headers,body:JSON.stringify(body)});
+    assert.equal(response.status,200,`${method} ${route} same-origin: ${response.text}`);
+   }
+  }
+  for(const route of ['/','/api/board','/api/artifacts','/api/workflow','/api/drafts','/api/status']){
+   const ok=await send(port,'GET',route,{headers:{origin:'https://evil.example'}});
+   assert.equal(ok.headers['access-control-allow-origin'],undefined,`${route} sends no CORS grant`);
+   assert.equal((await send(port,'GET',route,{headers:{host:'attacker.test'}})).status,403,`${route} refuses a rebound Host`);
+  }
+ }finally{await new Promise(resolve=>server.close(resolve));}
+});
+
+test('a JSON body that is not an object is refused with 400 invalid-input',async()=>{
+ const root=notepadRoom();
+ const served=await serve(root,{dashboardRoute:null});
+ try{
+  for(const [method,route] of [['PUT','/api/answers/GB-0001'],['POST','/api/comments'],['POST','/api/rounds'],['POST','/api/promotions']]){
+   for(const body of ['null','[]','"text"','3']){
+    const response=await fetch(served.base+route,{method,headers:{'content-type':'application/json'},body});
+    assert.equal(response.status,400,`${method} ${route} ${body}`);
+    assert.equal((await response.json()).error.code,'invalid-input');
+   }
+  }
+ }finally{await served.close();}
+});
+
+test('every write the page sends is declared application/json',()=>{
+ const html=fs.readFileSync(new URL('../workbench/grill-board/index.html',import.meta.url),'utf8');
+ const writes=[...html.matchAll(/fetch\([^;]*method: '(PUT|POST|DELETE|PATCH)'[^;]*/g)].map(match=>match[0]);
+ assert.ok(writes.length>=2);
+ for (const call of writes) assert.match(call,/'content-type': 'application\/json'/);
+});
+
+test('a notepad answer stores only itself, so an old note the privacy guard refuses never blocks a new answer',()=>{
+ const root=notepadRoom();
+ const legacy={verdict:'correct',note:'See /Users/someone/x for my words',at:'2026-10-01T00:00:00.000Z',itemRevision:1,history:[]};
+ fs.writeFileSync(board.boardPaths(root).answers,JSON.stringify({schema:board.ANSWERS_SCHEMA,owner:'Kayden',answers:{'GB-0001':legacy}}));
+ const confirmed=board.recordAnswer(root,'GB-0001',{verdict:'confirm',note:'',itemRevision:1,expectedAnswerAt:legacy.at});
+ assert.equal(confirmed.verdict,'confirm');
+ assert.deepEqual(confirmed.history.map(entry=>[entry.verdict,entry.note]),[['correct',legacy.note]],'the returned answer carries its history');
+ const reworked=board.recordAnswer(root,'GB-0001',{verdict:'rework',note:'Plainer words',itemRevision:1,expectedAnswerAt:confirmed.at});
+ const stored=fs.readFileSync(path.join(root,'workbench/sessions/notepads/grilling/dashboard-answers.json'),'utf8');
+ assert.ok(!stored.includes('/Users/someone'),'the notepad never repeats an earlier answer');
+ const entries=JSON.parse(stored).entries.filter(entry=>entry.topic==='dashboard-answer').map(entry=>JSON.parse(entry.content));
+ assert.deepEqual(entries.map(entry=>[entry.answer.verdict,entry.answer.history,entry.supersedes?.at]),[['confirm',undefined,legacy.at],['rework',undefined,confirmed.at]]);
+ assert.match(entries[1].supersedes.hash,/^[a-f0-9]{64}$/);
+ const answer=board.readAnswers(root).answers['GB-0001'];
+ assert.deepEqual(answer.history.map(entry=>entry.verdict),['correct','confirm'],'history is rebuilt from the legacy file and earlier notepad entries');
+ assert.equal(answer.history[1].approval.hash,confirmed.approval.hash,'an earlier approval snapshot stays in history');
+ assert.equal(reworked.history.length,2);
+ const view=board.mergeBoard(root).items[0];
+ assert.equal(view.answer.history.length,2);
+ assert.equal(board.workflow(root).read().cards['GB-0001'].state,'in-grilling');
+});
+
+test('a confirmation saved before snapshots existed asks to be confirmed again before promotion',()=>{
+ const {model}=pageModel();
+ const item={id:'GB-0007',revision:2,title:'T',status:'open',controls:board.answerControls({kind:'owner-decision',options:null}),answer:{verdict:'confirm',note:'',itemRevision:2,at:'2026-10-02T00:00:00Z'}};
+ model.state.board={items:[item]};
+ model.state.workflow={comments:[],requests:[],cards:{'GB-0007':{state:'in-grilling'}}};
+ assert.match(model.approvalSummary(item),/saved before .*exact wording.*Confirm it again/);
+ assert.match(model.promotionBlocker(item),/Confirm it again/);
+ assert.match(model.approvalSummary({...item,answer:null}),/No exact-wording confirmation/);
+});
+
+test('confirming again records a fresh snapshot for a confirmation that has none, and a true repeat stays idempotent',()=>{
+ const root=notepadRoom();
+ const legacy={verdict:'confirm',note:'',at:'2026-10-02T00:00:00.000Z',itemRevision:1,history:[]};
+ const mismatched={verdict:'confirm',note:'',at:'2026-10-02T00:00:00.000Z',itemRevision:1,history:[],approval:{hash:'0'.repeat(64),itemRevision:1,verdict:'confirm',note:'',confirmedAt:'2026-10-02T00:00:00.000Z'}};
+ fs.writeFileSync(board.boardPaths(root).answers,JSON.stringify({schema:board.ANSWERS_SCHEMA,owner:'Kayden',answers:{'GB-0001':legacy,'GB-0002':mismatched}}));
+ const flow=board.workflow(root);
+ assert.equal(flow.read().cards['GB-0001'].state,'in-grilling');
+ for (const [id,previous] of [['GB-0001',legacy],['GB-0002',mismatched]]){
+  const again=board.recordAnswer(root,id,{verdict:'confirm',note:'',itemRevision:1,expectedAnswerAt:previous.at});
+  assert.notEqual(again.at,previous.at,`${id}: a new answer is recorded`);
+  assert.match(again.approval.hash,/^[a-f0-9]{64}$/);
+  assert.notEqual(again.approval.hash,'0'.repeat(64));
+  assert.equal(again.history.length,1,`${id}: the earlier confirmation stays in history`);
+  assert.equal(flow.read().cards[id].state,'confirmed');
+  const repeat=board.recordAnswer(root,id,{verdict:'confirm',note:'',itemRevision:1,expectedAnswerAt:again.at});
+  assert.equal(repeat.at,again.at,`${id}: a repeat of a current snapshot is idempotent`);
+ }
+ const promoted=flow.promote({ids:['GB-0001','GB-0002'],revisions:{'GB-0001':1,'GB-0002':1},actionId:'p-reconfirm',expectedRevision:flow.read().revision});
+ assert.equal(promoted.request.cards.length,2);
+});
+
+test('an answer that does not follow the one it names surfaces as a conflict; the newest stays current and none is dropped',()=>{
+ const root=notepadRoom();
+ const first=board.recordAnswer(root,'GB-0001',{verdict:'confirm',note:'',itemRevision:1});
+ // An older server, still writing answers.json, records a newer answer.
+ const newer={verdict:'rework',note:'Plainer words, from the old service',at:new Date(Date.parse(first.at)+60000).toISOString(),itemRevision:1,history:[]};
+ fs.writeFileSync(board.boardPaths(root).answers,JSON.stringify({schema:board.ANSWERS_SCHEMA,owner:'Kayden',answers:{'GB-0001':newer}}));
+ const answer=board.readAnswers(root).answers['GB-0001'];
+ assert.equal(answer.verdict,'rework','the newest answer by time stays current');
+ assert.equal(answer.conflict.answers.length,2);
+ assert.deepEqual(JSON.parse(JSON.stringify(answer.conflict.answers.map(entry=>entry.verdict))).sort(),['confirm','rework'],'both answers stay visible');
+ assert.ok(answer.history.some(entry=>entry.verdict==='confirm'),'the other answer is kept in history');
+ const view=board.mergeBoard(root).items[0];
+ assert.equal(view.answerConflict.answers.length,2);
+ assert.match(view.answerConflict.message,/answer again/i);
+ assert.throws(()=>board.recordAnswer(root,'GB-0001',{verdict:'confirm',note:'',itemRevision:1,expectedAnswerAt:first.at}),/stale/,'a write against the older answer is refused');
+ const resolved=board.recordAnswer(root,'GB-0001',{verdict:'confirm',note:'Settled',itemRevision:1,expectedAnswerAt:newer.at});
+ assert.equal(board.readAnswers(root).answers['GB-0001'].conflict,undefined,'answering again resolves the conflict');
+ assert.equal(board.readAnswers(root).answers['GB-0001'].at,resolved.at);
+ // The workflow's own fallback reader chains the same way.
+ const fallback=createWorkflow(root,{readItems:board.readItems}).read();
+ assert.equal(fallback.cards['GB-0001'].state,'confirmed');
+});
+
+test('the page shows an answer conflict and asks the owner to answer again',()=>{
+ const {model}=pageModel();
+ const item={id:'GB-0001',revision:1,derivedStatus:'answered',answerConflict:{message:'Two answers were saved without one following the other. Answer again to settle it.',answers:[{verdict:'confirm',note:'',at:'2026-10-08T10:00:00Z'},{verdict:'rework',note:'Plainer',at:'2026-10-08T10:01:00Z'}]}};
+ const html=model.conflictNotice(item);
+ assert.match(html,/Answer again/);
+ assert.match(html,/2026-10-08T10:00:00Z[\s\S]*2026-10-08T10:01:00Z/);
+ assert.equal(model.conflictNotice({...item,answerConflict:undefined}),'');
+});
+
+test('the served page refuses to be framed by another page',async()=>{
+ const root=notepadRoom();
+ fs.copyFileSync(new URL('../workbench/grill-board/index.html',import.meta.url),board.boardPaths(root).page);
+ const served=await serve(root,{dashboardRoute:null});
+ try{
+  for (const route of ['/','/index.html']){
+   const response=await fetch(served.base+route);
+   assert.equal(response.status,200);
+   assert.equal(response.headers.get('x-frame-options'),'DENY');
+   assert.match(response.headers.get('content-security-policy')||'',/frame-ancestors 'none'/);
+  }
+ }finally{await served.close();}
+});
+
+// ---- An open answer conflict is visible to agents and blocks every action. ----
+function conflictedRoom() {
+ const root=notepadRoom();
+ const change=board.recordAnswer(root,'GB-0001',{verdict:'change',note:'Drop it entirely',itemRevision:1});
+ // An old server, still writing answers.json, records a newer Confirm.
+ const confirm={verdict:'confirm',note:'',at:new Date(Date.parse(change.at)+60000).toISOString(),itemRevision:1,history:[]};
+ fs.writeFileSync(board.boardPaths(root).answers,JSON.stringify({schema:board.ANSWERS_SCHEMA,owner:'Kayden',answers:{'GB-0001':confirm}}));
+ return {root,change,confirm};
+}
+
+test('an open answer conflict is reported to agents and refused by apply, rounds and promotion',()=>{
+ const {root,change,confirm}=conflictedRoom();
+ const pending=board.pendingForAgents(root).find(item=>item.id==='GB-0001');
+ assert.ok(pending.conflict,'pending carries the conflict');
+ assert.deepEqual(JSON.parse(JSON.stringify(pending.conflict.answers.map(answer=>answer.verdict))),['change','confirm']);
+ assert.match(board.statusSummary(root).conflicts.join(','),/GB-0001/);
+ assert.ok(board.mergeBoard(root).items[0].answerConflict,'show includes the conflict');
+ assert.throws(()=>board.applyAnswer(root,'GB-0001',{by:'agent',where:'nowhere'}),e=>e.code==='answer-conflict');
+ // A conflicted confirmation that otherwise carries a valid snapshot is still not confirmed.
+ const answers=JSON.parse(fs.readFileSync(board.boardPaths(root).answers,'utf8'));
+ const item=board.readItems(root).items[0];
+ answers.answers['GB-0001'].approval=JSON.parse(JSON.stringify(board.mergeBoard(notepadRoomWithConfirm(item)).items[0].answer.approval));
+ answers.answers['GB-0001'].approval.confirmedAt=confirm.at;
+ fs.writeFileSync(board.boardPaths(root).answers,JSON.stringify(answers));
+ const flow=board.workflow(root);
+ const state=flow.read();
+ assert.equal(state.cards['GB-0001'].state,'answer-conflict');
+ assert.match(state.cards['GB-0001'].label,/answer again/i);
+ const round=flow.endRound({actionId:'r-conflict',expectedRevision:state.revision});
+ assert.deepEqual(JSON.parse(JSON.stringify(round.round.confirmed)),[],'a round does not count a contested confirmation');
+ assert.throws(()=>flow.promote({ids:['GB-0001'],revisions:{'GB-0001':1},actionId:'p-conflict',expectedRevision:round.revision}),/answer-conflict/);
+ assert.ok(change);
+});
+function notepadRoomWithConfirm(item) {
+ const other=notepadRoom();
+ board.recordAnswer(other,'GB-0001',{verdict:'confirm',note:'',itemRevision:item.revision});
+ return other;
+}
+
+test('re-saving the current answer settles an open conflict over the HTTP path',async()=>{
+ const root=notepadRoom();
+ const served=await serve(root,{dashboardRoute:null});
+ const put=body=>fetch(`${served.base}/api/answers/GB-0002`,{method:'PUT',headers:{'content-type':'application/json'},body:JSON.stringify(body)});
+ try{
+  const rework=await (await put({verdict:'rework',note:'Plainer',itemRevision:1})).json();
+  const change={verdict:'change',note:'Narrow it',at:new Date(Date.parse(rework.at)+60000).toISOString(),itemRevision:1,history:[]};
+  fs.writeFileSync(board.boardPaths(root).answers,JSON.stringify({schema:board.ANSWERS_SCHEMA,owner:'Kayden',answers:{'GB-0002':change}}));
+  assert.ok(board.readAnswers(root).answers['GB-0002'].conflict);
+  const again=await put({verdict:'change',note:'Narrow it',itemRevision:1,expectedAnswerAt:change.at});
+  assert.equal(again.status,200);
+  const body=await again.json();
+  assert.notEqual(body.at,change.at,'a fresh entry is recorded');
+  assert.equal(body.conflict,undefined);
+  assert.equal(board.readAnswers(root).answers['GB-0002'].conflict,undefined,'the conflict is settled');
+  assert.equal(board.readAnswers(root).answers['GB-0002'].verdict,'change');
+ }finally{await served.close();}
+});
+
+test('a legacy full-history notepad entry never silently overrides a newer answer',()=>{
+ const base={'GB-0001':{verdict:'rework',note:'newer, from answers.json',at:'2026-10-08T12:00:00.000Z',itemRevision:1,history:[]}};
+ const legacyEntry={id:'GB-0001',answer:{verdict:'confirm',note:'older full-format entry',at:'2026-10-08T11:00:00.000Z',itemRevision:1,history:[]}};
+ const chained=chainAnswers(base,[legacyEntry])['GB-0001'];
+ assert.equal(chained.verdict,'rework','the newer answer stays current');
+ assert.ok(chained.conflict);
+ assert.ok(chained.history.some(entry=>entry.verdict==='confirm'),'the older answer is kept');
+ // A legacy entry that does follow the answer before it chains as before.
+ const follows={id:'GB-0001',answer:{verdict:'confirm',note:'next',at:'2026-10-08T13:00:00.000Z',itemRevision:1,history:[{...base['GB-0001'],history:undefined}].map(({history,...rest})=>rest)}};
+ const ok=chainAnswers(base,[follows])['GB-0001'];
+ assert.equal(ok.verdict,'confirm');
+ assert.equal(ok.conflict,undefined);
+});
+
+test('an entry whose superseded answer is missing (a trimmed notepad) is reported, never silently chained',()=>{
+ const entry={schema:'dashboard-answer@2',id:'GB-0001',answer:{verdict:'confirm',note:'',at:'2026-10-08T12:00:00.000Z',itemRevision:1},supersedes:{at:'2026-10-08T11:00:00.000Z',hash:'a'.repeat(64)}};
+ const chained=chainAnswers({},[entry])['GB-0001'];
+ assert.equal(chained.verdict,'confirm');
+ assert.match(chained.conflict.message,/missing|not found/i);
+ const after={schema:'dashboard-answer@2',id:'GB-0001',answer:{verdict:'rework',note:'x',at:'2026-10-08T13:00:00.000Z',itemRevision:1},supersedes:{at:'2026-10-08T11:30:00.000Z',hash:'b'.repeat(64)}};
+ const two=chainAnswers({},[entry,after])['GB-0001'];
+ assert.equal(two.verdict,'rework');
+ assert.ok(two.conflict,'an entry that does not follow the answer before it is a conflict');
+});
+
+test('the page names an open answer conflict as the reason promotion is unavailable',()=>{
+ const {model}=pageModel();
+ const item={id:'GB-0001',revision:1,status:'open',controls:board.answerControls({kind:'owner-decision',options:null}),answer:{verdict:'confirm',note:'',itemRevision:1,approval:{hash:'x'}},answerConflict:{message:'conflict',answers:[]}};
+ model.state.board={items:[item]};
+ model.state.workflow={comments:[],requests:[],cards:{'GB-0001':{state:'answer-conflict',label:'Answer conflict: answer again to settle it'}}};
+ assert.match(model.promotionBlocker(item),/conflict.*Answer again/i);
+ assert.deepEqual(model.confirmedItems().map(entry=>entry.id),[]);
+});
+
+test('a note refused by the privacy guard is explained plainly and not auto-saved again until it changes',()=>{
+ const {model}=pageModel();
+ const refusal=Object.assign(new Error('refused to record content matching absolute home path'),{status:400,code:'secret-like-content'});
+ const message=model.saveFailureMessage(refusal);
+ assert.match(message,/home-folder paths, email addresses or token-like text/);
+ assert.match(message,/privacy-checked notepad/);
+ assert.match(message,/room-relative path/);
+ assert.match(message,/kept here|stays here/);
+ const item={id:'GB-0001',revision:1,answerConflict:null};
+ const note='See /Users/someone/x';
+ assert.equal(model.autoSaveBlock(item,note),null);
+ model.noteRefused(item,note);
+ assert.match(model.autoSaveBlock(item,note),/home-folder paths/,'the same refused text is not auto-saved again');
+ assert.equal(model.autoSaveBlock(item,`${note} and more`),null,'changed text is tried again');
+ assert.match(model.saveFailureMessage(Object.assign(new Error('stale'),{status:409,code:'stale-answer'})),/Reload/);
+});
+
+test('auto-save never settles an open answer conflict; an explicit answer is required',()=>{
+ const {model}=pageModel();
+ const item={id:'GB-0001',revision:1,answerConflict:{message:'conflict',answers:[]}};
+ assert.match(model.autoSaveBlock(item,'typing a note'),/conflict.*choose an answer/i);
+ assert.equal(model.autoSaveBlock({...item,answerConflict:undefined},'typing a note'),null);
+});
+
+test('the server refuses a private note with 400 secret-like-content and keeps the guard',async()=>{
+ const root=notepadRoom();
+ const served=await serve(root,{dashboardRoute:null});
+ try{
+  const response=await fetch(`${served.base}/api/answers/GB-0001`,{method:'PUT',headers:{'content-type':'application/json'},body:JSON.stringify({verdict:'change',note:'See /Users/someone/x',itemRevision:1})});
+  assert.equal(response.status,400);
+  assert.equal((await response.json()).error.code,'secret-like-content');
+  assert.equal(board.readAnswers(root).answers['GB-0001'],undefined,'nothing is saved');
+ }finally{await served.close();}
+});
+
+test('a malformed answer-notepad entry is a clear invalid-notepad error naming the entry, never a crash',async()=>{
+ for (const content of ['{not json','{"id":"GB-0001"}','[1,2]']){
+  const root=notepadRoom();
+  board.recordAnswer(root,'GB-0001',{verdict:'confirm',note:'',itemRevision:1});
+  const note='workbench/sessions/notepads/grilling/dashboard-answers.json';
+  const loaded=readNote(root,{note});
+  const appended=appendEntry(root,{note,revision:loaded.revision,kind:'source_record',topic:'dashboard-answer',content});
+  assert.equal(appended.status,'appended');
+  assert.throws(()=>board.readAnswers(root),e=>e.code==='invalid-notepad'&&typeof appended.entry==='string'&&e.message.includes(`entry ${appended.entry} `));
+  const served=await serve(root,{dashboardRoute:null});
+  try{
+   const response=await fetch(`${served.base}/api/board`);
+   assert.equal(response.status,400,content);
+   assert.equal((await response.json()).error.code,'invalid-notepad');
+  }finally{await served.close();}
+ }
+});
+
+// ---- Decision records named in question text link to their Wiki pages. ----
+const RECORD_CATALOG={groups:[{id:'adrs',title:'ADRs'},{id:'ddrs',title:'DDRs'},{id:'specs',title:'Specs'}],artifacts:[
+ {group:'adrs',id:'ADR-000B',title:'Stable names stay stable',path:'workbench/docs/adr/000B-stable-names.md',status:'accepted'},
+ {group:'ddrs',id:'DDR-000A',title:'The Workbench aligns to the concept',path:'workbench/docs/ddr/000A-aligns.md',status:'accepted'},
+ {group:'specs',id:'S-0001',title:'A Spec',path:'workbench/specs/S-0001/SPEC.md',status:'planned'}]};
+
+test('decision-record IDs in question text link to their cataloged Wiki page, never in code or inside a link',()=>{
+ const {model}=pageModel();
+ model.state.catalog=RECORD_CATALOG;
+ const html=model.markdown('Read ADR-000B, `ADR-000B` and [the decision](../adr/000B-stable-names.md); DDR-0ZZZ is not cataloged.\n\n```\nADR-000B in a block\n```','workbench/docs/ddr/000A-aligns.md');
+ const recordLinks=html.match(/<a [^>]*class="record-link"[^>]*>ADR-000B<\/a>/g)||[];
+ assert.equal(recordLinks.length,1,'the plain-text ID is linked once');
+ assert.match(recordLinks[0],/href="#artifact=workbench%2Fdocs%2Fadr%2F000B-stable-names.md"/);
+ assert.match(recordLinks[0],/title="Stable names stay stable · ADR-000B"/,'title first, ID second');
+ assert.match(html,/<code>ADR-000B<\/code>/,'code spans stay code');
+ assert.match(html,/<pre>ADR-000B in a block<\/pre>/,'code blocks stay code');
+ assert.match(html,/<a href="#artifact=workbench%2Fdocs%2Fadr%2F000B-stable-names.md">the decision<\/a>/,'a relative Markdown link resolves against the base source');
+ assert.doesNotMatch(html,/<a [^>]*>[^<]*<a /,'no link inside a link');
+ assert.match(html,/<span class="unavailable-link" title="No cataloged decision record DDR-0ZZZ">DDR-0ZZZ<\/span>/);
+});
+
+test('a question lists every decision record it names beside its sources and renders drafts against its source',()=>{
+ const {model}=pageModel();
+ model.state.catalog=RECORD_CATALOG;
+ const item={id:'GB-0023',title:'Q',question:'Does ADR-000B still hold?',current:'See DDR-000A.',proposal:'Keep it.',draft:'Links: [aligned](000A-aligns.md)',options:[{value:'a',label:'Supersede ADR-000B'}],brief:{scope:'SPEC',summary:'Mentions DDR-0ZZZ.',why:'w',recommendation:'r',impact:'i',changes:'c',history:'h',artifacts:'a'},sources:[{label:'Spec',path:'workbench/docs/ddr/000A-aligns.md'},{label:'Spec',path:'workbench/specs/S-0001/SPEC.md'}],revision:1,history:[],derivedStatus:'pending',status:'open',controls:board.answerControls({kind:'owner-decision',options:null})};
+ assert.deepEqual([...model.namedDecisionIds(item)],['ADR-000B','DDR-000A','DDR-0ZZZ']);
+ const links=model.wikiLinks(item);
+ assert.match(links,/Decision records:[\s\S]*ADRs · Stable names stay stable \(ADR-000B\)/);
+ assert.equal((links.match(/000A-aligns\.md/g)||[]).length,1,'a record that is also a source is listed once');
+ assert.match(links,/DDR-0ZZZ[^<]*not in the Wiki/);
+ assert.equal(model.itemBase(item),'workbench/docs/ddr/000A-aligns.md');
+ assert.equal(model.itemBase({sources:[{path:'/Users/x/y.md'},{path:'../outside.md'}]}),'','no base outside the room');
+});
+
+test('on the real board every named, cataloged decision record in an open question is linked',()=>{
+ const {model}=pageModel();
+ model.state.catalog=JSON.parse(JSON.stringify(board.artifactCatalog(new URL('..',import.meta.url).pathname)));
+ const records=new Map(model.state.catalog.artifacts.filter(a=>/^(ADR|DDR|CDR)-/.test(a.id||'')).map(a=>[a.id,a]));
+ let checked=0;
+ for (const item of board.readItems(new URL('..',import.meta.url).pathname).items.filter(i=>i.status==='open')) {
+  const links=model.wikiLinks(item);
+  for (const id of model.namedDecisionIds(item)) {
+   const record=records.get(id);
+   if (!record) { assert.match(links,new RegExp(`${id}[^<]*not in the Wiki`)); continue; }
+   assert.ok(links.includes(`href="${model.state.catalog&&('#'+new URLSearchParams({artifact:record.path}))}`)||links.includes(encodeURIComponent(record.path)),`${item.id} links ${id}`);
+   checked+=1;
+  }
+ }
+ assert.ok(checked>=20,`checked ${checked} named records`); // the reconciled board of 2026-10-09 keeps 35 open questions
+});
+
+const SHORTHAND_CATALOG={groups:[{id:'adrs',title:'ADRs'},{id:'ddrs',title:'DDRs'}],artifacts:['000B','000C','000H','0017','0054'].map(code=>({group:'adrs',id:`ADR-${code}`,title:code==='000C'?'**Bold** second record':`Record ${code}`,path:`workbench/docs/adr/${code}-r.md`,status:'accepted'})).concat(['000P','000Q'].map(code=>({group:'ddrs',id:`DDR-${code}`,title:`Destination ${code}`,path:`workbench/docs/ddr/${code}-d.md`,status:'accepted'})))};
+
+test('slash shorthand links each expanded decision record and never an ordinary slash',()=>{
+ const {model}=pageModel();
+ model.state.catalog=SHORTHAND_CATALOG;
+ const html=model.markdown('Board first before ADR-000B/C/D (TRACK); ADR-000B/its successor; ADR-000H/AGENTS.md; ADR-0017/ADR-0054; DDR-000P/000Q.','');
+ const linked=[...html.matchAll(/<a class="record-link" href="([^"]+)" title="([^"]+)">([^<]+)<\/a>/g)].map(m=>[m[3],decodeURIComponent(m[1]).replace('#artifact=','')]);
+ assert.deepEqual(linked,[['ADR-000B','workbench/docs/adr/000B-r.md'],['C','workbench/docs/adr/000C-r.md'],['ADR-000B','workbench/docs/adr/000B-r.md'],['ADR-000H','workbench/docs/adr/000H-r.md'],['ADR-0017','workbench/docs/adr/0017-r.md'],['ADR-0054','workbench/docs/adr/0054-r.md'],['DDR-000P','workbench/docs/ddr/000P-d.md'],['000Q','workbench/docs/ddr/000Q-d.md']]);
+ assert.match(html,/<span class="unavailable-link" title="No cataloged decision record ADR-000D">D<\/span>/,'an expanded ID without a record is unavailable');
+ assert.match(html,/title="Bold second record · ADR-000C"/,'Markdown emphasis is stripped from hover titles');
+ const item={id:'GB-0001',title:'T',question:'Board first before ADR-000B/C/D',current:'',proposal:'',sources:[]};
+ assert.deepEqual([...model.namedDecisionIds(item)],['ADR-000B','ADR-000C','ADR-000D']);
+ const links=model.wikiLinks(item);
+ assert.match(links,/ADRs · Bold second record \(ADR-000C\)/,'labels drop Markdown emphasis');
+ assert.match(links,/ADR-000D \(not in the Wiki\)/);
+});
+
+test('the question line shows glossary hovers whatever was rendered before it',()=>{
+ const {model}=pageModel();
+ model.state.catalog={groups:[],artifacts:[]};
+ model.state.termIndex=new Map([['Landmark',{term:'Landmark',definition:'A direction.',path:'LEXICON.md',anchor:'landmark'}]]);
+ model.state.termPattern=/(?<![\w-])(?:Landmark)(?![\w-])/g;
+ model.markdown('A Landmark first.','');
+ const item={id:'GB-0001',title:'T',question:'Which Landmark owns this?',current:'c',proposal:'p',sources:[],revision:1,history:[],derivedStatus:'pending',status:'open',controls:board.answerControls({kind:'owner-decision',options:null})};
+ assert.match(model.card(item),/<p class="q">Which <a class="term"[^>]*>Landmark<\/a> owns this\?<\/p>/);
+});
+
+// An independent scanner of what each open question should link to: its own
+// expressions over the raw item text, not the functions under test.
+function independentTargets(item, records, catalogPaths) {
+ const texts=[item.question,item.current,item.proposal,item.draft,...Object.values(item.brief||{})].filter(t=>typeof t==='string');
+ const named=[item.title,...texts,...(item.options||[]).flatMap(o=>[o.label,o.hint])].filter(t=>typeof t==='string').join('\n');
+ const ids=new Set();
+ for (const m of named.matchAll(/(?<![A-Za-z0-9_-])((?:ADR|DDR|CDR)-[0-9A-Za-z]{4})((?:\/[0-9A-Z]{1,4}(?![A-Za-z0-9_-]))*)(?![A-Za-z0-9_-])/g)) {
+  ids.add(m[1]);
+  for (const part of m[2].split('/').filter(Boolean)) ids.add(m[1].slice(0,8-part.length)+part);
+ }
+ const base=(item.sources||[]).find(src=>src.path&&!src.path.startsWith('/')&&!src.path.startsWith('..'))?.path||'';
+ const paths=new Set((item.sources||[]).map(src=>src.path).filter(p=>catalogPaths.has(p)));
+ for (const text of texts) for (const m of text.replace(/`[^`]*`/g,'').matchAll(/\[[^\]]+\]\(([^\s)]+)\)/g)) {
+  if (/^[a-z][a-z\d+.-]*:/i.test(m[1])) continue;
+  const local=decodeURIComponent(new URL(m[1],`http://reader/${base}`).pathname.slice(1));
+  if (catalogPaths.has(local)) paths.add(local);
+ }
+ const cataloged=[...ids].filter(id=>records.has(id));
+ for (const id of cataloged) paths.add(records.get(id).path);
+ return {ids:cataloged,paths};
+}
+const hrefPaths=html=>new Set([...html.matchAll(/href="#([^"]+)"/g)].map(m=>new URLSearchParams(m[1].replace(/&amp;/g,'&')).get('artifact')).filter(Boolean));
+
+test('independently: every cataloged decision record and link an open question names is linked on its card',()=>{
+ const repoRoot=new URL('..',import.meta.url).pathname;
+ const {model}=pageModel();
+ model.state.catalog=JSON.parse(JSON.stringify(board.artifactCatalog(repoRoot)));
+ const catalogPaths=new Set(model.state.catalog.artifacts.map(a=>a.path));
+ const records=new Map(model.state.catalog.artifacts.filter(a=>/^(ADR|DDR|CDR)-/.test(a.id||'')).map(a=>[a.id,a]));
+ let ids=0, questions=0;
+ for (const item of board.mergeBoard(repoRoot).items.filter(i=>i.status==='open')) {
+  const expected=independentTargets(item,records,catalogPaths);
+  const cardHtml=model.card(item), listHtml=model.wikiLinks(item);
+  const rendered=hrefPaths(cardHtml);
+  for (const p of expected.paths) assert.ok(rendered.has(p),`${item.id} card links ${p}`);
+  for (const id of expected.ids) assert.ok(hrefPaths(listHtml).has(records.get(id).path),`${item.id} lists ${id}`);
+  ids+=expected.ids.length; if(expected.ids.length) questions+=1;
+ }
+ assert.ok(ids>=20&&questions>=10,`${ids} named records over ${questions} questions`); // the reconciled board of 2026-10-09 keeps 35 open questions
+});
+
+test('the page renders exactly the links the server counts for backlinks over the real board',()=>{
+ const repoRoot=new URL('..',import.meta.url).pathname;
+ const {model}=pageModel();
+ model.state.catalog=JSON.parse(JSON.stringify(board.artifactCatalog(repoRoot)));
+ const catalogPaths=new Set(model.state.catalog.artifacts.map(a=>a.path));
+ const recordPaths=new Map(model.state.catalog.artifacts.filter(a=>/^(ADR|DDR|CDR)-/.test(a.id||'')).map(a=>[a.id,a.path]));
+ for (const item of board.mergeBoard(repoRoot).items.filter(i=>i.status==='open')) {
+  const page=[...hrefPaths(model.card(item))].sort();
+  const server=[...questionLinkTargets(item,recordPaths)].filter(p=>catalogPaths.has(p)).sort();
+  assert.deepEqual(page,server,item.id);
+ }
+});
+
+// ---- Owner corrections of 2026-10-09 (S-004D, TK-007Z): P/V chips, a left
+// navigation pane and progressive disclosure on the opened card. ----
+const pageHtml=()=>fs.readFileSync(new URL('../workbench/grill-board/index.html',import.meta.url),'utf8');
+// The markup outside every <details> block, nested ones included: what an
+// opened card shows before the owner clicks anything.
+function outsideDetails(html){
+ let depth=0,out='';
+ for (const part of html.split(/(<details\b[^>]*>|<\/details>)/)) {
+  if (/^<details\b/.test(part)) depth+=1; else if (part==='</details>') depth-=1; else if (depth===0) out+=part;
+ }
+ return out;
+}
+
+test('P and V chips filter the list on click: OR within a row, AND across rows, no chip means all',()=>{
+ const {model}=pageModel();
+ const items=pvInventory();
+ model.state.board={items};
+ const shown=()=>model.shownItems().map(item=>item.id).sort();
+ assert.equal(typeof model.toggleGrade,'function','the page exposes the chip toggle');
+ model.toggleGrade('priority','P2'); model.toggleGrade('value','V1');
+ assert.deepEqual(shown(),['GB-0002'],'the P2 and V1 chips leave only the P2·V1 question, with no dropdown involved');
+ model.toggleGrade('priority','P3');
+ assert.deepEqual(shown(),['GB-0002','GB-0005'],'two chips in the P row combine as OR');
+ model.toggleGrade('value','V1');
+ assert.deepEqual(shown(),['GB-0002','GB-0004','GB-0005','GB-0014'],'clearing the V row spans every Value');
+ model.toggleGrade('priority','P2'); model.toggleGrade('priority','P3');
+ assert.deepEqual(shown(),items.map(item=>item.id).sort(),'no chip selected means all');
+ const chips=model.gradeChips();
+ for (const grade of ['P1','P2','P3','P4']) assert.match(chips,new RegExp(`<button[^>]*class="chip grade-chip priority"[^>]*data-grade="${grade}"[^>]*aria-pressed="false"`),`${grade} chip`);
+ for (const grade of ['V1','V2','V3','V4']) assert.match(chips,new RegExp(`<button[^>]*class="chip grade-chip value"[^>]*data-grade="${grade}"[^>]*aria-pressed="false"`),`${grade} chip`);
+ model.toggleGrade('value','V2');
+ assert.match(model.gradeChips(),/class="chip grade-chip value"[^>]*data-grade="V2"[^>]*aria-pressed="true"/,'a selected chip is pressed');
+ assert.match(model.gradeChips(),/data-grade="V2"[^>]*>V2 <small>3<\/small>/,'a chip counts the questions it would show');
+ model.toggleGrade('value','V2'); items[0].derivedStatus='answered'; model.state.lane='pending';
+ assert.match(model.gradeChips(),/data-grade="P1"[^>]*>P1 <small>1<\/small>/,'a chip count follows the workflow-stage filter');
+ model.state.lane='all'; items[0].derivedStatus='pending';
+ assert.equal(model.matchesSlice(items[0],{priorities:['P1','P2'],values:[]}),true);
+ assert.equal(model.matchesSlice(items[0],{priorities:['P3'],values:[]}),false);
+ assert.equal(model.sliceTitle({topic:'all',intent:'all',priorities:['P2','P3'],values:['V1']}),'All topics · Any kind of decision · P2/P3 · V1');
+ model.resetSlice();
+ assert.deepEqual([[...model.state.priorities],[...model.state.values]],[[],[]],'Clear all filters clears both rows');
+ const page=pageHtml();
+ assert.doesNotMatch(page,/id="priority-filter"|id="value-filter"/,'the P/V dropdowns are gone');
+ const more=page.match(/<details[^>]*id="more-filters"[^>]*>[\s\S]*?<\/details>/);
+ assert.ok(more,'the other dropdowns fold into a More filters section');
+ assert.doesNotMatch(more[0].slice(0,more[0].indexOf('>')),/\sopen\b/,'More filters starts closed');
+ for (const id of ['intent','topic','scope']) assert.match(more[0],new RegExp(`id="${id}"`),`${id} dropdown under More filters`);
+ assert.match(page,/\.grade-chip\.priority\[aria-pressed="true"\][^{]*\{[^}]*--p-ink/,'a pressed P chip takes the red P badge colors');
+ assert.match(page,/\.grade-chip\.value\[aria-pressed="true"\][^{]*\{[^}]*--v-ink/,'a pressed V chip takes the amber V badge colors');
+});
+
+test('the five section links are a persistent left navigation pane, with the Grilling Board filters below them',()=>{
+ const page=pageHtml();
+ const header=page.match(/<header class="topbar">[\s\S]*?<\/header>/)[0];
+ assert.doesNotMatch(header,/id="section-tabs"/,'the top bar no longer carries the section links');
+ const sidebar=page.match(/<aside id="sidebar"[\s\S]*?<\/aside>/);
+ assert.ok(sidebar,'a left pane exists');
+ assert.match(sidebar[0],/<nav class="sections" id="section-tabs" aria-label="Dashboard sections">/);
+ for (const section of ['tracker','taskboard','grilling','drafts','wiki']) assert.match(sidebar[0],new RegExp(`href="#section=${section}" data-section="${section}"`),`${section} link keeps its hash route`);
+ assert.match(sidebar[0],/<nav id="grill-nav"/,'the Grilling Board filters sit in the same pane');
+ assert.ok(sidebar[0].indexOf('id="section-tabs"')<sidebar[0].indexOf('id="grill-nav"'),'section links come first');
+ assert.ok(page.indexOf('<aside id="sidebar"')<page.indexOf('<main id="main"'),'the pane is on the left of the main column');
+ assert.match(page,/@media \(max-width: 900px\)[\s\S]*#sidebar[^{]*\{[^}]*position: static/,'at a narrow width the pane stacks instead of forcing a horizontal scroll');
+ const {model}=pageModel();
+ model.setView('tracker','tracker');
+ assert.equal(model.state.view,'tracker');
+ assert.equal(model.el('sidebar').hidden,false,'the pane stays while another section is open');
+ assert.equal(model.el('grill-nav').hidden,true,'only the Grilling Board filters hide');
+ model.setView('grilling','grilling');
+ assert.equal(model.el('grill-nav').hidden,false);
+});
+
+test('an opened card shows title, question, recommendation, the why in the same weight and the answer controls; what it concerns, what would change and the consequences start open; the rest starts collapsed and the links stay visible',()=>{
+ const {model}=pageModel();
+ model.state.catalog=RECORD_CATALOG;
+ const base={revision:2,history:[{revision:2,at:'2026-10-08T00:00:00.000Z',by:'agent',reason:'revised wording'}],derivedStatus:'pending',status:'open',controls:board.answerControls({kind:'owner-decision',options:null}),sources:[{label:'Spec',path:'workbench/specs/S-0001/SPEC.md',ref:'abc'}],links:[{label:'S-0001 SPEC.md',path:'workbench/specs/S-0001/SPEC.md',ref:'abc',url:'https://github.com/example/repo/blob/abc/workbench/specs/S-0001/SPEC.md'}],...grade('P2','V1')};
+ const briefed={...base,id:'GB-0023',title:'Rename the verb',question:'Does ADR-000B still hold?',current:'Current words',proposal:'Keep it as it is.',draft:'Proposed wording draft',brief:{scope:'SPEC',summary:'Summary words',why:'Why words',recommendation:'Recommended answer words',impact:'Impact words',changes:'Changes words',history:'### Related card\n\nHistory words',artifacts:'Artifacts words'}};
+ const html=model.card(briefed);
+ const openDetails=html.match(/<details[^>]*\sopen\b[^>]*>\s*<summary>[^<]*<\/summary>/g)||[];
+ assert.deepEqual(openDetails.map(tag=>tag.match(/<summary>([^<]*)<\/summary>/)[1]),['What this concerns','What would change','Consequences and tradeoffs'],'only the three sections he reads on every card start open');
+ assert.ok(openDetails.every(tag=>/^<details class="fold read" open>/.test(tag)),'each stays a details block, so he can collapse it');
+ const visible=outsideDetails(html);
+ for (const text of ['Rename the verb','Does <a class="record-link"','Recommended answer words','Why words','Your answer','>Confirm<','>Rework wording<','>Change the why<','>Change<','id="note-GB-0023"']) assert.ok(visible.includes(text),`${text} is shown at once`);
+ assert.match(html,/<div class="recommendation"><h4>Recommended answer[^<]*<\/h4>[\s\S]*?<\/div>\s*<div class="recommendation why"><h4>Why this choice matters<\/h4>[\s\S]*?Why words/,'the why is its own panel directly under the recommended answer, in the same recommendation class');
+ assert.doesNotMatch(pageHtml(),/\.recommendation\.why\s*\{/,'the why has no style of its own, so it matches the recommended answer');
+ for (const [summary,text] of [['What this concerns','Summary words'],['What this concerns','Artifacts words'],['What would change','Changes words'],['Consequences and tradeoffs','Impact words']]) assert.match(html,new RegExp(`<details class="fold read" open><summary>${summary}</summary>[\\s\\S]*?${text}`),`${text} is shown open under ${summary}`);
+ for (const text of ['History words','Current words','Proposed wording draft','P2 because of its source','V1 because of its return','revised wording']) {
+  assert.ok(html.includes(text),`${text} stays on the card`);
+  assert.ok(!visible.includes(text),`${text} starts collapsed`);
+ }
+ assert.ok(!/<details[^>]*>\s*<summary>Why this choice matters/.test(html),'the why is not a collapsible line');
+ assert.match(model.card({...briefed,brief:{...briefed.brief,why:'  '}}),/<div class="recommendation why"><h4>Why this choice matters<\/h4><p>No reason is recorded for this question\.<\/p>/,'a brief with no why says so');
+ assert.match(visible,/<nav class="link-row" aria-label="Links">[\s\S]*Specs · A Spec \(S-0001\)[\s\S]*ADRs · Stable names stay stable \(ADR-000B\)[\s\S]*<\/nav>/,'Spec and decision-record links stay visible as one compact row');
+ assert.match(visible,/<nav class="link-row"[\s\S]*S-0001 SPEC\.md[\s\S]*<\/nav>/,'the card sources are in the same row');
+ assert.match(html,/<details class="grade priority card-grade"><summary[^>]*>P2<\/summary>[\s\S]*?P2 because of its source/,'P is a closed badge whose reason opens on click');
+ assert.match(html,/<details class="grade value card-grade"><summary[^>]*>V1<\/summary>[\s\S]*?V1 because of its return/,'V is a closed badge whose reason opens on click');
+ assert.match(pageHtml(),/\.card-grade \.grade-reason[^{]*\{[^}]*position: static/,'on the card a reason opens in place');
+ const plain={...base,id:'GB-0024',title:'A plain question',question:'Which?',current:'Current context words',proposal:'Agent proposal words',draft:null};
+ const plainVisible=outsideDetails(model.card(plain));
+ assert.ok(plainVisible.includes('Agent proposal words'),'the proposal is the recommendation on a card without a brief');
+ assert.ok(!plainVisible.includes('Current context words'),'the current context starts collapsed');
+ assert.match(model.card(plain),/Current context words/);
+});

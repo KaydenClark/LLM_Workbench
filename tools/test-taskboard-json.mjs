@@ -761,6 +761,103 @@ if (process.argv.includes('--demo')) {
     assert.ok(preview(root).lanes.inProgress['S-000A']);
   }));
 
+  // The live room's S-003W repeats its header `**Stance:**` label inside each
+  // `### TK-...` slice description (S-046/S-047/S-048/S-01W use other `###`
+  // headings there). No parser reads Stance, and each slice subsection scopes
+  // its own narrative labels, so the preview must not refuse.
+  const sliceSpec = (root, { header = '**Stance:** Builder\n', slices }) => {
+    const a = spec(root, { id: 'S-000A', extra: header });
+    task(root, a, { id: 'TK-000A', status: 'done' });
+    const source = fs.readFileSync(path.join(root, a.file), 'utf8');
+    put(root, a.file, source.replace('\n## Acceptance Criteria', `\n${slices}\n## Acceptance Criteria`));
+    return a;
+  };
+
+  test('repeated narrative labels scoped to Spec slice subsections render without changing the card', () => withRoom(root => {
+    sliceSpec(root, { slices: '### TK-000A - Retain the evidence\n\n**Stance:** Builder\n\nNarrative.\n\n#### Detail\n\n**Done criteria:** one\n\n### Scoped Task: TK-000B\n\n**Stance:** Reviewer\n**Done criteria:** two\n\n### TK-000C — Em-dash heading\n\n**Stance:** Builder\n\n### First slice - Public proposal\n\n**Stance:** Builder\n\n### v3.2.0 assigned completion (2026-09-08)\n\n**Stance:** Builder\n' });
+    const card = preview(root).lanes.inProgress['S-000A'];
+    assert.ok(card, 'the Spec card renders');
+    assert.equal(card.priority, 2); assert.equal(card.assignee, 'fixture-dispatcher'); assert.equal(card.nextAction, 'Verify the objective');
+    const result = command(root, 'doctor');
+    assert.equal(result.stderr, '');
+  }));
+
+  test('a field any source parser reads still refuses when repeated inside a slice subsection', () => withRoom(root => {
+    const a = sliceSpec(root, { slices: '### TK-000A - Retain the evidence\n\n**Stance:** Builder\n' });
+    const output = path.join(root, 'TASKBOARD.preview.json'); preview(root); const before = fs.readFileSync(output, 'utf8');
+    const source = fs.readFileSync(path.join(root, a.file), 'utf8');
+    for (const field of ['**Status:** complete', '**Priority:** 1', '**Owner:** someone-else', '**Next gate:** Another gate', '** Blockers :** S-000Z']) {
+      put(root, a.file, source.replace('**Stance:** Builder\n\n## Acceptance', `**Stance:** Builder\n${field}\n\n## Acceptance`));
+      const result = command(root, 'render', '--format', 'json');
+      assert.notEqual(result.status, 0, field); assert.match(result.stderr, /duplicat/i, field);
+      assert.equal(fs.readFileSync(output, 'utf8'), before, field);
+    }
+    // A card field the header never names is still unique across the document.
+    put(root, a.file, source.replace('**Stance:** Builder\n\n## Vertical', '**Stance:** Builder\n**Assignee:** first\n\n## Vertical').replace('**Stance:** Builder\n\n## Acceptance', '**Stance:** Builder\n**Assignee:** second\n\n## Acceptance'));
+    const result = command(root, 'render', '--format', 'json');
+    assert.notEqual(result.status, 0); assert.match(result.stderr, /duplicat.*Assignee/i);
+    assert.equal(fs.readFileSync(output, 'utf8'), before);
+  }));
+
+  test('a narrative label repeated within one slice or at Spec scope still refuses', () => withRoom(root => {
+    const a = sliceSpec(root, { slices: '### TK-000A - Retain the evidence\n\n**Stance:** Builder\n' });
+    const output = path.join(root, 'TASKBOARD.preview.json'); preview(root); const before = fs.readFileSync(output, 'utf8');
+    const variants = [
+      ['twice in one slice', '### TK-000A - Retain the evidence\n\n**Stance:** Builder\n#### Detail\n** Stance :** Reviewer\n'],
+      ['Spec scope after a slice closes', '### TK-000A - Retain the evidence\n\n**Stance:** Builder\n\n## Evidence\n\n**Stance:** Reviewer\n'],
+      ['subsection outside the slices section', '### TK-000A - Retain the evidence\n\n**Stance:** Builder\n\n## Evidence\n\n### Notes\n\n**Stance:** Reviewer\n'],
+      ['slice-shaped heading outside the slices section', '## Follow-up\n\n### TK-000A - Follow-up\n\n**Stance:** Reviewer\n'],
+      ['slices introduction before any subsection', '**Stance:** Reviewer\n\n### TK-000A - Retain the evidence\n']
+    ];
+    const source = fs.readFileSync(path.join(root, a.file), 'utf8');
+    for (const [variant, slices] of variants) {
+      put(root, a.file, source.replace(/\n### [\s\S]*?\n## Acceptance Criteria/, `\n${slices}\n## Acceptance Criteria`));
+      const result = command(root, 'render', '--format', 'json');
+      assert.notEqual(result.status, 0, variant); assert.match(result.stderr, /duplicat.*Stance/i, variant);
+      assert.equal(fs.readFileSync(output, 'utf8'), before, variant);
+    }
+  }));
+
+  test('the preview duplicate guard names every field the Spec, Task, landmark and card parsers read', async () => {
+    const { TASKBOARD_SOURCE_FIELDS } = await import('../workbench/tools/taskboard.mjs');
+    const read = file => fs.readFileSync(new URL(`../workbench/tools/${file}`, import.meta.url), 'utf8');
+    const names = new Set();
+    for (const file of ['spec-packet.mjs', 'task-record.mjs', 'landmark-artifact.mjs', 'taskboard.mjs']) {
+      const text = read(file);
+      for (const match of text.matchAll(/\bfields(?:\.([A-Za-z_]\w*)|\[['"]([^'"]+)['"]\]|, ['"]([^'"]+)['"]\))/g)) names.add(match[1] ?? match[2] ?? match[3]);
+      for (const match of text.matchAll(/(?:\brequired|REQUIRED_LANDMARK_FIELDS) = (?:Object\.freeze\()?(?:planned \? \[[^\]]*\] : )?\[([^\]]*)\]/g)) {
+        for (const name of match[1].matchAll(/'([^']+)'/g)) names.add(name[1]);
+      }
+    }
+    for (const file of ['spec-workbench.mjs', 'spec-report.mjs']) {
+      for (const match of read(file).matchAll(/\\\*\\\*([A-Z][A-Za-z ]*):\\\*\\\*/g)) names.add(match[1]);
+    }
+    for (const name of ['Spec ID', 'Status', 'Priority', 'Former ID', 'Close pending', 'Due date']) assert.ok(names.has(name), `the drift scan must find ${name}`);
+    const missing = [...names].filter(name => !TASKBOARD_SOURCE_FIELDS.has(name));
+    assert.deepEqual(missing, [], 'every parsed field stays document-unique under the preview guard');
+  });
+
+  test('the source-qualified reader scopes legacy numeric labels and refuses an identity it would otherwise overwrite', async () => {
+    const { readTaskboard } = await import('../workbench/tools/spec-workbench.mjs');
+    withRoom(root => {
+      const a = spec(root, { id: 'S-000A' }); const fileA = task(root, a, { id: 'TK-001', status: 'done' }); task(root, a, { id: 'TK-002' });
+      const b = spec(root, { id: 'S-000B', priority: 1 }); const fileB = task(root, b, { id: 'TK-001' });
+      const before = sourceSnapshot(root);
+      const board = readTaskboard(root, { qualified: true });
+      assert.equal(board.identity, 'source-qualified');
+      assert.deepEqual(Object.keys(board.lanes), lanes);
+      assert.deepEqual(board.lanes.complete['S-000A/TK-001'].sourceLinks, [fileA, a.file]);
+      assert.deepEqual(board.lanes.toDo['S-000B/TK-001'].sourceLinks, [fileB, b.file]);
+      assert.equal(board.lanes.toDo['S-000B/TK-001'].specId, 'S-000B');
+      assert.deepEqual(Object.keys(board.lanes.toDo), ['S-000B', 'S-000B/TK-001', 'S-000A', 'S-000A/TK-002'], 'Spec cards keep their own identity and all cards keep the shared priority/title order across Specs');
+      assert.deepEqual(sourceSnapshot(root), before, 'the reader writes nothing');
+      // A second record with the same Spec identity (active and retired copies)
+      // must refuse naming both owners, never keep only the last one read.
+      const retired = spec(root, { id: 'S-000A', retired: true, status: 'complete' }); task(root, retired, { id: 'TK-001', status: 'done' });
+      assert.throws(() => readTaskboard(root, { qualified: true }), error => /taskboard-collision/.test(error.message) && error.message.includes(a.file) && error.message.includes(retired.file));
+    });
+  });
+
   test('single normalized metadata fields follow source whitespace and whole-document semantics', () => withRoom(root => {
     const a = spec(root, { id: 'S-000A' }); const file = task(root, a, { id: 'TK-000A' });
     const source = fs.readFileSync(path.join(root, file), 'utf8');

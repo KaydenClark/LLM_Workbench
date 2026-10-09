@@ -24,7 +24,7 @@ import { validateWiki } from './wiki.mjs';
 import { ARTIFACT_ID_MIN_WIDTH, allocateArtifactId, compareVisibleIds, visibleIdKey, visibleIdParts } from './visible-ids.mjs';
 import { TASK_LIFECYCLE_FOLDERS, TASK_STATUSES, formatTaskRecord, listRetiredTaskRecords, listTaskRecords, parseFormerId, parseTaskRecord, readTaskRecord, taskStatus, unmetBlockers, updateTaskFields, withClaimant } from './task-record.mjs';
 import { appendReceiptRow, appendReceiptRowToContent, readGitFacts, readReceipt, readReceiptFromFile } from './task-receipt.mjs';
-import { buildTaskboard, taskboardTaskEntry, taskboardSpecLane, compareTaskboardEntries } from './taskboard.mjs';
+import { TASKBOARD_LANES, buildTaskboard, taskboardTaskEntry, taskboardSpecLane, compareTaskboardEntries } from './taskboard.mjs';
 import { NEW_SPEC_ROUTE, assembleLandmarkReport, assembleSpecReport, computeSpecDigest, formatLandmarkReport, formatSpecReport, isAncestorOfBranch, recordLandmarkApproval, recordLandmarkVerdict, recordOwnerApproval, recordReviewVerdict, verifyLandmark } from './spec-report.mjs';
 import { validateLandmarkArticle } from './landmark-wiki.mjs';
 
@@ -1108,8 +1108,15 @@ export function render(rootDir, options = {}) {
 }
 
 function renderJsonPreview(root) {
+  const board = readTaskboard(root);
   const output = path.join(root, 'TASKBOARD.preview.json');
   assertSafeWritePath(root, output);
+  writeSafeFile(root, output, JSON.stringify(board, null, 2)+'\n');
+  return { format: 'json-preview', path: 'TASKBOARD.preview.json', schemaVersion: board.schemaVersion, cards: Object.values(board.lanes).reduce((count, lane) => count + Object.keys(lane).length, 0) };
+}
+
+// Read-only source projection. Qualified view preserves legacy parent-scoped IDs.
+export function readTaskboard(root, { qualified = false } = {}) {
   assertSafeReadPath(root, path.join(root, 'workbench', 'manifest.json'));
   // Refuse linked sources before loaders can skip a symlinked directory or
   // read through it. Traverse only the existing Spec/Task ownership shapes.
@@ -1167,7 +1174,7 @@ function renderJsonPreview(root) {
   inspectLandmarks(collectionPath(root, 'landmarks'));
   const specs = [...loadSpecs(root), ...loadRetiredSpecs(root), ...loadLandmarkParents(root)];
   const completed = satisfiedBlockers(specs);
-  const board = buildTaskboard(specs, { resolveTask(spec, task) {
+  const options = { resolveTask(spec, task) {
     const slice = {
       ...task, declared: task.status, source: task.content ? 'record' : 'table', record: task,
       blockers: Array.isArray(task.blockers) ? task.blockers.join(', ') || 'none' : task.blockers,
@@ -1176,14 +1183,42 @@ function renderJsonPreview(root) {
     };
     const entry = taskboardEntryForSlice(spec, slice, satisfiedIds(spec, completed));
     return { resolvedStatus: entry.status, dependenciesMet: entry.dependenciesMet };
-  } });
+  } };
+  const board = qualified ? qualifiedTaskboard(specs, options) : buildTaskboard(specs, options);
   for (const lane of Object.values(board.lanes)) for (const card of Object.values(lane)) for (const source of card.sourceLinks) {
     const file = path.join(root, source);
     inspectFile(file);
     if (!fs.existsSync(file)) throw new Error(`taskboard-source: missing source link ${source}`);
   }
-  writeSafeFile(root, output, JSON.stringify(board, null, 2)+'\n');
-  return { format: 'json-preview', path: 'TASKBOARD.preview.json', schemaVersion: board.schemaVersion, cards: Object.values(board.lanes).reduce((count, lane) => count + Object.keys(lane).length, 0) };
+  return board;
+}
+
+// The flat board refuses legacy numeric Task labels shared across Specs. The
+// qualified board builds each parent alone, keys its Tasks `S-.../TK-...`
+// (or `LMK-.../TK-...`), refuses any identity it would otherwise overwrite,
+// and keeps the shared card order across parents.
+function qualifiedTaskboard(specs, options) {
+  const entries = [];
+  const identities = new Map();
+  for (const spec of specs) {
+    const part = buildTaskboard([spec], options);
+    for (const [lane, cards] of Object.entries(part.lanes)) {
+      for (const [id, card] of Object.entries(cards)) {
+        const task = id.startsWith('TK-');
+        const key = task ? `${spec.id}/${id}` : id;
+        const identity = task ? `${visibleIdKey(spec.id)}/${visibleIdKey(id)}` : visibleIdKey(id);
+        const source = card.sourceLinks[0];
+        const previous = identities.get(identity);
+        if (previous) throw new Error(`taskboard-collision: ${previous.key} at ${previous.source} and ${key} at ${source} share a source-qualified card identity`);
+        identities.set(identity, { key, source });
+        entries.push({ key, id, lane, card });
+      }
+    }
+  }
+  entries.sort((a, b) => compareTaskboardEntries({ ...a.card, id: a.id, specId: a.card.specId ?? a.card.landmarkId }, { ...b.card, id: b.id, specId: b.card.specId ?? b.card.landmarkId }));
+  const board = { schemaVersion: 1, identity: 'source-qualified', lanes: Object.fromEntries(TASKBOARD_LANES.map(lane => [lane, {}])) };
+  for (const { key, lane, card } of entries) board.lanes[lane][key] = card;
+  return board;
 }
 
 export function doctor(rootDir, options = {}) {

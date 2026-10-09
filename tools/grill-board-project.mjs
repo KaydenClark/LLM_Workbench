@@ -62,6 +62,19 @@ export function validateConfig(config) {
   }
   return config;
 }
+// GitHub repository identities are case-insensitive across HTTPS and SSH remotes.
+function githubIdentity(repository) {
+  if (typeof repository !== 'string') return null;
+  const match=repository.match(/^(?:https:\/\/github\.com\/|git@github\.com:|ssh:\/\/git@github\.com\/)([A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+?)\/?$/i);
+  return match ? match[1].replace(/\.git$/i,'').toLowerCase() : null;
+}
+export function validateProjectRepository(root, config) {
+  let origin;
+  try { origin=execFileSync('git',['remote','get-url','origin'],{cwd:root,encoding:'utf8',stdio:['ignore','pipe','pipe']}).trim(); }
+  catch { fail('Target origin must identify the configured GitHub repository'); }
+  const identity=githubIdentity(origin);
+  if (!identity || identity!==githubIdentity(config.repository)) fail('Configured repository must match the target GitHub origin');
+}
 const escapeHtml = value => value.replace(/[&<>"']/g, character => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[character]));
 const js = value => JSON.stringify(value).replace(/</g,'\\u003c').replace(/>/g,'\\u003e').replace(/&/g,'\\u0026').replace(/\u2028/g,'\\u2028').replace(/\u2029/g,'\\u2029');
 function seam(html, expression, replacement, count = 1) {
@@ -72,8 +85,9 @@ function seam(html, expression, replacement, count = 1) {
 export function renderProjectPage(page, config) {
   validateConfig(config);
   const topics = [...config.topics, { id:'other', title:'Other topics', frame:'New project questions awaiting grouping', outcome:'Every question stays reachable', groups:[] }];
-  let html = seam(page, /<title>Consequential Decision Record · Grill Board<\/title>/g, `<title>${escapeHtml(config.title)} · Grill Board</title>`);
-  html = seam(html, /<strong>Consequential Decision Record<\/strong>/g, `<strong>${escapeHtml(config.title)}</strong>`);
+  let html = seam(page, /<title>Workbench Dashboard · Grill Board<\/title>/g, `<title>${escapeHtml(config.title)} · Grill Board</title>`);
+  html = seam(html, /<span class="brand">Workbench Dashboard<\/span>/g, `<span class="brand">${escapeHtml(config.title)}</span>`);
+  html = seam(html, /document\.title = `\$\{SECTIONS\[tab\] \|\| 'Search'\} · Workbench Dashboard`;/g, `document.title = \`\${SECTIONS[tab] || 'Search'} · \` + ${js(config.title)};`);
   html = seam(html, /  const TOPICS = \[[\s\S]*?\n  \];/g, `  const TOPICS = ${js(topics)};`);
   html = seam(html, /  function topicFor\(item\) \{ return TOPICS\.find\(topic => topic\.numbers\.includes\(Number\(item\.id\?\.replace\('GB-', ''\)\)\)\)\?\.id \|\| 'other'; \}/g, "  function topicFor(item) { return TOPICS.find(topic => topic.groups.includes(item.group))?.id || 'other'; }");
   html = seam(html, /item\.id === 'GB-0180' \|\| /g, '');
@@ -88,6 +102,7 @@ export function verifyProject(root) {
   const configPath = safePath(root, `${DIRECTORY}/project.json`);
   const receipt = JSON.parse(fs.readFileSync(safePath(root, `${DIRECTORY}/deployment.json`), 'utf8'));
   const config = validateConfig(JSON.parse(fs.readFileSync(configPath, 'utf8')));
+  validateProjectRepository(root,config);
   if (receipt.schema !== RECEIPT_SCHEMA || !/^[a-f0-9]{40}$/.test(receipt.source?.commit ?? '') || typeof receipt.source?.repository !== 'string' || !receipt.files || Array.isArray(receipt.files)) fail('Invalid deployment receipt');
   const required = ['project.json','index.html','.gitignore','README.md','runtime/tools/grill-board-project.mjs','runtime/producer/tools/grill-board.mjs','runtime/producer/workbench/grill-board/index.html'];
   if (required.some(file => !Object.hasOwn(receipt.files, file))) fail('Incomplete deployment receipt');
@@ -120,16 +135,12 @@ function guardWrites(root) {
     try { fs.lstatSync(file); fail(`Existing Board temporary write destination: ${relative}`); } catch (error) { if (error.code !== 'ENOENT') throw error; }
   }
 }
-function ordinaryInput(file) {
+export function ordinaryInput(file) {
   const absolute = path.resolve(file);
-  // Do not silently traverse a linked parent of agent-provided input files.
-  let directory = path.dirname(absolute);
-  while (directory !== path.dirname(directory)) {
-    // macOS system aliases are outside the caller's project boundary.
-    if (!['/var','/tmp'].includes(directory)) ordinary(directory,'directory');
-    directory = path.dirname(directory);
-  }
+  // Share the same ancestor and leaf checks with initialization inputs.
+  ordinaryRoot(path.dirname(absolute));
   ordinary(absolute);
+  return absolute;
 }
 function send(response, status, value) { response.writeHead(status, {'content-type':'application/json; charset=utf-8','cache-control':'no-store'}); response.end(JSON.stringify(value)); }
 function projectLinks(sources, config) {

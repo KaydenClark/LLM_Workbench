@@ -13,7 +13,8 @@ import test from 'node:test';
 import vm from 'node:vm';
 import {
   ANSWERS_SCHEMA, ITEMS_SCHEMA, addItems, applyAnswer, boardPaths, createServer, itemStatus, mergeBoard,
-  pendingForAgents, readAnswers, readItems, readSourceFile, recordAnswer, reviseItem, statusSummary, withdrawItem
+  pendingForAgents, readAnswers, readItems, readSourceFile, recordAnswer, reviseItem, statusSummary, withdrawItem,
+  gradeItems, reassessItems
 } from './grill-board.mjs';
 
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -95,17 +96,25 @@ test('decision context survives a revision and never changes an owner answer', (
   assert.equal(readItems(dir).items[0].revision, 2, 'invalid context leaves the previous item intact');
 });
 
-test('saved notes and Not now are not decisions an agent may apply', () => {
+test('saved notes, legacy Not now and an unexplained send-back are not decisions an agent may apply', () => {
   const dir = room();
   addItems(dir, [sample('notes')], { by: 'tester' });
   recordAnswer(dir, 'GB-0001', { verdict: '', note: 'Still thinking', itemRevision: 1 });
   assert.deepEqual(pendingForAgents(dir), []);
   assert.throws(() => applyAnswer(dir, 'GB-0001', { by: 'tester', where: 'Spec' }), /decision|deferred/);
-  recordAnswer(dir, 'GB-0001', { verdict: 'defer', note: 'Later', itemRevision: 1 });
+  // New answers offer no Not now or Decline; a Change needs the owner's words.
+  assert.throws(() => recordAnswer(dir, 'GB-0001', { verdict: 'defer', note: 'Later', itemRevision: 1 }), (e) => e.code === 'legacy-verdict');
+  assert.throws(() => recordAnswer(dir, 'GB-0001', { verdict: 'decline', note: 'No', itemRevision: 1 }), (e) => e.code === 'legacy-verdict');
+  assert.throws(() => recordAnswer(dir, 'GB-0001', { verdict: 'change', note: '', itemRevision: 1 }), (e) => e.code === 'note-required');
+  // Earlier answers saved with the legacy words keep their meaning.
+  const answers = readAnswers(dir);
+  answers.answers['GB-0001'] = { verdict: 'defer', note: 'Later', at: '2026-10-05T00:00:00.000Z', itemRevision: 1, history: [] };
+  fs.writeFileSync(boardPaths(dir).answers, JSON.stringify(answers));
   assert.deepEqual(pendingForAgents(dir), []);
   assert.throws(() => applyAnswer(dir, 'GB-0001', { by: 'tester', where: 'Spec' }), /decision|deferred/);
-  recordAnswer(dir, 'GB-0001', { verdict: 'correct', note: '', itemRevision: 1 });
-  assert.deepEqual(pendingForAgents(dir), [], 'a correction must include the owner replacement words');
+  answers.answers['GB-0001'] = { verdict: 'correct', note: '', at: '2026-10-05T00:00:00.000Z', itemRevision: 1, history: [] };
+  fs.writeFileSync(boardPaths(dir).answers, JSON.stringify(answers));
+  assert.deepEqual(pendingForAgents(dir), [], 'a legacy correction must include the owner replacement words');
   assert.throws(() => applyAnswer(dir, 'GB-0001', { by: 'tester', where: 'Spec' }), /note|decision/);
 });
 
@@ -117,12 +126,12 @@ test('status derivation: pending, answered, applied, stale after revise, withdra
   assert.equal(view.items[0].options.length, 4, 'default options apply when options is null');
   assert.throws(() => applyAnswer(dir, 'GB-0001', { by: 'agent', where: 'nowhere' }), /nothing-to-apply|no owner answer/);
 
-  const saved = recordAnswer(dir, 'GB-0001', { verdict: 'correct', note: 'use my words', itemRevision: 1 });
+  const saved = recordAnswer(dir, 'GB-0001', { verdict: 'change', note: 'use my words', itemRevision: 1 });
   assert.equal(saved.derivedStatus, 'answered');
-  assert.deepEqual(pendingForAgents(dir).map((item) => [item.id, item.verdict, item.note]), [['GB-0001', 'correct', 'use my words']]);
+  assert.deepEqual(pendingForAgents(dir).map((item) => [item.id, item.verdict, item.verdictLabel, item.note]), [['GB-0001', 'change', 'Change', 'use my words']]);
 
   const applied = applyAnswer(dir, 'GB-0001', { by: 'agent', where: 'S-999 Decisions row' });
-  assert.equal(applied.applied.verdict, 'correct');
+  assert.equal(applied.applied.verdict, 'change');
   assert.equal(applied.applied.note, 'use my words');
   assert.equal(mergeBoard(dir).items[0].derivedStatus, 'applied');
   assert.throws(() => applyAnswer(dir, 'GB-0001', { by: 'agent', where: 'again' }), (e) => e.code === 'already-applied');
@@ -225,6 +234,20 @@ test('artifact reader follows manifest collections, preserves full records and d
   fs.writeFileSync(path.join(dir, 'workbench/docs/decisions/adr/archive/000C-old.md'), '---\ndate: 2026-10-04\nsuperseded_by: ADR-000A\n---\n# Old decision\nOld text.\n');
   const landmark = { id: 'LMK-000G', title: 'Workbench Updates', revision: 3, summary: 'Full summary', importance: 'Why it matters', origin: { title: 'Original name' }, history: [{ revision: 3, reason: 'Keep full history' }] };
   fs.writeFileSync(path.join(dir, 'concepts/LMK-000G.json'), JSON.stringify(landmark));
+  // The Dashboard catalog also reads the declared Spec, Task, DQC, Wiki and
+  // skill lanes and the optional root ARCHITECTURE/GLOSSARY files.
+  const specDir = path.join(dir, manifest.lanes.specs, 'S-999-fixture');
+  fs.mkdirSync(path.join(specDir, 'tasks', 'TK-999A'), { recursive: true });
+  fs.writeFileSync(path.join(specDir, 'SPEC.md'), '# Fixture capability\n\n**Spec ID:** S-999\n**Status:** planned\n');
+  fs.writeFileSync(path.join(specDir, 'tasks', 'TK-999A', 'TASK.md'), '# TK-999A - Fixture slice\n\n**Task ID:** TK-999A\n**Spec ID:** S-999\n**Status:** ready\n');
+  const dqcDir = path.join(dir, manifest.landmarkTracker.collections['destination-questions']);
+  fs.mkdirSync(dqcDir, { recursive: true });
+  fs.writeFileSync(path.join(dqcDir, 'DQC-999A.json'), JSON.stringify({ id: 'DQC-999A', title: 'Fixture destination question', revision: 2 }));
+  fs.mkdirSync(path.join(dir, manifest.lanes.wiki), { recursive: true });
+  fs.writeFileSync(path.join(dir, manifest.lanes.wiki, 'MEMORY.md'), '# Wiki router\n');
+  fs.mkdirSync(path.join(dir, manifest.lanes.skills, 'fixture-skill'), { recursive: true });
+  fs.writeFileSync(path.join(dir, manifest.lanes.skills, 'fixture-skill', 'SKILL.md'), '# Fixture skill\n');
+  fs.writeFileSync(path.join(dir, 'GLOSSARY.md'), '# Glossary\n');
   addItems(dir, [sample('full', { kind: 'confirm-text', sources: [{ label: 'Blueprint', path: 'BLUEPRINT.md', ref: 'abc1234' }], draft: '# Blueprint draft\n\nComplete reviewed page.\n' }), sample('excerpt', { sources: [{ label: 'Blueprint', path: 'BLUEPRINT.md', ref: 'abc1234' }], draft: 'Only one proposed line.' }), sample('second', { sources: [{ label: 'Blueprint', path: 'BLUEPRINT.md' }] })], { by: 'tester' });
   const before = fs.readFileSync(boardPaths(dir).items, 'utf8');
   const server = createServer(dir);
@@ -233,7 +256,16 @@ test('artifact reader follows manifest collections, preserves full records and d
   const get = async p => (await fetch(base + p)).json();
   try {
     const catalog = await get('/api/artifacts');
-    assert.deepEqual(catalog.groups.map(g => g.id), ['agents', 'runbook', 'blueprint', 'lexicon', 'landmarks', 'adrs', 'ddrs']);
+    assert.deepEqual(catalog.groups.map(g => g.id), ['agents', 'runbook', 'blueprint', 'lexicon', 'landmarks', 'adrs', 'ddrs', 'specs', 'tasks', 'dqcs', 'wiki', 'skills', 'architecture', 'glossary']);
+    const inGroup = (group, file) => catalog.artifacts.some(a => a.group === group && a.path === file);
+    assert.ok(inGroup('specs', `${manifest.lanes.specs}/S-999-fixture/SPEC.md`), 'Specs are cataloged');
+    assert.ok(inGroup('tasks', `${manifest.lanes.specs}/S-999-fixture/tasks/TK-999A/TASK.md`), 'Tasks are cataloged');
+    assert.ok(inGroup('dqcs', `${manifest.landmarkTracker.collections['destination-questions']}/DQC-999A.json`), 'DQCs are cataloged');
+    assert.ok(inGroup('wiki', `${manifest.lanes.wiki}/MEMORY.md`), 'Wiki pages are cataloged');
+    assert.ok(inGroup('skills', `${manifest.lanes.skills}/fixture-skill/SKILL.md`), 'skills are cataloged');
+    assert.ok(inGroup('glossary', 'GLOSSARY.md'), 'a present glossary is cataloged');
+    assert.ok(!catalog.artifacts.some(a => a.group === 'architecture'), 'an absent ARCHITECTURE.md is not invented');
+    assert.equal(catalog.artifacts.filter(a => a.path === 'concepts/LMK-000G.json').length, 1, 'a landmark is cataloged once');
     assert.ok(catalog.artifacts.some(a => a.title === 'Accepted decision' && a.status === 'accepted'));
     assert.ok(catalog.artifacts.some(a => a.title === 'Proposed decision' && a.status === 'proposed'));
     assert.ok(catalog.artifacts.some(a => a.title === 'Old decision' && a.status === 'superseded'));
@@ -300,6 +332,7 @@ test('the CLI exposes no command that writes answers.json and reports with exit 
   const unknown = cli(dir, ['answer', 'GB-0001']);
   assert.equal(unknown.status, 1);
   assert.equal(unknown.json.error.code, 'invalid-invocation');
+  for (const command of ['grade --file', 'reassess --file', 'handoffs', 'disposition --file']) assert.ok(unknown.json.error.message.includes(command), `usage names ${command}`);
   const status = cli(dir, ['status', '--json']);
   assert.equal(status.json.counts.pending, 1);
   const validate = cli(dir, ['validate']);
@@ -310,7 +343,7 @@ test('the CLI exposes no command that writes answers.json and reports with exit 
 
 function sliceModel() {
   const html = fs.readFileSync(path.join(repo, 'workbench/grill-board/index.html'), 'utf8');
-  const script = html.match(/<script>([\s\S]*?)<\/script>/)[1].replace('Promise.all([load()', 'window.sliceTest = { topicFor, intentFor, laneFor, sliceCounts, batchProgress, matchesSlice, state, TOPICS }; Promise.all([load()');
+  const script = html.match(/<script>([\s\S]*?)<\/script>/)[1].replace('Promise.all([load()', 'window.sliceTest = { topicFor, intentFor, laneFor, sliceCounts, batchProgress, matchesSlice, settledLabel, state, TOPICS, LANES, STATUS_LABEL, latestAssessment, gradeDetail }; Promise.all([load()');
   const context = vm.createContext({ document: { getElementById: () => ({}), documentElement: { dataset: {} } }, window: { addEventListener() {} }, setInterval() {}, URL, URLSearchParams, fetch: () => new Promise(() => {}) });
   vm.runInContext(script, context);
   return context.window.sliceTest;
@@ -330,6 +363,23 @@ test('board slices separate owner work, review, and exploration without losing a
   assert.equal(model.matchesSlice({ id: 'GB-0018', kind: 'owner-decision', derivedStatus: 'pending' }, { topic: 'workflow' }), false);
 });
 
+// Owner correction, 2026-10-09: a withdrawn card was settled elsewhere, not
+// decided against. It is labelled for what happened to it and stays off the
+// main board; only the history lane lists it.
+test('settled cards are labelled for what happened and leave the main board', () => {
+  const model = sliceModel();
+  const folded = { id: 'GB-0182', derivedStatus: 'withdrawn', history: [{ reason: 'withdrawn: Folded into GB-0009, which now asks the stewardship rule.' }] };
+  const answered = { id: 'GB-0115', derivedStatus: 'withdrawn', history: [{ reason: 'withdrawn: Already decided: the owner gave Human QA approval.' }] };
+  assert.equal(model.settledLabel(folded), 'Merged into GB-0009');
+  assert.equal(model.settledLabel(answered), 'Settled');
+  assert.ok(!/withdrawn/i.test(model.STATUS_LABEL.withdrawn));
+  assert.ok(!/withdrawn/i.test(model.LANES.withdrawn));
+  assert.equal(model.matchesSlice(answered, { lane: 'all' }), false, 'the main board hides settled cards');
+  assert.equal(model.matchesSlice(answered, {}), false);
+  assert.equal(model.matchesSlice(answered, { lane: 'withdrawn' }), true, 'the history lane still lists them');
+  assert.equal(model.matchesSlice({ id: 'GB-0009', derivedStatus: 'pending' }, { lane: 'all' }), true);
+});
+
 test('workflow counts partition items and a parked or unsaved answer never finishes a batch', () => {
   const model = sliceModel();
   const items = ['pending', 'stale', 'answered', 'applied', 'withdrawn'].map((derivedStatus, n) => ({ id: `x${n}`, revision: 2, derivedStatus }));
@@ -345,9 +395,9 @@ test('workflow counts partition items and a parked or unsaved answer never finis
   assert.equal(model.batchProgress().complete, false);
   items.at(-1).derivedStatus = 'answered';
   assert.equal(model.batchProgress().complete, true);
-  model.state.drafts.set('parked', { note: 'unsaved edit' });
+  model.state.edits.set('parked', { note: 'unsaved edit' });
   assert.equal(model.batchProgress().complete, false);
-  model.state.drafts.clear();
+  model.state.edits.clear();
   items.at(-1).derivedStatus = 'stale';
   assert.equal(model.batchProgress().complete, false);
   assert.equal(model.state.batch.ids.length, 3, 'saving never refills the fixed batch');
@@ -368,4 +418,70 @@ test('the live board in this repository validates and every item carries a sourc
   assert.equal(summary.total, board.items.length);
   const groups = new Set(board.groups.map((group) => group.id));
   for (const group of summary.groups) assert.ok(groups.has(group.id));
+});
+
+// TK-007O: after an owner answer is applied, or a card revised from it, the
+// agent reassesses that card's P and V. A retained grade is recorded as
+// assessed, a revised one with its justification, and nothing touches the
+// item's revision or the owner's answers.
+test('answer-to-card-update cycle: P/V reassessment retains or revises with its basis', async () => {
+  const dir = room();
+  addItems(dir, [sample('a'), sample('b'), sample('ungraded')], { by: 'tester' });
+  gradeItems(dir, ['GB-0001', 'GB-0002'].map(id => ({ id, expectedGradeRevision: 0, priority: { grade: 'P2', reason: 'Source: README.md; blocks one Spec' }, value: { grade: 'V3', reason: 'Source: README.md; modest return' } })), { by: 'grader', reason: 'initial' });
+  const server = createServer(dir);
+  await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
+  const put = (id, body) => fetch(`http://127.0.0.1:${server.address().port}/api/answers/${id}`, { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
+  try {
+    assert.equal((await put('GB-0001', { verdict: 'confirm', note: '', itemRevision: 1 })).status, 200);
+    assert.equal((await put('GB-0002', { verdict: 'change', note: 'Narrow it to the Taskboard', itemRevision: 1 })).status, 200);
+  } finally { await new Promise(resolve => server.close(resolve)); }
+  const answersBefore = fs.readFileSync(boardPaths(dir).answers, 'utf8');
+  const answerA = readAnswers(dir).answers['GB-0001'], answerB = readAnswers(dir).answers['GB-0002'];
+  applyAnswer(dir, 'GB-0001', { by: 'agent', where: 'S-999 Decisions row' });
+  reviseItem(dir, 'GB-0002', { proposal: 'Agent proposal: only the Taskboard.' }, { by: 'agent', reason: 'Owner Change GB-0002' });
+  const unassessed = readItems(dir).items[0];
+  assert.equal(unassessed.history.some(entry => entry.assessment), false, 'before reassessment nothing records an assessment');
+
+  const before = fs.readFileSync(boardPaths(dir).items, 'utf8');
+  const refuse = (rows, pattern) => { assert.throws(() => reassessItems(dir, rows, { by: 'agent', reason: 'cycle' }), pattern); assert.equal(fs.readFileSync(boardPaths(dir).items, 'utf8'), before, 'a refused reassessment leaves items.json unchanged'); };
+  const retain = basis => ({ retain: true, basis });
+  const followA = { id: 'GB-0001', answerAt: answerA.at, itemRevision: 1 };
+  refuse([{ id: 'GB-0003', expectedGradeRevision: 0, followed: { id: 'GB-0003', answerAt: answerA.at, itemRevision: 1 }, priority: retain('x'), value: retain('x') }], /ungraded|no grade|answer/);
+  refuse([{ id: 'GB-0001', expectedGradeRevision: 0, followed: followA, priority: retain('x'), value: retain('x') }], /stale/);
+  refuse([{ id: 'GB-0001', expectedGradeRevision: 1, followed: followA, priority: retain(''), value: retain('x') }], /basis/);
+  refuse([{ id: 'GB-0001', expectedGradeRevision: 1, followed: { ...followA, answerAt: '2020-01-01T00:00:00.000Z' }, priority: retain('x'), value: retain('x') }], /answer/);
+  refuse([{ id: 'GB-0001', expectedGradeRevision: 1, followed: followA, priority: retain('x'), value: { grade: 'V9', reason: 'r', basis: 'b' } }], /grade/);
+  refuse([{ id: 'GB-0001', expectedGradeRevision: 1, followed: followA, priority: retain('x') }], /value/);
+
+  const [a, b] = reassessItems(dir, [
+    { id: 'GB-0001', expectedGradeRevision: 1, followed: followA, priority: retain('The confirmed answer leaves the blocked Spec as it was.'), value: { grade: 'V2', reason: 'Source: S-999 Decisions row; the confirmed choice removes repeated work', basis: 'The answer settled the choice, raising its return.' } },
+    { id: 'GB-0002', expectedGradeRevision: 1, followed: { id: 'GB-0002', answerAt: answerB.at, itemRevision: 1 }, priority: retain('Narrowing keeps the same urgency.'), value: retain('Narrowing keeps the same return.') }
+  ], { by: 'agent', reason: 'Answer-to-card update' });
+  assert.deepEqual([a.id, a.key, a.revision, a.gradeRevision, a.priority.grade, a.value.grade], ['GB-0001', 'a', 1, 2, 'P2', 'V2']);
+  assert.equal(a.priority.reason, 'Source: README.md; blocks one Spec', 'a retained grade keeps its reason');
+  assert.deepEqual([b.revision, b.gradeRevision, b.priority.grade, b.value.grade], [2, 2, 'P2', 'V3'], 'reassessment never bumps the item revision');
+  const assessment = a.history.at(-1).assessment;
+  assert.deepEqual(JSON.parse(JSON.stringify(assessment)), { followed: followA, priority: { outcome: 'retained', grade: 'P2', basis: 'The confirmed answer leaves the blocked Spec as it was.' }, value: { outcome: 'revised', from: 'V3', grade: 'V2', basis: 'The answer settled the choice, raising its return.' } });
+  assert.match(a.history.at(-1).reason, /reassessed/);
+  assert.ok(a.history.some(entry => /^applied/.test(entry.reason)), 'earlier history is preserved');
+  assert.equal(b.history.at(-1).assessment.priority.outcome, 'retained');
+  assert.equal(fs.readFileSync(boardPaths(dir).answers, 'utf8'), answersBefore, 'agent operations never touch owner answers');
+  const view = mergeBoard(dir).items;
+  assert.equal(view[0].derivedStatus, 'applied', 'the applied owner answer stays applied');
+  assert.equal(view[0].answer.verdict, 'confirm');
+  assert.equal(view[1].derivedStatus, 'stale', 'the revised card awaits a fresh answer; its earlier answer is kept');
+  assert.throws(() => reassessItems(dir, [{ id: 'GB-0001', expectedGradeRevision: 1, followed: followA, priority: retain('x'), value: retain('x') }], { by: 'agent', reason: 'stale' }), /stale/);
+});
+
+test('the central question view shows the latest P/V assessment, retained or revised', () => {
+  const model = sliceModel();
+  const graded = { priority: { grade: 'P2', reason: 'r' }, value: { grade: 'V2', reason: 'r' } };
+  const history = [{ revision: 1, at: '2026-10-08T00:00:00.000Z', by: 'grader', reason: 'graded: initial', gradeRevision: 1 }];
+  assert.equal(model.latestAssessment({ ...graded, history }), null, 'a graded but unassessed card has no assessment');
+  const assessed = { ...graded, history: [...history, { revision: 1, gradeRevision: 2, at: '2026-10-09T00:00:00.000Z', by: 'agent', reason: 'reassessed: Answer-to-card update', assessment: { followed: { id: 'GB-0001', answerAt: '2026-10-08T12:00:00.000Z', itemRevision: 1 }, priority: { outcome: 'retained', grade: 'P2', basis: 'Same urgency.' }, value: { outcome: 'revised', from: 'V3', grade: 'V2', basis: 'Higher return.' } } }] };
+  const html = model.gradeDetail(assessed);
+  assert.match(html, /Priority P2 retained[\s\S]*Same urgency\./);
+  assert.match(html, /Value revised V3 → V2[\s\S]*Higher return\./);
+  assert.match(html, /GB-0001[\s\S]*2026-10-08T12:00:00.000Z/);
+  assert.doesNotMatch(model.gradeDetail({ ...graded, history }), /reassess/i, 'a card that was never reassessed shows no reassessment line');
 });

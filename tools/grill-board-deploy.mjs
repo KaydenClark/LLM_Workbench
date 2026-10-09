@@ -1,18 +1,24 @@
 #!/usr/bin/env node
 // Optional installation, never part of the automatic managed-tool deployment.
 import fs from 'node:fs';
+import { isDeepStrictEqual } from 'node:util';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { DIRECTORY, RECEIPT_SCHEMA, sha256, ordinary, safePath, validateConfig, renderProjectPage, verifyProject } from './grill-board-project.mjs';
+import { DIRECTORY, RECEIPT_SCHEMA, sha256, ordinary, ordinaryInput, safePath, validateConfig, validateProjectRepository, renderProjectPage, verifyProject } from './grill-board-project.mjs';
 const fail = message => {throw new Error(message);};
 const git = (root,args) => execFileSync('git',args,{cwd:root,encoding:'utf8',stdio:['ignore','pipe','pipe']}).trim();
-function moduleClosure(root, relative, files = new Map()) {
+// A module specifier counts only where it is an import or re-export statement:
+// at the start of a line, or after the closing brace of a multi-line import.
+// Words inside a string, template or comment (such as a message that says
+// 'derives from "related"') are not dependencies.
+const IMPORT_STATEMENT = /^[ \t]*(?:(?:import|export)\b[^\n'"]*?\bfrom[ \t]*|import[ \t]*|\}[ \t]*from[ \t]*)['"]([^'"\n]+)['"]/gm;
+export function moduleClosure(root, relative, files = new Map()) {
   if (files.has(relative)) return files;
   if (!/^(?:tools|workbench\/tools)\/[A-Za-z0-9_.\/-]+\.mjs$/.test(relative)) fail(`Unsupported module dependency ${relative}`);
   const file = safePath(root,relative); const bytes=fs.readFileSync(file); files.set(relative,bytes);
   const text=bytes.toString('utf8');
-  for (const match of text.matchAll(/(?:from\s+|import\s*)['"]([^'"]+)['"]/g)) {
+  for (const match of text.matchAll(IMPORT_STATEMENT)) {
     if (match[1].startsWith('node:')) continue;
     if (!match[1].startsWith('.')) fail(`External dependency ${match[1]} is unsupported`);
     moduleClosure(root,path.posix.normalize(path.posix.join(path.posix.dirname(relative),match[1])),files);
@@ -22,11 +28,12 @@ function moduleClosure(root, relative, files = new Map()) {
 export function initializeProject({project,source,commit,config}) {
   project=path.resolve(project); source=path.resolve(source); validateConfig(config);
   ordinary(project,'directory'); ordinary(source,'directory'); safePath(project,'workbench/manifest.json');
+  validateProjectRepository(project,config);
   const directory=safePath(project,DIRECTORY,{optional:true,directory:true});
   // Refuse a producer checkout; installation cannot replace its live Board.
   if (fs.existsSync(directory)) {
     const existing=verifyProject(project);
-    if (JSON.stringify(existing.config)!==JSON.stringify(config)) fail('Existing project configuration differs; initialization never overwrites it');
+    if (!isDeepStrictEqual(existing.config,config)) fail('Existing project configuration differs; initialization never overwrites it');
     return {status:'preserved',...existing.receipt};
   }
   if (!/^[a-f0-9]{40}$/.test(commit ?? '') || git(source,['rev-parse','HEAD'])!==commit) fail('Exact checked-out source commit required');
@@ -74,8 +81,8 @@ export function main(argv) {
   if (!flags.project) fail('--project required');
   if (command==='verify') return {status:'verified',...verifyProject(flags.project).receipt};
   if (command!=='init' || !flags.source || !flags.config) fail('init requires --source --commit --config');
-  ordinary(path.resolve(flags.config));
-  return initializeProject({...flags,config:JSON.parse(fs.readFileSync(flags.config,'utf8'))});
+  const configPath=ordinaryInput(flags.config);
+  return initializeProject({...flags,config:JSON.parse(fs.readFileSync(configPath,'utf8'))});
 }
 if (process.argv[1] && fs.realpathSync(process.argv[1])===fs.realpathSync(fileURLToPath(import.meta.url))) {
   try { console.log(JSON.stringify(main(process.argv.slice(2)),null,2)); } catch(error) {console.error(error.message);process.exitCode=1;}

@@ -6,7 +6,20 @@ The source must be a clean checkout at the exact reviewed commit. Node 18 or
 newer and Git are sufficient; no packages, service, hooks or credentials are
 installed. Never install into a producer Board or overwrite an existing Board.
 
-Create a configuration file outside the Board directory:
+The page is the Workbench Dashboard's Grilling Board page, with the Dashboard's
+five sections: the Grilling Board itself, and the Destination Tracker, Taskboard,
+Drafts to approve and Wiki, which read the project's own Specs, Tasks, Wiki and
+decision records. A section whose source the project does not have shows its own
+error and nothing else. Comments, change requests and promotion save to the
+project's native notepads collection, so they need `workbench/manifest.json` to
+declare `collections.notepads`; without it that block shows `missing-owner` and
+the rest of the Board works. The deployment installs the page and its module
+closure only: the Dashboard's always-open service is not installed, and the
+project's title replaces the Workbench Dashboard name in the page header, the
+browser tab and every section title.
+
+Create an ordinary configuration file outside the Board directory, with no
+symlinked parent directories (the existing macOS system aliases remain supported):
 
 ```json
 {
@@ -28,7 +41,11 @@ Create a configuration file outside the Board directory:
 ```
 
 Use the project's own title, canonical HTTPS GitHub repository URL, unique
-instance name and manually selected unused port. Topic membership uses item
+instance name and manually selected unused port. The repository must match the
+target checkout's origin. HTTPS and SSH GitHub origins, optional `.git` suffixes,
+and case differences identify the same repository. Missing, local-only,
+non-GitHub or mismatched origins refuse initialization and runtime verification;
+a local-copy clone must retain its project's GitHub origin before using the Board. Topic membership uses item
 `group`, never producer question numbers. Each group belongs to one topic.
 The inherited Other topics fallback remains in the renderer; installed questions
 must use a configured group. Configuration strings are escaped as data, including
@@ -50,6 +67,8 @@ owner answers. Receipt hashes cover immutable deployment files; `items.json`
 and owner-local `answers.json` remain mutable through their respective writers.
 Rerunning initialization verifies and preserves an existing deployment; different
 configuration, collisions or modified managed bytes refuse rather than overwrite.
+Object-key order in equivalent JSON does not count as a configuration change;
+array order and actual values still do.
 There is no automatic update or destructive recovery command. A component update
 needs a separately reviewed preservation plan. Do not edit receipt-managed files.
 

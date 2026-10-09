@@ -221,7 +221,7 @@ we can build on while answers, inventory and detailed destinations evolve.
 
 The owner wants one browser workspace for browsing Taskboard and Tracker
 together, opening connected cards, commenting and requesting updates. The
-[Shared Interactive Workbench Board (S-004D)](../../specs/S-004D-shared-interactive-board/SPEC.md)
+[Workbench Dashboard (S-004D)](../../specs/S-004D-shared-interactive-board/SPEC.md)
 owns that destination and its unresolved design choices. Its first working form
 is the [Grill Board](../../grill-board/README.md), where the owner already
 answers pending items, including unconfirmed question cards, as a package (the

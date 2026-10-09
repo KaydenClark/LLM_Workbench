@@ -1,0 +1,182 @@
+{
+  "schema": "owner-flow-demo-receipt@1",
+  "worker": "Worker E (owner-flow demonstration; TK-007Y demonstration half + TK-007O browser scenario re-check)",
+  "date": "2026-10-08",
+  "candidate": {
+    "sha": "a857b658",
+    "branch": "claude/workbench-dashboard-first-pass",
+    "assemblyWorktree": "/private/tmp/claude-501/-Users-kayden-LLM-Workbench/030b9f1e-bdf6-42b3-a9ef-9dabfbd01385/scratchpad/dash (read only)"
+  },
+  "copy": {
+    "path": "/private/tmp/claude-501/-Users-kayden-LLM-Workbench/030b9f1e-bdf6-42b3-a9ef-9dabfbd01385/scratchpad/demo-copy-a857b658",
+    "method": "git -C <assembly> archive a857b658 | tar -x -C <copy>; then git init -b demo + one local commit (78b3d68) so the reader reports a checkout tree. Real inventory: 180 items (171 pending, 9 withdrawn) with real P/V grades, real Specs, DDRs and ADRs.",
+    "repositoryFilesChanged": "none (no repository or primary-checkout file touched; owner board on 4646 left running and answered 200 at the end)"
+  },
+  "server": {
+    "command": "node tools/grill-board.mjs serve --path <copy> --port 4720",
+    "port": 4720,
+    "host": "127.0.0.1",
+    "logs": ["demo/server-1.log", "demo/server-2.log"],
+    "stoppedAtEnd": true
+  },
+  "browser": "Claude Browser pane (Chromium), viewport 1882x1344, http://127.0.0.1:4720/",
+  "steps": [
+    {
+      "step": 1,
+      "action": "Searched 'DDR-000A' in the Grilling Board left search, clicked the row to open GB-0034 centrally; read the package; opened Drafts to approve (current file text beside proposed wording); followed the question's 'DDRs · ...' link into the Wiki reader; hovered 'Journey'; opened 'Linked from'; ran global search 'recursive delivery'; returned to the question.",
+      "observed": "Central view: title first, GB-0034 rev 5, P3/V2 badges with their own reasons, question, What this concerns / Why / Recommended answer / What would change / Consequences, Related DQC history, full proposed draft, history, four answer buttons (Confirm enabled; Rework wording, Change the why, Change disabled 'needs your note'). Drafts to approve: DDR-000A group shows 'Current text' (current checkout, SHA-256 293f5260...) beside 'Proposed wording' tagged GB-0034 rev 5 'Not yet approved' (SHA-256 f07dbb29...). Wiki reader: Current artifact beside 'Proposed draft · full text' + Proposed change. Hover on Journey showed its Lexicon definition tooltip (source LEXICON.md). Linked from: GB-0034 question, DDR register, DDR history, Landmark: Workbench Workflow, The Workflow From Idea To Delivery. Global search: 15 results, GB-0034 first. Answer note typed before leaving (autosaved note-only, 'Saved 11:28:27') was intact on return. An unsaved text in the card's 'Comment or change request' box survived a Grilling Board tab round trip, but was LOST when returning via the search result link and via browser Back from the Wiki reader (defect D1).",
+      "itemIds": ["GB-0034"],
+      "result": "fail",
+      "notes": "Everything in the step passed except preserving an unsaved comment/change-request box text on return through the #GB-#### route (D1). The answer note is preserved because it autosaves. Screenshots 01, 02, 03."
+    },
+    {
+      "step": 2,
+      "action": "Typed a change request in GB-0034's comment box and clicked 'Send a change request'. Then clicked Confirm while the change request was open, and POSTed /api/promotions directly for GB-0034 rev 5.",
+      "observed": "Card shows 'Change request · revision 5 ... awaiting revision'. File written: workbench/grill-board/comments/43a4b91ecc8b0e4e664f993c5687f2cbdaddf50c1e944ece962704cf6476ebc6.json (schema dashboard-comment@1, kind change, itemRevision 5, status 'awaiting revision', sources room-relative). After Confirm, workflow state stayed 'In grilling', Start promotion stayed disabled; direct POST /api/promotions -> 400 {code: change-awaiting-revision}.",
+      "itemIds": ["GB-0034"],
+      "result": "pass",
+      "notes": "The disabled-promotion hint reads 'Only a card the workflow reports as confirmed can be promoted.' and does not name the open change request as the reason (minor UX, O3). Screenshot 04."
+    },
+    {
+      "step": 3,
+      "action": "Agent: node tools/grill-board.mjs revise GB-0034 --by demo-agent-worker-e --reason \"Carry the owner's change request (comment 43a4b91e) into the proposed DDR-000A wording\" --draft-file demo/inputs/gb0034-draft-r6.md; then reloaded the page.",
+      "observed": "CLI: 'GB-0034 is now revision 6'. History entry {revision 6, by demo-agent-worker-e, changes [draft]}. After reload: head 'GB-0034 · revision 6 · RE-ANSWER'; notice 'This question changed after you answered (now revision 6; you answered revision 5)...'; change request status 'revised; awaiting confirmation'; confirmed snapshot rev 5 'The question has changed since; it needs a fresh confirmation'; promotion disabled.",
+      "itemIds": ["GB-0034"],
+      "result": "pass",
+      "notes": "A hash-only navigate did not refresh the open page; a real reload was needed (the 15-second poll banner later appeared as designed). Screenshot 05."
+    },
+    {
+      "step": 4,
+      "action": "Clicked Confirm on revision 6; opened Drafts to approve.",
+      "observed": "Saved; head ANSWERED; workflow state 'Confirmed; promotion not requested'; snapshot rev 6 SHA-256 6f77586f...; change request 'revised; confirmed'; Start promotion enabled. Drafts to approve: 'Approved: you confirmed this exact wording at revision 6 ... Snapshot SHA-256 6f77586fd9b6... matches the current draft.' with the revised sentence in the proposed text.",
+      "itemIds": ["GB-0034"],
+      "result": "pass",
+      "notes": "After confirming, the purple 'This question changed after you answered (now revision 6; you answered revision 5)' notice stayed on the open card until reload, contradicting the 'This is the current revision' line below it (minor, O1). Screenshot 06."
+    },
+    {
+      "step": 5,
+      "action": "Agent revised GB-0034 again (rev 7, --draft-file gb0034-draft-r7.md). Without reloading, clicked Start promotion in the still-open rev-6 view. Reloaded; opened Drafts to approve; POSTed /api/promotions with rev 7; then clicked Confirm on rev 7.",
+      "observed": "Stale-view promotion: POST -> 409 'stale-item: GB-0034 is at revision 7; read the question again' + 'The board changed since you read it; nothing was recorded twice. Reload and review'; banner 'An agent updated the board since you loaded it. Your saved answers are safe.' Drafts summary '1 stale approvals'; GB-0034 'Stale approval: the wording you confirmed (revision 6, SHA-256 6f77586fd9b6...) no longer matches the current draft (SHA-256 ec4f5ba2e1bc...). Confirm again to approve the current wording.' Card: RE-ANSWER, In grilling, promotion disabled; direct POST -> 409 {code: stale-approval}. Re-confirm: snapshot rev 7 ec4f5ba2..., state Confirmed; promotion not requested, promote enabled.",
+      "itemIds": ["GB-0034"],
+      "result": "pass",
+      "notes": "Screenshots 07, 08."
+    },
+    {
+      "step": 6,
+      "action": "Round 1: confirmed GB-0040 (DDR-000G) and clicked 'End this round'. Round 2: on choice GB-0005 typed a note, selected 'A: Contract artifact' (not the preselected 'Recommended answer: Routing artifact'), clicked Confirm, then 'End this round'.",
+      "observed": "Round 1: 'Round 1 ended with 2 confirmed cards recorded. No agent was started.' (GB-0034@7, GB-0040@4); 0 promotion requests. GB-0005: alternatives shown as 'Recommended answer: Routing artifact' (preselected), 'A: Contract artifact', 'B: Keep deferred' (A/B needed a note); Confirm stored verdict contract_artifact with an approval snapshot (eeeb3946...) carrying verdict and note. Round 2: 'Round 2 ended with 3 confirmed cards recorded. No agent was started.' (GB-0005@4, GB-0034@7, GB-0040@4); still 0 requests; card counts confirmed 3, in-grilling 168, withdrawn 9; unanswered GB-0035 and GB-0001 remain 'In grilling'.",
+      "itemIds": ["GB-0040", "GB-0005", "GB-0034", "GB-0035", "GB-0001"],
+      "result": "pass",
+      "notes": "Clicking a list row opens the question but leaves the address hash on the previous question (#GB-0040 while GB-0005 was open) (minor, O2). Screenshots 09, 10."
+    },
+    {
+      "step": 7,
+      "action": "Double-clicked 'Start promotion for this confirmed card' on GB-0034. Replayed the same action ID via POST. Opened a second tab on GB-0039 before answering; in tab A saved Rework wording + note; in stale tab B clicked Confirm, then typed a different note and chose Change.",
+      "observed": "Double-click produced exactly one POST /api/promotions (200) and one request 17e93b0f-76e2-48c6-abb8-c81bbea6788a; card 'Handoff requested'. Replay with the page's exact payload returned 200 idempotent:true with the same request id; a new action for the same card returned 400 already-requested; requests stayed 1. Stale tab B: PUT /api/answers/GB-0039 -> 409, card shows 'Not saved: GB-0039: stale answer; reload before saving... your typed text stays here'; tab B text 'TAB B: drop this record entirely.' retained in the box; server answer remained tab A's rework + note (notepad holds both of tab A's entries, nothing from tab B).",
+      "itemIds": ["GB-0034", "GB-0039"],
+      "result": "pass",
+      "notes": "A replay of the same action ID with the same fields in a different JSON key order returned 409 action-id-conflict (defect D3, low). Screenshots 11, 12."
+    },
+    {
+      "step": 8,
+      "action": "Single-card handoff = step 7 (GB-0034). Selected-set handoff: expanded 'Confirmed cards ready for promotion (2)', ticked GB-0005 (Contract artifact) and GB-0040 (Confirm), clicked 'Start promotion for selected confirmed cards (2)'. Agent receipts via node tools/grill-board.mjs disposition --file (inputs in demo/inputs/disp-*.json): GB-0034 knowledge-only Record -> Publish -> Map(implementationNeeded=false, reason) -> Publish -> Plan(no-op reason) -> Publish linking the DDR-000A file and DDR REGISTER; GB-0005 Record -> Publish -> Map(SPEC.md of S-01U) -> Publish -> Plan(TK-01Q/TASK.md inside S-01U) -> Publish -> Implemented(TK-01Q done). Negative probes: Implemented on knowledge-only GB-0034; Map before Record on GB-0005; Plan with a Task from another Spec (S-004O TK-009A).",
+      "observed": "Request f239c34c-a35a-481f-b81b-2b6b8f7fd687 with cards GB-0005@4 verdict contract_artifact and GB-0040@4 confirm; GB-0039 (Rework wording) not offered. Negative probes refused: knowledge-only, stage-order 'The next stage is Record', missing-owner 'Plan Tasks must belong to the mapped Spec'. After reload: GB-0034 'Published (plan); knowledge-only, no Spec or Task: ...' with ordered timeline Requested, Record, Publish, Map ('No Spec or Task: ...'), Publish, Plan ('No Spec or Task: ...'), Publish, each with by/time, Result and Evidence links (#artifact=... reader links). GB-0005 'Implemented' with Requested..Publish + Implemented, Result links to S-01U SPEC.md and TK-01Q TASK.md (opens the Task reader: 'TK-01Q · done'). GB-0040 'Handoff requested', Record 'Next; waiting for a director.', later stages 'Not reached.'",
+      "itemIds": ["GB-0034", "GB-0005", "GB-0040"],
+      "result": "pass",
+      "notes": "One of my helper runs reused an action ID and was refused action-id-conflict (helper error, not product); re-run with unique IDs. The bulk-promotion panel shows only the counter ('2 promotion handoffs requested'), no per-action confirmation line (cosmetic). Screenshots 13, 14, 15."
+    },
+    {
+      "step": 9,
+      "action": "Captured /api/workflow and all answers, killed the server process (pid 67306), confirmed 4720 down, restarted the same command on the same copy, recaptured, reloaded the page and opened GB-0034, GB-0005, GB-0040, GB-0039.",
+      "observed": "Answers byte-identical (demo/state-before-restart-answers.json vs state-after-restart-answers.json); /api/workflow JSON identical (revision 19; 1 comment, 2 rounds, 2 requests, 3 dispositions). Page after reload: GB-0034 rev 7 Answered, Published (plan) knowledge-only with 7 timeline entries and the change request; GB-0005 Implemented with 8 entries; GB-0040 Handoff requested; GB-0039 Answered (Rework wording) In grilling; round panel '2 rounds ended · 2 promotion handoffs requested.'",
+      "itemIds": ["GB-0034", "GB-0005", "GB-0040", "GB-0039"],
+      "result": "pass",
+      "notes": "Server start line after restart: items 180 (pending 167, answered 4, withdrawn 9)."
+    },
+    {
+      "step": 10,
+      "action": "TK-007O: Clear all filters, Priority=P3, Value=V1 (51 questions); opened 'Purpose & boundaries' (7); clicked the red P3 badge on GB-0047; opened GB-0047 centrally; clicked Confirm. Agent: pending; apply GB-0047 --where 'accepted record unchanged: ...'; reassess --file demo/inputs/reassess-gb0047.json (Priority retain with basis; Value V1 -> V2 with reason and basis; followed = GB-0047 answer 2026-10-08T17:36:53.801Z rev 4). Reloaded.",
+      "observed": "P3 badge opened only its reason popover ('Priority P3 · Secondary: ...') without opening or answering the question. Central view showed P3 and V1 with reasons and 'Not reassessed since grading.' Confirm saved. apply: 'GB-0047 applied: confirm -> ...'; reassess bumped gradeRevision 1 -> 2, item revision stayed 4. After reload: APPLIED, badges P3/V2, 'Latest P/V reassessment · 2026-10-08T17:37:10.004Z · demo-agent-worker-e · After the owner answer on GB-0047 saved ... (revision 4). Priority P3 retained: ... Value revised V1 -> V2: ...'.",
+      "itemIds": ["GB-0047"],
+      "result": "pass",
+      "notes": "Screenshots 16, 17."
+    },
+    {
+      "step": 11,
+      "action": "node tools/dashboard-service.mjs status --path <copy> --port 4720 (and --json) and print --path <copy> --port 4720. Nothing installed.",
+      "observed": "status: configuration /Users/kayden/Library/LaunchAgents/com.kayden.workbench-dashboard.plist (installed); launchd loaded, state running, pid 78048; http 127.0.0.1:4720 answers (HTTP 200); followed by owner-action instructions (install/print > plist/bootstrap/kickstart/bootout/inspect). print: a plist with Label com.kayden.workbench-dashboard, ProgramArguments /opt/homebrew/Cellar/node/26.3.0/bin/node <copy>/tools/grill-board.mjs serve --path <copy> --port 4720, RunAtLoad, KeepAlive, logs under <copy>/workbench/grill-board/. Both exit 0. Outputs saved: demo/service-status.txt, demo/service-status.json, demo/service-print.txt.",
+      "itemIds": [],
+      "result": "fail",
+      "notes": "D4: pid 78048 is the owner's live board (/Users/kayden/LLM_Workbench, port 4646) under the same default label, while the probe answered for the demo server on 4720. status reports both together without comparing the installed plist's path/port to the requested --path/--port, so it reads as if the service serves 4720. Its install instructions for the copy would overwrite the owner's plist under the same label with no warning. D5 (low): print pins the versioned Cellar node path (process.execPath), which a brew upgrade removes; the owner's installed plist uses /opt/homebrew/bin/node."
+    }
+  ],
+  "defects": [
+    {
+      "id": "D1",
+      "severity": "medium",
+      "title": "Unsaved comment/change-request text is lost when returning to the question by its #GB-#### link (browser Back from the Wiki, or a search result)",
+      "item": "GB-0034",
+      "reproduction": "Open #GB-0034; type text in 'Comment or change request' (do not send); click 'DDRs · The Workbench aligns...' (Wiki reader); press browser Back -> document.getElementById('comment-GB-0034').value === ''. Same via top search 'recursive delivery' -> click the GB-0034 result. Returning with the Grilling Board section tab (#section=grilling) keeps it.",
+      "expected": "README: back/forward and section tabs 'preserve the question DOM, saved notes, queued saves and unsaved notes'.",
+      "actual": "routePage() for a #GB-#### hash calls render(), which rebuilds the card; the comment textarea is not kept in state.edits (only the answer note is), so its text is discarded. Reproduced twice."
+    },
+    {
+      "id": "D3",
+      "severity": "low",
+      "title": "Workflow action replay identity depends on JSON key order",
+      "item": "GB-0034",
+      "reproduction": "POST /api/promotions {ids:['GB-0034'],revisions:{'GB-0034':7},actionId:'17e93b0f-...',expectedRevision:0} -> 200 idempotent:true; POST the same fields ordered {actionId,expectedRevision,ids,revisions} -> 409 action-id-conflict.",
+      "expected": "A retry of the same action and payload is recognized as the same action.",
+      "actual": "tools/dashboard-workflow.mjs start() hashes JSON.stringify({operation,payload}) without canonical key order. The served page always sends one order so the page is unaffected; a CLI or other client retry could be refused. Fails closed (no duplicate, no loss)."
+    },
+    {
+      "id": "D4",
+      "severity": "medium",
+      "title": "dashboard-service status conflates the installed login service with whatever answers on the requested port",
+      "item": null,
+      "reproduction": "With the owner's service installed (label com.kayden.workbench-dashboard, /Users/kayden/LLM_Workbench, port 4646, pid 78048) run node tools/dashboard-service.mjs status --path <copy> --port 4720 while a demo server listens on 4720.",
+      "expected": "Status distinguishes the installed service's own target (path, port) from the requested one, or warns when they differ; install guidance warns before replacing an existing plist with that label.",
+      "actual": "Prints 'launchd loaded, state running, pid 78048' and 'http 127.0.0.1:4720 answers (HTTP 200)' as one healthy service; instructions offer 'print ... > ~/Library/LaunchAgents/com.kayden.workbench-dashboard.plist' for the copy, which would replace the owner's live configuration."
+    },
+    {
+      "id": "D5",
+      "severity": "low",
+      "title": "print pins a versioned Homebrew Cellar node path",
+      "item": null,
+      "reproduction": "node tools/dashboard-service.mjs print --path <copy> --port 4720",
+      "expected": "A stable node path (e.g. /opt/homebrew/bin/node, as in the owner's installed plist) or a note about it.",
+      "actual": "ProgramArguments[0] and PATH use /opt/homebrew/Cellar/node/26.3.0/bin; after a node upgrade the KeepAlive service would fail to start."
+    }
+  ],
+  "observations": [
+    {"id": "O1", "text": "After re-confirming a revised question, the 'This question changed after you answered (now revision N; you answered revision N-1)' notice remains on the open card until reload, next to 'This is the current revision.'"},
+    {"id": "O2", "text": "Opening a question by clicking its list row does not update the address hash (stays on the previously opened #GB-####), so a reload reopens the previous question."},
+    {"id": "O3", "text": "When a Change request blocks promotion, the disabled-button hint is the generic 'Only a card the workflow reports as confirmed can be promoted.'; the server's specific code change-awaiting-revision is not surfaced on the card."},
+    {"id": "O4", "text": "Real confirm-ddr packages (e.g. GB-0034, GB-0047) still word their Recommended answer / What would change in the retired vocabulary ('Use Correct ...', 'Decline: deprecate ...') while the buttons are Confirm / Rework wording / Change the why / Change; GB-0034's 'Consequences and tradeoffs' shows the same paragraph twice. Content, not code."},
+    {"id": "O5", "text": "grill-board.mjs USAGE string omits the working 'handoffs' and 'disposition --file' commands; README documents 'handoffs' only in passing and does not show a disposition invocation."},
+    {"id": "O6", "text": "Ending a round re-renders the Grilling Board list and closes the open question view."}
+  ],
+  "consoleErrors": [
+    "6 'Failed to load resource' entries (400, 409, 409, 409, 400, 409), all from deliberate refusal probes in steps 2, 5 and 7 (change-awaiting-revision, stale-item, stale-approval, action-id-conflict, already-requested, stale answer). No JavaScript exceptions."
+  ],
+  "screenshots": "demo/shots/00-17 (*.jpg)",
+  "artifacts": [
+    "demo/state-before-restart-workflow.json",
+    "demo/state-after-restart-workflow.json",
+    "demo/state-before-restart-answers.json",
+    "demo/state-after-restart-answers.json",
+    "demo/api-workflow-final.json",
+    "demo/cli-workflow-read.json",
+    "demo/service-status.txt",
+    "demo/service-status.json",
+    "demo/service-print.txt",
+    "demo/inputs/"
+  ],
+  "limits": [
+    "Disposable fixture answers only, written to the copy's git-ignored notepad; nothing reached the owner's answers or the repository.",
+    "This is an agent-driven demonstration, not Owner Human QA; no owner verdict is implied.",
+    "Disposition receipts link existing files in the copy as stand-ins; nothing was actually recorded, published, pushed or implemented.",
+    "Single browser engine (Claude Browser pane, Chromium) at one desktop viewport; no mobile width, keyboard-only or screen-reader pass.",
+    "dashboard-service install/restart-check were not run (instructed not to install)."
+  ]
+}

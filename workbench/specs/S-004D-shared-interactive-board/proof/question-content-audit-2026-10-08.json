@@ -1,0 +1,1481 @@
+{
+ "generatedFrom": "claude/dashboard-lane-content, read-only; no item was revised",
+ "counts": {
+  "a-pointer-only-recommendation": 99,
+  "b-wording-approval-without-draft": 16,
+  "c-missing-source-path": 61,
+  "extra-premise-overtaken": 34
+ },
+ "items": [
+  {
+   "id": "GB-0161",
+   "title": "Should the first version expose real controls through agent tools and commands, or include a clickable human interface immediately · prepared Codex question",
+   "kind": "choice",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Proposal is only \"close as answered by DDR-000L and the CTL-3 decision (decision-019)\": it names records and decision numbers but never states the actual answer in plain words."
+  },
+  {
+   "id": "GB-0162",
+   "title": "How broadly should the control-first rule apply: to every artifact, or to recurring operations where manual reading or editing creates friction · prepared Codex question",
+   "kind": "choice",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Proposal is only \"close as answered by DDR-000L and CTL-6 (decision-020)\": it names records and decision numbers but never states the actual answer in plain words."
+  },
+  {
+   "id": "GB-0163",
+   "title": "Should JSON-versus-Markdown be a strict separation of state and knowledge, or a preferred separation based on each artifact's job · prepared Codex question",
+   "kind": "choice",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Proposal is only \"close as answered by DDR-000K and the DDR-11 decision (ADR-000U)\": it names records and decision numbers but never states the actual answer in plain words."
+  },
+  {
+   "id": "GB-0164",
+   "title": "When someone asks about a topic, should the default return exact stored words, current understanding, or a generated explanation · prepared Codex question",
+   "kind": "choice",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Proposal is only \"close as answered by ADR-000T for the vocabulary; the corrections residue is the open-choices item \"search attaches corrections\"\": it names records and decision numbers but never states the actual answer in plain words."
+  },
+  {
+   "id": "GB-0166",
+   "title": "What distinct gap must a Destination Decision Record fill to justify becoming a new durable record type beside ADRs · prepared Codex question",
+   "kind": "choice",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Proposal is only \"close as answered by ADR-000S\": it names records and decision numbers but never states the actual answer in plain words."
+  },
+  {
+   "id": "GB-0167",
+   "title": "How should a decision that changes both product experience and architecture be divided between a DDR and an ADR · prepared Codex question",
+   "kind": "choice",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Proposal is only \"close as answered by ADR-000S point 2 and the locked BT-Q1 answer\": it names records and decision numbers but never states the actual answer in plain words."
+  },
+  {
+   "id": "GB-0168",
+   "title": "Should Landmarks remain groupings of important concepts, become decision records, or be replaced by DDRs · prepared Codex question",
+   "kind": "choice",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Proposal is only \"close as answered by ADR-000U\": it names records and decision numbers but never states the actual answer in plain words."
+  },
+  {
+   "id": "GB-0169",
+   "title": "When you say DDRs would give DQCs a main source, do you mean a governing decision to investigate, a durable destination for an answer, or both · prepared Codex question",
+   "kind": "choice",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Proposal is only \"close as answered by decisions 027 and 008 (ADR-000S) and ADR-000X\": it names records and decision numbers but never states the actual answer in plain words."
+  },
+  {
+   "id": "GB-0170",
+   "title": "Which choices deserve their own DDR, and when does a discussed answer become a confirmed destination decision · prepared Codex question",
+   "kind": "choice",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Proposal is only \"close as answered by ADR-000S, ADR-000Y and DDR-000C\": it names records and decision numbers but never states the actual answer in plain words."
+  },
+  {
+   "id": "GB-0171",
+   "title": "What understanding must a DDR preserve so temporary DQCs and notes can eventually be reconciled safely · prepared Codex question",
+   "kind": "choice",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Proposal is only \"close as answered by ADR-000S and decision-016\": it names records and decision numbers but never states the actual answer in plain words."
+  },
+  {
+   "id": "GB-0172",
+   "title": "When a destination decision changes, how should the Workbench expose the effect on related understanding and documentation · prepared Codex question",
+   "kind": "choice",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Proposal is only \"close as answered by ADR-000S and the locked BT-Q3 answer\": it names records and decision numbers but never states the actual answer in plain words."
+  },
+  {
+   "id": "GB-0173",
+   "title": "How much of the controls model and DDR decisions should the Blueprint carry · prepared Codex question",
+   "kind": "choice",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Proposal is only \"close as answered by ADR-000S and DDR-000N and DDR-000O\": it names records and decision numbers but never states the actual answer in plain words."
+  },
+  {
+   "id": "GB-0174",
+   "title": "Should rooms extend and adapt the bench controls, or should all rooms operate the same fixed switchboard · prepared Codex question",
+   "kind": "choice",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Proposal is only \"close as answered by DDR-000R and ADR-000W\": it names records and decision numbers but never states the actual answer in plain words."
+  },
+  {
+   "id": "GB-0176",
+   "title": "Should controls also maintain working context automatically, or should the agent explicitly record consequential discoveries · prepared Codex question",
+   "kind": "choice",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Proposal is only \"close as answered by AGENTS.md Session Records, ADR-000L and the Blueprint non-goal\": it names records and decision numbers but never states the actual answer in plain words."
+  },
+  {
+   "id": "GB-0177",
+   "title": "How should existing destination choices in ADRs, the Blueprint and DQCs be treated if DDRs are introduced · prepared Codex question",
+   "kind": "choice",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Proposal is only \"close as answered by the locked BT-Q1 answer and ADR-000S point 8\": it names records and decision numbers but never states the actual answer in plain words."
+  },
+  {
+   "id": "GB-0178",
+   "title": "Which smallest coherent result should be delivered first after the shared concept is confirmed · prepared Codex question",
+   "kind": "choice",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Proposal is only \"close as answered by decision-019 and the delivery of S-003X\": it names records and decision numbers but never states the actual answer in plain words."
+  },
+  {
+   "id": "GB-0160",
+   "title": "Which outcome should guide tradeoffs: faster access to relevant context, clearer human oversight, or more dependable agent continuity · prepared Codex question",
+   "kind": "choice",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation says not to close yet and to record \"the unresolved distinction\" without saying what that distinction is or which answer is recommended."
+  },
+  {
+   "id": "GB-0179",
+   "title": "What demonstration would convince you that the first slice behaves like the Workbench you mean · prepared Codex question",
+   "kind": "choice",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation says not to close yet and to record \"the unresolved distinction\" without saying what that distinction is or which answer is recommended."
+  },
+  {
+   "id": "GB-0025",
+   "title": "May the two claim mechanisms coexist for different items (S-00O, GitHub coordination)?",
+   "kind": "owner-decision",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation says to correct the proposal \"against the accepted GitHub Coordination decisions\" without stating those decisions or any coexistence rule in plain words."
+  },
+  {
+   "id": "GB-0098",
+   "title": "How should locked project design become a personalized working room? (DQC-005B)",
+   "kind": "confirm-dqc",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Says the direction \"is now recorded in DDR-000P/000Q/000S\" and to resolve by naming those owners, without stating that direction in words."
+  },
+  {
+   "id": "GB-0034",
+   "title": "The Workbench aligns to the owner's concept and delivers on it recursively (DDR-000A)",
+   "kind": "confirm-ddr",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is \"Keep the existing record only if the full draft below matches your intent\": it defers to the full text and states no recommended answer (the decision itself is summarized in brief.summary)."
+  },
+  {
+   "id": "GB-0035",
+   "title": "Only a confirmed concept is mapped, planned or implemented (DDR-000B)",
+   "kind": "confirm-ddr",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is \"Keep the existing record only if the full draft below matches your intent\": it defers to the full text and states no recommended answer (the decision itself is summarized in brief.summary)."
+  },
+  {
+   "id": "GB-0036",
+   "title": "Confirming a concept authorizes the agents to carry it to its endpoint (DDR-000C)",
+   "kind": "confirm-ddr",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is \"Keep the existing record only if the full draft below matches your intent\": it defers to the full text and states no recommended answer (the decision itself is summarized in brief.summary)."
+  },
+  {
+   "id": "GB-0037",
+   "title": "Prototype needs no map and lands nothing in enduring context (DDR-000D)",
+   "kind": "confirm-ddr",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is \"Keep the existing record only if the full draft below matches your intent\": it defers to the full text and states no recommended answer (the decision itself is summarized in brief.summary)."
+  },
+  {
+   "id": "GB-0038",
+   "title": "Every session works inside its smart zone and spends its tokens efficiently (DDR-000E)",
+   "kind": "confirm-ddr",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is \"Keep the existing record only if the full draft below matches your intent\": it defers to the full text and states no recommended answer (the decision itself is summarized in brief.summary)."
+  },
+  {
+   "id": "GB-0039",
+   "title": "A fresh session loads only the context its work needs (DDR-000F)",
+   "kind": "confirm-ddr",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is \"Keep the existing record only if the full draft below matches your intent\": it defers to the full text and states no recommended answer (the decision itself is summarized in brief.summary)."
+  },
+  {
+   "id": "GB-0040",
+   "title": "Every kind of truth has one maintained home (DDR-000G)",
+   "kind": "confirm-ddr",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is \"Keep the existing record only if the full draft below matches your intent\": it defers to the full text and states no recommended answer (the decision itself is summarized in brief.summary)."
+  },
+  {
+   "id": "GB-0041",
+   "title": "The context lives in GitHub, so work can move to the cloud at any time (DDR-000H)",
+   "kind": "confirm-ddr",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is \"Keep the existing record only if the full draft below matches your intent\": it defers to the full text and states no recommended answer (the decision itself is summarized in brief.summary)."
+  },
+  {
+   "id": "GB-0042",
+   "title": "Many agents work one project in parallel, across the cloud and the owner's devices (DDR-000I)",
+   "kind": "confirm-ddr",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is \"Keep the existing record only if the full draft below matches your intent\": it defers to the full text and states no recommended answer (the decision itself is summarized in brief.summary)."
+  },
+  {
+   "id": "GB-0043",
+   "title": "The behaviors agents need ship inside every room (DDR-000J)",
+   "kind": "confirm-ddr",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is \"Keep the existing record only if the full draft below matches your intent\": it defers to the full text and states no recommended answer (the decision itself is summarized in brief.summary)."
+  },
+  {
+   "id": "GB-0044",
+   "title": "A handoff is the readable map to the high-fidelity context (DDR-000K)",
+   "kind": "confirm-ddr",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is \"Keep the existing record only if the full draft below matches your intent\": it defers to the full text and states no recommended answer (the decision itself is summarized in brief.summary)."
+  },
+  {
+   "id": "GB-0045",
+   "title": "Agents work the workbench through one-action controls (DDR-000L)",
+   "kind": "confirm-ddr",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is \"Keep the existing record only if the full draft below matches your intent\": it defers to the full text and states no recommended answer (the decision itself is summarized in brief.summary)."
+  },
+  {
+   "id": "GB-0046",
+   "title": "Working artifacts are scaffolding, cleared away once their knowledge is kept (DDR-000M)",
+   "kind": "confirm-ddr",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is \"Keep the existing record only if the full draft below matches your intent\": it defers to the full text and states no recommended answer (the decision itself is summarized in brief.summary)."
+  },
+  {
+   "id": "GB-0047",
+   "title": "Every room's Blueprint is the four-part short page (DDR-000N)",
+   "kind": "confirm-ddr",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is \"Keep the existing record only if the full draft below matches your intent\": it defers to the full text and states no recommended answer (the decision itself is summarized in brief.summary)."
+  },
+  {
+   "id": "GB-0048",
+   "title": "The Blueprint is a high-level summary of the direction and makes us ask questions (DDR-000O)",
+   "kind": "confirm-ddr",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is \"Keep the existing record only if the full draft below matches your intent\": it defers to the full text and states no recommended answer (the decision itself is summarized in brief.summary)."
+  },
+  {
+   "id": "GB-0049",
+   "title": "LLM Workbench is the producer and the Workbench Template is its product (DDR-000P)",
+   "kind": "confirm-ddr",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is \"Keep the existing record only if the full draft below matches your intent\": it defers to the full text and states no recommended answer (the decision itself is summarized in brief.summary)."
+  },
+  {
+   "id": "GB-0050",
+   "title": "A release is proven by the Template building a real product in one pass (DDR-000Q)",
+   "kind": "confirm-ddr",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is \"Keep the existing record only if the full draft below matches your intent\": it defers to the full text and states no recommended answer (the decision itself is summarized in brief.summary)."
+  },
+  {
+   "id": "GB-0051",
+   "title": "LLM Workbench owns what a workbench is; the project owns what it says and may add without tearing apart what works (DDR-000R)",
+   "kind": "confirm-ddr",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is \"Keep the existing record only if the full draft below matches your intent\": it defers to the full text and states no recommended answer (the decision itself is summarized in brief.summary)."
+  },
+  {
+   "id": "GB-0052",
+   "title": "Setup drafts everything it can and grilling confirms it (DDR-000S)",
+   "kind": "confirm-ddr",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is \"Keep the existing record only if the full draft below matches your intent\": it defers to the full text and states no recommended answer (the decision itself is summarized in brief.summary)."
+  },
+  {
+   "id": "GB-0053",
+   "title": "The workbench is an agentic management system, not a harness (DDR-000T)",
+   "kind": "confirm-ddr",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is \"Keep the existing record only if the full draft below matches your intent\": it defers to the full text and states no recommended answer (the decision itself is summarized in brief.summary)."
+  },
+  {
+   "id": "GB-0054",
+   "title": "A project is a room and the workbench is the table in it (DDR-000U)",
+   "kind": "confirm-ddr",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is \"Keep the existing record only if the full draft below matches your intent\": it defers to the full text and states no recommended answer (the decision itself is summarized in brief.summary)."
+  },
+  {
+   "id": "GB-0055",
+   "title": "Gaps are flagged, never faked (DDR-000V)",
+   "kind": "confirm-ddr",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is \"Keep the existing record only if the full draft below matches your intent\": it defers to the full text and states no recommended answer (the decision itself is summarized in brief.summary)."
+  },
+  {
+   "id": "GB-0056",
+   "title": "Rooms nest and a parent workbench owns what its children share (DDR-000W)",
+   "kind": "confirm-ddr",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is \"Keep the existing record only if the full draft below matches your intent\": it defers to the full text and states no recommended answer (the decision itself is summarized in brief.summary)."
+  },
+  {
+   "id": "GB-0057",
+   "title": "Every workbench is built to run as one room among many in an autonomous factory, the Foundry (DDR-000X)",
+   "kind": "confirm-ddr",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is \"Keep the existing record only if the full draft below matches your intent\": it defers to the full text and states no recommended answer (the decision itself is summarized in brief.summary)."
+  },
+  {
+   "id": "GB-0058",
+   "title": "A miss found by a check continues the same Task unless the fix rewrites it (DDR-000Y)",
+   "kind": "confirm-ddr",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is \"Keep the existing record only if the full draft below matches your intent\": it defers to the full text and states no recommended answer (the decision itself is summarized in brief.summary)."
+  },
+  {
+   "id": "GB-0059",
+   "title": "The Wiki is the evolving synthesis every agent reads and updates (ADR-000R)",
+   "kind": "confirm-ddr",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is \"Keep the existing record only if the full draft below matches your intent\": it defers to the full text and states no recommended answer (the decision itself is summarized in brief.summary)."
+  },
+  {
+   "id": "GB-0060",
+   "title": "Destination Decision Records are decision records beside ADRs (ADR-000S)",
+   "kind": "confirm-ddr",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is \"Keep the existing record only if the full draft below matches your intent\": it defers to the full text and states no recommended answer (the decision itself is summarized in brief.summary)."
+  },
+  {
+   "id": "GB-0061",
+   "title": "Records share one set of read words: list, show, search, history and inspect (ADR-000T)",
+   "kind": "confirm-ddr",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is \"Keep the existing record only if the full draft below matches your intent\": it defers to the full text and states no recommended answer (the decision itself is summarized in brief.summary)."
+  },
+  {
+   "id": "GB-0062",
+   "title": "Landmarks are LANDMARK.md artifacts one size above Specs (ADR-000U)",
+   "kind": "confirm-ddr",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is \"Keep the existing record only if the full draft below matches your intent\": it defers to the full text and states no recommended answer (the decision itself is summarized in brief.summary)."
+  },
+  {
+   "id": "GB-0063",
+   "title": "Captain, Director, Dispatcher and Worker scope work and role skills own each job (ADR-000V)",
+   "kind": "confirm-ddr",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is \"Keep the existing record only if the full draft below matches your intent\": it defers to the full text and states no recommended answer (the decision itself is summarized in brief.summary)."
+  },
+  {
+   "id": "GB-0064",
+   "title": "Contract carriers are briefs that point to skills and authority flows through the pointer (ADR-000W)",
+   "kind": "confirm-ddr",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is \"Keep the existing record only if the full draft below matches your intent\": it defers to the full text and states no recommended answer (the decision itself is summarized in brief.summary)."
+  },
+  {
+   "id": "GB-0065",
+   "title": "The workflow is eight verbs and each verb writes the plane its claims live on (ADR-000X)",
+   "kind": "confirm-ddr",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is \"Keep the existing record only if the full draft below matches your intent\": it defers to the full text and states no recommended answer (the decision itself is summarized in brief.summary)."
+  },
+  {
+   "id": "GB-0066",
+   "title": "A locked and confirmed answer is promoted without further ceremony (ADR-000Y)",
+   "kind": "confirm-ddr",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is \"Keep the existing record only if the full draft below matches your intent\": it defers to the full text and states no recommended answer (the decision itself is summarized in brief.summary)."
+  },
+  {
+   "id": "GB-0103",
+   "title": "Approve Approval Binding And Lifecycle Digest Repair (S-00U) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is the generic \"Review the capability and its acceptance evidence before approving\", pointing to the review text below without saying whether this Spec is ready to approve."
+  },
+  {
+   "id": "GB-0104",
+   "title": "Approve Workbench Self-Drift Check On Update (S-00K) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is the generic \"Review the capability and its acceptance evidence before approving\", pointing to the review text below without saying whether this Spec is ready to approve."
+  },
+  {
+   "id": "GB-0105",
+   "title": "Approve Workflow Canon Rework (S-00P) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is the generic \"Review the capability and its acceptance evidence before approving\", pointing to the review text below without saying whether this Spec is ready to approve."
+  },
+  {
+   "id": "GB-0106",
+   "title": "Approve Lifecycle Discard And Identity Repair (S-00T) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is the generic \"Review the capability and its acceptance evidence before approving\", pointing to the review text below without saying whether this Spec is ready to approve."
+  },
+  {
+   "id": "GB-0107",
+   "title": "Approve Lexicon Design-Concept Reconciliation (S-01U) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is the generic \"Review the capability and its acceptance evidence before approving\", pointing to the review text below without saying whether this Spec is ready to approve."
+  },
+  {
+   "id": "GB-0108",
+   "title": "Approve Uppercase Width-Four Workbench Artifact IDs (S-01W) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is the generic \"Review the capability and its acceptance evidence before approving\", pointing to the review text below without saying whether this Spec is ready to approve. The Spec already records your 2026-10-06 Human QA approval, so the package is also stale."
+  },
+  {
+   "id": "GB-0109",
+   "title": "Approve Generated JSON Taskboard (S-01X) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is the generic \"Review the capability and its acceptance evidence before approving\", pointing to the review text below without saying whether this Spec is ready to approve."
+  },
+  {
+   "id": "GB-0110",
+   "title": "Approve Landmark Tracker (S-001Z) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is the generic \"Review the capability and its acceptance evidence before approving\", pointing to the review text below without saying whether this Spec is ready to approve."
+  },
+  {
+   "id": "GB-0111",
+   "title": "Approve Landmark Records (S-002A) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is the generic \"Review the capability and its acceptance evidence before approving\", pointing to the review text below without saying whether this Spec is ready to approve."
+  },
+  {
+   "id": "GB-0112",
+   "title": "Approve Destination Question Cards (S-002B) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is the generic \"Review the capability and its acceptance evidence before approving\", pointing to the review text below without saying whether this Spec is ready to approve."
+  },
+  {
+   "id": "GB-0113",
+   "title": "Approve Resolve citation groups and file identity faithfully (S-002K) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is the generic \"Review the capability and its acceptance evidence before approving\", pointing to the review text below without saying whether this Spec is ready to approve."
+  },
+  {
+   "id": "GB-0114",
+   "title": "Approve GitHub Coordination Room Binding And Identity (S-003P) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is the generic \"Review the capability and its acceptance evidence before approving\", pointing to the review text below without saying whether this Spec is ready to approve."
+  },
+  {
+   "id": "GB-0115",
+   "title": "Approve Completion Claims Against Repository State (S-00M) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is the generic \"Review the capability and its acceptance evidence before approving\", pointing to the review text below without saying whether this Spec is ready to approve. The Spec already records your 2026-10-06 Human QA approval, so the package is also stale."
+  },
+  {
+   "id": "GB-0116",
+   "title": "Approve Core Skill Lifecycle And Optional Source Disposition (S-00R) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is the generic \"Review the capability and its acceptance evidence before approving\", pointing to the review text below without saying whether this Spec is ready to approve."
+  },
+  {
+   "id": "GB-0117",
+   "title": "Approve grilling skill rebuild (S-00X) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is the generic \"Review the capability and its acceptance evidence before approving\", pointing to the review text below without saying whether this Spec is ready to approve. The Spec already records your 2026-10-06 Human QA approval, so the package is also stale."
+  },
+  {
+   "id": "GB-0118",
+   "title": "Approve notepad skill rebuild (S-00Y) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is the generic \"Review the capability and its acceptance evidence before approving\", pointing to the review text below without saying whether this Spec is ready to approve."
+  },
+  {
+   "id": "GB-0119",
+   "title": "Approve grill-me skill rebuild (S-00Z) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is the generic \"Review the capability and its acceptance evidence before approving\", pointing to the review text below without saying whether this Spec is ready to approve. The Spec already records your 2026-10-06 Human QA approval, so the package is also stale."
+  },
+  {
+   "id": "GB-0120",
+   "title": "Approve handoff skill rebuild (S-01A) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is the generic \"Review the capability and its acceptance evidence before approving\", pointing to the review text below without saying whether this Spec is ready to approve."
+  },
+  {
+   "id": "GB-0121",
+   "title": "Approve promote skill rebuild (S-01B) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is the generic \"Review the capability and its acceptance evidence before approving\", pointing to the review text below without saying whether this Spec is ready to approve. The Spec already records your 2026-10-06 Human QA approval, so the package is also stale."
+  },
+  {
+   "id": "GB-0122",
+   "title": "Approve carry skill rebuild (S-01C) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is the generic \"Review the capability and its acceptance evidence before approving\", pointing to the review text below without saying whether this Spec is ready to approve. The Spec already records your 2026-10-06 Human QA approval, so the package is also stale."
+  },
+  {
+   "id": "GB-0123",
+   "title": "Approve adoption skill rebuild (S-01D) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is the generic \"Review the capability and its acceptance evidence before approving\", pointing to the review text below without saying whether this Spec is ready to approve. The Spec already records your 2026-10-06 Human QA approval, so the package is also stale."
+  },
+  {
+   "id": "GB-0124",
+   "title": "Approve checkpoint skill rebuild (S-01E) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is the generic \"Review the capability and its acceptance evidence before approving\", pointing to the review text below without saying whether this Spec is ready to approve. The Spec already records your 2026-10-06 Human QA approval, so the package is also stale."
+  },
+  {
+   "id": "GB-0125",
+   "title": "Approve code-review skill rebuild (S-01F) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is the generic \"Review the capability and its acceptance evidence before approving\", pointing to the review text below without saying whether this Spec is ready to approve. The Spec already records your 2026-10-06 Human QA approval, so the package is also stale."
+  },
+  {
+   "id": "GB-0126",
+   "title": "Approve genesis skill rebuild (S-01G) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is the generic \"Review the capability and its acceptance evidence before approving\", pointing to the review text below without saying whether this Spec is ready to approve. The Spec already records your 2026-10-06 Human QA approval, so the package is also stale."
+  },
+  {
+   "id": "GB-0127",
+   "title": "Approve make-it-so skill rebuild (S-01I) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is the generic \"Review the capability and its acceptance evidence before approving\", pointing to the review text below without saying whether this Spec is ready to approve. The Spec already records your 2026-10-06 Human QA approval, so the package is also stale."
+  },
+  {
+   "id": "GB-0128",
+   "title": "Approve to-docs skill rebuild (S-01J) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is the generic \"Review the capability and its acceptance evidence before approving\", pointing to the review text below without saying whether this Spec is ready to approve. The Spec already records your 2026-10-06 Human QA approval, so the package is also stale."
+  },
+  {
+   "id": "GB-0129",
+   "title": "Approve to-spec skill rebuild (S-01K) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is the generic \"Review the capability and its acceptance evidence before approving\", pointing to the review text below without saying whether this Spec is ready to approve. The Spec already records your 2026-10-06 Human QA approval, so the package is also stale."
+  },
+  {
+   "id": "GB-0130",
+   "title": "Approve to-tasks skill rebuild (S-01L) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is the generic \"Review the capability and its acceptance evidence before approving\", pointing to the review text below without saying whether this Spec is ready to approve. The Spec already records your 2026-10-06 Human QA approval, so the package is also stale."
+  },
+  {
+   "id": "GB-0131",
+   "title": "Approve save skill rebuild (S-01O) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is the generic \"Review the capability and its acceptance evidence before approving\", pointing to the review text below without saying whether this Spec is ready to approve. The Spec already records your 2026-10-06 Human QA approval, so the package is also stale."
+  },
+  {
+   "id": "GB-0132",
+   "title": "Approve auditor skill rebuild (S-01Q) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is the generic \"Review the capability and its acceptance evidence before approving\", pointing to the review text below without saying whether this Spec is ready to approve. The Spec already records your 2026-10-06 Human QA approval, so the package is also stale."
+  },
+  {
+   "id": "GB-0133",
+   "title": "Approve reviewer skill rebuild (S-01R) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is the generic \"Review the capability and its acceptance evidence before approving\", pointing to the review text below without saying whether this Spec is ready to approve."
+  },
+  {
+   "id": "GB-0134",
+   "title": "Approve Director Role (S-002C) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is the generic \"Review the capability and its acceptance evidence before approving\", pointing to the review text below without saying whether this Spec is ready to approve. The Spec already records your 2026-10-06 Human QA approval, so the package is also stale."
+  },
+  {
+   "id": "GB-0135",
+   "title": "Approve Dispatcher Role (S-002D) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is the generic \"Review the capability and its acceptance evidence before approving\", pointing to the review text below without saying whether this Spec is ready to approve. The Spec already records your 2026-10-06 Human QA approval, so the package is also stale."
+  },
+  {
+   "id": "GB-0136",
+   "title": "Approve Worker Role (S-002E) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is the generic \"Review the capability and its acceptance evidence before approving\", pointing to the review text below without saying whether this Spec is ready to approve. The Spec already records your 2026-10-06 Human QA approval, so the package is also stale."
+  },
+  {
+   "id": "GB-0137",
+   "title": "Approve Spec Planner Stance (S-002F) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is the generic \"Review the capability and its acceptance evidence before approving\", pointing to the review text below without saying whether this Spec is ready to approve. The Spec already records your 2026-10-06 Human QA approval, so the package is also stale."
+  },
+  {
+   "id": "GB-0138",
+   "title": "Approve Spec Manager Stance (S-002G) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is the generic \"Review the capability and its acceptance evidence before approving\", pointing to the review text below without saying whether this Spec is ready to approve. The Spec already records your 2026-10-06 Human QA approval, so the package is also stale."
+  },
+  {
+   "id": "GB-0139",
+   "title": "Approve Decision Record Tooling (S-003X) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is the generic \"Review the capability and its acceptance evidence before approving\", pointing to the review text below without saying whether this Spec is ready to approve. The Spec already records your 2026-10-06 Human QA approval, so the package is also stale."
+  },
+  {
+   "id": "GB-0140",
+   "title": "Approve Notepad Concurrent-Write Safety (S-003Y) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is the generic \"Review the capability and its acceptance evidence before approving\", pointing to the review text below without saying whether this Spec is ready to approve."
+  },
+  {
+   "id": "GB-0141",
+   "title": "Approve AI Coding Dictionary Terms (S-004E) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is the generic \"Review the capability and its acceptance evidence before approving\", pointing to the review text below without saying whether this Spec is ready to approve."
+  },
+  {
+   "id": "GB-0142",
+   "title": "Approve Corrective Work Rules (S-004F) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is the generic \"Review the capability and its acceptance evidence before approving\", pointing to the review text below without saying whether this Spec is ready to approve."
+  },
+  {
+   "id": "GB-0143",
+   "title": "Approve Workbench Terms And Workflow Verb Rows (S-004G) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is the generic \"Review the capability and its acceptance evidence before approving\", pointing to the review text below without saying whether this Spec is ready to approve."
+  },
+  {
+   "id": "GB-0144",
+   "title": "Approve Blueprint Short Page (S-004H) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is the generic \"Review the capability and its acceptance evidence before approving\", pointing to the review text below without saying whether this Spec is ready to approve."
+  },
+  {
+   "id": "GB-0145",
+   "title": "Approve Retirement Lifecycle By Folder For Records (S-00I) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is the generic \"Review the capability and its acceptance evidence before approving\", pointing to the review text below without saying whether this Spec is ready to approve."
+  },
+  {
+   "id": "GB-0146",
+   "title": "Approve Spec QA Gate And Corrective-Task Return Path (S-00J) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is the generic \"Review the capability and its acceptance evidence before approving\", pointing to the review text below without saying whether this Spec is ready to approve."
+  },
+  {
+   "id": "GB-0147",
+   "title": "Approve Feedback Finding Dispositions (S-00N) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is the generic \"Review the capability and its acceptance evidence before approving\", pointing to the review text below without saying whether this Spec is ready to approve."
+  },
+  {
+   "id": "GB-0148",
+   "title": "Approve Feedback Representation And Consumer Reconciliation (S-00S) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "a-pointer-only-recommendation",
+   "explanation": "Recommendation is the generic \"Review the capability and its acceptance evidence before approving\", pointing to the review text below without saying whether this Spec is ready to approve."
+  },
+  {
+   "id": "GB-0073",
+   "title": "How should incomplete setup report its result and recovery path? (DQC-000H)",
+   "kind": "confirm-dqc",
+   "category": "b-wording-approval-without-draft",
+   "explanation": "Asks you to confirm exact agent-worded card text (quoted inside the proposal) but draft is null, so the board shows no current-versus-proposed wording to approve."
+  },
+  {
+   "id": "GB-0076",
+   "title": "Which skills are owner-facing entrypoints and which are composition details? (DQC-001C)",
+   "kind": "confirm-dqc",
+   "category": "b-wording-approval-without-draft",
+   "explanation": "Asks you to confirm exact agent-worded card text (quoted inside the proposal) but draft is null, so the board shows no current-versus-proposed wording to approve."
+  },
+  {
+   "id": "GB-0078",
+   "title": "Where should architectural, capability and execution-local decisions be recorded? (DQC-001O)",
+   "kind": "confirm-dqc",
+   "category": "b-wording-approval-without-draft",
+   "explanation": "Asks you to confirm exact agent-worded card text (quoted inside the proposal) but draft is null, so the board shows no current-versus-proposed wording to approve."
+  },
+  {
+   "id": "GB-0079",
+   "title": "How do confirmed answers reach durable owners? (DQC-002I)",
+   "kind": "confirm-dqc",
+   "category": "b-wording-approval-without-draft",
+   "explanation": "Asks you to confirm exact agent-worded card text (quoted inside the proposal) but draft is null, so the board shows no current-versus-proposed wording to approve."
+  },
+  {
+   "id": "GB-0080",
+   "title": "What evidence is sufficient before promoting a settled answer? (DQC-002J)",
+   "kind": "confirm-dqc",
+   "category": "b-wording-approval-without-draft",
+   "explanation": "Asks you to confirm exact agent-worded card text (quoted inside the proposal) but draft is null, so the board shows no current-versus-proposed wording to approve."
+  },
+  {
+   "id": "GB-0081",
+   "title": "Do the older six-box and residual sketches contain missing structural behavior? (DQC-001U)",
+   "kind": "confirm-dqc",
+   "category": "b-wording-approval-without-draft",
+   "explanation": "Asks you to confirm exact agent-worded card text (quoted inside the proposal) but draft is null, so the board shows no current-versus-proposed wording to approve."
+  },
+  {
+   "id": "GB-0082",
+   "title": "How should a decision be superseded or deprecated? (DQC-002C)",
+   "kind": "confirm-dqc",
+   "category": "b-wording-approval-without-draft",
+   "explanation": "Asks you to confirm exact agent-worded card text (quoted inside the proposal) but draft is null, so the board shows no current-versus-proposed wording to approve."
+  },
+  {
+   "id": "GB-0085",
+   "title": "How should Task, Spec and integration branches relate? (DQC-002U)",
+   "kind": "confirm-dqc",
+   "category": "b-wording-approval-without-draft",
+   "explanation": "Asks you to confirm exact agent-worded card text (quoted inside the proposal) but draft is null, so the board shows no current-versus-proposed wording to approve."
+  },
+  {
+   "id": "GB-0086",
+   "title": "What work should a dispatcher or director perform without executing Tasks? (DQC-002Z)",
+   "kind": "confirm-dqc",
+   "category": "b-wording-approval-without-draft",
+   "explanation": "Asks you to confirm exact agent-worded card text (quoted inside the proposal) but draft is null, so the board shows no current-versus-proposed wording to approve."
+  },
+  {
+   "id": "GB-0088",
+   "title": "How should recurring approved maintenance fit the work model? (DQC-003B)",
+   "kind": "confirm-dqc",
+   "category": "b-wording-approval-without-draft",
+   "explanation": "Asks you to confirm exact agent-worded card text (quoted inside the proposal) but draft is null, so the board shows no current-versus-proposed wording to approve."
+  },
+  {
+   "id": "GB-0093",
+   "title": "Which legacy terms remain useful aliases and which should be retired? (DQC-003Z)",
+   "kind": "confirm-dqc",
+   "category": "b-wording-approval-without-draft",
+   "explanation": "Asks you to confirm exact agent-worded card text (quoted inside the proposal) but draft is null, so the board shows no current-versus-proposed wording to approve."
+  },
+  {
+   "id": "GB-0094",
+   "title": "What does an objective notepad preserve, and whom does it belong to? (DQC-004O)",
+   "kind": "confirm-dqc",
+   "category": "b-wording-approval-without-draft",
+   "explanation": "Asks you to confirm exact agent-worded card text (quoted inside the proposal) but draft is null, so the board shows no current-versus-proposed wording to approve."
+  },
+  {
+   "id": "GB-0095",
+   "title": "What makes a handoff useful to its receiving context? (DQC-004P)",
+   "kind": "confirm-dqc",
+   "category": "b-wording-approval-without-draft",
+   "explanation": "Asks you to confirm exact agent-worded card text (quoted inside the proposal) but draft is null, so the board shows no current-versus-proposed wording to approve."
+  },
+  {
+   "id": "GB-0096",
+   "title": "When may notes and handoffs persist or be committed for transport? (DQC-004S)",
+   "kind": "confirm-dqc",
+   "category": "b-wording-approval-without-draft",
+   "explanation": "Asks you to confirm exact agent-worded card text (quoted inside the proposal) but draft is null, so the board shows no current-versus-proposed wording to approve."
+  },
+  {
+   "id": "GB-0097",
+   "title": "How should still-needed pre-schema notes remain readable? (DQC-004R)",
+   "kind": "confirm-dqc",
+   "category": "b-wording-approval-without-draft",
+   "explanation": "Asks you to confirm exact agent-worded card text (quoted inside the proposal) but draft is null, so the board shows no current-versus-proposed wording to approve."
+  },
+  {
+   "id": "GB-0026",
+   "title": "Correct the release proof decision record's verb list (S-004G)",
+   "kind": "owner-decision",
+   "category": "b-wording-approval-without-draft",
+   "explanation": "Asks you to confirm a correction of the release-proof record's verb list but drafts no corrected wording; the record (DDR-000Q) still reads \"Complete\"."
+  },
+  {
+   "id": "GB-0001",
+   "title": "Settle the two meanings of Delivered: the workflow verb and the S-###:delivered blocker qualifier",
+   "kind": "choice",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/blueprint-teardown-2026-10-02.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit)."
+  },
+  {
+   "id": "GB-0002",
+   "title": "Author a Spec for the workflow-verb rollout into skills, controls, templates and the Landmark Tracker",
+   "kind": "owner-decision",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/blueprint-teardown-2026-10-02.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit)."
+  },
+  {
+   "id": "GB-0003",
+   "title": "Narrow the no-coordination-system rule in AGENTS.md and the Lexicon after the teardown called the Blueprint's lines wrong",
+   "kind": "choice",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/blueprint-teardown-2026-10-02.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit)."
+  },
+  {
+   "id": "GB-0004",
+   "title": "Update Landmark Record Migration And Tracker Regrouping (S-004A) for the locked seven-landmark set (LS-1)",
+   "kind": "choice",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/blueprint-teardown-2026-10-02.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit)."
+  },
+  {
+   "id": "GB-0005",
+   "title": "Decide whether LEXICON.md is a contract artifact or a routing artifact",
+   "kind": "choice",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/blueprint-teardown-2026-10-02.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit)."
+  },
+  {
+   "id": "GB-0006",
+   "title": "Harness Feedback Review: an eighth landmark or a verb family under the Workflow landmark",
+   "kind": "choice",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/blueprint-teardown-2026-10-02.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit)."
+  },
+  {
+   "id": "GB-0007",
+   "title": "Confirm that the Plan chose the template Blueprint placeholder wording (S-004H) within the confirmed shape",
+   "kind": "owner-decision",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/blueprint-teardown-2026-10-02.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit)."
+  },
+  {
+   "id": "GB-0008",
+   "title": "Confirm or reverse the Decision Record Tooling (S-003X) Dispatcher's rename of its corrective Task TK-005U to TK-006K",
+   "kind": "choice",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/blueprint-teardown-2026-10-02.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit)."
+  },
+  {
+   "id": "GB-0009",
+   "title": "Delete the stale remote branch claude/author-decision-follow-up-specs",
+   "kind": "choice",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/ddr-and-control-surface-2026-10-01.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit)."
+  },
+  {
+   "id": "GB-0010",
+   "title": "Choose the visible identifier prefix for LANDMARK.md artifacts (S-003Z)",
+   "kind": "choice",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/ddr-and-control-surface-2026-10-01.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit)."
+  },
+  {
+   "id": "GB-0011",
+   "title": "How a DDR records its one landmark and how a landmark lists its DDRs (S-003X, S-003Z)",
+   "kind": "choice",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/ddr-and-control-surface-2026-10-01.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit)."
+  },
+  {
+   "id": "GB-0012",
+   "title": "Whether `search` attaches linked corrections for record tools other than the decision-record tool",
+   "kind": "choice",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/ddr-and-control-surface-2026-10-01.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit)."
+  },
+  {
+   "id": "GB-0013",
+   "title": "Grouping role of a migrated landmark record between the move and its LANDMARK.md (S-004A)",
+   "kind": "choice",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/ddr-and-control-surface-2026-10-01.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit)."
+  },
+  {
+   "id": "GB-0014",
+   "title": "Who gives the separate review of a Blueprint-level Spec merge (S-004B)",
+   "kind": "choice",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/ddr-and-control-surface-2026-10-01.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit)."
+  },
+  {
+   "id": "GB-0015",
+   "title": "How the installed director skill carries its changed meaning (S-004B)",
+   "kind": "choice",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/ddr-and-control-surface-2026-10-01.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit)."
+  },
+  {
+   "id": "GB-0016",
+   "title": "Confirm the Plan's derivation: the Contract carrier rewrite (S-004C) stays one Spec under the Workbench artifacts landmark",
+   "kind": "choice",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/ddr-and-control-surface-2026-10-01.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit); /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/blueprint-teardown-2026-10-02.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit)."
+  },
+  {
+   "id": "GB-0067",
+   "title": "Role scope and stance jobs for Spec delivery (DQC-000A)",
+   "kind": "confirm-dqc",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: workbench/wiki/grilling-destination-audit-ledger.json (now at workbench/sessions/grilling-destination-audit-ledger.json (moved by 6ad8225d))."
+  },
+  {
+   "id": "GB-0072",
+   "title": "What does next mean, and which work should it offer? (DQC-000G)",
+   "kind": "confirm-dqc",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: workbench/wiki/grilling-destination-audit-ledger.json (now at workbench/sessions/grilling-destination-audit-ledger.json (moved by 6ad8225d))."
+  },
+  {
+   "id": "GB-0073",
+   "title": "How should incomplete setup report its result and recovery path? (DQC-000H)",
+   "kind": "confirm-dqc",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: workbench/wiki/grilling-destination-audit-ledger.json (now at workbench/sessions/grilling-destination-audit-ledger.json (moved by 6ad8225d))."
+  },
+  {
+   "id": "GB-0074",
+   "title": "Which coordination machinery belongs outside the base Workbench? (DQC-000K)",
+   "kind": "confirm-dqc",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: workbench/wiki/grilling-destination-audit-ledger.json (now at workbench/sessions/grilling-destination-audit-ledger.json (moved by 6ad8225d))."
+  },
+  {
+   "id": "GB-0076",
+   "title": "Which skills are owner-facing entrypoints and which are composition details? (DQC-001C)",
+   "kind": "confirm-dqc",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: workbench/wiki/grilling-destination-audit-ledger.json (now at workbench/sessions/grilling-destination-audit-ledger.json (moved by 6ad8225d))."
+  },
+  {
+   "id": "GB-0077",
+   "title": "How should the Wiki explain each available skill? (DQC-001D)",
+   "kind": "confirm-dqc",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: workbench/wiki/grilling-destination-audit-ledger.json (now at workbench/sessions/grilling-destination-audit-ledger.json (moved by 6ad8225d))."
+  },
+  {
+   "id": "GB-0078",
+   "title": "Where should architectural, capability and execution-local decisions be recorded? (DQC-001O)",
+   "kind": "confirm-dqc",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: workbench/wiki/grilling-destination-audit-ledger.json (now at workbench/sessions/grilling-destination-audit-ledger.json (moved by 6ad8225d))."
+  },
+  {
+   "id": "GB-0079",
+   "title": "How do confirmed answers reach durable owners? (DQC-002I)",
+   "kind": "confirm-dqc",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: workbench/wiki/grilling-destination-audit-ledger.json (now at workbench/sessions/grilling-destination-audit-ledger.json (moved by 6ad8225d))."
+  },
+  {
+   "id": "GB-0080",
+   "title": "What evidence is sufficient before promoting a settled answer? (DQC-002J)",
+   "kind": "confirm-dqc",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: workbench/wiki/grilling-destination-audit-ledger.json (now at workbench/sessions/grilling-destination-audit-ledger.json (moved by 6ad8225d))."
+  },
+  {
+   "id": "GB-0081",
+   "title": "Do the older six-box and residual sketches contain missing structural behavior? (DQC-001U)",
+   "kind": "confirm-dqc",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: workbench/wiki/grilling-destination-audit-ledger.json (now at workbench/sessions/grilling-destination-audit-ledger.json (moved by 6ad8225d))."
+  },
+  {
+   "id": "GB-0082",
+   "title": "How should a decision be superseded or deprecated? (DQC-002C)",
+   "kind": "confirm-dqc",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: workbench/wiki/grilling-destination-audit-ledger.json (now at workbench/sessions/grilling-destination-audit-ledger.json (moved by 6ad8225d))."
+  },
+  {
+   "id": "GB-0083",
+   "title": "When may Specs nest or block other Specs? (DQC-002M)",
+   "kind": "confirm-dqc",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: workbench/wiki/grilling-destination-audit-ledger.json (now at workbench/sessions/grilling-destination-audit-ledger.json (moved by 6ad8225d))."
+  },
+  {
+   "id": "GB-0086",
+   "title": "What work should a dispatcher or director perform without executing Tasks? (DQC-002Z)",
+   "kind": "confirm-dqc",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: workbench/wiki/grilling-destination-audit-ledger.json (now at workbench/sessions/grilling-destination-audit-ledger.json (moved by 6ad8225d))."
+  },
+  {
+   "id": "GB-0087",
+   "title": "What evidence should precede building an unattended coordinator? (DQC-003A)",
+   "kind": "confirm-dqc",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: workbench/wiki/grilling-destination-audit-ledger.json (now at workbench/sessions/grilling-destination-audit-ledger.json (moved by 6ad8225d))."
+  },
+  {
+   "id": "GB-0088",
+   "title": "How should recurring approved maintenance fit the work model? (DQC-003B)",
+   "kind": "confirm-dqc",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: workbench/wiki/grilling-destination-audit-ledger.json (now at workbench/sessions/grilling-destination-audit-ledger.json (moved by 6ad8225d))."
+  },
+  {
+   "id": "GB-0089",
+   "title": "How should extended guidebooks be routed and when is a broader library justified? (DQC-003J)",
+   "kind": "confirm-dqc",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: workbench/wiki/grilling-destination-audit-ledger.json (now at workbench/sessions/grilling-destination-audit-ledger.json (moved by 6ad8225d))."
+  },
+  {
+   "id": "GB-0093",
+   "title": "Which legacy terms remain useful aliases and which should be retired? (DQC-003Z)",
+   "kind": "confirm-dqc",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: workbench/wiki/grilling-destination-audit-ledger.json (now at workbench/sessions/grilling-destination-audit-ledger.json (moved by 6ad8225d))."
+  },
+  {
+   "id": "GB-0094",
+   "title": "What does an objective notepad preserve, and whom does it belong to? (DQC-004O)",
+   "kind": "confirm-dqc",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: workbench/wiki/grilling-destination-audit-ledger.json (now at workbench/sessions/grilling-destination-audit-ledger.json (moved by 6ad8225d))."
+  },
+  {
+   "id": "GB-0095",
+   "title": "What makes a handoff useful to its receiving context? (DQC-004P)",
+   "kind": "confirm-dqc",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: workbench/wiki/grilling-destination-audit-ledger.json (now at workbench/sessions/grilling-destination-audit-ledger.json (moved by 6ad8225d))."
+  },
+  {
+   "id": "GB-0096",
+   "title": "When may notes and handoffs persist or be committed for transport? (DQC-004S)",
+   "kind": "confirm-dqc",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: workbench/wiki/grilling-destination-audit-ledger.json (now at workbench/sessions/grilling-destination-audit-ledger.json (moved by 6ad8225d))."
+  },
+  {
+   "id": "GB-0097",
+   "title": "How should still-needed pre-schema notes remain readable? (DQC-004R)",
+   "kind": "confirm-dqc",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: workbench/wiki/grilling-destination-audit-ledger.json (now at workbench/sessions/grilling-destination-audit-ledger.json (moved by 6ad8225d))."
+  },
+  {
+   "id": "GB-0099",
+   "title": "What makes a concept Confirmed after Align, and how do the later steps advance? (DQC-006K)",
+   "kind": "confirm-dqc",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: workbench/wiki/grilling-destination-audit-ledger.json (now at workbench/sessions/grilling-destination-audit-ledger.json (moved by 6ad8225d))."
+  },
+  {
+   "id": "GB-0100",
+   "title": "Which skills own destination question card mechanics and the grilling-completion exit? (DQC-006L)",
+   "kind": "confirm-dqc",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: workbench/wiki/grilling-destination-audit-ledger.json (now at workbench/sessions/grilling-destination-audit-ledger.json (moved by 6ad8225d))."
+  },
+  {
+   "id": "GB-0101",
+   "title": "Where does the workflow begin relative to idea exploration, Align and room setup? (DQC-006M)",
+   "kind": "confirm-dqc",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: workbench/wiki/grilling-destination-audit-ledger.json (now at workbench/sessions/grilling-destination-audit-ledger.json (moved by 6ad8225d))."
+  },
+  {
+   "id": "GB-0160",
+   "title": "Which outcome should guide tradeoffs: faster access to relevant context, clearer human oversight, or more dependable agent continuity · prepared Codex question",
+   "kind": "choice",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/workbench-controls-ddr-2026-10-01.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit)."
+  },
+  {
+   "id": "GB-0161",
+   "title": "Should the first version expose real controls through agent tools and commands, or include a clickable human interface immediately · prepared Codex question",
+   "kind": "choice",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/workbench-controls-ddr-2026-10-01.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit); /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/ddr-and-control-surface-2026-10-01.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit)."
+  },
+  {
+   "id": "GB-0162",
+   "title": "How broadly should the control-first rule apply: to every artifact, or to recurring operations where manual reading or editing creates friction · prepared Codex question",
+   "kind": "choice",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/workbench-controls-ddr-2026-10-01.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit); /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/ddr-and-control-surface-2026-10-01.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit)."
+  },
+  {
+   "id": "GB-0163",
+   "title": "Should JSON-versus-Markdown be a strict separation of state and knowledge, or a preferred separation based on each artifact's job · prepared Codex question",
+   "kind": "choice",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/workbench-controls-ddr-2026-10-01.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit); /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/blueprint-teardown-2026-10-02.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit)."
+  },
+  {
+   "id": "GB-0164",
+   "title": "When someone asks about a topic, should the default return exact stored words, current understanding, or a generated explanation · prepared Codex question",
+   "kind": "choice",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/workbench-controls-ddr-2026-10-01.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit); /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/ddr-and-control-surface-2026-10-01.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit)."
+  },
+  {
+   "id": "GB-0165",
+   "title": "What context must accompany a short answer, and what should happen when the answer cannot safely fit the requested size · prepared Codex question",
+   "kind": "choice",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/workbench-controls-ddr-2026-10-01.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit)."
+  },
+  {
+   "id": "GB-0166",
+   "title": "What distinct gap must a Destination Decision Record fill to justify becoming a new durable record type beside ADRs · prepared Codex question",
+   "kind": "choice",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/workbench-controls-ddr-2026-10-01.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit); /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/ddr-and-control-surface-2026-10-01.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit)."
+  },
+  {
+   "id": "GB-0167",
+   "title": "How should a decision that changes both product experience and architecture be divided between a DDR and an ADR · prepared Codex question",
+   "kind": "choice",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/workbench-controls-ddr-2026-10-01.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit); /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/blueprint-teardown-2026-10-02.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit); /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/ddr-and-control-surface-2026-10-01.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit)."
+  },
+  {
+   "id": "GB-0168",
+   "title": "Should Landmarks remain groupings of important concepts, become decision records, or be replaced by DDRs · prepared Codex question",
+   "kind": "choice",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/workbench-controls-ddr-2026-10-01.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit); /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/ddr-and-control-surface-2026-10-01.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit)."
+  },
+  {
+   "id": "GB-0169",
+   "title": "When you say DDRs would give DQCs a main source, do you mean a governing decision to investigate, a durable destination for an answer, or both · prepared Codex question",
+   "kind": "choice",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/workbench-controls-ddr-2026-10-01.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit); /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/ddr-and-control-surface-2026-10-01.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit)."
+  },
+  {
+   "id": "GB-0170",
+   "title": "Which choices deserve their own DDR, and when does a discussed answer become a confirmed destination decision · prepared Codex question",
+   "kind": "choice",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/workbench-controls-ddr-2026-10-01.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit); /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/ddr-and-control-surface-2026-10-01.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit)."
+  },
+  {
+   "id": "GB-0171",
+   "title": "What understanding must a DDR preserve so temporary DQCs and notes can eventually be reconciled safely · prepared Codex question",
+   "kind": "choice",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/workbench-controls-ddr-2026-10-01.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit); /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/ddr-and-control-surface-2026-10-01.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit); /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/blueprint-teardown-2026-10-02.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit)."
+  },
+  {
+   "id": "GB-0172",
+   "title": "When a destination decision changes, how should the Workbench expose the effect on related understanding and documentation · prepared Codex question",
+   "kind": "choice",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/workbench-controls-ddr-2026-10-01.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit); /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/blueprint-teardown-2026-10-02.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit)."
+  },
+  {
+   "id": "GB-0173",
+   "title": "How much of the controls model and DDR decisions should the Blueprint carry · prepared Codex question",
+   "kind": "choice",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/workbench-controls-ddr-2026-10-01.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit)."
+  },
+  {
+   "id": "GB-0174",
+   "title": "Should rooms extend and adapt the bench controls, or should all rooms operate the same fixed switchboard · prepared Codex question",
+   "kind": "choice",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/workbench-controls-ddr-2026-10-01.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit); /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/blueprint-teardown-2026-10-02.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit)."
+  },
+  {
+   "id": "GB-0175",
+   "title": "What should a dial or switch change, and when should that setting persist · prepared Codex question",
+   "kind": "choice",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/workbench-controls-ddr-2026-10-01.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit)."
+  },
+  {
+   "id": "GB-0176",
+   "title": "Should controls also maintain working context automatically, or should the agent explicitly record consequential discoveries · prepared Codex question",
+   "kind": "choice",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/workbench-controls-ddr-2026-10-01.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit); /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/blueprint-teardown-2026-10-02.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit)."
+  },
+  {
+   "id": "GB-0177",
+   "title": "How should existing destination choices in ADRs, the Blueprint and DQCs be treated if DDRs are introduced · prepared Codex question",
+   "kind": "choice",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/workbench-controls-ddr-2026-10-01.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit); /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/blueprint-teardown-2026-10-02.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit); /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/ddr-and-control-surface-2026-10-01.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit)."
+  },
+  {
+   "id": "GB-0178",
+   "title": "Which smallest coherent result should be delivered first after the shared concept is confirmed · prepared Codex question",
+   "kind": "choice",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/workbench-controls-ddr-2026-10-01.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit); /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/ddr-and-control-surface-2026-10-01.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit)."
+  },
+  {
+   "id": "GB-0179",
+   "title": "What demonstration would convince you that the first slice behaves like the Workbench you mean · prepared Codex question",
+   "kind": "choice",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/workbench-controls-ddr-2026-10-01.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit); /Users/kayden/LLM_Workbench/workbench/sessions/notepads/grilling/blueprint-teardown-2026-10-02.json (absolute path into the owner's primary checkout, ref \"untracked\"; not in the repository at this commit)."
+  },
+  {
+   "id": "GB-0180",
+   "title": "Confirm or correct the preserved grilling ledger and its question-card groupings",
+   "kind": "owner-decision",
+   "category": "c-missing-source-path",
+   "explanation": "Missing at this commit: workbench/wiki/grilling-destination-audit-ledger.json (now at workbench/sessions/grilling-destination-audit-ledger.json (moved by 6ad8225d))."
+  },
+  {
+   "id": "GB-0004",
+   "title": "Update Landmark Record Migration And Tracker Regrouping (S-004A) for the locked seven-landmark set (LS-1)",
+   "kind": "choice",
+   "category": "extra-premise-overtaken",
+   "explanation": "Asks to update S-004A to the seven LS-1 landmarks; DDR-001H made twelve directions the first landmarks."
+  },
+  {
+   "id": "GB-0005",
+   "title": "Decide whether LEXICON.md is a contract artifact or a routing artifact",
+   "kind": "choice",
+   "category": "extra-premise-overtaken",
+   "explanation": "Lexicon contract-versus-routing; DDR-001C (AGENTS.md is the only Contract file) and DDR-001E (the Lexicon retires) overtook it."
+  },
+  {
+   "id": "GB-0006",
+   "title": "Harness Feedback Review: an eighth landmark or a verb family under the Workflow landmark",
+   "kind": "choice",
+   "category": "extra-premise-overtaken",
+   "explanation": "Harness Feedback Review as eighth landmark or verb family; DDR-001H (Learn from Failure landmark) and DDR-001I (one playbook) overtook it."
+  },
+  {
+   "id": "GB-0010",
+   "title": "Choose the visible identifier prefix for LANDMARK.md artifacts (S-003Z)",
+   "kind": "choice",
+   "category": "extra-premise-overtaken",
+   "explanation": "LMK prefix choice; DDR-001H records that the LMK- prefix stays."
+  },
+  {
+   "id": "GB-0011",
+   "title": "How a DDR records its one landmark and how a landmark lists its DDRs (S-003X, S-003Z)",
+   "kind": "choice",
+   "category": "extra-premise-overtaken",
+   "explanation": "DDR-to-landmark linkage; DDR-001H confirms a landmark lists its decision records as a linked section."
+  },
+  {
+   "id": "GB-0016",
+   "title": "Confirm the Plan's derivation: the Contract carrier rewrite (S-004C) stays one Spec under the Workbench artifacts landmark",
+   "kind": "choice",
+   "category": "extra-premise-overtaken",
+   "explanation": "Asks for the LS-1 seven-landmark reading of S-004C; DDR-001H replaced that set and DDR-001C re-plans S-004C."
+  },
+  {
+   "id": "GB-0018",
+   "title": "Where do maintainer-only procedures live (S-004C TK-005K)?",
+   "kind": "owner-decision",
+   "category": "extra-premise-overtaken",
+   "explanation": "Maintainer-skill home; answered 2026-10-04 (\"A ) maintainer skills\"), delivered in TK-005K and recorded in DDR-001K."
+  },
+  {
+   "id": "GB-0090",
+   "title": "What do Chat, Conversation and Thread mean? (DQC-003W)",
+   "kind": "confirm-dqc",
+   "category": "extra-premise-overtaken",
+   "explanation": "Placement in the seven-landmark set; DDR-001H replaced it."
+  },
+  {
+   "id": "GB-0091",
+   "title": "How should Task replace Ticket while preserving historical identity? (DQC-003X)",
+   "kind": "confirm-dqc",
+   "category": "extra-premise-overtaken",
+   "explanation": "Placement in the seven-landmark set; DDR-001H replaced it."
+  },
+  {
+   "id": "GB-0092",
+   "title": "How should identifiers widen without breaking old references? (DQC-003Y)",
+   "kind": "confirm-dqc",
+   "category": "extra-premise-overtaken",
+   "explanation": "Placement in the seven-landmark set; DDR-001H replaced it."
+  },
+  {
+   "id": "GB-0102",
+   "title": "Place the four landmark-less vocabulary cards (DQC-003W, DQC-003X, DQC-003Y, DQC-003Z) in the locked seven-landmark set",
+   "kind": "choice",
+   "category": "extra-premise-overtaken",
+   "explanation": "Placement in the seven-landmark set; DDR-001H replaced it."
+  },
+  {
+   "id": "GB-0158",
+   "title": "Direction for Contract Carrier Pointer-Brief Rewrite (S-004C): continue, fold into another Spec, or drop",
+   "kind": "owner-decision",
+   "category": "extra-premise-overtaken",
+   "explanation": "Says the maintainer-skill answer unblocks TK-005K/M/N; those Tasks are done."
+  },
+  {
+   "id": "GB-0108",
+   "title": "Approve Uppercase Width-Four Workbench Artifact IDs (S-01W) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "extra-premise-overtaken",
+   "explanation": "Approval question for a Spec whose record already carries your 2026-10-06 Human QA approval at integration 42431879."
+  },
+  {
+   "id": "GB-0115",
+   "title": "Approve Completion Claims Against Repository State (S-00M) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "extra-premise-overtaken",
+   "explanation": "Approval question for a Spec whose record already carries your 2026-10-06 Human QA approval at integration 42431879."
+  },
+  {
+   "id": "GB-0117",
+   "title": "Approve grilling skill rebuild (S-00X) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "extra-premise-overtaken",
+   "explanation": "Approval question for a Spec whose record already carries your 2026-10-06 Human QA approval at integration 42431879."
+  },
+  {
+   "id": "GB-0119",
+   "title": "Approve grill-me skill rebuild (S-00Z) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "extra-premise-overtaken",
+   "explanation": "Approval question for a Spec whose record already carries your 2026-10-06 Human QA approval at integration 42431879."
+  },
+  {
+   "id": "GB-0121",
+   "title": "Approve promote skill rebuild (S-01B) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "extra-premise-overtaken",
+   "explanation": "Approval question for a Spec whose record already carries your 2026-10-06 Human QA approval at integration 42431879."
+  },
+  {
+   "id": "GB-0122",
+   "title": "Approve carry skill rebuild (S-01C) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "extra-premise-overtaken",
+   "explanation": "Approval question for a Spec whose record already carries your 2026-10-06 Human QA approval at integration 42431879."
+  },
+  {
+   "id": "GB-0123",
+   "title": "Approve adoption skill rebuild (S-01D) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "extra-premise-overtaken",
+   "explanation": "Approval question for a Spec whose record already carries your 2026-10-06 Human QA approval at integration 42431879."
+  },
+  {
+   "id": "GB-0124",
+   "title": "Approve checkpoint skill rebuild (S-01E) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "extra-premise-overtaken",
+   "explanation": "Approval question for a Spec whose record already carries your 2026-10-06 Human QA approval at integration 42431879."
+  },
+  {
+   "id": "GB-0125",
+   "title": "Approve code-review skill rebuild (S-01F) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "extra-premise-overtaken",
+   "explanation": "Approval question for a Spec whose record already carries your 2026-10-06 Human QA approval at integration 42431879."
+  },
+  {
+   "id": "GB-0126",
+   "title": "Approve genesis skill rebuild (S-01G) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "extra-premise-overtaken",
+   "explanation": "Approval question for a Spec whose record already carries your 2026-10-06 Human QA approval at integration 42431879."
+  },
+  {
+   "id": "GB-0127",
+   "title": "Approve make-it-so skill rebuild (S-01I) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "extra-premise-overtaken",
+   "explanation": "Approval question for a Spec whose record already carries your 2026-10-06 Human QA approval at integration 42431879."
+  },
+  {
+   "id": "GB-0128",
+   "title": "Approve to-docs skill rebuild (S-01J) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "extra-premise-overtaken",
+   "explanation": "Approval question for a Spec whose record already carries your 2026-10-06 Human QA approval at integration 42431879."
+  },
+  {
+   "id": "GB-0129",
+   "title": "Approve to-spec skill rebuild (S-01K) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "extra-premise-overtaken",
+   "explanation": "Approval question for a Spec whose record already carries your 2026-10-06 Human QA approval at integration 42431879."
+  },
+  {
+   "id": "GB-0130",
+   "title": "Approve to-tasks skill rebuild (S-01L) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "extra-premise-overtaken",
+   "explanation": "Approval question for a Spec whose record already carries your 2026-10-06 Human QA approval at integration 42431879."
+  },
+  {
+   "id": "GB-0131",
+   "title": "Approve save skill rebuild (S-01O) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "extra-premise-overtaken",
+   "explanation": "Approval question for a Spec whose record already carries your 2026-10-06 Human QA approval at integration 42431879."
+  },
+  {
+   "id": "GB-0132",
+   "title": "Approve auditor skill rebuild (S-01Q) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "extra-premise-overtaken",
+   "explanation": "Approval question for a Spec whose record already carries your 2026-10-06 Human QA approval at integration 42431879."
+  },
+  {
+   "id": "GB-0134",
+   "title": "Approve Director Role (S-002C) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "extra-premise-overtaken",
+   "explanation": "Approval question for a Spec whose record already carries your 2026-10-06 Human QA approval at integration 42431879."
+  },
+  {
+   "id": "GB-0135",
+   "title": "Approve Dispatcher Role (S-002D) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "extra-premise-overtaken",
+   "explanation": "Approval question for a Spec whose record already carries your 2026-10-06 Human QA approval at integration 42431879."
+  },
+  {
+   "id": "GB-0136",
+   "title": "Approve Worker Role (S-002E) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "extra-premise-overtaken",
+   "explanation": "Approval question for a Spec whose record already carries your 2026-10-06 Human QA approval at integration 42431879."
+  },
+  {
+   "id": "GB-0137",
+   "title": "Approve Spec Planner Stance (S-002F) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "extra-premise-overtaken",
+   "explanation": "Approval question for a Spec whose record already carries your 2026-10-06 Human QA approval at integration 42431879."
+  },
+  {
+   "id": "GB-0138",
+   "title": "Approve Spec Manager Stance (S-002G) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "extra-premise-overtaken",
+   "explanation": "Approval question for a Spec whose record already carries your 2026-10-06 Human QA approval at integration 42431879."
+  },
+  {
+   "id": "GB-0139",
+   "title": "Approve Decision Record Tooling (S-003X) as delivered on integration",
+   "kind": "approve-spec",
+   "category": "extra-premise-overtaken",
+   "explanation": "Approval question for a Spec whose record already carries your 2026-10-06 Human QA approval at integration 42431879."
+  }
+ ]
+}

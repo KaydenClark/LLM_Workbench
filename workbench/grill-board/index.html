@@ -3,13 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Consequential Decision Record · Grill Board</title>
+<title>Workbench Dashboard · Grill Board</title>
 <style>
   :root {
     --bg: #f6f5f1; --panel: #ffffff; --ink: #1d1c19; --muted: #6b675e; --line: #e2dfd6;
     --accent: #3b5bdb; --accent-ink: #ffffff; --soft: #eef0fb;
     --ok: #2f8f5b; --ok-soft: #e6f4ec; --warn: #b7791f; --warn-soft: #fbf1dc; --bad: #c0392b; --bad-soft: #fbe7e4;
     --stale: #8e5bd6; --stale-soft: #f0e8fb; --applied: #2f6f8f; --applied-soft: #e3eff5;
+    --p-bg: #f9dbd9; --p-ink: #a42c28; --v-bg: #fff0cb; --v-ink: #805600;
+    --s1: #c9c4b8; --s2: #e0a84a; --s3: #3b5bdb; --s4: #5b8def; --s5: #8e5bd6; --s6: #2f8f5b; --s7: #2f6f8f; --s8: #1d6b42;
     --mono: ui-monospace, SFMono-Regular, Menlo, monospace;
     --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
   }
@@ -19,6 +21,7 @@
       --accent: #7f97ff; --accent-ink: #0f1120; --soft: #232a44;
       --ok: #5cc48a; --ok-soft: #1d3328; --warn: #e0a84a; --warn-soft: #3a2e17; --bad: #ef7466; --bad-soft: #3d1f1b;
       --stale: #b793f2; --stale-soft: #2c2340; --applied: #7fb6d6; --applied-soft: #1b2c36;
+      --p-bg: #4a1f1c; --p-ink: #ffb4ab; --v-bg: #43340f; --v-ink: #ffd88a;
     }
   }
   :root[data-theme="dark"] {
@@ -26,110 +29,187 @@
     --accent: #7f97ff; --accent-ink: #0f1120; --soft: #232a44;
     --ok: #5cc48a; --ok-soft: #1d3328; --warn: #e0a84a; --warn-soft: #3a2e17; --bad: #ef7466; --bad-soft: #3d1f1b;
     --stale: #b793f2; --stale-soft: #2c2340; --applied: #7fb6d6; --applied-soft: #1b2c36;
+    --p-bg: #4a1f1c; --p-ink: #ffb4ab; --v-bg: #43340f; --v-ink: #ffd88a;
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 var(--sans); }
   a { color: var(--accent); }
   button { font: inherit; cursor: pointer; }
-  .shell { display: grid; grid-template-columns: 280px minmax(0, 1fr); min-height: 100vh; }
-  nav { position: sticky; top: 0; height: 100vh; overflow: auto; border-right: 1px solid var(--line); background: var(--panel); padding: 16px; }
-  nav h1 { font-size: 17px; margin: 0 0 4px; }
-  nav .meta { color: var(--muted); font-size: 12px; margin-bottom: 14px; }
-  .progress { height: 8px; border-radius: 4px; background: var(--line); overflow: hidden; display: flex; margin: 8px 0 14px; }
+  button:disabled { cursor: not-allowed; opacity: .5; }
+  button:focus-visible, a:focus-visible, select:focus-visible, input:focus-visible, textarea:focus-visible, summary:focus-visible, .term:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+  [hidden] { display: none !important; }
+  .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  /* Top bar: brand, global search and theme. The five Dashboard sections are
+     the left navigation pane below it (owner correction, 2026-10-09). */
+  .topbar { position: sticky; top: 0; z-index: 10; background: var(--panel); border-bottom: 1px solid var(--line); padding: 8px 20px; display: flex; align-items: center; gap: 10px 18px; flex-wrap: wrap; }
+  .topbar .brand { font-weight: 700; font-size: 16px; margin-right: 4px; }
+  .global-search { margin-left: auto; display: flex; gap: 6px; }
+  .global-search input { width: min(280px, 60vw); padding: 7px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); font: inherit; }
+  .theme { font-size: 12px; border: 1px solid var(--line); background: transparent; color: var(--muted); border-radius: 8px; padding: 4px 8px; }
+
+  /* Left pane: the section links, then the Grilling Board filters under them. */
+  .shell { display: grid; grid-template-columns: 280px minmax(0, 1fr); min-height: calc(100vh - 56px); }
+  #sidebar { position: sticky; top: 56px; height: calc(100vh - 56px); overflow: auto; border-right: 1px solid var(--line); background: var(--panel); padding: 16px; min-width: 0; }
+  .sections { display: grid; gap: 4px; }
+  .sections a { padding: 7px 12px; border-radius: 8px; border: 1px solid var(--line); text-decoration: none; color: var(--ink); font-weight: 600; font-size: 14px; }
+  .sections a:hover { background: var(--soft); }
+  .sections a[aria-current="page"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  #grill-nav { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line); }
+  #grill-nav h1 { font-size: 17px; margin: 0 0 4px; }
+  #grill-nav .meta { color: var(--muted); font-size: 12px; margin-bottom: 10px; }
+  #grill-nav select, #grill-nav input[type=search] { width: 100%; font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--line); padding: 7px 8px; border-radius: 8px; }
+  .slice-label { display: block; font-size: 12px; font-weight: 600; margin: 12px 0 5px; }
+  .progress { height: 8px; border-radius: 4px; background: var(--line); overflow: hidden; display: flex; margin: 8px 0 12px; }
   .progress span { display: block; height: 100%; }
-  .filters { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+  .filters, .grade-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+  .grade-row { margin-bottom: 8px; }
   .chip { border: 1px solid var(--line); background: transparent; color: var(--ink); border-radius: 999px; padding: 3px 10px; font-size: 12px; }
   .chip[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
-  nav input[type=search] { width: 100%; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); margin-bottom: 14px; }
-  .groups a { display: flex; justify-content: space-between; gap: 8px; padding: 7px 8px; border-radius: 8px; color: var(--ink); text-decoration: none; font-size: 13px; }
-  .groups a:hover { background: var(--soft); }
-  .groups a small { color: var(--muted); white-space: nowrap; }
-  main { padding: 20px 28px 80px; max-width: 1060px; }
-  .banner { position: sticky; top: 0; z-index: 5; background: var(--warn-soft); color: var(--ink); border: 1px solid var(--warn); border-radius: 10px; padding: 10px 14px; margin-bottom: 16px; display: none; align-items: center; justify-content: space-between; gap: 12px; }
+  .chip small { font-weight: normal; opacity: .75; margin-left: 2px; }
+  /* P and V chips wear the red P and amber V badge colors: outlined when off, filled when pressed. */
+  .grade-chip { font-weight: 700; }
+  .grade-chip.priority { color: var(--p-ink); border-color: var(--p-ink); }
+  .grade-chip.priority[aria-pressed="true"] { background: var(--p-bg); color: var(--p-ink); border-color: var(--p-ink); }
+  .grade-chip.value { color: var(--v-ink); border-color: var(--v-ink); }
+  .grade-chip.value[aria-pressed="true"] { background: var(--v-bg); color: var(--v-ink); border-color: var(--v-ink); }
+  .more-filters { margin-top: 12px; }
+  .more-filters summary { cursor: pointer; font-size: 12px; font-weight: 600; color: var(--muted); }
+  .nav-links { display: grid; gap: 6px; margin-top: 14px; font-size: 13px; }
+  main { padding: 20px 28px 80px; min-width: 0; }
+  .shell:not(.wide) main { max-width: 1080px; }
+  .banner { position: sticky; top: 64px; z-index: 5; background: var(--warn-soft); border: 1px solid var(--warn); border-radius: 10px; padding: 10px 14px; margin-bottom: 16px; display: none; align-items: center; justify-content: space-between; gap: 12px; }
   .banner.show { display: flex; }
-  .notice { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 18px; margin-bottom: 24px; color: var(--muted); font-size: 14px; }
+  .notice { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 18px; margin-bottom: 20px; color: var(--muted); font-size: 14px; }
   .notice strong { color: var(--ink); }
-  section.group { margin: 0 0 36px; }
-  section.group > header { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 6px; }
-  section.group h2 { font-size: 20px; margin: 0; }
-  section.group .intro { color: var(--muted); margin: 0 0 14px; font-size: 14px; }
-  .bulk { font-size: 12px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 8px; padding: 4px 10px; }
-  article.item { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; margin-bottom: 14px; }
-  article.item[data-status="applied"] { border-color: var(--applied); }
-  article.item[data-status="answered"] { border-color: var(--ok); }
-  article.item[data-status="stale"] { border-color: var(--stale); }
-  article.item[data-status="withdrawn"] { opacity: .6; }
-  .item-head { display: flex; gap: 10px; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; }
-  .item-head h3 { margin: 0; font-size: 16px; line-height: 1.35; }
-  .item-head .id { font-family: var(--mono); font-size: 12px; color: var(--muted); margin-right: 8px; }
+  .semantics { background: var(--soft); border-left: 4px solid var(--accent); padding: 10px 14px; border-radius: 4px; }
+  .bulk { font-size: 13px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 8px; padding: 5px 10px; }
+  .primary { background: var(--accent); color: var(--accent-ink); border: 1px solid var(--accent); border-radius: 8px; padding: 7px 12px; }
+  .empty { color: var(--muted); padding: 30px 0; text-align: center; }
+  .stale-box { margin-top: 10px; background: var(--stale-soft); border: 1px solid var(--stale); border-radius: 10px; padding: 8px 12px; font-size: 13px; }
+  .error-box { margin: 10px 0; background: var(--bad-soft); border: 1px solid var(--bad); border-radius: 10px; padding: 8px 12px; font-size: 14px; }
+  .applied-box { margin-top: 10px; background: var(--applied-soft); border: 1px solid var(--applied); border-radius: 10px; padding: 8px 12px; font-size: 13px; }
+  .ok-box { margin-top: 10px; background: var(--ok-soft); border: 1px solid var(--ok); border-radius: 10px; padding: 8px 12px; font-size: 13px; }
+
+  /* Grilling Board: topics, rows, badges and the central question. */
+  .topic-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin: 20px 0; }
+  .topic-card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 18px; }
+  .topic-card h3 { margin: 0 0 8px; font-size: 17px; }
+  .topic-card p { color: var(--muted); margin: 8px 0; font-size: 13px; }
+  .topic-card progress, .batch-panel progress { width: 100%; accent-color: var(--ok); height: 8px; }
+  .frame { font-size: 19px; line-height: 1.5; margin: 12px 0; }
+  .lane-counts { display: flex; gap: 6px 12px; flex-wrap: wrap; font-size: 12px; color: var(--muted); }
+  .slice-toolbar, .batch-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 14px 0; }
+  .slice-toolbar select { font: inherit; background: var(--panel); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: 6px; }
+  .batch-panel { background: var(--soft); border: 1px solid var(--accent); border-radius: 12px; padding: 16px 20px; margin-bottom: 20px; }
+  .batch-panel h2 { font-size: 18px; margin: 0 0 8px; }
+  .question-row { display: flex; gap: 10px; align-items: center; border-bottom: 1px solid var(--line); padding: 8px 0; }
+  .question-row .row-open { flex: 1; background: transparent; color: var(--ink); border: 0; text-align: left; padding: 4px; min-width: 0; }
+  .question-row small { display: block; color: var(--muted); }
+  .question-row.current { border-left: 3px solid var(--accent); padding-left: 8px; }
+  .row-end { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
   .badge { display: inline-block; font-size: 11px; font-weight: 600; letter-spacing: .02em; text-transform: uppercase; border-radius: 6px; padding: 2px 8px; }
   .badge.pending { background: var(--soft); color: var(--accent); }
   .badge.answered { background: var(--ok-soft); color: var(--ok); }
   .badge.applied { background: var(--applied-soft); color: var(--applied); }
   .badge.stale { background: var(--stale-soft); color: var(--stale); }
-  .badge.withdrawn { background: var(--line); color: var(--muted); }
+  .badge.withdrawn, .badge.superseded { background: var(--line); color: var(--muted); }
+  .grades { display: flex; gap: 6px; align-items: flex-start; }
+  .grade { position: relative; font-size: 13px; }
+  .grade summary { list-style: none; border-radius: 8px; padding: 4px 9px; cursor: pointer; font-weight: 700; }
+  .grade summary::-webkit-details-marker { display: none; }
+  .grade.priority summary, .grade-pill.priority { background: var(--p-bg); color: var(--p-ink); }
+  .grade.value summary, .grade-pill.value { background: var(--v-bg); color: var(--v-ink); }
+  .grade .grade-reason { position: absolute; right: 0; top: calc(100% + 6px); z-index: 6; width: min(320px, 80vw); background: var(--panel); padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 6px 18px rgba(0,0,0,.12); font-size: 13px; }
+  .grade .grade-reason p { margin: 6px 0 0; }
+  .grade.unclassified { color: var(--muted); font-size: 11px; border: 1px dashed var(--line); border-radius: 8px; padding: 3px 7px; white-space: nowrap; }
+  /* On the opened card the P and V badges stay closed; a reason opens in place. */
+  .card-grades { display: flex; flex-wrap: wrap; gap: 6px; align-items: flex-start; margin: 10px 0; }
+  .card-grade .grade-reason { position: static; width: auto; box-shadow: none; margin-top: 6px; }
+  .card-grades .hint { margin: 0; align-self: center; }
+  /* The card's links (Spec, decision records, sources) read as links, not as more text. */
+  .link-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 10px 0; }
+  .link-row .wiki-links { display: contents; }
+  .link-row a, .link-row .link-button { font-size: 12.5px; text-decoration: none; border: 1px solid var(--accent); color: var(--accent); background: var(--soft); border-radius: 999px; padding: 2px 10px; }
+  .link-row a:hover, .link-row .link-button:hover { text-decoration: underline; }
+  .link-row > span, .link-row .wiki-links > span { font-size: 12px; color: var(--muted); }
+  .link-row .unavailable-link { font-size: 12.5px; border: 1px dashed var(--line); border-radius: 999px; padding: 2px 10px; }
+  #focus { margin-top: 24px; scroll-margin-top: 80px; }
+  .question-context { color: var(--muted); font-size: 13px; }
+  article.item { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; margin-bottom: 14px; scroll-margin-top: 80px; }
+  article.item[data-status="applied"] { border-color: var(--applied); }
+  article.item[data-status="answered"] { border-color: var(--ok); }
+  article.item[data-status="stale"] { border-color: var(--stale); }
+  article.item[data-status="withdrawn"] { opacity: .6; }
+  .item-head { display: flex; gap: 10px; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; }
+  .item-head h3 { margin: 0; font-size: 18px; line-height: 1.35; }
+  .identity { display: block; color: var(--muted); font: 12px var(--mono); margin-top: 6px; font-weight: normal; }
   .kind { font-size: 12px; color: var(--muted); margin-left: 6px; }
   .q { font-weight: 600; margin: 10px 0 12px; }
-  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  @media (max-width: 900px) { .cols { grid-template-columns: 1fr; } .shell { grid-template-columns: 1fr; } nav { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--line); } main { padding: 16px; } }
-  .block { background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; font-size: 14px; }
-  .block h4 { margin: 0 0 6px; font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+  .block { background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; font-size: 14px; margin: 12px 0; }
+  .block h4 { margin: 0 0 6px; font-size: 13px; color: var(--muted); }
   .block p { margin: 0 0 8px; } .block p:last-child { margin-bottom: 0; }
   .block ul, .block ol { margin: 0 0 8px; padding-left: 20px; }
-  .block pre { white-space: pre-wrap; word-break: break-word; font-family: var(--mono); font-size: 12.5px; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; margin: 0 0 8px; }
-  .block code { font-family: var(--mono); font-size: 12.5px; background: var(--panel); border: 1px solid var(--line); border-radius: 4px; padding: 0 4px; }
-  .block blockquote { margin: 0 0 8px; padding-left: 10px; border-left: 3px solid var(--line); color: var(--muted); }
+  .block pre { white-space: pre-wrap; word-break: break-word; font: 12.5px var(--mono); background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; margin: 0 0 8px; }
+  .block code { font: 12.5px var(--mono); background: var(--panel); border: 1px solid var(--line); border-radius: 4px; padding: 0 4px; }
   .block h1, .block h2, .block h3 { font-size: 14px; margin: 10px 0 4px; }
-  details.draft { margin-top: 12px; }
-  details.draft summary { cursor: pointer; font-weight: 600; color: var(--accent); }
-  details.draft .block { margin-top: 8px; max-height: 70vh; overflow: auto; }
-  .sources { margin: 12px 0 0; font-size: 12.5px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 6px 14px; }
-  .sources a, .sources button { color: var(--accent); background: none; border: 0; padding: 0; font-size: 12.5px; text-decoration: underline; }
-  .answer { margin-top: 14px; border-top: 1px dashed var(--line); padding-top: 12px; }
-  .options { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
-  .opt { border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 10px; padding: 6px 12px; font-size: 13.5px; }
-  .opt:hover { border-color: var(--accent); }
-  .opt[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
-  .opt[data-value="decline"][aria-pressed="true"], .opt[data-value="drop"][aria-pressed="true"] { background: var(--bad); border-color: var(--bad); color: #fff; }
-  .opt[data-value="correct"][aria-pressed="true"], .opt[data-value="finding"][aria-pressed="true"] { background: var(--warn); border-color: var(--warn); color: #fff; }
-  .hint { font-size: 12px; color: var(--muted); min-height: 18px; margin-bottom: 8px; }
-  textarea { width: 100%; min-height: 72px; resize: vertical; padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink); font: inherit; }
-  textarea.needs-note { border-color: var(--warn); }
-  .save { font-size: 12px; color: var(--muted); margin-top: 6px; display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
-  .save .err { color: var(--bad); }
-  .applied-box { margin-top: 10px; background: var(--applied-soft); border: 1px solid var(--applied); border-radius: 10px; padding: 8px 12px; font-size: 13px; }
-  .stale-box { margin-top: 10px; background: var(--stale-soft); border: 1px solid var(--stale); border-radius: 10px; padding: 8px 12px; font-size: 13px; }
-  .empty { color: var(--muted); padding: 30px 0; text-align: center; }
-  dialog { width: min(1000px, 92vw); max-height: 88vh; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); color: var(--ink); padding: 0; }
-  dialog header { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 12px 16px; border-bottom: 1px solid var(--line); font-family: var(--mono); font-size: 12.5px; }
-  dialog pre { margin: 0; padding: 16px; white-space: pre-wrap; word-break: break-word; font-family: var(--mono); font-size: 12.5px; max-height: 76vh; overflow: auto; }
-  dialog::backdrop { background: rgba(0,0,0,.45); }
-  .theme { font-size: 12px; border: 1px solid var(--line); background: transparent; color: var(--muted); border-radius: 8px; padding: 2px 8px; margin-top: 12px; }
-  .block { margin: 12px 0; }
-  .block h4, .recommendation h4 { font-size: 13px; text-transform: none; letter-spacing: 0; }
   .brief-summary { font-size: 17px; line-height: 1.6; }
   .recommendation { border-left: 4px solid var(--accent); background: var(--soft); padding: 10px 18px; margin: 16px 0; border-radius: 4px; }
-  .recommendation h4 { margin: 0 0 6px; }
+  .recommendation h4 { margin: 0 0 6px; font-size: 13px; }
   .recommendation p { margin: 0; }
-  .identity { display: block; color: var(--muted); font: 11px var(--mono); margin-top: 8px; font-weight: normal; }
-  .options { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; }
-  .option-impact { font-size: 13px; color: var(--muted); }
+  details.draft { margin-top: 12px; }
+  details.draft summary { cursor: pointer; font-weight: 600; color: var(--accent); }
+  details.draft .block { max-height: 70vh; overflow: auto; }
+  /* A folded part of the opened card: one quiet line until it is wanted. */
+  details.fold { margin-top: 8px; }
+  details.fold summary { cursor: pointer; font-weight: 600; font-size: 13px; color: var(--muted); }
+  details.fold[open] > summary { color: var(--ink); }
+  /* The three sections he reads on every card start open, headed like sections. */
+  details.fold.read { margin-top: 14px; }
+  details.fold.read > summary { font-size: 15px; color: var(--ink); }
   .history-entry { margin: 10px 0; background: var(--bg); padding: 12px; border-radius: 8px; }
   .history-entry summary { cursor: pointer; font-size: 14px; }
-  .history-entry p { line-height: 1.65; }
-  .family { margin: 24px 0 14px; font-weight: 500; color: var(--muted); }
-  .family small { font-size: 12px; }
-  [hidden] { display: none !important; }
-  .page-header { position: sticky; top: 0; z-index: 8; min-height: 58px; background: var(--panel); border-bottom: 1px solid var(--line); padding: 10px 24px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
-  .page-header label { color: var(--muted); font-size: 13px; }
-  .page-header select { font: inherit; background: var(--bg); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: 6px 10px; }
-  nav { top: 58px; height: calc(100vh - 58px); }
-  .shell.reading { grid-template-columns: minmax(0, 1fr); }
-  .shell.reading main { width: 100%; margin: auto; }
-  .reader { font-size: 16px; line-height: 1.7; overflow-wrap: anywhere; }
-  .reader h1 { font-size: 28px; line-height: 1.3; }
-  .reader h2 { font-size: 22px; margin-top: 32px; }
-  .reader h3 { font-size: 18px; }
+  .sources { margin: 12px 0 0; font-size: 13px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 6px 14px; }
+  .sources a, .sources button, .link-button { color: var(--accent); background: none; border: 0; padding: 0; font-size: inherit; text-decoration: underline; }
+  .wiki-links { display: flex; flex-wrap: wrap; gap: 6px 12px; margin: 8px 0; font-size: 13px; }
+
+  /* Answer controls. */
+  .answer { margin-top: 16px; border-top: 1px dashed var(--line); padding-top: 12px; }
+  .answer h4 { margin: 0 0 8px; font-size: 15px; }
+  .answer textarea, .card-workflow textarea { width: 100%; min-height: 72px; resize: vertical; padding: 8px 10px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink); font: inherit; }
+  .alternatives { display: grid; gap: 6px; margin: 10px 0; }
+  .alternatives .opt { text-align: left; }
+  .answer-buttons { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 4px; }
+  .opt { border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 10px; padding: 7px 12px; font-size: 14px; }
+  .opt:hover:not(:disabled) { border-color: var(--accent); }
+  .opt[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .opt[data-role="confirm"] { font-weight: 700; }
+  .opt[data-role="sendback"][aria-pressed="true"] { background: var(--warn); border-color: var(--warn); color: #fff; }
+  .opt small { display: block; font-weight: normal; opacity: .8; }
+  .hint { font-size: 12.5px; color: var(--muted); margin: 6px 0; }
+  .save { font-size: 12px; color: var(--muted); margin-top: 6px; display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+  .save .err, .err { color: var(--bad); }
+  .legacy-answer { background: var(--warn-soft); border: 1px solid var(--warn); border-radius: 10px; padding: 8px 12px; font-size: 13px; margin: 8px 0; }
+
+  /* Comments, rounds and promotion. */
+  .round-workflow { padding: 16px 20px; margin-bottom: 20px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; }
+  .round-workflow h2 { margin: 0 0 6px; font-size: 18px; }
+  .card-workflow { padding: 14px 0 0; margin-top: 14px; border-top: 1px solid var(--line); overflow-wrap: anywhere; }
+  .card-workflow h4 { margin: 0 0 8px; }
+  .request { padding: 10px 12px; margin: 10px 0; border: 1px solid var(--line); border-radius: 8px; }
+  .timeline { list-style: none; padding: 0; margin: 10px 0; border-left: 2px solid var(--line); }
+  .timeline li { position: relative; padding: 4px 0 10px 18px; font-size: 13.5px; }
+  .timeline li::before { content: ""; position: absolute; left: -7px; top: 8px; width: 12px; height: 12px; border-radius: 50%; background: var(--panel); border: 2px solid var(--line); }
+  .timeline li.done::before { background: var(--ok); border-color: var(--ok); }
+  .timeline li.next::before { border-color: var(--accent); }
+  .timeline small { display: block; color: var(--muted); }
+  .confirmed-list { display: grid; gap: 4px; margin: 8px 0; max-height: 260px; overflow: auto; }
+
+  /* Sections, reader, inspector. */
+  .reader { font-size: 16px; line-height: 1.7; overflow-wrap: anywhere; max-width: 82ch; }
+  .reader h1 { font-size: 26px; line-height: 1.3; }
+  .reader h2 { font-size: 21px; margin-top: 28px; }
+  .reader h3 { font-size: 17px; }
   .reader pre { white-space: pre-wrap; padding: 14px; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; font: 13px/1.6 var(--mono); }
   .reader code { font-family: var(--mono); font-size: .86em; }
   .reader blockquote { margin-left: 0; padding-left: 16px; border-left: 3px solid var(--line); }
@@ -139,73 +219,133 @@
   th { background: var(--soft); }
   .reader-meta { color: var(--muted); font-size: 12px; overflow-wrap: anywhere; }
   .reader-tabs { display: flex; gap: 10px; flex-wrap: wrap; margin: 18px 0; }
-  .reader-tabs a, .artifact-list a { display: block; border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; background: var(--panel); text-decoration: none; }
-  .artifact-list { display: grid; gap: 10px; margin: 16px 0; }
-  .artifact-list small { display: block; color: var(--muted); }
-  .artifact-section { padding: 20px; margin: 20px 0; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
+  .reader-tabs a, .artifact-list a, .group-card { display: block; border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; background: var(--panel); text-decoration: none; color: var(--ink); }
+  .artifact-list { display: grid; gap: 8px; margin: 16px 0; }
+  .artifact-list small, .group-card small { display: block; color: var(--muted); }
+  .group-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin: 16px 0; }
+  .artifact-section { padding: 20px; margin: 20px 0; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); scroll-margin-top: 80px; }
   .artifact-section > h2 { margin-top: 0; }
   .source-change { padding: 12px; border: 1px solid var(--warn); background: var(--warn-soft); border-radius: 10px; margin: 12px 0; }
   .unavailable-link { color: var(--muted); text-decoration: underline dotted; }
-  #artifact-panel, .reader [data-anchor], .artifact-section, #artifact-proposals, article.item { scroll-margin-top: 80px; }
-  .banner { top: 70px; }
-  @media (max-width: 900px) { nav { top: auto; height: auto; } .page-header { padding: 10px 16px; } }
-  .slice-label { display: block; font-size: 12px; font-weight: 600; margin: 14px 0 6px; }
-  nav select { width: 100%; font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--line); padding: 8px; border-radius: 8px; }
-  .topic-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin: 20px 0; }
-  .topic-card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 18px; }
-  .topic-card h3 { margin: 0 0 8px; font-size: 17px; }
-  .topic-card p { color: var(--muted); margin: 8px 0; font-size: 13px; }
-  .topic-card button { text-align: left; }
-  .frame { color: var(--ink); font-size: 19px; line-height: 1.5; margin: 12px 0; }
-  .lane-counts { display: flex; gap: 6px 12px; flex-wrap: wrap; font-size: 12px; color: var(--muted); }
-  .lane-counts span { white-space: nowrap; }
-  .slice-toolbar, .batch-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 14px 0; }
-  .slice-toolbar select { font: inherit; background: var(--panel); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: 6px; }
-  .primary { background: var(--accent); color: var(--accent-ink); border: 1px solid var(--accent); border-radius: 8px; padding: 7px 12px; }
-  button:disabled { cursor: default; opacity: .5; }
-  button:focus-visible, a:focus-visible, select:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
-  .question-row { display: flex; gap: 10px; align-items: center; border-bottom: 1px solid var(--line); padding: 10px 0; }
-  .question-row button { flex: 1; background: transparent; color: var(--ink); border: 0; text-align: left; padding: 4px; }
-  .question-row small { display: block; color: var(--muted); }
-  .question-row.current { border-left: 3px solid var(--accent); padding-left: 8px; }
-  .batch-panel { background: var(--soft); border: 1px solid var(--accent); border-radius: 12px; padding: 16px 20px; margin-bottom: 20px; }
-  .batch-panel h2 { font-size: 18px; margin: 0 0 8px; }
-  .batch-panel p { margin: 8px 0; }
-  .batch-panel progress, .topic-card progress { width: 100%; accent-color: var(--ok); height: 8px; }
-  #focus { margin-top: 24px; scroll-margin-top: 80px; }
-  .question-context { color: var(--muted); font-size: 13px; }
-  @media (max-width: 650px) { .topic-grid { grid-template-columns: 1fr; } .question-row { align-items: flex-start; } }
+  .draft-comparison { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 24px; }
+  .draft-group { padding: 18px 20px; margin: 18px 0; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
+  .draft-group h2 { margin: 0; font-size: 19px; }
+  .draft-item { border-top: 1px solid var(--line); padding: 12px 0; }
+  .draft-item h3 { margin: 0; font-size: 16px; }
+  .scroll-box { max-height: 60vh; overflow: auto; border: 1px solid var(--line); border-radius: 8px; padding: 8px 14px; background: var(--bg); }
+  .lanes { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 14px; align-items: start; }
+  .lane { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 12px; }
+  .lane h2 { font-size: 16px; margin: 0 0 8px; display: flex; justify-content: space-between; }
+  .source-card { display: block; width: 100%; text-align: left; padding: 10px 12px; margin: 8px 0; border: 1px solid var(--line); background: var(--bg); color: var(--ink); border-radius: 10px; }
+  .source-card small { display: block; color: var(--muted); margin-top: 4px; }
+  .landmark-card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; margin: 12px 0; }
+  .landmark-card h3 { margin: 0; font-size: 17px; }
+  .distribution { display: flex; height: 14px; border-radius: 7px; overflow: hidden; background: var(--line); margin: 8px 0; }
+  .distribution span { display: block; height: 100%; }
+  .legend { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 12px; color: var(--muted); }
+  .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 4px; vertical-align: -1px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .chips button { font-size: 12px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); border-radius: 999px; padding: 2px 9px; }
+  .section-filter { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin: 12px 0; }
+  .section-filter input, .section-filter select { font: inherit; padding: 6px 9px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); color: var(--ink); }
+  .why-row { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; margin: 10px 0; background: var(--panel); }
+  .why-row h3 { margin: 0; font-size: 16px; }
+  .why-row blockquote { margin: 8px 0; padding-left: 12px; border-left: 3px solid var(--warn); }
+  .search-result { border-bottom: 1px solid var(--line); padding: 10px 0; }
+  dialog { width: min(1000px, 94vw); max-height: 90vh; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); color: var(--ink); padding: 0; }
+  dialog::backdrop { background: rgba(0,0,0,.45); }
+  dialog header { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; padding: 14px 18px; border-bottom: 1px solid var(--line); }
+  dialog header h2 { margin: 0; font-size: 19px; }
+  dialog .dialog-body { padding: 14px 18px; overflow: auto; max-height: calc(90vh - 80px); }
+  dialog pre { margin: 0; white-space: pre-wrap; word-break: break-word; font: 12.5px var(--mono); }
+  dl.facts { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 4px 14px; font-size: 13.5px; margin: 0 0 12px; }
+  dl.facts dt { color: var(--muted); }
+  dl.facts dd { margin: 0; overflow-wrap: anywhere; }
+  .term { text-decoration: underline dotted; text-underline-offset: 3px; color: inherit; cursor: help; }
+  #term-tip { position: fixed; z-index: 20; max-width: 360px; background: var(--panel); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; font-size: 13px; box-shadow: 0 6px 18px rgba(0,0,0,.15); pointer-events: none; }
+  @media (max-width: 900px) {
+    .shell { grid-template-columns: 1fr; }
+    #sidebar { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--line); }
+    .sections { display: flex; flex-wrap: wrap; gap: 6px; }
+    main { padding: 16px; }
+    .topbar { position: static; }
+    .global-search { margin-left: 0; }
+    .draft-comparison, .grade-detail, .topic-grid { grid-template-columns: 1fr; }
+    .question-row { flex-wrap: wrap; }
+  }
 </style>
 </head>
 <body>
-<header class="page-header"><strong>Consequential Decision Record</strong><label for="page-select">Read</label><select id="page-select"><option value="questions">Questions</option><option value="agents">AGENTS</option><option value="runbook">RUNBOOK</option><option value="blueprint">BLUEPRINT</option><option value="lexicon">LEXICON</option><option value="landmarks">Landmarks</option><option value="adrs">ADRs</option><option value="ddrs">DDRs</option></select><a href="#questions">Return to questions</a></header>
-<div class="shell">
-  <nav>
-    <h1>Grill Board</h1><div id="title" class="meta">Choose a manageable slice</div>
-    <div class="meta" id="meta">loading…</div>
-    <div class="progress" id="progress" title="pending / re-answer / answered / applied"></div>
-    <label class="slice-label" for="intent">What do you feel like doing?</label>
-    <select id="intent"><option value="all">Anything</option><option value="unblock">Unblock / direct work</option><option value="explore">Explore / settle decisions</option><option value="review">Review existing work</option></select>
-    <label class="slice-label" for="topic">Think about…</label><select id="topic"></select>
-    <label class="slice-label" for="scope">At what scale?</label><select id="scope"><option value="all">Any scale</option><option value="BLUEPRINT">Blueprint · whole product</option><option value="LANDMARK">Landmark · a direction</option><option value="SPEC">Spec · one capability</option><option value="TASK">Task · one step</option></select>
-    <span class="slice-label">Where is it in the workflow?</span><div class="filters" id="filters"></div>
-    <input type="search" id="search" placeholder="Search titles, questions, text…" aria-label="Search items">
-    <button class="bulk" id="reset-slice">All topics</button>
-    <button class="theme" id="theme">Toggle theme</button>
-  </nav>
-  <main>
-    <div class="banner" id="banner"><span>An agent updated the board since you loaded it. Your saved answers are safe.</span><button class="bulk" onclick="location.reload()">Reload</button></div>
-    <div id="questions-panel"><div id="batch-panel"></div><div class="notice" id="notice"></div><div id="overview"></div>
-    <div id="content"><div class="empty">Loading the board…</div></div>
-    </div><div id="artifact-panel" hidden></div>
+<header class="topbar">
+  <span class="brand">Workbench Dashboard</span>
+  <form class="global-search" id="global-search-form" role="search">
+    <label class="visually-hidden" for="global-search">Search the Dashboard</label>
+    <input type="search" id="global-search" placeholder="Search the Dashboard…">
+    <button class="bulk" type="submit">Search</button>
+  </form>
+  <button class="theme" id="theme" type="button">Theme</button>
+</header>
+<div class="shell" id="shell">
+  <aside id="sidebar">
+    <nav class="sections" id="section-tabs" aria-label="Dashboard sections">
+      <a href="#section=tracker" data-section="tracker">Destination Tracker</a>
+      <a href="#section=taskboard" data-section="taskboard">Taskboard</a>
+      <a href="#section=grilling" data-section="grilling">Grilling Board</a>
+      <a href="#section=drafts" data-section="drafts">Drafts to approve</a>
+      <a href="#section=wiki" data-section="wiki">Wiki</a>
+    </nav>
+    <nav id="grill-nav" aria-label="Grilling Board filters">
+      <h1>Grilling Board</h1>
+      <div class="meta" id="meta">loading…</div>
+      <div class="progress" id="progress" title="applied / answered"></div>
+      <span class="slice-label">Priority and Value</span>
+      <div id="grade-chips"></div>
+      <span class="slice-label">Where is it in the workflow?</span>
+      <div class="filters" id="filters"></div>
+      <label class="slice-label" for="search">Search these questions</label>
+      <input type="search" id="search" placeholder="Titles, questions, text…">
+      <details class="more-filters" id="more-filters">
+        <summary>More filters</summary>
+        <label class="slice-label" for="intent">What do you feel like doing?</label>
+        <select id="intent"><option value="all">Anything</option><option value="unblock">Unblock / direct work</option><option value="explore">Explore / settle decisions</option><option value="review">Review existing work</option></select>
+        <label class="slice-label" for="topic">Think about…</label><select id="topic"></select>
+        <label class="slice-label" for="scope">At what scale?</label>
+        <select id="scope"><option value="all">Any scale</option><option value="BLUEPRINT">Blueprint · whole product</option><option value="LANDMARK">Landmark · a direction</option><option value="SPEC">Spec · one capability</option><option value="TASK">Task · one step</option></select>
+      </details>
+      <p><button class="bulk" id="reset-slice" type="button">Clear all filters</button></p>
+      <div class="nav-links"><a href="#section=whys" id="whys-link">Whys list</a><a href="#section=drafts">Drafts to approve</a></div>
+    </nav>
+  </aside>
+  <main id="main">
+    <div class="banner" id="banner" role="status"><span>An agent updated the board since you loaded it. Your saved answers are safe.</span><button class="bulk" type="button" id="banner-reload">Reload</button></div>
+    <div id="questions-panel">
+      <div id="round-workflow" class="round-workflow"></div>
+      <div id="batch-panel"></div>
+      <div class="notice" id="notice"></div>
+      <div id="overview"></div>
+      <div id="content"><div class="empty">Loading the board…</div></div>
+    </div>
+    <div id="section-panel" hidden></div>
   </main>
 </div>
-<dialog id="viewer"><header><span id="viewer-path"></span><button class="bulk" onclick="document.getElementById('viewer').close()">Close</button></header><pre id="viewer-text"></pre></dialog>
+<dialog id="viewer" aria-labelledby="viewer-path"><header><h2 id="viewer-path"></h2><button class="bulk" type="button" id="viewer-close">Close</button></header><div class="dialog-body"><pre id="viewer-text"></pre></div></dialog>
+<dialog id="inspector" aria-labelledby="inspector-title"><header><div><h2 id="inspector-title"></h2><span class="identity" id="inspector-id"></span></div><button class="bulk" type="button" id="inspector-close">Close</button></header><div class="dialog-body" id="inspector-body"></div></dialog>
+<div id="term-tip" role="tooltip" hidden></div>
 <script>
 (() => {
-  const STATUS_LABEL = { pending: 'Pending', stale: 'Re-answer', answered: 'Answered', applied: 'Applied', withdrawn: 'Withdrawn' };
-  const STATUS_ORDER = ['pending', 'stale', 'answered', 'applied', 'withdrawn'];
-  const state = { drafts: new Map(), errors: new Map(), inflight: new Map(), board: null, query: '', timers: new Map(), catalog: null, artifact: null, route: 0, revisions: new Map(), topic: 'all', intent: 'all', scope: 'all', lane: 'all', focus: null, picked: new Set(), batch: null, inBatch: false, size: 5 };
+  const STATUS_LABEL = { pending: 'Pending', stale: 'Re-answer', answered: 'Answered', applied: 'Applied', withdrawn: 'Settled', superseded: 'Superseded' };
+  const SECTIONS = { tracker: 'Destination Tracker', taskboard: 'Taskboard', grilling: 'Grilling Board', drafts: 'Drafts to approve', wiki: 'Wiki' };
+  const KIND_LABEL = { 'approve-spec': 'Delivery approval', 'confirm-dqc': 'Confirm understanding', 'confirm-ddr': 'Review existing decision', 'confirm-text': 'Review draft text', choice: 'Choose a direction', 'owner-decision': 'Unblock work' };
+  const LANE_TITLES = { backlog: 'Backlog', toDo: 'To do', inProgress: 'In progress', blocked: 'Blocked', needsReview: 'Needs review', complete: 'Complete' };
+  const STEP_COLORS = ['--s1', '--s2', '--s3', '--s4', '--s5', '--s6', '--s7', '--s8'];
+  const state = {
+    board: null, catalog: null, workflow: null, workflowError: '', dashboard: null, drafts: null, glossary: null,
+    termIndex: null, termPattern: null, termSeen: null,
+    edits: new Map(), comments: new Map(), refused: new Map(), errors: new Map(), inflight: new Map(), timers: new Map(), selected: new Map(), actions: new Map(),
+    query: '', topic: 'all', intent: 'all', scope: 'all', lane: 'all', priorities: [], values: [],
+    focus: null, picked: new Set(), promote: new Set(), batch: null, inBatch: false, size: 5,
+    route: 0, revisions: new Map(), artifact: null, view: 'grilling', questionScroll: 0, whyQuery: '', whyStatus: 'all'
+  };
   try {
     const saved = JSON.parse(localStorage.getItem('grill-board-batch'));
     if (saved && Array.isArray(saved.ids) && saved.ids.length && saved.ids.every(id => typeof id === 'string') && saved.revisions && typeof saved.title === 'string') { state.batch = saved; state.inBatch = true; }
@@ -224,64 +364,225 @@
     { id: 'release', title: 'Releases, upgrades & proof', frame: 'what should ship, where it is proven, and what an upgrade preserves', outcome: 'A release demonstrated in a real project with remaining gaps visible.', numbers: [21,24,50,104,149,150,151,152,153] },
     { id: 'other', title: 'Other topics', frame: 'the context and consequence of a newly added question', outcome: 'New questions stay reachable while their topic is being organized.', numbers: [] }
   ];
-  const LANES = { all: 'All stages', pending: 'To answer', stale: 'Revisit', answered: 'With agents', applied: 'Applied', parked: 'Not now', withdrawn: 'Withdrawn' };
+  const LANES = { all: 'All stages', pending: 'To answer', stale: 'Revisit', answered: 'Answered · awaiting an agent', applied: 'Applied', parked: 'Not now (earlier answers)', withdrawn: 'Settled elsewhere (history)' };
   const INTENTS = { all: 'Any kind of decision', unblock: 'Unblock / direct work', explore: 'Explore / settle decisions', review: 'Review existing work' };
+
+  // ---- Slice model: pure functions the tests load directly. ----
   function topicFor(item) { return TOPICS.find(topic => topic.numbers.includes(Number(item.id?.replace('GB-', ''))))?.id || 'other'; }
   function intentFor(item) {
     if (item.id === 'GB-0180' || ['approve-spec', 'confirm-ddr', 'confirm-text', 'confirm-dqc'].includes(item.kind)) return 'review';
     return item.kind === 'owner-decision' ? 'unblock' : 'explore';
   }
+  // A legacy Not now answer at the current revision stays parked, still unanswered.
   function laneFor(item) {
     return item.derivedStatus === 'pending' && item.answer?.itemRevision === item.revision && item.answer?.verdict === 'defer' ? 'parked' : item.derivedStatus;
+  }
+  // A withdrawn card was settled elsewhere, not decided against: it was merged
+  // into another card, already answered, overtaken or never an owner question
+  // (owner correction, 2026-10-09). It needs no attention, so the main board
+  // leaves it out and only the history lane lists it.
+  function settledLabel(item) {
+    const reason = [...(item.history || [])].reverse().find(entry => /^withdrawn:/.test(entry.reason || ''))?.reason || '';
+    const merged = reason.match(/\bFolded into (GB-\d{4})/);
+    return merged ? `Merged into ${merged[1]}` : 'Settled';
   }
   function sliceCounts(items) {
     const counts = { pending: 0, stale: 0, answered: 0, applied: 0, parked: 0, withdrawn: 0 };
     for (const item of items) counts[laneFor(item)] += 1;
     return counts;
   }
+  // Priority and Value filter independently: P alone spans every Value, V
+  // alone every Priority, both select their intersection. Never a combined score.
+  // The selected grades of one row: chips selected on the page (`priorities`,
+  // `values`), or one grade named the old single-select way (`priority`,
+  // `value`); an empty row selects every grade.
+  const GRADES = { priority: ['P1', 'P2', 'P3', 'P4'], value: ['V1', 'V2', 'V3', 'V4'] };
+  function selectedGrades(slice, field) {
+    const many = slice[`${field === 'priority' ? 'priorities' : 'values'}`];
+    if (Array.isArray(many)) return many;
+    const one = slice[field];
+    return one && one !== 'all' ? [one] : [];
+  }
+  function matchesGrades(item, slice, field) {
+    const wanted = selectedGrades(slice, field);
+    return !wanted.length || wanted.includes(item[field]?.grade || 'unclassified');
+  }
   function matchesSlice(item, slice = state) {
+    if (!matchesGrades(item, slice, 'priority') || !matchesGrades(item, slice, 'value')) return false;
     if (slice.topic && slice.topic !== 'all' && topicFor(item) !== slice.topic) return false;
     if (slice.intent && slice.intent !== 'all' && intentFor(item) !== slice.intent) return false;
     if (slice.scope && slice.scope !== 'all' && item.brief?.scope !== slice.scope) return false;
-    if (slice.lane && slice.lane !== 'all' && laneFor(item) !== slice.lane) return false;
+    if (slice.lane && slice.lane !== 'all' ? laneFor(item) !== slice.lane : laneFor(item) === 'withdrawn') return false;
     const hay = `${JSON.stringify(item.brief || {})} ${item.id} ${item.title} ${item.question} ${item.current} ${item.proposal} ${item.draft ?? ''} ${(item.tags || []).join(' ')}`.toLowerCase();
     return !slice.query || hay.includes(slice.query);
+  }
+  function sliceTitle(slice = state) {
+    const parts = [TOPICS.find(topic => topic.id === slice.topic)?.title || 'All topics', INTENTS[slice.intent] || INTENTS.all];
+    for (const field of ['priority', 'value']) {
+      const wanted = selectedGrades(slice, field);
+      if (wanted.length) parts.push(wanted.map(grade => grade === 'unclassified' ? `${field === 'priority' ? 'Priority' : 'Value'} unclassified` : grade).join('/'));
+    }
+    if (slice.lane && slice.lane !== 'all') parts.push(LANES[slice.lane]);
+    if (slice.query) parts.push(`“${slice.query}”`);
+    return parts.join(' · ');
+  }
+  // Topic navigation counts and opens only the members matching the other
+  // filters. It reports counts only: no topic carries a P/V grade of its own.
+  function topicSummaries(items, slice = state) {
+    return TOPICS.map(topic => {
+      const members = items.filter(item => topicFor(item) === topic.id && matchesSlice(item, { ...slice, topic: 'all' }));
+      const counts = sliceCounts(members);
+      return { id: topic.id, title: topic.title, frame: topic.frame, outcome: topic.outcome, members: members.map(item => item.id), done: counts.answered + counts.applied, total: members.length - counts.withdrawn, counts };
+    }).filter(topic => topic.members.length);
   }
   function batchProgress() {
     const ids = state.batch?.ids || [];
     const items = ids.map(id => state.board.items.find(item => item.id === id));
-    const done = items.filter(item => item && ['answered', 'applied'].includes(item.derivedStatus) && !state.drafts.has(item.id)).length;
+    const done = items.filter(item => item && ['answered', 'applied'].includes(item.derivedStatus) && !state.edits.has(item.id)).length;
     const withdrawn = items.filter(item => item?.derivedStatus === 'withdrawn').length;
     return { total: ids.length, done, withdrawn, complete: ids.length > 0 && done + withdrawn === ids.length };
   }
   function persistBatch() { try { if (state.batch) localStorage.setItem('grill-board-batch', JSON.stringify(state.batch)); else localStorage.removeItem('grill-board-batch'); } catch {} }
   function startBatch(items) {
     if (!items.length) return;
-    // A fixed membership never grows as answers are saved. Replacing a batch requires an explicit click.
-    state.batch = { ids: items.map(item => item.id), revisions: Object.fromEntries(items.map(item => [item.id, item.revision])), title: `${TOPICS.find(topic => topic.id === state.topic)?.title || 'My chosen slice'} · ${INTENTS[state.intent]}` };
+    // A fixed membership never grows, shrinks or regrades as answers are saved
+    // or filters change. Replacing a batch requires an explicit click.
+    state.batch = { ids: items.map(item => item.id), revisions: Object.fromEntries(items.map(item => [item.id, item.revision])), title: sliceTitle() };
     state.inBatch = true; state.focus = items[0].id; state.picked.clear(); persistBatch(); render();
+  }
+  function batchItems() { return (state.batch?.ids || []).map(id => state.board.items.find(item => item.id === id)).filter(Boolean); }
+  function visible(item) { return state.inBatch ? Boolean(state.batch?.ids.includes(item.id)) : matchesSlice(item); }
+  function shownItems() { return state.inBatch ? batchItems() : state.board.items.filter(visible); }
+
+  // Change the why answers, current and earlier, filterable by text and status.
+  function whysList(items, filter = {}) {
+    const rows = [];
+    for (const item of items) {
+      const answer = item.answer;
+      if (!answer) continue;
+      if (answer.verdict === 'change_why') rows.push({ id: item.id, title: item.title, note: answer.note, itemRevision: answer.itemRevision, revision: item.revision, status: item.derivedStatus, at: answer.at, current: true });
+      for (const earlier of answer.history || []) if (earlier.verdict === 'change_why') rows.push({ id: item.id, title: item.title, note: earlier.note, itemRevision: earlier.itemRevision, revision: item.revision, status: 'superseded', at: earlier.at, current: false });
+    }
+    const query = String(filter.query || '').trim().toLowerCase();
+    return rows
+      .filter(row => !filter.status || filter.status === 'all' || row.status === filter.status)
+      .filter(row => !query || `${row.title} ${row.id} ${row.note}`.toLowerCase().includes(query))
+      .sort((a, b) => String(b.at).localeCompare(String(a.at)));
+  }
+
+  // The answer buttons for one question, from the server's answerControls
+  // (item.controls) and the note typed so far. Every answer except confirming
+  // the recommended one is disabled until a note is typed.
+  function answerModel(item, edit) {
+    const controls = item.controls;
+    const answer = edit || item.answer || { verdict: '', note: '' };
+    const hasNote = Boolean(String(answer.note || '').trim());
+    const known = controls.options.some(option => option.value === answer.verdict);
+    let selected = null;
+    if (controls.mode === 'alternatives') {
+      selected = state.selected.get(item.id) ?? (controls.alternatives.some(alt => alt.value === answer.verdict) ? answer.verdict : controls.recommended);
+    }
+    const selectedAlternative = controls.alternatives.find(alt => alt.value === selected) || null;
+    const buttons = controls.alternatives.map(alt => ({
+      role: 'alternative', value: alt.value, label: `${alt.marker}: ${alt.label}`, hint: alt.hint || '',
+      pressed: alt.value === selected, disabled: alt.requiresNote && !hasNote, requiresNote: alt.requiresNote
+    }));
+    const confirmValue = controls.mode === 'alternatives' ? (selectedAlternative?.value ?? null) : controls.confirm.value;
+    const confirmNeedsNote = controls.mode === 'alternatives' && Boolean(selectedAlternative?.requiresNote);
+    buttons.push({
+      role: 'confirm', value: confirmValue, label: 'Confirm',
+      hint: controls.mode === 'alternatives' ? (selectedAlternative ? `Confirms “${selectedAlternative.label}”.` : 'Select an answer above, then Confirm.') : controls.confirm.hint,
+      pressed: Boolean(confirmValue) && answer.verdict === confirmValue, disabled: !confirmValue || (confirmNeedsNote && !hasNote), requiresNote: confirmNeedsNote
+    });
+    for (const option of controls.sendBack) buttons.push({ role: 'sendback', value: option.value, label: option.label, hint: option.hint, pressed: answer.verdict === option.value, disabled: !hasNote, requiresNote: true });
+    return {
+      mode: controls.mode, buttons, selected, hasNote,
+      legacy: answer.verdict && !known ? { verdict: answer.verdict, label: (item.answer?.verdict === answer.verdict && item.answerLabel) || answer.verdict } : null,
+      recommendationBasis: controls.recommendationBasis
+    };
+  }
+
+  // The workflow's own per-card state (GET /api/workflow cards[id]); the page
+  // renders it and never re-derives promotion state.
+  function cardState(item) { return state.workflow?.cards?.[item.id] || null; }
+  // Cards that may be promoted now: the workflow reports them confirmed (a
+  // current exact confirmation with no Change awaiting revision and no request
+  // for the same approved bytes), and the owner has no unsaved edit on them.
+  function confirmedItems() {
+    return state.board.items.filter(item => cardState(item)?.state === 'confirmed' && !state.edits.has(item.id));
   }
 
   const esc = (text) => String(text ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
+  // Glossary terms become hover definitions: the first use per rendered text.
+  function withTerms(html) {
+    if (!state.termPattern || !state.termSeen) return html;
+    return html.replace(state.termPattern, match => {
+      const term = state.termIndex.get(match);
+      if (!term || state.termSeen.has(term.term)) return match;
+      state.termSeen.add(term.term);
+      return `<a class="term" href="${esc(artifactHref(term.path, term.anchor))}" data-term="${esc(term.term)}">${match}</a>`;
+    });
+  }
+
+  // Decision-record identifiers (ADR, DDR and CDR) named in text link to
+  // their cataloged Wiki page; an identifier without a cataloged record is
+  // shown as unavailable, never as a dead link. Slash shorthand expands: after
+  // a full ID, each "/X" continuation of one to four capitals or digits that
+  // ends the word replaces the ID's last characters ("ADR-000B/C/D"). The same
+  // rule as tools/dashboard-sources.mjs decisionIds, which backlinks use.
+  const DECISION_ID = /(?<![\w-])((?:ADR|DDR|CDR)-[0-9A-Za-z]{4})((?:\/[0-9A-Z]{1,4}(?![\w-]))*)(?![\w-])/g;
+  const expandDecisionId = (base, part) => base.slice(0, base.length - part.length) + part;
+  function decisionIdsIn(text) {
+    const ids = [];
+    for (const match of String(text ?? '').matchAll(DECISION_ID)) {
+      ids.push(match[1]);
+      for (const part of match[2].split('/').filter(Boolean)) ids.push(expandDecisionId(match[1], part));
+    }
+    return ids;
+  }
+  // A title shown in a hover or a generated label, without Markdown emphasis.
+  const plainTitle = title => String(title ?? '').replace(/\*\*|__|`/g, '');
+  function decisionRecord(id) { return state.catalog?.artifacts.find(artifact => artifact.id === id && ['adrs', 'ddrs', 'cdrs'].includes(artifact.group)) || null; }
+  function recordLink(id, label) {
+    const record = decisionRecord(id);
+    return record
+      ? `<a class="record-link" href="${esc(artifactHref(record.path))}" title="${esc(plainTitle(record.title))} · ${esc(record.id)}">${esc(label)}</a>`
+      : `<span class="unavailable-link" title="No cataloged decision record ${esc(id)}">${esc(label)}</span>`;
+  }
+  function withRecords(value, terms) {
+    let html = '', start = 0;
+    const text = String(value);
+    const rest = segment => terms ? withTerms(esc(segment)) : esc(segment);
+    for (const match of text.matchAll(DECISION_ID)) {
+      html += rest(text.slice(start, match.index)) + recordLink(match[1], match[1]);
+      for (const part of match[2].split('/').filter(Boolean)) html += `/${recordLink(expandDecisionId(match[1], part), part)}`;
+      start = match.index + match[0].length;
+    }
+    return html + rest(text.slice(start));
+  }
   // A deliberately small Markdown renderer: paragraphs, headings, lists,
-  // quotes, fenced code, inline code, bold and links. Everything else is text.
-  function inline(text, source = '') {
+  // quotes, tables, fenced code, inline code, bold and links. Everything else is text.
+  // source is the path relative links resolve against ('' for the room
+  // root); without one (null) relative links are plain labels.
+  function inline(text, source = null) {
     const token = /`([^`]+)`|\[([^\]]+)\]\(([^\s)]+)\)/g;
     let result = '', start = 0;
-    const plain = value => esc(value).replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+    // Plain text gets glossary terms and decision-record links; a link label
+    // gets neither, so a link never nests inside another.
+    const plain = (value, terms = true) => (terms ? withRecords(value, true) : esc(value)).replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
     for (const match of String(text).matchAll(token)) {
       result += plain(String(text).slice(start, match.index));
       if (match[1] !== undefined) result += `<code>${esc(match[1])}</code>`;
       else {
-        const label = plain(match[2]), target = match[3];
+        const label = plain(match[2], false), target = match[3];
         if (/^https?:\/\//i.test(target)) result += `<a href="${esc(target)}" target="_blank" rel="noopener">${label}</a>`;
-        else if (source && !/^[a-z][a-z\d+.-]*:/i.test(target)) {
+        else if (source !== null && !/^[a-z][a-z\d+.-]*:/i.test(target)) {
           try {
             const url = new URL(target, `http://reader/${source}`);
             const local = decodeURIComponent(url.pathname.slice(1));
             const artifact = state.catalog?.artifacts.find(a => a.path === local);
-            result += artifact ? `<a href="${esc(artifactHref(local, url.hash.slice(1)))}">${label}</a>` : `<span class="unavailable-link" title="Outside the seven artifact groups: ${esc(local)}">${label}</span>`;
+            result += artifact ? `<a href="${esc(artifactHref(local, url.hash.slice(1)))}">${label}</a>` : `<span class="unavailable-link" title="Not a Wiki artifact: ${esc(local)}">${label}</span>`;
           } catch { result += label; }
         } else result += label;
       }
@@ -289,7 +590,13 @@
     }
     return result + plain(String(text).slice(start));
   }
-  function markdown(text, source = '') {
+  // A one-line text (the question) with a fresh glossary first-use set.
+  function inlineText(text, source = null) {
+    state.termSeen = state.termPattern ? new Set() : null;
+    return inline(text, source);
+  }
+  function markdown(text, source = null, depth = 0) {
+    if (depth === 0) state.termSeen = state.termPattern ? new Set() : null;
     const lines = String(text ?? '').replace(/\r\n/g, '\n').split('\n');
     const out = [];
     let i = 0;
@@ -337,7 +644,7 @@
       if (/^>/.test(line)) {
         const buf = [];
         while (i < lines.length && /^>/.test(lines[i])) { buf.push(lines[i].replace(/^>\s?/, '')); i += 1; }
-        out.push(`<blockquote>${markdown(buf.join('\n'), source)}</blockquote>`);
+        out.push(`<blockquote>${markdown(buf.join('\n'), source, depth + 1)}</blockquote>`);
         continue;
       }
       if (!line.trim()) { i += 1; continue; }
@@ -347,238 +654,446 @@
     }
     return out.join('');
   }
+  function recordFields(value, source, depth = 2) {
+    if (Array.isArray(value)) return value.length ? value.map((entry, index) => `<section><h${Math.min(6, depth)}>Entry ${index + 1}</h${Math.min(6, depth)}>${recordFields(entry, source, depth + 1)}</section>`).join('') : '<p>None recorded.</p>';
+    if (value && typeof value === 'object') return Object.entries(value).map(([key, entry]) => `<section><h${Math.min(6, depth)}>${esc(key.replace(/_/g, ' '))}</h${Math.min(6, depth)}>${recordFields(entry, source, depth + 1)}</section>`).join('');
+    return typeof value === 'string' ? markdown(value, source, depth) : `<p>${esc(value === null ? 'null' : value)}</p>`;
+  }
+  function artifactHref(file, anchor = '', item = '') {
+    const params = new URLSearchParams({ artifact: file });
+    if (anchor) params.set('anchor', anchor);
+    if (item) params.set('item', item);
+    return `#${params}`;
+  }
+  function catalogArtifact(file) { return state.catalog?.artifacts.find(artifact => artifact.path === file) || null; }
+  function groupTitle(id) { return state.catalog?.groups.find(group => group.id === id)?.title || id; }
+  // A link to a source: the Wiki reader for cataloged artifacts, the plain
+  // viewer for other named board sources, an external link for https.
+  function sourceLink(reference, label) {
+    const target = typeof reference === 'string' ? reference : reference?.path || reference?.url || '';
+    if (/^https:\/\//.test(target)) return `<a href="${esc(target)}" target="_blank" rel="noopener">${esc(label || target)}</a>`;
+    const file = target.split('#')[0].replace(/:\d+$/, '');
+    const artifact = catalogArtifact(file);
+    if (artifact) return `<a href="${esc(artifactHref(file))}">${esc(label || artifact.title)}</a>`;
+    return `<button type="button" class="link-button" data-view="${esc(file)}">${esc(label || file)}</button>`;
+  }
+  function wireViews(root) { for (const button of root.querySelectorAll('[data-view]')) button.onclick = () => viewFile(button.dataset.view); }
 
-  async function load() {
-    const response = await fetch('/api/board', { cache: 'no-store' });
-    if (!response.ok) throw new Error(`board ${response.status}`);
-    state.board = await response.json();
+  // ---- Loading. ----
+  async function getJson(url) {
+    const response = await fetch(url, { cache: 'no-store' });
+    const body = await response.json().catch(() => ({}));
+    if (!response.ok) { const error = new Error(body.error?.message || `${url} answered ${response.status}`); error.status = response.status; error.code = body.error?.code; throw error; }
+    return body;
+  }
+  async function load() { state.board = await getJson('/api/board'); }
+  async function loadCatalog() { state.catalog = await getJson('/api/artifacts'); }
+  async function loadWorkflow() {
+    try { state.workflow = await getJson('/api/workflow'); state.workflowError = ''; }
+    catch (error) { state.workflow = null; state.workflowError = error.message; }
+  }
+  async function loadGlossary() {
+    try {
+      const glossary = await getJson('/api/glossary');
+      const terms = (glossary.terms || []).filter(term => term.term && term.definition);
+      state.glossary = { source: glossary.source, terms };
+      state.termIndex = new Map(terms.map(term => [esc(term.term), term]));
+      const pattern = [...state.termIndex.keys()].sort((a, b) => b.length - a.length).map(term => term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
+      state.termPattern = pattern ? new RegExp(`(?<![\\w-])(?:${pattern})(?![\\w-])`, 'g') : null;
+    } catch { state.glossary = null; state.termPattern = null; }
+  }
+  async function reloadAll() {
+    await Promise.all([loadCatalog(), loadWorkflow(), load()]);
+    state.dashboard = null; state.drafts = null;
+    document.getElementById('banner').classList.remove('show');
+    render();
+    await routePage();
+  }
+
+  // ---- Grilling Board. ----
+  function countLine(counts) {
+    return `<div class="lane-counts">${Object.keys(counts).filter(key => counts[key]).map(key => `<span>${LANES[key]} <strong>${counts[key]}</strong></span>`).join('')}</div>`;
+  }
+  function resetSlice() {
+    state.topic = state.intent = state.scope = state.lane = 'all';
+    state.priorities = []; state.values = [];
+    state.query = ''; state.focus = null; state.inBatch = false; state.picked.clear();
+    document.getElementById('search').value = '';
+  }
+  function gradesFiltered() { return state.priorities.length > 0 || state.values.length > 0; }
+  // The P and V chip rows. A chip counts the questions it would list with
+  // every other filter, the workflow stage included, as it is; a row with no
+  // chip pressed shows every grade. An Unclassified chip appears only while
+  // an open question has no grade.
+  function gradeChips() {
+    const items = state.board?.items || [];
+    return ['priority', 'value'].map(field => {
+      const key = field === 'priority' ? 'priorities' : 'values';
+      const others = items.filter(item => matchesSlice(item, { ...state, [key]: [] }));
+      const grades = [...GRADES[field], ...(items.some(item => !item[field] && item.derivedStatus !== 'withdrawn') ? ['unclassified'] : [])];
+      return `<div class="grade-row" role="group" aria-label="${field === 'priority' ? 'Priority' : 'Value'}">${grades.map(grade => {
+        const count = others.filter(item => (item[field]?.grade || 'unclassified') === grade).length;
+        return `<button type="button" class="chip grade-chip ${field}" data-field="${field}" data-grade="${grade}" aria-pressed="${state[key].includes(grade)}" title="${field === 'priority' ? 'Priority' : 'Value'} ${grade}: show ${count}">${grade === 'unclassified' ? 'Unclassified' : grade} <small>${count}</small></button>`;
+      }).join('')}</div>`;
+    }).join('');
+  }
+  // Pressing a chip adds its grade to its row, pressing again removes it; the
+  // list and every count redraw at once.
+  function toggleGrade(field, grade) {
+    const key = field === 'priority' ? 'priorities' : 'values';
+    state[key] = state[key].includes(grade) ? state[key].filter(value => value !== grade) : [...state[key], grade];
+    state.inBatch = false; state.focus = null; state.picked.clear();
     render();
   }
-
-  function visible(item) {
-    return state.inBatch ? state.batch?.ids.includes(item.id) : matchesSlice(item);
-  }
-
-  function countLine(items) {
-    const c = sliceCounts(items);
-    return `<div class="lane-counts">${Object.keys(c).filter(key => c[key]).map(key => `<span>${LANES[key]} <strong>${c[key]}</strong></span>`).join('')}</div>`;
-  }
-
   function renderNavigation() {
     const board = state.board, c = sliceCounts(board.items);
     const completed = c.answered + c.applied, active = board.items.length - c.withdrawn;
-    document.getElementById('meta').textContent = `${completed} / ${active} answered · ${c.applied} applied · ${c.withdrawn} withdrawn`;
-    document.getElementById('progress').innerHTML = `<span style="width:${100 * c.applied / Math.max(1, active)}%;background:var(--applied)" title="Applied ${c.applied}"></span><span style="width:${100 * c.answered / Math.max(1, active)}%;background:var(--ok)" title="With agents ${c.answered}"></span>`;
+    document.getElementById('meta').textContent = `${completed} / ${active} answered · ${c.applied} applied`;
+    document.getElementById('progress').innerHTML = `<span style="width:${100 * c.applied / Math.max(1, active)}%;background:var(--applied)" title="Applied ${c.applied}"></span><span style="width:${100 * c.answered / Math.max(1, active)}%;background:var(--ok)" title="Answered ${c.answered}"></span>`;
     const scoped = board.items.filter(item => matchesSlice(item, { ...state, lane: 'all' }));
-    const counts = sliceCounts(scoped);
-    document.getElementById('filters').innerHTML = Object.entries(LANES).map(([value, label]) => `<button class="chip" data-lane="${value}" aria-pressed="${state.lane === value}">${label} (${value === 'all' ? scoped.length : counts[value]})</button>`).join('');
+    const counts = { ...sliceCounts(scoped), withdrawn: board.items.filter(item => matchesSlice(item, { ...state, lane: 'withdrawn' })).length };
+    document.getElementById('filters').innerHTML = Object.entries(LANES).map(([value, label]) => `<button type="button" class="chip" data-lane="${value}" aria-pressed="${state.lane === value}">${label} (${value === 'all' ? scoped.length : counts[value]})</button>`).join('');
     for (const chip of document.querySelectorAll('[data-lane]')) chip.onclick = () => { state.lane = chip.dataset.lane; state.inBatch = false; state.focus = null; state.picked.clear(); render(); };
+    document.getElementById('grade-chips').innerHTML = gradeChips();
+    for (const chip of document.querySelectorAll('[data-grade]')) chip.onclick = () => toggleGrade(chip.dataset.field, chip.dataset.grade);
     document.getElementById('topic').innerHTML = '<option value="all">All topics</option>' + TOPICS.filter(topic => board.items.some(item => topicFor(item) === topic.id)).map(topic => `<option value="${topic.id}">${esc(topic.title)}</option>`).join('');
-    for (const key of ['topic', 'intent', 'scope']) {
-      document.getElementById(key).value = state[key];
-      document.getElementById(key).onchange = event => { state[key] = event.target.value; state.inBatch = false; state.focus = null; state.picked.clear(); render(); };
+    for (const [id, key] of [['topic', 'topic'], ['intent', 'intent'], ['scope', 'scope']]) {
+      const select = document.getElementById(id);
+      select.value = state[key];
+      select.onchange = event => { state[key] = event.target.value; state.inBatch = false; state.focus = null; state.picked.clear(); render(); };
     }
-    document.getElementById('reset-slice').onclick = () => { state.topic = state.intent = state.scope = state.lane = 'all'; state.query = ''; state.focus = null; state.inBatch = false; state.picked.clear(); document.getElementById('search').value = ''; render(); };
+    document.getElementById('whys-link').textContent = `Whys list (${whysList(board.items).filter(row => row.current).length})`;
   }
-
   function renderBatchProgress() {
     const panel = document.getElementById('batch-panel');
     if (!state.batch) { panel.innerHTML = ''; return; }
     const p = batchProgress();
-    panel.innerHTML = `<div class="batch-panel"><h2>${p.complete ? 'Your part of this batch is done' : 'Your current batch'}</h2><div>${esc(state.batch.title)}</div><p role="status">${p.done} / ${p.total} answered and saved${p.withdrawn ? ` · ${p.withdrawn} withdrawn` : ''}</p><progress value="${p.done + p.withdrawn}" max="${p.total}" aria-label="Batch progress"></progress><p>${p.complete ? 'A good stopping point. Answers awaiting application stay in With agents.' : 'A fixed set of questions. Notes alone, Not now, changed questions and unsaved edits do not count as answered.'}</p><div class="batch-actions"><button class="bulk" id="batch-toggle">${state.inBatch ? 'Pause and browse other slices' : 'Resume this batch'}</button><button class="bulk" id="batch-clear">${p.complete ? 'Finish batch' : 'Release this batch'}</button><small>Changing a batch never changes your answers.</small></div></div>`;
+    panel.innerHTML = `<div class="batch-panel"><h2>${p.complete ? 'Your part of this batch is done' : 'Your current batch'}</h2><div>${esc(state.batch.title)}</div><p role="status">${p.done} / ${p.total} answered and saved${p.withdrawn ? ` · ${p.withdrawn} settled elsewhere` : ''}</p><progress value="${p.done + p.withdrawn}" max="${p.total}" aria-label="Batch progress"></progress><p>${p.complete ? 'A good stopping point.' : 'A fixed set of questions: changing filters, saving answers or a regrade never adds or drops one. Notes alone, earlier Not now answers, changed questions and unsaved edits do not count as answered.'}</p><div class="batch-actions"><button class="bulk" type="button" id="batch-toggle">${state.inBatch ? 'Pause and browse other slices' : 'Resume this batch'}</button><button class="bulk" type="button" id="batch-clear">${p.complete ? 'Finish batch' : 'Release this batch'}</button><small>Changing a batch never changes your answers.</small></div></div>`;
     document.getElementById('batch-toggle').onclick = () => { state.inBatch = !state.inBatch; state.focus = null; render(); };
     document.getElementById('batch-clear').onclick = () => { state.batch = null; state.inBatch = false; state.focus = null; persistBatch(); render(); };
   }
-
   function renderOverview() {
-    const selected = TOPICS.find(topic => topic.id === state.topic);
     const overview = document.getElementById('overview');
     if (state.inBatch) { overview.innerHTML = ''; return; }
-    const items = state.board.items.filter(visible);
+    const selected = TOPICS.find(topic => topic.id === state.topic);
+    const summaries = topicSummaries(state.board.items);
     if (selected) {
-      overview.innerHTML = `<h1>${esc(selected.title)}</h1><p class="frame">Think about { ${esc(selected.frame)} }</p><p>${esc(selected.outcome)}</p>${countLine(items)}`;
+      const summary = summaries.find(topic => topic.id === selected.id);
+      overview.innerHTML = `<h1>${esc(selected.title)}</h1><p class="frame">Think about { ${esc(selected.frame)} }</p><p>${esc(selected.outcome)}</p>${summary ? countLine(summary.counts) : ''}`;
       return;
     }
-    overview.innerHTML = `<h1>Choose what you want to think about</h1><p class="frame">One topic. A few decisions. A clear stopping point.</p><div class="topic-grid">${TOPICS.map(topic => {
-      const all = items.filter(item => topicFor(item) === topic.id);
-      if (!all.length) return '';
-      const c = sliceCounts(all), done = c.answered + c.applied, total = all.length - c.withdrawn;
-      return `<section class="topic-card"><h3>${esc(topic.title)}</h3><p>Think about { ${esc(topic.frame)} }</p><p>${esc(topic.outcome)}</p><strong>${done} / ${total} answered</strong><progress value="${done}" max="${Math.max(1, total)}" aria-label="${esc(topic.title)} answered"></progress>${countLine(all)}<p><button class="bulk" data-topic="${topic.id}">Open this topic · ${all.length} items</button></p></section>`;
-    }).join('')}</div>`;
+    const filtered = gradesFiltered() || state.intent !== 'all' || state.scope !== 'all' || state.lane !== 'all' || state.query;
+    overview.innerHTML = `<h1>${filtered ? `Topics in ${esc(sliceTitle())}` : 'Choose what you want to think about'}</h1><p class="frame">One topic. A few decisions. A clear stopping point.</p><div class="topic-grid">${summaries.map(topic => `<section class="topic-card"><h3>${esc(topic.title)}</h3><p>Think about { ${esc(topic.frame)} }</p><p>${esc(topic.outcome)}</p><strong>${topic.done} / ${topic.total} answered</strong><progress value="${topic.done}" max="${Math.max(1, topic.total)}" aria-label="${esc(topic.title)} answered"></progress>${countLine(topic.counts)}<p><button type="button" class="bulk" data-topic="${topic.id}">Open this topic · ${topic.members.length} questions</button></p></section>`).join('') || '<p class="empty">No question matches these filters.</p>'}</div>`;
     for (const button of overview.querySelectorAll('[data-topic]')) button.onclick = () => { state.topic = button.dataset.topic; state.focus = null; state.picked.clear(); render(); };
   }
-
+  // Closed P and V badges; each opens only its own reason. `variant` adds a
+  // class for the opened card, where the reason opens in place.
+  function gradeBadges(item, variant = '') {
+    return ['priority', 'value'].map(field => {
+      const letter = field === 'priority' ? 'P' : 'V', name = field === 'priority' ? 'Priority' : 'Value';
+      const grade = item[field];
+      if (!grade) return `<span class="grade ${field} unclassified" title="${name} has not been graded">${letter} · Unclassified</span>`;
+      return `<details class="grade ${field}${variant ? ` ${variant}` : ''}"><summary aria-label="${name} ${esc(grade.grade)}: show why">${esc(grade.grade)}</summary><div class="grade-reason" role="note"><strong>${name} ${esc(grade.grade)}</strong><p>${esc(grade.reason)}</p></div></details>`;
+    }).join('');
+  }
+  // The latest answer-to-card P/V reassessment recorded in item history, or
+  // null when the card has never been reassessed since grading.
+  function latestAssessment(item) {
+    return [...(item.history || [])].reverse().find(entry => entry.assessment) || null;
+  }
+  function assessmentDetail(item) {
+    if (!item.priority && !item.value) return '';
+    const latest = latestAssessment(item);
+    if (!latest) return '';
+    const { assessment } = latest;
+    const line = (field, name) => {
+      const entry = assessment[field];
+      const outcome = entry.outcome === 'retained' ? `${name} ${esc(entry.grade)} retained` : `${name} revised ${esc(entry.from)} → ${esc(entry.grade)}`;
+      return `<li><strong>${outcome}</strong>: ${esc(entry.basis)}</li>`;
+    };
+    const followed = assessment.followed;
+    return `<div class="block"><h4>Latest P/V reassessment · ${esc(latest.at)} · ${esc(latest.by)}</h4><p>After the owner answer on ${esc(followed.id)} saved ${esc(followed.answerAt)} (revision ${followed.itemRevision}).</p><ul>${line('priority', 'Priority')}${line('value', 'Value')}</ul></div>`;
+  }
+  // P and V on the opened card: the same closed badges as the list, reasons
+  // opening in place, and the latest reassessment behind one closed line
+  // (owner correction, 2026-10-09: nothing about P/V is open until clicked).
+  function gradeDetail(item) {
+    const badges = ['priority', 'value'].map(field => {
+      const name = field === 'priority' ? 'Priority' : 'Value';
+      return item[field] ? gradeBadges({ [field]: item[field] }, 'card-grade').replace(/<span class="grade (?:priority|value) unclassified"[^>]*>[^<]*<\/span>/, '') : `<span class="grade ${field} unclassified">${name}: Unclassified</span>`;
+    }).join('');
+    const unclassified = !item.priority || !item.value ? '<p class="hint">No grade has been assigned yet; none is invented.</p>' : '';
+    const latest = latestAssessment(item);
+    const assessment = latest ? `<details class="fold"><summary>Latest P/V reassessment · ${esc(latest.at)}</summary>${assessmentDetail(item)}</details>` : '';
+    return `<section class="card-grades" aria-label="Priority and Value">${badges}${unclassified}</section>${assessment}`;
+  }
   function render() {
+    if (!state.board) return;
     renderNavigation();
     renderBatchProgress();
     renderOverview();
-    document.getElementById('notice').innerHTML = '<strong>Choose your own slice.</strong> Filter by kind of decision, topic, scale or workflow stage. Pick a batch of 3, 5 or 10, or select your own questions. Each opens on its own. <strong>Answered</strong> means your saved decision is ready for an agent; <strong>Applied</strong> means it was carried into its owner. These counts track this review, not implementation progress.';
-    const overviewOnly = !state.inBatch && !state.focus && state.topic === 'all' && state.intent === 'all' && state.scope === 'all' && state.lane === 'all' && !state.query;
-    const shown = state.inBatch ? state.batch.ids.map(id => state.board.items.find(item => item.id === id)).filter(Boolean) : state.board.items.filter(visible);
-    const actionable = shown.filter(item => ['pending', 'stale', 'parked'].includes(laneFor(item)));
+    renderRoundPanel();
+    document.getElementById('notice').innerHTML = '<strong>Work at your own pace.</strong> Answer when ready and skip the rest; an unanswered question just stays unanswered. <strong>Confirm</strong> means confirmed. <strong>Rework wording</strong>, <strong>Change the why</strong> and <strong>Change</strong> need your note first. Answering, confirming, commenting or ending a round never starts an agent; promotion starts only when you ask for it.';
+    const overviewOnly = !state.inBatch && !state.focus && state.topic === 'all' && state.intent === 'all' && state.scope === 'all' && state.lane === 'all' && !state.query && !gradesFiltered();
     const content = document.getElementById('content');
     if (overviewOnly) { content.innerHTML = ''; return; }
+    const shown = shownItems();
+    const actionable = shown.filter(item => ['pending', 'stale', 'parked'].includes(laneFor(item)));
     if (state.inBatch && !state.focus) state.focus = shown.find(item => !['answered', 'applied', 'withdrawn'].includes(item.derivedStatus))?.id || shown[0]?.id;
-    const toolbar = state.inBatch ? `<h2>Batch questions</h2><p>Choose any question below. The list stays fixed as you answer.</p>` : `<div class="slice-toolbar"><strong>${shown.length} in this slice</strong><label for="batch-size">Batch size</label><select id="batch-size">${[3,5,10].map(n => `<option value="${n}" ${state.size === n ? 'selected' : ''}>${n} questions</option>`).join('')}</select><button class="primary" id="start-batch" ${!actionable.length || state.batch ? 'disabled' : ''}>Start next ${Math.min(state.size, actionable.length)}</button><button class="bulk" id="start-picked" ${!state.picked.size || state.batch ? 'disabled' : ''}>Start selected (${state.picked.size})</button>${state.batch ? '<small>Resume or release your saved batch before starting another.</small>' : ''}</div>`;
-    content.innerHTML = toolbar + (shown.length ? `<div class="question-list">${shown.map(item => `<div class="question-row ${state.focus === item.id ? 'current' : ''}">${!state.inBatch ? `<input type="checkbox" data-pick="${item.id}" aria-label="Select ${esc(item.title)}" ${state.picked.has(item.id) ? 'checked' : ''}>` : ''}<button data-open="${item.id}">${esc(item.title)}<small>${esc(TOPICS.find(t => t.id === topicFor(item)).title)} · ${esc(INTENTS[intentFor(item)])} · ${esc(item.brief?.scope || 'Unspecified scale')} · ${item.id}</small></button><span class="badge ${item.derivedStatus}">${LANES[laneFor(item)]}</span></div>`).join('')}</div>` : '<p class="empty">Nothing in this slice. Choose another topic or workflow stage.</p>') + '<div id="focus"></div>';
-    for (const button of content.querySelectorAll('[data-open]')) button.onclick = () => { state.focus = button.dataset.open; renderFocus(); document.getElementById('focus').scrollIntoView({ block: 'start' }); };
+    const toolbar = state.inBatch ? '<h2>Batch questions</h2><p>Choose any question below. The list stays fixed as you answer.</p>' : `<div class="slice-toolbar"><strong>${shown.length} in ${esc(sliceTitle())}</strong><label for="batch-size">Batch size</label><select id="batch-size">${[3, 5, 10].map(n => `<option value="${n}" ${state.size === n ? 'selected' : ''}>${n} questions</option>`).join('')}</select><button class="primary" type="button" id="start-batch" ${!actionable.length || state.batch ? 'disabled' : ''}>Start next ${Math.min(state.size, actionable.length)}</button><button class="bulk" type="button" id="start-picked" ${!state.picked.size || state.batch ? 'disabled' : ''}>Start selected (${state.picked.size})</button>${state.batch ? '<small>Resume or release your saved batch before starting another.</small>' : ''}</div>`;
+    content.innerHTML = toolbar + (shown.length ? `<div class="question-list">${shown.map(item => `<div class="question-row ${state.focus === item.id ? 'current' : ''}" data-row="${item.id}">${!state.inBatch ? `<input type="checkbox" data-pick="${item.id}" aria-label="Select ${esc(item.title)}" ${state.picked.has(item.id) ? 'checked' : ''}>` : ''}<button type="button" class="row-open" data-open="${item.id}">${esc(item.title)}<small>${item.id} · ${esc(TOPICS.find(t => t.id === topicFor(item)).title)} · ${esc(INTENTS[intentFor(item)])} · ${esc(item.brief?.scope || 'Unspecified scale')}</small></button><span class="row-end"><span class="badge ${item.derivedStatus}">${item.derivedStatus === 'withdrawn' ? settledLabel(item) : LANES[laneFor(item)]}</span><span class="grades">${gradeBadges(item)}</span></span></div>`).join('')}</div>` : '<p class="empty">Nothing in this slice. Choose another topic, grade or workflow stage.</p>') + '<div id="focus"></div>';
+    for (const button of content.querySelectorAll('[data-open]')) button.onclick = () => { openQuestion(button.dataset.open); document.getElementById('focus').scrollIntoView({ block: 'start' }); };
     for (const checkbox of content.querySelectorAll('[data-pick]')) checkbox.onchange = () => { if (checkbox.checked) state.picked.add(checkbox.dataset.pick); else state.picked.delete(checkbox.dataset.pick); const button = document.getElementById('start-picked'); button.textContent = `Start selected (${state.picked.size})`; button.disabled = !state.picked.size || Boolean(state.batch); };
     if (!state.inBatch) {
-      document.getElementById('batch-size').onchange = event => { state.size = Number(event.target.value); const button = document.getElementById('start-batch'); button.textContent = `Start next ${Math.min(state.size, actionable.length)}`; };
+      document.getElementById('batch-size').onchange = event => { state.size = Number(event.target.value); document.getElementById('start-batch').textContent = `Start next ${Math.min(state.size, actionable.length)}`; };
       document.getElementById('start-batch').onclick = () => startBatch(state.board.items.filter(visible).filter(item => ['pending', 'stale', 'parked'].includes(laneFor(item))).slice(0, state.size));
       document.getElementById('start-picked').onclick = () => startBatch(shown.filter(item => state.picked.has(item.id)));
     }
     renderFocus();
   }
-
+  // Opening a question records it in the address without a navigation, so a
+  // reload reopens it and the current slice is left as it is.
+  function openQuestion(id) {
+    state.focus = id;
+    try { history.replaceState(null, '', `#${id}`); } catch {}
+    markCurrentRow();
+    renderFocus();
+  }
+  function markCurrentRow() { for (const row of document.querySelectorAll('.question-row')) row.classList.toggle('current', row.dataset.row === state.focus); }
   function renderFocus() {
-    const item = state.board.items.find(item => item.id === state.focus);
+    const item = state.board.items.find(candidate => candidate.id === state.focus);
     const panel = document.getElementById('focus');
     if (!panel) return;
     if (!item || !visible(item)) { panel.innerHTML = ''; return; }
-    const topic = TOPICS.find(topic => topic.id === topicFor(item));
+    const topic = TOPICS.find(candidate => candidate.id === topicFor(item));
     const scale = { BLUEPRINT: 'the whole product', LANDMARK: 'one direction', SPEC: 'one capability', TASK: 'one concrete step' }[item.brief?.scope] || 'the named artifacts';
-    panel.innerHTML = `<p class="question-context">${esc(INTENTS[intentFor(item)])} · Think about { ${esc(topic.frame)} } at the scale of ${scale}.</p>${card(item)}<div class="batch-actions"><button class="bulk" id="back-to-list">Back to this slice</button><button class="primary" id="next-question">Next question</button></div>`;
-    wire();
+    panel.innerHTML = `<p class="question-context">${esc(INTENTS[intentFor(item)])} · Think about { ${esc(topic.frame)} } at the scale of ${scale}.</p>${card(item)}<div class="batch-actions"><button class="bulk" type="button" id="back-to-list">Back to this slice</button><button class="primary" type="button" id="next-question">Next question</button></div>`;
+    wireCard(panel.querySelector('article.item'), item);
     document.getElementById('back-to-list').onclick = () => document.getElementById('content').scrollIntoView({ block: 'start' });
-    const shown = state.inBatch ? state.batch.ids.map(id => state.board.items.find(i => i.id === id)).filter(Boolean) : state.board.items.filter(visible);
-    const index = shown.findIndex(i => i.id === item.id);
+    const shown = shownItems();
+    const index = shown.findIndex(candidate => candidate.id === item.id);
     document.getElementById('next-question').disabled = index < 0 || index === shown.length - 1;
-    document.getElementById('next-question').onclick = () => { state.focus = shown[index + 1].id; renderFocus(); panel.scrollIntoView({ block: 'start' }); };
+    document.getElementById('next-question').onclick = () => { openQuestion(shown[index + 1].id); panel.scrollIntoView({ block: 'start' }); };
   }
-
+  // Decision records and other cataloged sources open in the Wiki section.
+  // The relative-link base for an item's text: its first in-room source, else
+  // the room root ('').
+  function itemBase(item) {
+    const source = (item.sources || []).find(candidate => candidate.path && !candidate.path.startsWith('/') && !candidate.path.startsWith('..') && !/^[a-z][a-z\d+.-]*:/i.test(candidate.path));
+    return source ? source.path : '';
+  }
+  // Every decision-record identifier the question names in its text.
+  function namedDecisionIds(item) {
+    const text = [item.title, item.question, item.current, item.proposal, item.draft || '', ...Object.values(item.brief || {}), ...(item.options || []).flatMap(option => [option.label, option.hint || ''])].join('\n');
+    return [...new Set(decisionIdsIn(text))];
+  }
+  // Cataloged sources and the decision records the question names, each once.
+  function wikiLinks(item) {
+    const seen = new Set();
+    const sources = (item.sources || []).map(source => catalogArtifact(source.path)).filter(Boolean).filter(artifact => !seen.has(artifact.path) && seen.add(artifact.path));
+    const named = namedDecisionIds(item);
+    const records = named.map(decisionRecord).filter(Boolean).filter(artifact => !seen.has(artifact.path) && seen.add(artifact.path));
+    const missing = named.filter(id => !decisionRecord(id));
+    if (!sources.length && !records.length && !missing.length) return '';
+    const link = artifact => `<a href="${esc(artifactHref(artifact.path, '', item.id))}">${esc(groupTitle(artifact.group))} · ${esc(plainTitle(artifact.title))}${artifact.id ? ` (${esc(artifact.id)})` : ''}</a>`;
+    return `<div class="wiki-links">${sources.length ? `<span>Read in the Wiki:</span>${sources.map(link).join('')}` : ''}${records.length || missing.length ? `<span>Decision records:</span>${records.map(link).join('')}${missing.map(id => `<span class="unavailable-link" title="No cataloged decision record ${esc(id)}">${esc(id)} (not in the Wiki)</span>`).join('')}` : ''}</div>`;
+  }
   function card(item) {
     const status = item.derivedStatus;
-    const answer = state.drafts.get(item.id) || item.answer || { verdict: '', note: '' };
-    const needsNote = ['correct', 'finding', 'destination_change', 'answer', 'return_reworded'].includes(answer.verdict) && !answer.note.trim();
-    const options = item.options.map((o) => `<button class="opt" data-value="${esc(o.value)}" data-hint="${esc(o.hint || '')}" aria-pressed="${answer.verdict === o.value}">${esc(o.label)}</button>${o.hint ? `<span class="option-impact">${esc(o.hint)}</span>` : ''}`).join('');
-    const sources = (item.links || []).map((s) => {
-      const view = s.path && !s.path.startsWith('/') ? `<button data-view="${esc(s.path)}">${esc(s.label)}</button>` : `<span>${esc(s.label)}</span>`;
-      const gh = s.url ? ` <a href="${esc(s.url)}" target="_blank" rel="noopener" title="open on GitHub at ${esc(s.ref)}">↗</a>` : '';
-      return `<span>${view}${gh}</span>`;
+    const answer = item.answer || { verdict: '', note: '' };
+    const sources = (item.links || []).map(source => {
+      const view = source.path && !source.path.startsWith('/') ? sourceLink(source.path, source.label) : `<span>${esc(source.label)}</span>`;
+      const github = source.url ? ` <a href="${esc(source.url)}" target="_blank" rel="noopener" title="open on GitHub at ${esc(source.ref)}">↗</a>` : '';
+      return `<span>${view}${github}</span>`;
     }).join('');
-    const applied = item.applied ? `<div class="applied-box"><strong>Applied</strong> by ${esc(item.applied.by)} on ${new Date(item.applied.at).toLocaleString()}: ${esc(item.applied.where)}${item.applied.agentNote ? ` — ${esc(item.applied.agentNote)}` : ''}<br><small>Your answer then: ${esc(item.applied.verdict || '(note only)')}${item.applied.note ? ` — "${esc(item.applied.note)}"` : ''}</small></div>` : '';
-    const stale = status === 'stale' ? `<div class="stale-box">This item changed after you answered (now revision ${item.revision}; you answered revision ${answer.itemRevision}). Your earlier answer was <strong>${esc(answer.verdict || '(note only)')}</strong>${answer.note ? `: "${esc(answer.note)}"` : ''}. Please answer again.</div>` : '';
-    const history = (item.history || []).filter((h) => h.revision > 1 || /^applied|^withdrawn/.test(h.reason || '')).map((h) => `${new Date(h.at).toLocaleDateString()} · ${esc(h.by)}: ${esc(h.reason)}`);
+    const applied = item.applied ? `<div class="applied-box"><strong>Applied</strong> by ${esc(item.applied.by)} on ${new Date(item.applied.at).toLocaleString()}: ${esc(item.applied.where)}${item.applied.agentNote ? ` — ${esc(item.applied.agentNote)}` : ''}<br><small>Your answer then: ${esc(item.answerLabel || item.applied.verdict || '(note only)')}${item.applied.note ? ` — “${esc(item.applied.note)}”` : ''}</small></div>` : '';
+    const stale = staleNotice(item);
+    const history = (item.history || []).filter(entry => entry.revision > 1 || /^applied|^withdrawn|^graded|^reassessed/.test(entry.reason || '')).map(entry => `${new Date(entry.at).toLocaleDateString()} · ${esc(entry.by)}: ${esc((entry.reason || '').replace(/^withdrawn: /, 'settled elsewhere: '))}`);
+    const base = itemBase(item);
+    const links = wikiLinks(item) || sources ? `<nav class="link-row" aria-label="Links">${wikiLinks(item)}${sources ? `<span>Sources:</span>${sources}` : ''}</nav>` : '';
+    const fold = (summary, body) => body ? `<details class="fold"><summary>${summary}</summary>${body}</details>` : '';
+    // The opened card shows the title, the question, P/V as closed badges, the
+    // links, the recommendation, the why beside it in the same weight, what the
+    // question concerns, what would change, the consequences and tradeoffs, and
+    // the answer controls. Those three sections start open and he may collapse
+    // them; everything else starts collapsed, one line each (owner corrections,
+    // 2026-10-09).
     return `<article class="item" id="${item.id}" data-id="${item.id}" data-status="${status}" data-revision="${item.revision}">
-      <div class="item-head"><h3>${esc(item.title)}<small class="identity">${item.id} · revision ${item.revision}</small></h3><span><span class="badge ${status}">${STATUS_LABEL[status]}</span><span class="kind">${esc({'approve-spec':'Delivery approval','confirm-dqc':'Confirm understanding','confirm-ddr':'Review existing decision','confirm-text':'Review draft text','choice':'Choose a direction','owner-decision':'Unblock work'}[item.kind] || item.kind)}</span></span></div>
-      <p class="q">${esc(item.question)}</p>
-      <div class="sources">${(item.sources || []).filter(source => state.catalog?.artifacts.some(a => a.path === source.path)).map(source => `<a href="${esc(artifactHref(source.path, '', item.id))}">Read ${esc(source.label)} and its proposals</a>`).join('')}</div>
-      ${item.brief ? decisionBrief(item) : `<div class="block"><h4>Context</h4>${markdown(item.current)}</div><div class="block"><h4>Agent recommendation</h4>${markdown(item.proposal)}</div>`}
-      ${item.draft ? `<details class="draft"><summary>Read proposed draft or review text</summary><div class="block">${markdown(item.draft)}</div></details>` : ''}
-      ${sources ? `<details class="draft"><summary>Evidence and source links</summary><div class="sources">${sources}</div><div class="block">${markdown(item.current)}</div><div class="block">${markdown(item.proposal)}</div></details>` : ''}
-      ${history.length ? `<div class="sources"><span>History:</span>${history.map((h) => `<span>${h}</span>`).join('')}</div>` : ''}
-      ${stale}${applied}
-      <div class="answer">
-        <div class="options">${options}</div>
-        <div class="hint">${esc(item.options.find((o) => o.value === answer.verdict)?.hint || 'Pick a verdict, then add any notes. Saves as you type.')}</div>
-        <textarea class="${needsNote ? 'needs-note' : ''}" placeholder="Notes, corrections, the words you want used…">${esc(answer.note)}</textarea>
-        <div class="save"><span class="status">${state.drafts.has(item.id) ? 'Not saved yet' : answer.at ? `Saved ${new Date(answer.at).toLocaleString()}` : 'Not answered yet'}</span><span class="err">${esc(state.errors.get(item.id) || '')}</span></div>
-      </div>
+      <div class="item-head"><h3>${esc(item.title)}<small class="identity">${item.id} · revision ${item.revision}</small></h3><span><span class="badge ${status}">${status === 'withdrawn' ? settledLabel(item) : STATUS_LABEL[status]}</span><span class="kind">${esc(KIND_LABEL[item.kind] || item.kind)}</span></span></div>
+      <p class="q">${inlineText(item.question, base)}</p>
+      ${gradeDetail(item)}
+      ${links}
+      <div class="recommendation"><h4>Recommended answer · agent proposal</h4>${markdown(item.brief ? item.brief.recommendation : item.proposal, base)}</div>
+      ${item.brief ? whyPanel(item) : ''}
+      ${item.brief ? decisionBrief(item) : fold('Current text', `<div class="block">${markdown(item.current, base)}</div>`)}
+      ${fold(`Proposed wording · draft at revision ${item.revision}`, item.draft ? `<div class="block">${markdown(item.draft, base)}</div>` : '')}
+      ${fold('History', history.length ? `<div class="sources">${history.map(entry => `<span>${entry}</span>`).join('')}</div>` : '')}
+      ${conflictNotice(item)}${stale}${applied}
+      ${answerSection(item)}
+      <details class="fold card-workflow-fold"><summary>Comments, change requests and promotion · <span data-flow-state>${esc(cardState(item)?.label || 'state unknown')}</span></summary><div class="card-workflow" data-flow="${item.id}"></div></details>
     </article>`;
   }
-
+  function staleNotice(item) {
+    if (item.derivedStatus !== 'stale' || !item.answer) return '';
+    const answer = item.answer;
+    return `<div class="stale-box" data-stale-notice>This question changed after you answered (now revision ${item.revision}; you answered revision ${answer.itemRevision}). Your earlier answer was <strong>${esc(item.answerLabel || '(note only)')}</strong>${answer.note ? `: “${esc(answer.note)}”` : ''}. Please answer again.</div>`;
+  }
+  // Two answers saved without one following the other: both shown, the newer
+  // current, and the owner asked to answer again.
+  function conflictNotice(item) {
+    const conflict = item.answerConflict;
+    if (!conflict) return '';
+    return `<div class="stale-box" data-conflict-notice><strong>Answer conflict.</strong> ${esc(conflict.message)}<ul>${conflict.answers.map(answer => `<li>${esc(answer.at)}: <strong>${esc(item.controls?.options.find(option => option.value === answer.verdict)?.label || answer.verdict || '(note only)')}</strong>${answer.note ? ` — “${esc(answer.note)}”` : ''}</li>`).join('')}</ul></div>`;
+  }
+  // The why sits directly under the recommended answer in the same panel
+  // (class `recommendation`), so the two read with equal weight. A brief with
+  // no why says so instead of leaving the panel out.
+  function whyPanel(item) {
+    const why = String(item.brief.why || '').trim();
+    return `<div class="recommendation why"><h4>Why this choice matters</h4>${why ? markdown(why, itemBase(item)) : '<p>No reason is recorded for this question.</p>'}</div>`;
+  }
   function decisionBrief(item) {
     const b = item.brief;
-    const history = b.history.split(/(?=^### )/m).filter((part) => part.trim()).map((part) => {
+    const base = itemBase(item);
+    const history = b.history.split(/(?=^### )/m).filter(part => part.trim()).map(part => {
       const lines = part.split('\n');
-      return `<details class="history-entry"><summary>${esc(lines.shift().replace(/^### /, ''))}</summary>${markdown(lines.join('\n'))}</details>`;
+      return `<details class="history-entry"><summary>${esc(lines.shift().replace(/^### /, ''))}</summary>${markdown(lines.join('\n'), base)}</details>`;
     }).join('');
-    return `<div class="brief-summary">${markdown(b.summary)}</div>
-      <div class="block"><h4>What this concerns</h4>${markdown(b.artifacts)}</div>
-      <div class="block"><h4>Why this choice matters</h4>${markdown(b.why)}</div>
-      <div class="recommendation"><h4>Recommended answer · agent proposal</h4>${markdown(b.recommendation)}</div>
-      <div class="block"><h4>What would change</h4>${markdown(b.changes)}</div>
-      <div class="block"><h4>Consequences and tradeoffs</h4>${markdown(b.impact)}</div>
-      <details class="draft"><summary>Related Destination Question Cards and original grilling history</summary>${history}</details>`;
+    // What this concerns, what would change and the consequences and tradeoffs
+    // are what he reads on every card, so they start open (and stay his to
+    // collapse); the rest of the brief is one closed line. The recommendation
+    // and the why are shown by card() above them.
+    return `<details class="fold read" open><summary>What this concerns</summary><div class="brief-summary">${markdown(b.summary, base)}</div><div class="block">${markdown(b.artifacts, base)}</div></details>
+      <details class="fold read" open><summary>What would change</summary><div class="block">${markdown(b.changes, base)}</div></details>
+      <details class="fold read" open><summary>Consequences and tradeoffs</summary><div class="block">${markdown(b.impact, base)}</div></details>
+      <details class="fold"><summary>Current text and full proposal</summary><div class="block"><h4>Current</h4>${markdown(item.current, base)}</div><div class="block"><h4>Proposal</h4>${markdown(item.proposal, base)}</div></details>
+      <details class="fold"><summary>Related Destination Question Cards and original grilling history</summary>${history}</details>`;
   }
-
-  function wire() {
-    for (const article of document.querySelectorAll('article.item')) {
-      const id = article.dataset.id;
-      for (const opt of article.querySelectorAll('.opt')) {
-        opt.onclick = () => {
-          const pressed = opt.getAttribute('aria-pressed') === 'true';
-          for (const other of article.querySelectorAll('.opt')) other.setAttribute('aria-pressed', 'false');
-          if (!pressed) opt.setAttribute('aria-pressed', 'true');
-          article.querySelector('.hint').textContent = pressed ? 'Pick a verdict, then add any notes. Saves as you type.' : (opt.dataset.hint || '');
-          save(article, 0);
-        };
-      }
-      article.querySelector('textarea').oninput = () => save(article, 700);
-      for (const button of article.querySelectorAll('[data-view]')) button.onclick = () => viewFile(button.dataset.view);
-    }
-    for (const button of document.querySelectorAll('[data-bulk]')) {
-      button.onclick = async () => {
-        const group = button.dataset.bulk;
-        const targets = [...document.querySelectorAll(`#g-${CSS.escape(group)} article.item[data-status="pending"]`)].filter((a) => a.querySelector('.opt[data-value="confirm"]'));
-        if (!targets.length) return;
-        if (!confirm(`Mark ${targets.length} unanswered item(s) in this group as Confirm? Items you already answered are untouched.`)) return;
-        for (const article of targets) {
-          for (const other of article.querySelectorAll('.opt')) other.setAttribute('aria-pressed', other.dataset.value === 'confirm' ? 'true' : 'false');
-          await save(article, 0, true);
-        }
-        await load();
+  function answerButtonsHtml(model) {
+    const button = b => `<button type="button" class="opt" data-role="${b.role}" data-value="${esc(b.value ?? '')}" aria-pressed="${b.pressed}" ${b.disabled ? 'disabled' : ''} title="${esc(b.hint)}">${esc(b.label)}${b.requiresNote ? '<small>needs your note</small>' : ''}</button>`;
+    const alternatives = model.buttons.filter(b => b.role === 'alternative');
+    return `${alternatives.length ? `<div class="alternatives" role="group" aria-label="Alternatives">${alternatives.map(button).join('')}</div>` : ''}<div class="answer-buttons">${model.buttons.filter(b => b.role !== 'alternative').map(button).join('')}</div>`;
+  }
+  function answerSection(item) {
+    const edit = state.edits.get(item.id);
+    const answer = edit || item.answer || { verdict: '', note: '' };
+    const model = answerModel(item, edit);
+    const intro = { standard: 'Confirm means confirmed as written. The other answers need your note first.', alternatives: 'Select an answer, then Confirm. Every answer except confirming the recommended one needs your note first.', approval: 'Confirm approves this delivery. Rework wording, Change the why and Change send it back with your note.' }[model.mode];
+    const basis = model.mode === 'alternatives' && !item.controls.recommended ? `<p class="legacy-answer">${esc(model.recommendationBasis)}</p>` : '';
+    const legacy = model.legacy ? `<p class="legacy-answer">Your earlier answer: <strong>${esc(model.legacy.label)}</strong> (an answer word no longer offered). It keeps its meaning. Choosing a new answer below replaces it; until then, notes typed here are not saved.</p>` : '';
+    return `<div class="answer" data-mode="${model.mode}">
+      <h4>Your answer</h4><p class="hint">${intro}</p>${basis}${legacy}
+      <label for="note-${item.id}">Your note</label><textarea id="note-${item.id}" placeholder="Context, corrections, the words you want used…">${esc(answer.note)}</textarea>
+      <div class="answer-area">${answerButtonsHtml(model)}</div>
+      <div class="save"><span class="status">${state.edits.has(item.id) ? 'Not saved yet' : item.answer?.at ? `Saved ${new Date(item.answer.at).toLocaleString()}` : 'Not answered yet'}</span><span class="err" role="alert">${esc(state.errors.get(item.id) || '')}</span></div>
+    </div>`;
+  }
+  function refreshAnswer(article, item) {
+    const model = answerModel(item, state.edits.get(item.id));
+    article.querySelector('.answer-area').innerHTML = answerButtonsHtml(model);
+    wireAnswerButtons(article, item);
+  }
+  function wireAnswerButtons(article, item) {
+    for (const button of article.querySelectorAll('.answer-area .opt')) {
+      button.onclick = () => {
+        if (button.disabled) return;
+        if (button.dataset.role === 'alternative') { state.selected.set(item.id, button.dataset.value); refreshAnswer(article, item); return; }
+        if (!button.dataset.value) return;
+        save(article, item, button.dataset.value, 0);
       };
     }
   }
-
-  function save(article, delay, immediate) {
-    const id = article.dataset.id;
-    const draft = { verdict: article.querySelector('.opt[aria-pressed="true"]')?.dataset.value ?? '', note: article.querySelector('textarea').value, itemRevision: Number(article.dataset.revision) };
-    state.drafts.set(id, draft);
-    renderBatchProgress();
+  function wireCard(article, item) {
+    if (!article) return;
+    wireAnswerButtons(article, item);
+    const textarea = article.querySelector('textarea[id^="note-"]');
+    textarea.oninput = () => {
+      const current = state.edits.get(item.id) || item.answer || { verdict: '', note: '' };
+      state.edits.set(item.id, { verdict: current.verdict, note: textarea.value });
+      refreshAnswer(article, item);
+      renderBatchProgress();
+      save(article, item, undefined, 700);
+    };
+    wireViews(article);
+    renderCardWorkflow(article.querySelector('[data-flow]'), item);
+  }
+  function setSaveStatus(article, status, error) {
+    if (!article) return;
+    article.querySelector('.save .status').textContent = status;
+    article.querySelector('.save .err').textContent = error || '';
+  }
+  const PRIVACY_REFUSAL = 'Not saved: notes can\'t contain home-folder paths, email addresses or token-like text, because answers are saved to a privacy-checked notepad. Use a room-relative path like workbench/… instead. Your text is kept here.';
+  function saveFailureMessage(error) {
+    if (error.code === 'secret-like-content') return PRIVACY_REFUSAL;
+    if (error.status === 409) return `Not saved: ${error.message}. Reload to see the current question and answer; your typed text stays here until then.`;
+    return `Save failed: ${error.message}. Your unsaved text remains here.`;
+  }
+  // Remember a note the privacy guard refused, so typing pauses don't resend it.
+  function noteRefused(item, note) { state.refused.set(item.id, note); }
+  // Why an automatic (typing) save must not run now, or null. An explicit
+  // answer button always tries.
+  function autoSaveBlock(item, note) {
+    if (item.answerConflict) return 'This question has an answer conflict; choose an answer to settle it. Your note is kept here and is not saved until you do.';
+    if (state.refused.has(item.id) && state.refused.get(item.id) === note) return PRIVACY_REFUSAL;
+    return null;
+  }
+  // Saves the owner's answer. A verdict passed in is a button choice; without
+  // one, typing re-saves the current answer's note when that is allowed.
+  function save(article, item, verdictChoice, delay) {
+    const id = item.id;
+    const edit = state.edits.get(id) || { verdict: item.answer?.verdict || '', note: item.answer?.note || '' };
+    const note = article.querySelector('textarea[id^="note-"]').value;
+    const verdict = verdictChoice !== undefined ? verdictChoice : edit.verdict;
+    const option = item.controls.options.find(candidate => candidate.value === verdict);
+    state.edits.set(id, { verdict, note });
     clearTimeout(state.timers.get(id));
+    if (verdict && !option) { setSaveStatus(article, 'Not saved', 'Choose an answer to save this note; your earlier answer stays as it was until then.'); return Promise.resolve(); }
+    if (option?.requiresNote && !note.trim()) { setSaveStatus(article, 'Not saved', `${option.label} needs your note; nothing is saved until you type it.`); return Promise.resolve(); }
+    const blocked = verdictChoice === undefined ? autoSaveBlock(item, note) : null;
+    if (blocked) { setSaveStatus(article, 'Not saved', blocked); return Promise.resolve(); }
+    const draft = { verdict, note, itemRevision: item.revision };
     const run = async () => {
-      const { verdict, note, itemRevision } = draft;
-      const statusEl = article.querySelector('.save .status');
-      const errEl = article.querySelector('.save .err');
-      statusEl.textContent = 'Saving…';
+      setSaveStatus(article, 'Saving…', '');
       try {
-        const response = await fetch(`/api/answers/${id}`, { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ verdict, note, itemRevision }) });
+        const response = await fetch(`/api/answers/${id}`, { method: 'PUT', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ...draft, expectedAnswerAt: item.answer?.at ?? null }) });
         const body = await response.json();
-        if (!response.ok) throw new Error(body.error?.message || response.status);
-        statusEl.textContent = `Saved ${new Date(body.at).toLocaleTimeString()}`;
-        errEl.textContent = '';
+        if (!response.ok) { const error = new Error(body.error?.message || response.status); error.status = response.status; error.code = body.error?.code; throw error; }
         state.errors.delete(id);
-        const item = state.board.items.find((candidate) => candidate.id === id);
-        if (item) { item.answer = body; item.derivedStatus = body.derivedStatus; }
-        if (state.drafts.get(id) === draft) state.drafts.delete(id);
-        const currentArticle = document.getElementById(id);
-        if (currentArticle && currentArticle !== article && !state.drafts.has(id)) {
-          currentArticle.querySelector('.save .status').textContent = `Saved ${new Date(body.at).toLocaleTimeString()}`;
-          currentArticle.querySelector('.save .err').textContent = '';
-          currentArticle.dataset.status = body.derivedStatus;
-          currentArticle.querySelector('.badge').className = `badge ${body.derivedStatus}`;
-          currentArticle.querySelector('.badge').textContent = STATUS_LABEL[body.derivedStatus];
-        }
-        article.dataset.status = body.derivedStatus;
-        article.querySelector('.badge').className = `badge ${body.derivedStatus}`;
-        article.querySelector('.badge').textContent = STATUS_LABEL[body.derivedStatus];
-        const needsNote = ['correct', 'finding', 'destination_change', 'answer', 'return_reworded'].includes(verdict) && !note.trim();
-        article.querySelector('textarea').classList.toggle('needs-note', needsNote);
+        state.refused.delete(id);
+        item.answer = body; item.derivedStatus = body.derivedStatus;
+        item.answerLabel = item.controls.options.find(candidate => candidate.value === body.verdict)?.label || body.verdict;
+        const latest = state.edits.get(id);
+        if (latest && latest.verdict === verdict && latest.note === note) state.edits.delete(id);
+        const current = document.getElementById(id) || article;
+        setSaveStatus(current, `Saved ${new Date(body.at).toLocaleTimeString()}`, '');
+        current.dataset.status = body.derivedStatus;
+        const badge = current.querySelector('.item-head .badge');
+        badge.className = `badge ${body.derivedStatus}`; badge.textContent = STATUS_LABEL[body.derivedStatus];
+        refreshAnswer(current, item);
+        if (!staleNotice(item)) current.querySelector('[data-stale-notice]')?.remove();
+        item.answerConflict = body.conflict;
+        if (!item.answerConflict) current.querySelector('[data-conflict-notice]')?.remove();
+        // The workflow derives each card's state from the saved answer.
+        await loadWorkflow();
         refreshCounts();
+        renderCardWorkflow((document.getElementById(id) || current).querySelector('[data-flow]'), item);
       } catch (error) {
-        statusEl.textContent = 'Not saved';
-        const message = `Save failed: ${error.message}. Your unsaved text remains here; edit it again to retry.`;
+        if (error.code === 'secret-like-content') noteRefused(item, note);
+        const message = saveFailureMessage(error);
         state.errors.set(id, message);
-        errEl.textContent = message;
-        const currentArticle = document.getElementById(id);
-        if (currentArticle) {
-          currentArticle.querySelector('.save .status').textContent = 'Not saved';
-          currentArticle.querySelector('.save .err').textContent = message;
-        }
+        setSaveStatus(document.getElementById(id) || article, 'Not saved', message);
       }
     };
     const queued = () => { const promise = (state.inflight.get(id) || Promise.resolve()).then(run); state.inflight.set(id, promise); promise.finally(() => { if (state.inflight.get(id) === promise) state.inflight.delete(id); }); return promise; };
-    if (immediate) return queued();
+    if (!delay) return queued();
     state.timers.set(id, setTimeout(queued, delay));
+    return Promise.resolve();
   }
-
   function refreshCounts() {
     renderNavigation();
     renderBatchProgress();
     renderOverview();
+    renderRoundPanel();
     const start = document.getElementById('start-batch');
     if (start) {
       const remaining = state.board.items.filter(visible).filter(item => ['pending', 'stale', 'parked'].includes(laneFor(item))).length;
@@ -586,110 +1101,499 @@
       start.disabled = !remaining || Boolean(state.batch);
     }
     for (const row of document.querySelectorAll('.question-row')) {
-      const item = state.board.items.find(item => item.id === row.querySelector('[data-open]').dataset.open);
-      row.querySelector('.badge').textContent = LANES[laneFor(item)];
-      row.querySelector('.badge').className = `badge ${item.derivedStatus}`;
+      const item = state.board.items.find(candidate => candidate.id === row.dataset.row);
+      const badge = row.querySelector('.badge');
+      badge.textContent = LANES[laneFor(item)]; badge.className = `badge ${item.derivedStatus}`;
     }
   }
 
+  // ---- Comments, rounds and promotion (owner-triggered only). ----
+  function newActionId() {
+    try { return crypto.randomUUID(); } catch { return `${Date.now()}-${Math.random().toString(16).slice(2)}`; }
+  }
+  // One action ID per intended action, reused until it succeeds, so a repeated
+  // or retried click is recorded once (the workflow treats it as idempotent).
+  // A retry of an interrupted comment passes its original actionId.
+  async function runAction(key, url, body, actionId) {
+    if (actionId) state.actions.set(key, actionId);
+    else if (!state.actions.has(key)) state.actions.set(key, newActionId());
+    const response = await fetch(url, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ...body, actionId: state.actions.get(key), expectedRevision: state.workflow?.revision ?? 0 }) });
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      if (result.error?.code === 'action-id-conflict') state.actions.delete(key);
+      const error = new Error(result.error?.message || `${url} answered ${response.status}`);
+      error.status = response.status;
+      throw error;
+    }
+    state.actions.delete(key);
+    await loadWorkflow();
+    return result;
+  }
+  function actionError(target, error) {
+    if (!target) return;
+    target.innerHTML = error.status === 409
+      ? `<span class="err">${esc(error.message)}</span> The board changed since you read it; nothing was recorded twice. <button type="button" class="bulk" data-reload-all>Reload and review</button>`
+      : `<span class="err">${esc(error.message)}</span>`;
+    const reload = target.querySelector('[data-reload-all]');
+    if (reload) reload.onclick = () => reloadAll();
+  }
+  async function promoteItems(items, statusTarget) {
+    if (!items.length) return;
+    const ids = items.map(item => item.id).sort();
+    await runAction(`promote:${ids.join(',')}`, '/api/promotions', { ids, revisions: Object.fromEntries(items.map(item => [item.id, item.revision])) });
+    state.promote.clear();
+    if (statusTarget) statusTarget.textContent = `Promotion requested for ${ids.length} confirmed card${ids.length === 1 ? '' : 's'}. No agent starts automatically: tell a director to pick it up.`;
+    renderRoundPanel();
+    renderFocus();
+  }
+  function renderRoundPanel() {
+    const panel = document.getElementById('round-workflow');
+    if (!state.board) return;
+    if (!state.workflow) {
+      panel.innerHTML = `<h2>Rounds and promotion</h2><p class="error-box">The owner workflow record could not be read: ${esc(state.workflowError || 'not loaded')}. Answers still save; rounds, comments and promotion are unavailable until it reads.</p>`;
+      return;
+    }
+    const confirmed = confirmedItems();
+    for (const id of [...state.promote]) if (!confirmed.some(item => item.id === id)) state.promote.delete(id);
+    panel.innerHTML = `<h2>Rounds and promotion</h2>
+      <p>Answer over as many rounds as you need; unanswered and unconfirmed cards stay in grilling. Promotion is separate and explicit: it prepares a director handoff through Record → Publish → Map → Publish → Plan → Publish.</p>
+      <div class="batch-actions"><button class="bulk" type="button" id="end-round" ${state.edits.size ? 'disabled' : ''}>End this round</button><small>Records which cards are confirmed now. It starts no agent and promotes nothing.${state.edits.size ? ' Save or finish your unsaved notes first.' : ''}</small></div>
+      <details><summary>Confirmed cards ready for promotion (${confirmed.length})</summary>
+        ${confirmed.length ? `<div class="confirmed-list">${confirmed.map(item => `<label><input type="checkbox" data-promote-pick="${item.id}" ${state.promote.has(item.id) ? 'checked' : ''}> ${esc(item.title)} <small>${item.id} · ${esc(item.answerLabel)}</small></label>`).join('')}</div>` : '<p>No card is in the workflow\'s confirmed state (a current exact confirmation, no Change awaiting revision, not already requested).</p>'}
+        <button class="primary" type="button" id="promote-selected" ${state.promote.size ? '' : 'disabled'}>Start promotion for selected confirmed cards (${state.promote.size})</button>
+      </details>
+      <p id="round-result" role="status">${state.workflow.rounds.length} rounds ended · ${state.workflow.requests.length} promotion handoffs requested.</p>`;
+    const result = document.getElementById('round-result');
+    document.getElementById('end-round').onclick = async event => {
+      event.target.disabled = true;
+      try { const saved = await runAction('round', '/api/rounds', {}); result.textContent = `Round ${saved.round.number} ended with ${saved.round.confirmed.length} confirmed cards recorded. No agent was started.`; }
+      catch (error) { actionError(result, error); }
+      finally { event.target.disabled = false; }
+    };
+    for (const box of panel.querySelectorAll('[data-promote-pick]')) box.onchange = () => {
+      if (box.checked) state.promote.add(box.dataset.promotePick); else state.promote.delete(box.dataset.promotePick);
+      const button = document.getElementById('promote-selected');
+      button.disabled = !state.promote.size; button.textContent = `Start promotion for selected confirmed cards (${state.promote.size})`;
+    };
+    document.getElementById('promote-selected').onclick = async event => {
+      event.target.disabled = true;
+      try { await promoteItems(confirmed.filter(item => state.promote.has(item.id)), result); }
+      catch (error) { actionError(result, error); event.target.disabled = false; }
+    };
+  }
+  function receiptLinks(values) {
+    return (values || []).map(value => sourceLink(value, typeof value === 'string' ? value : value.path || value.url)).join(' · ');
+  }
+  // Requested → Record → Publish → Map → Publish → Plan → Publish (and
+  // Implemented when the Map said implementation is needed). How far a card
+  // has come is the workflow's card state; each reached step shows its
+  // receipt's links, evidence or visible no-op reason.
+  const CARD_PROGRESS = ['handoff-requested', 'recorded', 'record-published', 'mapped', 'map-published', 'planned', 'plan-published', 'implemented'];
+  function dispositionTimeline(request, disposition, card) {
+    const current = card && card.requestId === request.id ? card : null;
+    const reached = current ? Math.max(0, CARD_PROGRESS.indexOf(current.state)) : 0;
+    const receipts = disposition?.requestId === request.id ? disposition.receipts || [] : [];
+    const stages = [...request.stages];
+    if (current?.mapping?.implementationNeeded === true || receipts.length > stages.length) stages.push('Implemented');
+    const steps = stages.map((stage, index) => {
+      const receipt = receipts[index];
+      const done = index < reached;
+      if (!done) return `<li class="${index === reached ? 'next' : ''}"><strong>${esc(stage)}</strong><small>${index === reached ? 'Next; waiting for a director.' : 'Not reached.'}</small></li>`;
+      if (!receipt) return `<li class="done"><strong>${esc(stage)}</strong></li>`;
+      const noOp = receipt.implementationNeeded === false && ['Map', 'Plan'].includes(stage);
+      return `<li class="done"><strong>${esc(stage)}</strong> · ${esc(receipt.by)} · ${esc(receipt.at)}${noOp ? `<small>No Spec or Task: ${esc(receipt.reason)}</small>` : receipt.reason ? `<small>${esc(receipt.reason)}</small>` : ''}${receipt.links?.length ? `<small>Result: ${receiptLinks(receipt.links)}</small>` : ''}${receipt.evidence?.length ? `<small>Evidence: ${receiptLinks(receipt.evidence)}</small>` : ''}</li>`;
+    });
+    const heading = current ? esc(current.label) : 'an earlier request, replaced by a newer one';
+    return `<div class="request"><strong>Promotion handoff · ${heading}</strong>${current?.revisedSinceRequest ? '<p class="stale-box">The question was revised after this request; the request still carries the wording you confirmed then.</p>' : ''}<ol class="timeline"><li class="done"><strong>Requested</strong> · ${esc(request.requestedAt)}<small>Handoff ${esc(request.id)}, ready for a director. No agent starts automatically.</small></li>${steps.join('')}</ol></div>`;
+  }
+  // A confirm or approve answer saved before confirmations froze the exact
+  // wording carries no snapshot, so it cannot be promoted as it stands.
+  const UNSNAPSHOTTED = 'You confirmed this question with an answer saved before the board froze the exact wording you confirmed. Confirm it again to record that wording; until then it cannot be promoted.';
+  function unsnapshottedConfirmation(item) {
+    const answer = item.answer;
+    return Boolean(answer && !answer.approval && answer.itemRevision === item.revision && item.controls?.confirmValues.includes(answer.verdict));
+  }
+  function approvalSummary(item) {
+    const approval = item.answer?.approval;
+    if (!approval && unsnapshottedConfirmation(item)) return `<p class="stale-box">${UNSNAPSHOTTED}</p>`;
+    if (!approval) return '<p>No exact-wording confirmation is recorded for this question.</p>';
+    const current = item.answer.itemRevision === item.revision;
+    return `<p>Confirmed snapshot · revision ${approval.itemRevision} · SHA-256 <code>${esc(approval.hash)}</code>. ${current ? 'This is the current revision.' : 'The question has changed since; it needs a fresh confirmation.'}</p><details><summary>Exactly what was confirmed</summary><div class="reader">${markdown(approval.draft || approval.proposal)}</div></details>`;
+  }
+  // Unsent comment or change-request text, kept in page state beside the
+  // unsaved answer edits, keyed by question and revision, so every re-render
+  // of the card restores it; it clears only when the comment is sent.
+  const commentKey = item => `${item.id}@${item.revision}`;
+  function rememberComment(item, text) { if (String(text)) state.comments.set(commentKey(item), String(text)); else state.comments.delete(commentKey(item)); }
+  function commentDraftFor(item) { return state.comments.get(commentKey(item)) || ''; }
+  function forgetComment(item) { state.comments.delete(commentKey(item)); }
+  function hasUnsavedWork() { return state.edits.size > 0 || [...state.comments.values()].some(text => String(text).trim()); }
+  // Why this card cannot be promoted now, in the owner's terms.
+  function promotionBlocker(item) {
+    if (state.edits.has(item.id)) return 'Save or finish your unsaved answer first.';
+    if (unsnapshottedConfirmation(item)) return UNSNAPSHOTTED;
+    if (item.answerConflict) return 'Two answers to this question conflict. Answer again to settle it; until then it cannot be promoted.';
+    const change = (state.workflow?.comments || []).find(comment => comment.id === item.id && comment.kind === 'change' && comment.itemRevision === item.revision);
+    if (change) return `Your change request of ${change.at || 'this revision'} (“${change.text}”) is waiting: an agent must revise this question from it, and you must confirm the revised question, before it can be promoted.`;
+    return 'Only a card the workflow reports as confirmed can be promoted.';
+  }
+  function cardWorkflowHtml(item) {
+    if (!state.workflow) return `<h4>Comments and promotion</h4><p class="error-box">Unavailable: ${esc(state.workflowError || 'the owner workflow record is not loaded')}.</p>`;
+    const comments = state.workflow.comments.filter(comment => comment.id === item.id);
+    const requests = state.workflow.requests.filter(request => request.cards.some(card => card.id === item.id));
+    const card = cardState(item);
+    const promotable = confirmedItems().some(candidate => candidate.id === item.id);
+    const why = promotable ? '' : promotionBlocker(item);
+    const draft = commentDraftFor(item);
+    const sendable = Boolean(draft.trim());
+    return `<h4>Comments, change requests and promotion</h4>
+      <p>Workflow state: <strong>${esc(card?.label || 'unknown')}</strong></p>
+      ${approvalSummary(item)}
+      <label for="comment-${item.id}">Comment or change request</label>
+      <textarea id="comment-${item.id}" data-comment-text placeholder="Saved as its own file under workbench/grill-board/comments/">${esc(draft)}</textarea>
+      <div class="batch-actions"><button class="bulk" type="button" data-comment="comment" ${sendable ? '' : 'disabled'}>Save as a comment</button><button class="bulk" type="button" data-comment="change" ${sendable ? '' : 'disabled'}>Send a change request</button><small>Neither approves anything and neither starts an agent.</small></div>
+      ${comments.map(comment => `<div class="request"><strong>${comment.kind === 'change' ? 'Change request' : 'Comment'} · revision ${comment.itemRevision}</strong><p>${esc(comment.text)}</p><small>${esc(comment.status || 'requested')} · ${esc(comment.at || '')}</small>${comment.recorded === false ? `<p class="stale-box">${esc(comment.recovery || 'Saved, but not yet recorded in the workflow.')} <button type="button" class="bulk" data-retry-comment="${esc(comment.actionId)}">Finish recording it</button></p>` : ''}</div>`).join('')}
+      <div class="batch-actions"><button class="primary" type="button" data-promote ${promotable ? '' : 'disabled'}>Start promotion for this confirmed card</button><small>${esc(why)}</small></div>
+      ${requests.map(request => dispositionTimeline(request, state.workflow.dispositions[item.id], card)).join('')}
+      <p class="flow-result" role="status"></p>`;
+  }
+  function renderCardWorkflow(panel, item) {
+    if (!panel) return;
+    panel.innerHTML = cardWorkflowHtml(item);
+    const stateLine = panel.closest?.('.card-workflow-fold')?.querySelector('[data-flow-state]');
+    if (stateLine) stateLine.textContent = cardState(item)?.label || 'state unknown';
+    if (!state.workflow) return;
+    const comments = state.workflow.comments.filter(comment => comment.id === item.id);
+    const text = panel.querySelector('[data-comment-text]');
+    const result = panel.querySelector('.flow-result');
+    text.oninput = () => { rememberComment(item, text.value); for (const button of panel.querySelectorAll('[data-comment]')) button.disabled = !text.value.trim(); };
+    for (const button of panel.querySelectorAll('[data-comment]')) button.onclick = async () => {
+      const words = text.value.trim();
+      if (!words) return;
+      button.disabled = true;
+      try { await runAction(`comment:${item.id}:${button.dataset.comment}:${words}`, '/api/comments', { id: item.id, itemRevision: item.revision, kind: button.dataset.comment, text: words }); forgetComment(item); renderCardWorkflow(panel, item); renderRoundPanel(); }
+      catch (error) { actionError(result, error); button.disabled = false; }
+    };
+    // An interrupted comment is finished by resending its original action ID
+    // with the payload rebuilt from the saved comment record.
+    for (const button of panel.querySelectorAll('[data-retry-comment]')) button.onclick = async () => {
+      const comment = comments.find(candidate => candidate.actionId === button.dataset.retryComment);
+      if (!comment) return;
+      button.disabled = true;
+      try { await runAction(`retry:${comment.actionId}`, '/api/comments', { id: comment.id, itemRevision: comment.itemRevision, kind: comment.kind, text: comment.text }, comment.actionId); renderCardWorkflow(panel, item); renderRoundPanel(); }
+      catch (error) { actionError(result, error); button.disabled = false; }
+    };
+    panel.querySelector('[data-promote]').onclick = async event => {
+      event.target.disabled = true;
+      try { await promoteItems([item], result); }
+      catch (error) { actionError(result, error); event.target.disabled = false; }
+    };
+    wireViews(panel);
+  }
+
+  // ---- Shell and routing. ----
+  function setView(view, tab) {
+    state.view = view;
+    const grilling = view === 'grilling';
+    document.getElementById('shell').classList.toggle('wide', !grilling);
+    document.getElementById('grill-nav').hidden = !grilling;
+    document.getElementById('questions-panel').hidden = !grilling;
+    document.getElementById('section-panel').hidden = grilling;
+    for (const link of document.querySelectorAll('#section-tabs a')) {
+      if (link.dataset.section === tab) link.setAttribute('aria-current', 'page'); else link.removeAttribute('aria-current');
+    }
+    document.title = `${SECTIONS[tab] || 'Search'} · Workbench Dashboard`;
+  }
+  function focusHeading(panel) { const heading = panel.querySelector('h1'); if (heading) { heading.tabIndex = -1; heading.focus({ preventScroll: true }); } }
+  async function routePage() {
+    if (!state.board || !state.catalog) return;
+    const serial = ++state.route;
+    const raw = location.hash.slice(1);
+    const params = new URLSearchParams(raw);
+    const panel = document.getElementById('section-panel');
+    const section = params.get('section'), file = params.get('artifact'), group = params.get('artifacts'), query = params.get('search');
+    state.artifact = null;
+    if (/^GB-\d{4}$/.test(raw) || !raw || raw === 'questions' || section === 'grilling') {
+      const returning = state.view !== 'grilling';
+      setView('grilling', 'grilling');
+      const target = state.board.items.find(item => item.id === raw);
+      if (target) {
+        if (!visible(target)) { state.inBatch = false; resetSlice(); state.topic = topicFor(target); }
+        state.focus = target.id; render();
+        document.getElementById('focus')?.scrollIntoView({ block: 'start' });
+      } else if (returning) window.scrollTo(0, state.questionScroll || 0);
+      return;
+    }
+    if (state.view === 'grilling') state.questionScroll = window.scrollY;
+    try {
+      if (section === 'whys') { setView('whys', 'grilling'); renderWhys(panel); }
+      else if (section === 'tracker' || section === 'taskboard') { setView(section, section); await renderSourceSection(section, panel, serial); }
+      else if (section === 'drafts') { setView('drafts', 'drafts'); await renderDrafts(panel, serial); }
+      else if (section === 'wiki') { setView('wiki', 'wiki'); renderWiki(panel); }
+      else if (group) { setView('wiki', 'wiki'); renderGroup(panel, group); }
+      else if (file) { setView('wiki', 'wiki'); await renderArtifact(panel, file, params, serial); return; }
+      else if (query !== null) { setView('search', null); await renderSearch(panel, query, serial); }
+      else { setView('grilling', 'grilling'); return; }
+      if (serial === state.route) { window.scrollTo(0, 0); focusHeading(panel); }
+    } catch (error) {
+      if (serial === state.route) panel.innerHTML = `<h1>Could not read this section</h1><p class="error-box">${esc(error.message)}</p><button class="bulk" type="button" id="route-retry">Read again</button>`;
+      const retry = document.getElementById('route-retry');
+      if (retry) retry.onclick = () => { state.dashboard = null; state.drafts = null; routePage(); };
+    }
+  }
+
+  // ---- Whys. ----
+  function renderWhys(panel) {
+    const rows = whysList(state.board.items, { query: state.whyQuery, status: state.whyStatus });
+    const all = whysList(state.board.items);
+    panel.innerHTML = `<p><a href="#section=grilling">← Grilling Board</a></p><h1>Whys list</h1>
+      <p class="semantics">Your <strong>Change the why</strong> answers: something is correct, but the underlying reason is wrong. An agent fixes the rationale in its owner (the decision record, Destination Question Card, text or Spec the question governs).</p>
+      <div class="section-filter"><label for="why-query">Filter</label><input type="search" id="why-query" value="${esc(state.whyQuery)}" placeholder="Title, ID or your note"><label for="why-status">Status</label><select id="why-status">${['all', 'answered', 'applied', 'stale', 'pending', 'superseded'].map(status => `<option value="${status}" ${state.whyStatus === status ? 'selected' : ''}>${status === 'all' ? 'All statuses' : STATUS_LABEL[status]}</option>`).join('')}</select><span>${rows.length} of ${all.length}</span></div>
+      <div id="why-rows">${rows.map(row => `<article class="why-row"><h3><a href="#${row.id}">${esc(row.title)}</a></h3><span class="identity">${row.id} · answered at revision ${row.itemRevision}${row.revision !== row.itemRevision ? ` (question now at revision ${row.revision})` : ''}</span><blockquote>${esc(row.note)}</blockquote><span class="badge ${row.status}">${STATUS_LABEL[row.status] || row.status}</span>${row.current ? '' : ' <small>an earlier answer, since replaced</small>'} <small>${esc(row.at || '')}</small></article>`).join('') || '<p class="empty">No Change the why answers match.</p>'}</div>`;
+    document.getElementById('why-query').oninput = event => { state.whyQuery = event.target.value; renderWhys(panel); const input = document.getElementById('why-query'); input.focus(); input.setSelectionRange(input.value.length, input.value.length); };
+    document.getElementById('why-status').onchange = event => { state.whyStatus = event.target.value; renderWhys(panel); document.getElementById('why-status').focus(); };
+  }
+
+  // ---- Destination Tracker and Taskboard: native projections, distinct semantics. ----
+  async function dashboardData() {
+    if (!state.dashboard) state.dashboard = await getJson('/api/dashboard');
+    return state.dashboard;
+  }
+  function distributionBar(distribution, steps) {
+    const parts = steps.map((step, index) => ({ step, value: Number(distribution?.[step] || 0), color: STEP_COLORS[index % STEP_COLORS.length] }));
+    const text = parts.map(part => `${part.step} ${part.value.toFixed(1)}%`).join(', ');
+    return `<div class="distribution" role="img" aria-label="${esc(text)}">${parts.filter(part => part.value > 0).map(part => `<span style="width:${part.value}%;background:var(${part.color})" title="${esc(part.step)} ${part.value.toFixed(1)}%"></span>`).join('')}</div>`;
+  }
+  function legend(steps) { return `<div class="legend">${steps.map((step, index) => `<span><i style="background:var(${STEP_COLORS[index % STEP_COLORS.length]})"></i>${esc(step)}</span>`).join('')}</div>`; }
+  function sourceErrors(data, kinds) {
+    const errors = (data.errors || []).filter(error => kinds.includes(error.source));
+    return errors.map(error => `<p class="error-box">${esc(error.source)}${error.path ? ` · ${esc(error.path)}` : ''}: ${esc(error.message)}</p>`).join('');
+  }
+  async function renderSourceSection(section, panel, serial) {
+    panel.innerHTML = `<h1>${SECTIONS[section]}</h1><p>Reading current source records…</p>`;
+    const data = await dashboardData();
+    if (serial !== state.route) return;
+    const refresh = '<button class="bulk" type="button" id="refresh-sources">Read sources again</button>';
+    if (section === 'tracker') {
+      const model = data.tracker;
+      const head = `<h1>Destination Tracker</h1><p class="semantics">Understanding: how far each Landmark's Destination Question Cards are understood, Idea through Verified. This is not delivery progress, and a done Task never establishes verified understanding. Execution lanes are on the <a href="#section=taskboard">Taskboard</a>.</p>${refresh}${sourceErrors(data, ['tracker', 'manifest'])}`;
+      if (model?.status !== 'available') { panel.innerHTML = `${head}<p class="error-box">The Landmark Tracker could not be read: ${esc(model?.error?.message || 'unavailable')}. No substitute projection is shown; the records stay readable in the <a href="#artifacts=landmarks">Wiki</a>.</p>`; wireRefresh(); return; }
+      const tracker = model.tracker, steps = tracker.steps || [];
+      const workbench = tracker.workbench || {};
+      panel.innerHTML = `${head}
+        <section class="landmark-card"><h2>Whole Workbench</h2><p>${workbench.items ?? 0} assessed items · ${esc(workbench.status || 'unknown')} · ${Number(tracker.workbench?.unassessedPercent || 0).toFixed(1)}% unassessed</p>${distributionBar(workbench.distribution, steps)}${legend(steps)}</section>
+        <div class="section-filter"><label for="tracker-filter">Filter Landmarks</label><input type="search" id="tracker-filter" placeholder="Title or ID"></div>
+        <div id="landmark-cards">${(tracker.landmarks || []).map(landmark => `<section class="landmark-card" data-filter="${esc(`${landmark.title} ${landmark.id}`.toLowerCase())}"><h3><button type="button" class="link-button" data-inspect-id="${esc(landmark.id)}">${esc(landmark.title)}</button></h3><span class="identity">${esc(landmark.id)}</span><p>${esc(landmark.summary || '')}</p>${distributionBar(landmark.aggregate?.distribution, steps)}<small>${landmark.aggregate?.items ?? 0} items · ${esc(landmark.aggregate?.status || 'unknown')} · ${(landmark.aggregate?.unassessed || []).length} unassessed</small><div class="chips">${(landmark.questions || []).map(id => `<button type="button" data-inspect-id="${esc(id)}">${esc(titleForId(id))}</button>`).join('')}</div></section>`).join('') || '<p class="empty">No Landmarks recorded.</p>'}</div>`;
+      document.getElementById('tracker-filter').oninput = event => { const q = event.target.value.toLowerCase(); for (const cardEl of panel.querySelectorAll('#landmark-cards [data-filter]')) cardEl.hidden = q && !cardEl.dataset.filter.includes(q); };
+    } else {
+      const model = data.taskboard;
+      const head = `<h1>Taskboard</h1><p class="semantics">Execution: Specs and Tasks in their native execution lanes. Approval and verification stay in the source records, and a done Task never establishes verified understanding; understanding is on the <a href="#section=tracker">Destination Tracker</a>.</p>${refresh}${sourceErrors(data, ['taskboard', 'specs', 'tasks', 'landmarks', 'manifest'])}`;
+      if (model?.status !== 'available') { panel.innerHTML = `${head}<p class="error-box">The Taskboard could not be read: ${esc(model?.error?.message || 'unavailable')}. No substitute execution projection is shown; Specs and Tasks stay readable in the <a href="#artifacts=specs">Wiki</a>.</p>`; wireRefresh(); return; }
+      const lanes = model.board.lanes || {};
+      panel.innerHTML = `${head}<div class="section-filter"><label for="task-filter">Filter cards</label><input type="search" id="task-filter" placeholder="Title or ID"></div><div class="lanes">${Object.entries(lanes).map(([lane, cards]) => {
+        const entries = Object.entries(cards);
+        return `<section class="lane"><h2>${esc(LANE_TITLES[lane] || lane)} <small>${entries.length}</small></h2><details ${lane === 'complete' ? '' : 'open'}><summary>${lane === 'complete' ? `Show ${entries.length} complete` : 'Cards'}</summary>${entries.map(([key, cardData]) => `<button type="button" class="source-card" data-card="${esc(lane)}|${esc(key)}" data-filter="${esc(`${cardData.title} ${key}`.toLowerCase())}"><strong>${esc(cardData.title)}</strong><small>${esc(key)}${cardData.priority ? ` · priority ${esc(cardData.priority)}` : ''}</small>${cardData.nextAction ? `<small>Next: ${esc(cardData.nextAction)}</small>` : ''}${(cardData.dependencies || []).length ? `<small>${cardData.dependencies.length} dependencies</small>` : ''}</button>`).join('') || '<p class="empty">None.</p>'}</details></section>`;
+      }).join('')}</div>`;
+      document.getElementById('task-filter').oninput = event => { const q = event.target.value.toLowerCase(); for (const cardEl of panel.querySelectorAll('.source-card')) cardEl.hidden = q && !cardEl.dataset.filter.includes(q); };
+      for (const button of panel.querySelectorAll('[data-card]')) button.onclick = () => {
+        const [lane, ...rest] = button.dataset.card.split('|');
+        const key = rest.join('|');
+        const cardData = lanes[lane][key];
+        const relationships = [...(cardData.sourceLinks || []).slice(1).map(file => ({ label: 'Source', path: file })), ...(cardData.dependencies || []).map(text => ({ label: 'Depends on', text }))];
+        openInspector(cardData.sourceLinks?.[0], { title: cardData.title, id: key, status: `${LANE_TITLES[lane] || lane} (execution lane)`, relationships, facts: [['Next action', cardData.nextAction], ['Assignee', cardData.assignee], ['Approver', cardData.approver], ['Required QA', (cardData.requiredQA || []).join(', ')]] });
+      };
+    }
+    for (const button of panel.querySelectorAll('[data-inspect-id]')) button.onclick = () => inspectId(button.dataset.inspectId);
+    wireRefresh();
+  }
+  function wireRefresh() { const button = document.getElementById('refresh-sources'); if (button) button.onclick = () => { state.dashboard = null; routePage(); }; }
+  function artifactForId(id) { return (state.dashboard?.artifacts || []).find(artifact => artifact.id === id && artifact.format === 'json') || (state.dashboard?.artifacts || []).find(artifact => artifact.id === id) || state.catalog?.artifacts.find(artifact => artifact.id === id) || null; }
+  function titleForId(id) { const artifact = artifactForId(id); return artifact ? `${artifact.title} · ${id}` : id; }
+  function inspectId(id) {
+    const artifact = artifactForId(id);
+    if (!artifact) { openInspector(null, { title: id, id, status: 'No readable source record was found for this identifier.' }); return; }
+    openInspector(artifact.path, { title: artifact.title, id: artifact.id });
+  }
+  // One inspector for every card: title first, ID second, status, source path
+  // and revision, relationships, then the readable source text.
+  async function openInspector(file, extra = {}) {
+    const dialog = document.getElementById('inspector');
+    const known = (file && ((state.dashboard?.artifacts || []).find(artifact => artifact.path === file) || catalogArtifact(file))) || {};
+    document.getElementById('inspector-title').textContent = extra.title || known.title || file || 'Source';
+    document.getElementById('inspector-id').textContent = extra.id || known.id || '';
+    const body = document.getElementById('inspector-body');
+    const relationships = [...(known.relationships || []).map(rel => ({ label: rel.type || 'Related', id: rel.id })), ...(extra.relationships || [])];
+    const facts = (extra.facts || []).filter(([, value]) => value);
+    const header = (revision, status) => `<dl class="facts"><dt>Status</dt><dd>${esc(extra.status || status || known.status || 'unknown')}</dd><dt>Source</dt><dd>${file ? esc(file) : 'none'}</dd><dt>Revision</dt><dd>${esc(revision ?? known.revision ?? 'unavailable')}</dd>${facts.map(([label, value]) => `<dt>${esc(label)}</dt><dd>${esc(value)}</dd>`).join('')}${relationships.length ? `<dt>Relationships</dt><dd>${relationships.map(rel => rel.id ? `<button type="button" class="link-button" data-inspect-id="${esc(rel.id)}">${esc(rel.label)}: ${esc(titleForId(rel.id))}</button>` : rel.path ? `${esc(rel.label)}: ${sourceLink(rel.path)}` : `${esc(rel.label)}: ${esc(rel.text)}`).join('<br>')}</dd>` : ''}</dl>${file && catalogArtifact(file) ? `<p><a href="${esc(artifactHref(file))}" data-close-inspector>Open in the Wiki</a></p>` : ''}`;
+    body.innerHTML = `${header()}<p>${file ? 'Reading the source…' : ''}</p>`;
+    const wire = () => {
+      for (const button of body.querySelectorAll('[data-inspect-id]')) button.onclick = () => inspectId(button.dataset.inspectId);
+      for (const link of body.querySelectorAll('[data-close-inspector], a[href^="#"]')) link.addEventListener('click', () => dialog.close());
+      wireViews(body);
+    };
+    wire();
+    if (!dialog.open) dialog.showModal();
+    if (!file) return;
+    try {
+      const artifact = await getJson(`/api/artifact?path=${encodeURIComponent(file)}`);
+      const recordRevision = artifact.format === 'json' ? (() => { try { return JSON.parse(artifact.text).revision; } catch { return null; } })() : null;
+      body.innerHTML = `${header(recordRevision ? `record revision ${recordRevision} · SHA-256 ${artifact.revision}` : `SHA-256 ${artifact.revision}`, artifact.status)}<div class="reader">${artifact.format === 'json' ? recordFields(JSON.parse(artifact.text), file) : markdown(artifact.text, file)}</div>`;
+    } catch (error) {
+      body.innerHTML = `${header()}<p class="error-box">The source text could not be read: ${esc(error.message)}</p>`;
+    }
+    wire();
+  }
+
+  // ---- Drafts to approve. ----
+  function approvalLine(approval) {
+    const short = hash => hash ? `<code title="${esc(hash)}">${esc(hash.slice(0, 12))}…</code>` : '';
+    if (approval.state === 'current') return `<p class="ok-box">Approved: you confirmed this exact wording at revision ${approval.itemRevision} (${esc(approval.confirmedAt || '')}). Snapshot SHA-256 ${short(approval.hash)} matches the current draft.</p>`;
+    if (approval.state === 'stale') return `<p class="stale-box">Stale approval: the wording you confirmed (revision ${approval.itemRevision}, SHA-256 ${short(approval.hash)}) no longer matches this question's current revision (SHA-256 ${short(approval.currentHash)}). Confirm again to approve the current wording.</p>`;
+    if (approval.state === 'superseded') return `<p class="stale-box">An earlier confirmation (revision ${approval.itemRevision}, SHA-256 ${short(approval.hash)}) was replaced by a later answer that is not a confirmation.</p>`;
+    return `<p>Not yet approved. Confirming the owning question freezes exactly this wording (current SHA-256 ${short(approval.currentHash)}).</p>`;
+  }
+  function draftItem(entry, open) {
+    return `<article class="draft-item"><h3><a href="#${entry.id}">${esc(entry.title)}</a></h3><span class="identity">${entry.id} · revision ${entry.revision} · ${esc(STATUS_LABEL[entry.derivedStatus] || entry.derivedStatus)} · ${esc(KIND_LABEL[entry.kind] || entry.kind)}</span>
+      ${approvalLine(entry.approval)}
+      <details ${open ? 'open' : ''}><summary>${entry.draftKind === 'full-text' ? 'Proposed wording · complete replacement text' : 'Proposed wording · excerpt, not a complete file'}</summary><div class="scroll-box reader">${markdown(entry.draft)}</div></details>
+      <p><a href="#${entry.id}">Open the owning question to confirm or send it back</a></p></article>`;
+  }
+  async function renderDrafts(panel, serial) {
+    panel.innerHTML = '<h1>Drafts to approve</h1><p>Reading proposed wording…</p>';
+    const drafts = state.drafts || (state.drafts = await getJson('/api/drafts'));
+    if (serial !== state.route) return;
+    const count = drafts.groups.reduce((sum, group) => sum + group.items.length, 0);
+    const stale = drafts.groups.flatMap(group => group.items).filter(entry => entry.approval.state === 'stale').length;
+    panel.innerHTML = `<h1>Drafts to approve</h1>
+      <p class="semantics">A full-text review of a decision record or text sits beside that file's current text; other proposed wording, with no single target file, is listed separately without current text. Each is tagged with the question that owns it. Confirming that question freezes exactly the proposed wording shown, by SHA-256; a revised question or draft makes that approval visibly stale. Comments and change requests never approve.</p>
+      <p>${count} drafts · ${drafts.groups.filter(group => group.target).length} target files · ${stale} stale approvals · ${drafts.withoutDraft.length} approval questions without a draft. <button class="bulk" type="button" id="refresh-drafts">Read again</button></p>
+      ${drafts.groups.map(group => group.target ? `<section class="draft-group"><h2>${esc(catalogArtifact(group.target)?.title || group.target)}</h2><p class="reader-meta">${esc(group.target)}</p><div class="draft-comparison"><div><h3>Current text</h3><details data-current="${esc(group.target)}"><summary>Show the current text of this file</summary><div class="scroll-box reader" data-current-text>Not loaded.</div></details></div><div><h3>Proposed wording</h3>${group.items.map(entry => draftItem(entry, true)).join('')}</div></div></section>` : `<section class="draft-group"><h2>Proposed wording without one named target file</h2><p>These drafts are excerpts or proposals whose question does not name a single file they replace; read each question's sources for what they would change.</p>${group.items.map(entry => draftItem(entry, false)).join('')}</section>`).join('')}
+      <section class="draft-group"><h2>No proposed draft available</h2><p>These questions ask for an approval but carry no proposed wording. None is invented; answer them from the question itself.</p><div class="artifact-list">${drafts.withoutDraft.map(entry => `<a href="#${entry.id}"><strong>${esc(entry.title)}</strong><small>${entry.id} · revision ${entry.revision} · ${esc(STATUS_LABEL[entry.derivedStatus] || entry.derivedStatus)} · ${esc(KIND_LABEL[entry.kind] || entry.kind)}</small></a>`).join('') || '<p>None.</p>'}</div></section>`;
+    document.getElementById('refresh-drafts').onclick = () => { state.drafts = null; routePage(); };
+    for (const details of panel.querySelectorAll('details[data-current]')) details.addEventListener('toggle', async () => {
+      if (!details.open || details.dataset.loaded) return;
+      details.dataset.loaded = 'yes';
+      const target = details.querySelector('[data-current-text]');
+      const file = details.dataset.current;
+      try {
+        if (catalogArtifact(file)) { const artifact = await getJson(`/api/artifact?path=${encodeURIComponent(file)}`); target.innerHTML = `<p class="reader-meta">Current checkout · SHA-256 ${esc(artifact.revision)}</p>${markdown(artifact.text, file)}`; }
+        else { const read = await getJson(`/api/file?path=${encodeURIComponent(file)}`); target.innerHTML = `<p class="reader-meta">Current checkout</p>${markdown(read.text, file)}`; }
+      } catch (error) { target.innerHTML = `<p class="error-box">The current text could not be read: ${esc(error.message)}</p>`; delete details.dataset.loaded; }
+    });
+  }
+
+  // ---- Wiki. ----
+  function renderWiki(panel) {
+    const groups = state.catalog.groups.map(group => ({ ...group, count: state.catalog.artifacts.filter(artifact => artifact.group === group.id).length })).filter(group => group.count);
+    panel.innerHTML = `<h1>Wiki</h1><p class="semantics">Root controls, decision records, Wiki pages, skills, Specs, Tasks and maintained knowledge, read from their owners. A question links here to each decision record among its sources and each one its title, question, context, proposal, brief, draft or options name by a full identifier or slash shorthand (ADR-000B/C/D). Identifiers continued as a comma list (ADR-000F, 000M) link only the first, records named only in a Priority or Value reason are not linked, and an identifier with no cataloged record is shown as unavailable. ${state.glossary ? `Glossary terms show their definition on hover (from ${esc(state.glossary.source || 'no glossary file')}).` : 'Hover definitions are unavailable from this server.'}</p>
+      <div class="group-grid">${groups.map(group => `<a class="group-card" href="#artifacts=${esc(group.id)}"><strong>${esc(group.title)}</strong><small>${group.count} ${group.count === 1 ? 'document' : 'documents'}</small></a>`).join('')}</div>
+      ${state.catalog.errors?.length ? `<details><summary>${state.catalog.errors.length} sources could not be cataloged</summary>${state.catalog.errors.map(error => `<p class="error-box">${esc(error.source)}${error.path ? ` · ${esc(error.path)}` : ''}: ${esc(error.message)}</p>`).join('')}</details>` : ''}`;
+  }
+  function renderGroup(panel, group) {
+    const selected = state.catalog.groups.find(candidate => candidate.id === group);
+    if (!selected) throw new Error(`Unknown Wiki group ${group}`);
+    const records = state.catalog.artifacts.filter(artifact => artifact.group === group).sort((a, b) => Number(b.status === 'accepted') - Number(a.status === 'accepted') || a.title.localeCompare(b.title));
+    panel.innerHTML = `<p><a href="#section=wiki">← Wiki</a></p><h1>${esc(selected.title)}</h1><p>Titles first, identifiers second. Accepted decisions appear first; proposed and historical records stay available.</p><div class="section-filter"><label for="group-filter">Filter</label><input type="search" id="group-filter" placeholder="Title, ID or path"><span id="group-count">${records.length}</span></div><div class="artifact-list" id="group-list">${records.map(artifact => `<a href="${esc(artifactHref(artifact.path))}" data-filter="${esc(`${artifact.title} ${artifact.id || ''} ${artifact.path}`.toLowerCase())}"><strong>${esc(artifact.title)}</strong><small>${artifact.id ? `${esc(artifact.id)} · ` : ''}${esc(artifact.status)}</small><small>${esc(artifact.path)}</small></a>`).join('') || '<p>No records in this collection.</p>'}</div>`;
+    document.getElementById('group-filter').oninput = event => {
+      const q = event.target.value.toLowerCase(); let shown = 0;
+      for (const link of panel.querySelectorAll('#group-list [data-filter]')) { link.hidden = q && !link.dataset.filter.includes(q); if (!link.hidden) shown += 1; }
+      document.getElementById('group-count').textContent = String(shown);
+    };
+  }
+  async function renderBacklinks(target, file) {
+    try {
+      const body = await getJson(`/api/backlinks?path=${encodeURIComponent(file)}`);
+      const links = body.links || [];
+      target.innerHTML = `<h2>Linked from</h2>${links.length ? `<ul>${links.map(link => `<li>${link.kind === 'question' ? `<a href="#${esc(link.id)}">${esc(link.title)}</a> <small>question · ${esc(link.id)}</small>` : `${sourceLink(link.path, link.title)} <small>${link.id ? esc(link.id) + ' · ' : ''}page</small>`}</li>`).join('')}</ul>` : '<p>No question or page links here.</p>'}`;
+    } catch (error) {
+      // Without the server backlinks route, show what the board itself knows.
+      const citing = state.board.items.filter(item => item.sources.some(source => source.path === file));
+      target.innerHTML = `<h2>Linked from</h2><p class="reader-meta">Page-to-page backlinks are unavailable from this server (${esc(error.message)}). Board questions that cite this file:</p>${citing.length ? `<ul>${citing.map(item => `<li><a href="#${item.id}">${esc(item.title)}</a> <small>${item.id}</small></li>`).join('')}</ul>` : '<p>None.</p>'}`;
+    }
+    wireViews(target);
+  }
+  async function renderArtifact(panel, file, params, serial) {
+    panel.innerHTML = '<p>Reading the artifact…</p>';
+    const artifact = await getJson(`/api/artifact?path=${encodeURIComponent(file)}`);
+    if (serial !== state.route) return;
+    state.artifact = artifact;
+    const previous = state.revisions.get(file);
+    state.revisions.set(file, artifact.revision);
+    const itemId = params.get('item');
+    const fullDrafts = artifact.related.filter(item => item.draftKind === 'full-text');
+    const related = artifact.related.map(item => `<section class="artifact-section" id="draft-${item.id}"><h2>${esc(item.title)}</h2><p class="reader-meta">${item.id} · item revision ${item.revision} · ${esc(item.status)} · package captured ${esc(item.snapshotAt)} · item updated ${esc(item.itemUpdatedAt)}<br>Source at ${item.sources.map(source => esc(source.ref || 'unrecorded revision')).join(', ')}</p><p>${esc(item.question)}</p><a href="#${item.id}">Read and answer this question</a><h3>${item.draftKind === 'full-text' ? 'Proposed draft · full text' : item.draftKind === 'excerpt' ? 'Proposed draft · excerpt only' : 'Proposed change · no complete draft'}</h3><p>Review material; displaying it does not accept a change.${item.draftKind !== 'full-text' ? ' No complete replacement artifact is supplied by this item.' : ''}</p><div class="reader">${item.draft ? markdown(item.draft, file) : ''}<h3>Proposed change</h3>${markdown(item.proposal, file)}</div></section>`).join('');
+    panel.innerHTML = `<p><a href="#section=wiki">← Wiki</a> · <a href="#artifacts=${esc(artifact.group)}">All ${esc(groupTitle(artifact.group))}</a></p><h1>${esc(artifact.title)}</h1><p class="reader-meta">${artifact.id ? `${esc(artifact.id)} · ` : ''}${esc(artifact.status)} · ${esc(artifact.path)}</p>
+      <div id="source-change" class="source-change" ${previous && previous !== artifact.revision ? '' : 'hidden'}>The source changed since your previous reading. This is the current text; review snapshots below keep their own revisions. <button class="bulk" type="button" id="refresh-artifact">Read latest source</button></div>
+      <div class="reader-tabs"><a href="${esc(artifactHref(file, 'current'))}">Current artifact</a><a href="${esc(artifactHref(file, 'proposals'))}">Drafts and proposed changes (${artifact.related.length})</a><a href="${esc(artifactHref(file, 'backlinks'))}">Linked from</a></div>
+      <div class="draft-comparison"><section class="artifact-section" id="current-artifact"><h2>Current artifact</h2><p class="reader-meta">Current checkout · tree ${esc(artifact.tree || 'unavailable')}<br>Content SHA-256 ${esc(artifact.revision)} · read ${esc(artifact.readAt)}</p><div class="reader">${artifact.format === 'json' ? recordFields(JSON.parse(artifact.text), file) + `<details><summary>Complete source JSON</summary><pre>${esc(artifact.text)}</pre></details>` : markdown(artifact.text, file)}</div></section><section id="artifact-proposals"><h2>Available drafts and proposed changes</h2>${fullDrafts.length ? '' : '<p>No complete draft is available for this artifact. Existing proposed changes are shown without inventing a replacement.</p>'}${related || '<p>No linked proposals in the current review package.</p>'}</section></div>
+      <section class="artifact-section" id="backlinks"><h2>Linked from</h2><p>Reading links…</p></section>`;
+    document.getElementById('refresh-artifact').onclick = routePage;
+    await renderBacklinks(document.getElementById('backlinks'), file);
+    if (serial !== state.route) return;
+    const anchor = params.get('anchor');
+    const target = itemId ? document.getElementById(`draft-${itemId}`) : anchor === 'current' ? document.getElementById('current-artifact') : anchor === 'proposals' ? document.getElementById('artifact-proposals') : anchor === 'backlinks' ? document.getElementById('backlinks') : anchor ? [...panel.querySelectorAll('[data-anchor]')].find(element => element.dataset.anchor === anchor) : null;
+    if (target) target.scrollIntoView({ block: 'start' }); else { window.scrollTo(0, 0); focusHeading(panel); }
+  }
+
+  // ---- Global search. ----
+  function localSearch(query) {
+    const q = query.toLowerCase();
+    const questions = state.board.items.filter(item => `${item.id} ${item.title} ${item.question}`.toLowerCase().includes(q)).map(item => ({ kind: 'question', id: item.id, title: item.title, snippet: item.question, status: STATUS_LABEL[item.derivedStatus] }));
+    const artifacts = state.catalog.artifacts.filter(artifact => `${artifact.id || ''} ${artifact.title} ${artifact.path}`.toLowerCase().includes(q)).map(artifact => ({ kind: groupTitle(artifact.group), id: artifact.id, path: artifact.path, title: artifact.title, snippet: artifact.path, status: artifact.status }));
+    return [...questions, ...artifacts];
+  }
+  async function renderSearch(panel, query, serial) {
+    document.getElementById('global-search').value = query;
+    panel.innerHTML = `<h1>Search: ${esc(query)}</h1><p>Searching…</p>`;
+    let results, note = '';
+    try { results = (await getJson(`/api/search?q=${encodeURIComponent(query)}`)).results || []; }
+    catch (error) { results = localSearch(query); note = `<p class="reader-meta">Full-text search is unavailable from this server (${esc(error.message)}); showing matches in titles, identifiers, question text and paths only.</p>`; }
+    if (serial !== state.route) return;
+    panel.innerHTML = `<h1>Search: ${esc(query)}</h1>${note}<p>${results.length} results</p>${results.map(result => {
+      const href = result.kind === 'question' && result.id ? `#${result.id}` : result.path ? (catalogArtifact(result.path) ? artifactHref(result.path) : '') : '';
+      const title = href ? `<a href="${esc(href)}">${esc(result.title)}</a>` : result.path ? sourceLink(result.path, result.title) : esc(result.title);
+      return `<div class="search-result"><strong>${title}</strong><span class="identity">${result.id ? `${esc(result.id)} · ` : ''}${esc(result.kind)}${result.status ? ` · ${esc(result.status)}` : ''}</span>${result.snippet ? `<p>${esc(result.snippet)}</p>` : ''}</div>`;
+    }).join('') || '<p class="empty">Nothing matches.</p>'}`;
+    wireViews(panel);
+  }
+
   async function viewFile(relPath) {
-    if (state.catalog?.artifacts.some(a => a.path === relPath)) { location.hash = artifactHref(relPath); return; }
+    if (catalogArtifact(relPath)) { location.hash = artifactHref(relPath); return; }
     const dialog = document.getElementById('viewer');
     document.getElementById('viewer-path').textContent = relPath;
     document.getElementById('viewer-text').textContent = 'Loading…';
     dialog.showModal();
-    try {
-      const response = await fetch(`/api/file?path=${encodeURIComponent(relPath)}`);
-      const body = await response.json();
-      document.getElementById('viewer-text').textContent = response.ok ? body.text : `Could not read: ${body.error?.message}`;
-    } catch (error) {
-      document.getElementById('viewer-text').textContent = `Could not read: ${error.message}`;
-    }
+    try { document.getElementById('viewer-text').textContent = (await getJson(`/api/file?path=${encodeURIComponent(relPath)}`)).text; }
+    catch (error) { document.getElementById('viewer-text').textContent = `Could not read: ${error.message}`; }
   }
 
-  function artifactHref(file, anchor = '', item = '') {
-    const params = new URLSearchParams({ artifact: file });
-    if (anchor) params.set('anchor', anchor);
-    if (item) params.set('item', item);
-    return `#${params}`;
+  // ---- Hover definitions. ----
+  function showTip(element) {
+    const term = state.termIndex?.get(esc(element.dataset.term));
+    const tip = document.getElementById('term-tip');
+    if (!term) return;
+    tip.innerHTML = `<strong>${esc(term.term)}</strong><br>${esc(term.definition)}<br><small>${esc(term.path || '')}</small>`;
+    const rect = element.getBoundingClientRect();
+    tip.style.left = `${Math.max(8, Math.min(rect.left, window.innerWidth - 380))}px`;
+    tip.style.top = `${rect.bottom + 6}px`;
+    tip.hidden = false;
   }
+  function hideTip() { document.getElementById('term-tip').hidden = true; }
+  for (const type of ['mouseover', 'focusin']) window.addEventListener(type, event => { const term = event.target?.closest?.('.term'); if (term) showTip(term); });
+  for (const type of ['mouseout', 'focusout']) window.addEventListener(type, event => { if (event.target?.closest?.('.term')) hideTip(); });
 
-  function recordFields(value, source, depth = 2) {
-    if (Array.isArray(value)) return value.length ? value.map((entry, index) => `<section><h${Math.min(6, depth)}>Entry ${index + 1}</h${Math.min(6, depth)}>${recordFields(entry, source, depth + 1)}</section>`).join('') : '<p>None recorded.</p>';
-    if (value && typeof value === 'object') return Object.entries(value).map(([key, entry]) => `<section><h${Math.min(6, depth)}>${esc(key.replace(/_/g, ' '))}</h${Math.min(6, depth)}>${recordFields(entry, source, depth + 1)}</section>`).join('');
-    return typeof value === 'string' ? markdown(value, source) : `<p>${esc(value === null ? 'null' : value)}</p>`;
-  }
-
-  async function routePage() {
-    if (!state.catalog) return;
-    const serial = ++state.route;
-    const params = new URLSearchParams(location.hash.slice(1));
-    const file = params.get('artifact'), group = params.get('artifacts');
-    const reading = Boolean(file || group);
-    if (reading && !state.reading) state.questionScroll = window.scrollY;
-    const returning = !reading && state.reading;
-    state.reading = reading;
-    document.querySelector('.shell').classList.toggle('reading', reading);
-    document.querySelector('.shell > nav').hidden = reading;
-    document.getElementById('questions-panel').hidden = reading;
-    const panel = document.getElementById('artifact-panel');
-    panel.hidden = !reading;
-    state.artifact = null;
-    if (!reading) {
-      document.getElementById('page-select').value = 'questions';
-      const id = location.hash.slice(1);
-      if (/^GB-\d{4}$/.test(id)) {
-        const target = state.board.items.find(item => item.id === id);
-        if (target) { state.inBatch = false; state.topic = topicFor(target); state.intent = state.scope = state.lane = 'all'; state.query = ''; state.focus = target.id; document.getElementById('search').value = ''; render(); }
-        document.getElementById(id)?.scrollIntoView({ block: 'start' });
-      } else if (returning) window.scrollTo(0, state.questionScroll || 0);
-      return;
-    }
-    panel.innerHTML = '<p>Loading artifacts…</p>';
-    try {
-      const response = await fetch('/api/artifacts', { cache: 'no-store' });
-      if (!response.ok) throw new Error(`inventory ${response.status}`);
-      const catalog = await response.json();
-      if (serial !== state.route) return;
-      state.catalog = catalog;
-      if (!file) {
-        const selected = catalog.groups.find(candidate => candidate.id === group);
-        if (!selected) throw new Error('Unknown artifact group');
-        document.getElementById('page-select').value = group;
-        const records = catalog.artifacts.filter(a => a.group === group).sort((a, b) => Number(b.status === 'accepted') - Number(a.status === 'accepted') || a.title.localeCompare(b.title));
-        panel.innerHTML = `<h1>${esc(selected.title)}</h1><p>Open the full record. Accepted active decisions appear first; proposed and historical records remain available.</p><div class="artifact-list">${records.map(a => `<a href="${esc(artifactHref(a.path))}"><strong>${esc(a.title)}</strong><small>${esc(a.status)}${a.id ? ` · ${esc(a.id)}` : ''}</small><small>${esc(a.path)}</small></a>`).join('') || '<p>No records in this collection.</p>'}</div>`;
-        panel.scrollIntoView({ block: 'start' });
-        return;
-      }
-      const result = await fetch(`/api/artifact?path=${encodeURIComponent(file)}`, { cache: 'no-store' });
-      const artifact = await result.json();
-      if (serial !== state.route) return;
-      if (!result.ok) throw new Error(artifact.error?.message || result.status);
-      state.artifact = artifact;
-      document.getElementById('page-select').value = artifact.group;
-      const previous = state.revisions.get(file);
-      state.revisions.set(file, artifact.revision);
-      const itemId = params.get('item');
-      const drafts = artifact.related.filter(item => item.draftKind === 'full-text');
-      const related = artifact.related.map(item => `<section class="artifact-section" id="draft-${item.id}"><h2>${esc(item.title)}</h2><p class="reader-meta">${item.id} · item revision ${item.revision} · ${esc(item.status)} · package captured ${esc(item.snapshotAt)} · item updated ${esc(item.itemUpdatedAt)}<br>Source at ${item.sources.map(source => esc(source.ref || 'unrecorded revision')).join(', ')}</p><p>${esc(item.question)}</p><a href="#${item.id}">Read and answer this question</a><h3>${item.draftKind === 'full-text' ? 'Proposed draft / review snapshot · full text' : item.draftKind === 'excerpt' ? 'Proposed draft · excerpt only' : 'Proposed change · no complete draft'}</h3><p>Review material; displaying it does not accept a change.${item.draftKind !== 'full-text' ? ' No complete replacement artifact is supplied by this item.' : ''}</p><div class="reader">${item.draft ? markdown(item.draft, file) : ''}<h3>Proposed change</h3>${markdown(item.proposal, file)}</div></section>`).join('');
-      panel.innerHTML = `<a href="#artifacts=${esc(artifact.group)}">All ${esc(catalog.groups.find(g => g.id === artifact.group).title)}</a><h1>${esc(artifact.title)}</h1><p class="reader-meta">${esc(artifact.path)} · ${esc(artifact.status)}${artifact.id ? ` · ${esc(artifact.id)}` : ''}</p><div id="source-change" class="source-change" ${previous && previous !== artifact.revision ? '' : 'hidden'}>Source revision changed since your previous reading. This is the current text; review snapshots below retain their own revisions. <button class="bulk" id="refresh-artifact">Read latest source</button></div><div class="reader-tabs"><a href="${esc(artifactHref(file, 'current'))}">Current artifact</a><a href="${esc(artifactHref(file, 'proposals'))}">Drafts and proposed changes (${artifact.related.length})</a></div><section class="artifact-section" id="current-artifact"><h2>Current artifact</h2><p class="reader-meta">Current checkout · tree ${esc(artifact.tree || 'unavailable')}<br>Content SHA-256 ${esc(artifact.revision)} · read ${esc(artifact.readAt)}</p>${artifact.format === 'json' ? '<p>Current Landmark JSON record, including every field and its recorded history. The future LANDMARK.md model is not installed here.</p>' : ''}<div class="reader">${artifact.format === 'json' ? recordFields(JSON.parse(artifact.text), file) + `<details><summary>Complete source JSON</summary><pre>${esc(artifact.text)}</pre></details>` : markdown(artifact.text, file)}</div></section><section id="artifact-proposals"><h2>Available drafts and proposed changes</h2>${drafts.length ? '' : '<p>No complete draft is available for this artifact. Existing proposed changes are shown below without inventing a replacement.</p>'}${related || '<p>No linked proposals in the current review package.</p>'}</section>`;
-      document.getElementById('refresh-artifact').onclick = routePage;
-      const anchor = params.get('anchor');
-      const target = itemId ? document.getElementById(`draft-${itemId}`) : anchor === 'current' ? document.getElementById('current-artifact') : anchor === 'proposals' ? document.getElementById('artifact-proposals') : [...panel.querySelectorAll('[data-anchor]')].find(element => element.dataset.anchor === anchor);
-      (target || panel).scrollIntoView({ block: 'start' });
-    } catch (error) {
-      if (serial === state.route) panel.innerHTML = `<h1>Could not read artifact</h1><p>${esc(error.message)}</p><a href="#questions">Return to questions</a>`;
-    }
-  }
-
-  document.getElementById('page-select').onchange = event => {
-    const group = event.target.value;
-    const root = state.catalog?.artifacts.find(a => a.group === group);
-    location.hash = group === 'questions' ? '#questions' : ['agents', 'runbook', 'blueprint', 'lexicon'].includes(group) && root ? artifactHref(root.path) : `#artifacts=${group}`;
+  window.addEventListener('scroll', hideTip, { passive: true });
+  window.addEventListener('hashchange', () => { hideTip(); routePage(); });
+  document.getElementById('global-search-form').onsubmit = event => {
+    event.preventDefault();
+    const query = document.getElementById('global-search').value.trim();
+    if (query) location.hash = `#${new URLSearchParams({ search: query })}`;
   };
-  window.addEventListener('hashchange', routePage);
-
-  document.getElementById('search').oninput = (event) => { state.query = event.target.value.trim().toLowerCase(); state.inBatch = false; state.focus = null; state.picked.clear(); render(); };
+  document.getElementById('search').oninput = event => { state.query = event.target.value.trim().toLowerCase(); state.inBatch = false; state.focus = null; state.picked.clear(); render(); };
+  document.getElementById('reset-slice').onclick = () => { resetSlice(); render(); };
+  document.getElementById('banner-reload').onclick = () => { if (!hasUnsavedWork() || confirm('You have unsaved notes or comments. Reload anyway?')) location.reload(); };
+  document.getElementById('viewer-close').onclick = () => document.getElementById('viewer').close();
+  document.getElementById('inspector-close').onclick = () => document.getElementById('inspector').close();
   document.getElementById('theme').onclick = () => {
     const root = document.documentElement;
     const current = root.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
@@ -704,21 +1608,20 @@
   setInterval(async () => {
     if (!state.board) return;
     try {
-      const response = await fetch('/api/status', { cache: 'no-store' });
-      const status = await response.json();
+      const status = await getJson('/api/status');
       if (status.itemsMtime !== state.board.itemsMtime) document.getElementById('banner').classList.add('show');
       if (state.artifact) {
         const viewed = state.artifact;
-        const current = await fetch(`/api/artifact?path=${encodeURIComponent(viewed.path)}`, { cache: 'no-store' });
-        const body = await current.json();
-        if (state.artifact === viewed && (!current.ok || body.revision !== viewed.revision)) document.getElementById('source-change').hidden = false;
+        const response = await fetch(`/api/artifact?path=${encodeURIComponent(viewed.path)}`, { cache: 'no-store' });
+        const body = await response.json();
+        if (state.artifact === viewed && (!response.ok || body.revision !== viewed.revision)) document.getElementById('source-change').hidden = false;
       }
     } catch {}
   }, 15000);
 
-  window.addEventListener('beforeunload', (event) => { if (state.drafts.size) { event.preventDefault(); event.returnValue = ''; } });
+  window.addEventListener('beforeunload', (event) => { if (hasUnsavedWork()) { event.preventDefault(); event.returnValue = ''; } });
 
-  Promise.all([load(), fetch('/api/artifacts', { cache: 'no-store' }).then(async response => { if (!response.ok) throw new Error(`inventory ${response.status}`); state.catalog = await response.json(); })]).then(() => { render(); return routePage(); }).catch((error) => { document.getElementById('content').innerHTML = `<div class="empty">Could not load the board: ${esc(error.message)}</div>`; });
+  Promise.all([load(), loadCatalog()]).then(async () => { await Promise.all([loadWorkflow(), loadGlossary()]); render(); return routePage(); }).catch((error) => { document.getElementById('content').innerHTML = `<div class="empty">Could not load the Dashboard: ${esc(error.message)}</div>`; });
 })();
 </script>
 </body>

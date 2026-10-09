@@ -124,7 +124,7 @@ Its saved answers and revision protocol are shared by Claude and Codex. Read
 the existing package before revising it; its working review context does not
 replace this ledger or the underlying decision and delivery owners.
 The Grill Board is the first working form of the
-[Shared Interactive Workbench Board (S-004D)](../specs/S-004D-shared-interactive-board/SPEC.md),
+[Workbench Dashboard (S-004D)](../specs/S-004D-shared-interactive-board/SPEC.md),
 the destination it grows into.
 
 The question-by-question ledger of every unique grilling question put to the
