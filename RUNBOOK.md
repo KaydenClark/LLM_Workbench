@@ -66,6 +66,7 @@ Contract change.
 | Check the portability and privacy matrix | A release matrix row or its privacy check changed. | [workbench-release](workbench/skills/workbench-release/SKILL.md#portability-and-privacy-matrix) |
 | Prove cross-provider resume | A release gate needs proof that another provider resumes from a clean clone. | [workbench-release](workbench/skills/workbench-release/SKILL.md#cross-provider-resume-proof) |
 | Allocate a visible identifier | You need a new Spec, Task, landmark, note or other visible identifier. | [workbench-runtime](workbench/skills/workbench-runtime/SKILL.md#visible-identifiers) |
+| Deploy an optional project Grill Board | The owner authorizes installing the existing Board in an adopted project. | [Optional project Grill Board](workbench/docs/project-grill-board.md) |
 | Answer or process the Grill Board | The owner answers pending items (Spec gates, decisions, cards, decision-record texts) as a package, or an agent carries his saved answers into their owners and marks them applied. | [Grill Board](workbench/grill-board/README.md#grill-board) |
 | Use the Landmark Tracker | Concept understanding (DQCs, landmarks) changes, or the Tracker view is needed. | [notepad](workbench/skills/notepad/SKILL.md#landmark-tracker-accepted-design-and-available-operations) |
 | Keep a JSON notepad | Meaningful work needs a local note created, resumed, appended, trimmed or cleaned up. | [notepad](workbench/skills/notepad/SKILL.md#runtime-reference) |
@@ -490,6 +491,7 @@ node tools/test-dashboard-sources.mjs
 node tools/test-dashboard-workflow.mjs
 node tools/test-dashboard-workflow-docs.mjs
 node tools/test-dashboard-service.mjs
+node tools/test-grill-board-deploy.mjs
 node tools/test-pre-commit.mjs
 python3 tools/test-check-append-only.py
 python3 evals/tasks/task_b_path_safety/test_grade.py

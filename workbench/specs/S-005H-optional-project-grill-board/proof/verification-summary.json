@@ -1,0 +1,16 @@
+{
+  "candidate": "e65c2d6a1bea03da1c2f3a5ffbe06f79b7ef497d",
+  "fullSuite": {
+    "command": "node tools/verify.mjs",
+    "exitCode": 0,
+    "commands": 56,
+    "seconds": 816.9
+  },
+  "componentChecks": 32,
+  "ci": {
+    "conclusion": "SUCCESS",
+    "url": "https://github.com/KaydenClark/LLM_Workbench/actions/runs/37880958152/job/113660296767"
+  },
+  "browser": "browser-qa.md",
+  "scope": "Source component verification; integration and RingWorld refresh still required. No owner Human QA, PC route or whole-Workbench clean claim."
+}

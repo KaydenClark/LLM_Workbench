@@ -106,6 +106,8 @@ This route copies no task state here.
 
 ## Consequential Decision Record And Grill Board
 
+- [Optional project Grill Board](optional-project-grill-board.md) - explains isolated project deployment of the existing page and answer protocol, including its portability and access limits
+
 - [Consequential Decision Record (shared Grill Board)](../grill-board/README.md) - the owner's current package review, bundling questions, named owners, proposals, consequences and original question history
 
 Topic cards explain
