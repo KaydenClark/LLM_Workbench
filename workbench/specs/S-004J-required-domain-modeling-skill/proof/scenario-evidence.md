@@ -17,7 +17,15 @@ lines 3, 4, 5, 7 and 8, recorded 2026-10-07 by Task TK-00JB.
   and tests using those names; an accepted ADR "Invoices belong to Accounts,
   not Customers"; a Wiki article. Variant A keeps the Lexicon as the
   vocabulary owner; variant B adds a root `GLOSSARY.md` in the upstream
-  glossary format. The room is committed; `doctor` passes.
+  glossary format. The room is committed; `doctor` passes. Scenario 1's
+  reruns used rooms built the same way from later commits: run 2 from
+  `2d92a3d370274a30afc1bb5358c744ac00a1cef4` (the corrected skill after the
+  review's first verdict) and run 3 from
+  `7188bc639f17614e73f9d75ab861b6f0e0bc59b7` (trace wording sharpened). After
+  the PR #425 review, runs 4 to 6 used rooms built from
+  `7499d6bda98529a0005eb2f4bb89d52215679231` and two scratch commits whose
+  skill bytes equal branch commits `892f03e7` and `311e82e0`; the
+  [scenario 1 observations](scenarios/s1-trace/observations.md) give each.
 - **Fresh contexts.** [run-scenario.mjs](run-scenario.mjs) drives each
   scenario as a new headless Claude Code session started inside the room
   (`claude -p`, later turns `--resume SESSION`), with
@@ -34,26 +42,40 @@ lines 3, 4, 5, 7 and 8, recorded 2026-10-07 by Task TK-00JB.
   path-sanitized JSON record linked below. Assertions are on observed turns
   and room diffs, not exact prose.
 - **Model and CLI.** `claude-opus-5-5`, Claude Code 2.1.287, default effort.
-  Session cost reported by the CLI for all eight runs: about 18 USD.
+  Session cost reported by the CLI for the first eight runs: about 18 USD;
+  scenario 1 runs 2 and 3: 1.97 and 2.15 USD; runs 4 to 6: about 2.12, 2.05
+  and 2.19 USD.
 
 ## Results
 
 | Scenario (acceptance line) | Runs | Result | Evidence |
 |---|---|---|---|
-| 1. Trace a boundary and a rename before the owner chooses (3) | 1 (A) | PASS | [observations](scenarios/s1-trace/observations.md), [run1-A](scenarios/s1-trace/run1-A.json) |
+| 1. Trace a boundary and a rename before the owner chooses (3) | 6 (A) | PASS on run 6 only: runs 1 and 2 did not name the tests; runs 3 to 5 named them but listed some document owners without their paths; run 6, after the wording put the path first on each listed owner, named every owner by path in both traces | [observations](scenarios/s1-trace/observations.md), [run1-A](scenarios/s1-trace/run1-A.json), [run2-A](scenarios/s1-trace/run2-A.json), [run3-A](scenarios/s1-trace/run3-A.json), [run4-A](scenarios/s1-trace/run4-A.json), [run5-A](scenarios/s1-trace/run5-A.json), [run6-A](scenarios/s1-trace/run6-A.json) |
 | 2. Conflict, overload, edge case and a classified behavior claim (4) | 1 (A) | PASS | [observations](scenarios/s2-challenges/observations.md), [run1-A](scenarios/s2-challenges/run1-A.json) |
-| 3. Capture, correction, confirmation and promotion (5) | 2 (A) + 2 (B) | PASS, with one tool gap in B | [observations](scenarios/s3-capture-promotion/observations.md), [run1-A](scenarios/s3-capture-promotion/run1-A.json), [run1-B](scenarios/s3-capture-promotion/run1-B.json), [run2-A](scenarios/s3-capture-promotion/run2-A.json), [run2-B](scenarios/s3-capture-promotion/run2-B.json) |
+| 3. Capture, correction, confirmation and promotion (5) | 2 (A) + 2 (B) | Capture, correction and confirmation PASS in all four. Promotion: Lexicon fallback through the promote tool PASS (A, 2 runs); variant B reached `GLOSSARY.md` by a manual write after the promote tool refused. Tool promotion verified only for the Lexicon fallback, so acceptance line 5 stays open until the glossary variant reruns through the tool | [observations](scenarios/s3-capture-promotion/observations.md), [run1-A](scenarios/s3-capture-promotion/run1-A.json), [run1-B](scenarios/s3-capture-promotion/run1-B.json), [run2-A](scenarios/s3-capture-promotion/run2-A.json), [run2-B](scenarios/s3-capture-promotion/run2-B.json) |
 | 4. Decision records: three declined, one offered by the scope test (7) | 1 (A) | PASS | [observations](scenarios/s4-decision-records/observations.md), [run1-A](scenarios/s4-decision-records/run1-A.json) |
 | 5. Grilling without the skill; no shadow store in any run (8) | 1 (A) + all rooms | PASS | [observations](scenarios/s5-without-skill/observations.md), [run1-A](scenarios/s5-without-skill/run1-A.json) |
 
 Highlights:
 
-- **Trace (1).** Before the owner chose, the agent traced the Customer-level
-  Invoice boundary to the ADR, five Lexicon rows, `BLUEPRINT.md` lines 17-18,
-  Spec S-001's acceptance lines and Task, `accountId` and the cross-Account
-  guard in `src/billing/`, and the tests; and the "Billing Profile" rename to
-  16 tracked files, the Wiki page and the Lexicon's own "avoid 'profile'"
-  note. Room diff empty throughout.
+- **Trace (1).** Run 1 traced the Customer-level Invoice boundary to the ADR,
+  five Lexicon rows, `BLUEPRINT.md` lines 17-18, Spec S-001's acceptance lines
+  and Task, and `accountId` and the cross-Account guard in `src/billing/`, but
+  named the tests only as "two current tests" and "both test files". Run 2, on
+  the corrected skill, did the same. The skill's trace wording was then
+  sharpened to name each owner by path and each test by file and test name.
+  Run 3 named both tests and every owner's path in the boundary trace, but its
+  rename trace listed the Blueprint, Wiki page, Spec and decision record by
+  title alone. Run 4 listed the Spec and decision record by title in both
+  traces; run 5, after the wording required a path for every document owner,
+  dropped the decision record's path in the rename trace. Run 6, after the
+  wording put the path first on each listed owner, led every owner in both
+  traces with its path, including
+  `workbench/docs/adr/000A-invoices-belong-to-accounts-not-customers.md` and
+  `workbench/specs/S-001-invoice-settlement/SPEC.md`, and named the tests
+  `tests/invoice.test.js` "an Invoice is issued against exactly one Account"
+  and `tests/settlement.test.js` "a Settlement never crosses Accounts", before
+  the owner chose. Room diff empty in every run.
 - **Challenges (2).** Each owner turn drew its own challenge, quoting
   `LEXICON.md` lines; the partial-Settlement claim was run against
   `settle()` and classified as an implementation gap, citing
@@ -61,8 +83,10 @@ Highlights:
   behavior.
 - **Capture and promotion (3).** In all four runs the pending wording, the
   linked correction and the confirmation landed in the objective's notepad,
-  with no tracked write until the owner authorized promotion; promotion then
-  reached `LEXICON.md` (variant A) or `GLOSSARY.md` (variant B) with only the
+  with no tracked write until the owner authorized promotion. Variant A was
+  then promoted to `LEXICON.md` through the promote tool. Variant B reached
+  `GLOSSARY.md` by a manual write after the promote tool refused, so tool
+  promotion is verified only for the Lexicon fallback. Both carried only the
   confirmed meaning.
 - **Decision records (4).** Rename, sequential ids and integer cents were each
   declined with the failing test named; the Credit-Note immutability rule was
@@ -70,7 +94,8 @@ Highlights:
 - **Without the skill (5).** A plain grilling session ran to the owner's stop
   with its state in the notepad and `domain-modeling` never loaded. No
   `CONTEXT.md`, `CONTEXT-MAP.md`, `UBIQUITOUS_LANGUAGE.md`, `GLOSSARY-MAP.md`
-  or root `docs/` tree appeared in any of the eight rooms.
+  or root `docs/` tree appeared in any of the eight rooms, nor in scenario 1's
+  run 2 to run 6 rooms (their per-turn `shadowStores` are empty).
 
 ## Finding outside the skill
 
@@ -79,16 +104,20 @@ The promote runtime (`workbench/tools/sessions.mjs promote`) refuses a root
 ADR, Wiki or docs/feedback Markdown owner"), because the root owners it accepts
 are the `controls` list in `workbench/tools/workbench-layout.mjs`, which has no
 glossary. It reproduced in both variant B runs. The agents applied the same
-draft by hand after an expected-hash check and reported the gap, so the glossary
-write still happened only at the authorized boundary, but not through the
-promote tool. The glossary is not yet a delivered root owner at this base; its
+draft by hand after an expected-hash check and reported the gap. The glossary
+write happened only after the owner authorized it, but as a manual write, not a
+promotion: it skipped the promote tool's selection, privacy and owner checks,
+and one agent justified it with the skill's "or `to-docs` within an authorized
+documentation pass" clause. Glossary promotion through the tool is unverified
+until S-004O makes `GLOSSARY.md` a root owner the tool accepts. The glossary is not yet a delivered root owner at this base; its
 migration belongs to Lexicon Retirement And ARCHITECTURE.md (S-004O). No change
 to the `domain-modeling` skill was needed, and none was made.
 
 ## Limits
 
 - One model and one provider; one run per scenario except scenario 3 (two per
-  variant). No statistical claim about reliability.
+  variant) and scenario 1 (six runs, the last on the final wording, which
+  passed once). No statistical claim about reliability.
 - Owner turns are scripted and do not answer the agent's questions, so later
   turns arrive with earlier questions open.
 - Fresh contexts are separate headless sessions on the same machine with only
