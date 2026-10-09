@@ -1,0 +1,425 @@
+{
+  "schema": "project-board-correction-proof@1",
+  "base": "80b17b65f3238dc205c0c27428a295be7162e7ad",
+  "codeCandidate": "523bf7a273b7421f799f5abcd321cc43beac07ca",
+  "pr": "https://github.com/KaydenClark/LLM_Workbench/pull/447",
+  "findingsSource": "https://github.com/KaydenClark/LLM_Workbench/pull/443#pullrequestreview-5465787376",
+  "red": [
+    {
+      "finding": "reordered JSON object keys",
+      "observed": "Existing project configuration differs; initialization never overwrites it"
+    },
+    {
+      "finding": "linked config parent",
+      "observed": "Missing expected exception: initialization accepted linked parent"
+    },
+    {
+      "finding": "repository mismatch",
+      "observed": "Missing expected exception: initialization accepted unrelated repository"
+    }
+  ],
+  "targeted": {
+    "deployment": 37,
+    "producerIndependent": 16
+  },
+  "localSuite": {
+    "candidate": "523bf7a273b7421f799f5abcd321cc43beac07ca",
+    "completed": true,
+    "passedInitially": 54,
+    "total": 56,
+    "elapsedSeconds": 752.16,
+    "results": [
+      {
+        "index": 1,
+        "command": "node tools/test-spec-workbench.mjs",
+        "exitCode": 0,
+        "seconds": 87.49
+      },
+      {
+        "index": 2,
+        "command": "node tools/test-spec-assembly-selection.mjs",
+        "exitCode": 0,
+        "seconds": 1.64
+      },
+      {
+        "index": 3,
+        "command": "node tools/test-skill-catalog.mjs",
+        "exitCode": 0,
+        "seconds": 0.13
+      },
+      {
+        "index": 4,
+        "command": "node tools/test-skill-inspection.mjs",
+        "exitCode": 0,
+        "seconds": 0.1
+      },
+      {
+        "index": 5,
+        "command": "node tools/test-skills-lane.mjs",
+        "exitCode": 0,
+        "seconds": 4.72
+      },
+      {
+        "index": 6,
+        "command": "node tools/test-domain-modeling-skill.mjs",
+        "exitCode": 0,
+        "seconds": 0.09
+      },
+      {
+        "index": 7,
+        "command": "node tools/test-core-composition.mjs",
+        "exitCode": 0,
+        "seconds": 4.12
+      },
+      {
+        "index": 8,
+        "command": "node tools/test-project-evidence.mjs",
+        "exitCode": 0,
+        "seconds": 1.01
+      },
+      {
+        "index": 9,
+        "command": "node tools/test-genesis-from-decisions.mjs",
+        "exitCode": 0,
+        "seconds": 18.67
+      },
+      {
+        "index": 10,
+        "command": "node tools/test-blueprint-contract.mjs",
+        "exitCode": 0,
+        "seconds": 0.1
+      },
+      {
+        "index": 11,
+        "command": "node tools/test-session-transport.mjs",
+        "exitCode": 0,
+        "seconds": 7.76
+      },
+      {
+        "index": 12,
+        "command": "node tools/test-configured-host.mjs",
+        "exitCode": 0,
+        "seconds": 7.12
+      },
+      {
+        "index": 13,
+        "command": "node tools/test-core-skill-installer.mjs",
+        "exitCode": 0,
+        "seconds": 11.05
+      },
+      {
+        "index": 14,
+        "command": "node tools/test-workbench-layout.mjs",
+        "exitCode": 0,
+        "seconds": 37.45
+      },
+      {
+        "index": 15,
+        "command": "node tools/test-workbench-adoption.mjs",
+        "exitCode": 0,
+        "seconds": 7.12
+      },
+      {
+        "index": 16,
+        "command": "node tools/test-workbench-upgrade.mjs",
+        "exitCode": 0,
+        "seconds": 10.98
+      },
+      {
+        "index": 17,
+        "command": "node tools/test-workbench-tools.mjs",
+        "exitCode": 1,
+        "seconds": 8.2
+      },
+      {
+        "index": 18,
+        "command": "node tools/test-diagnostics.mjs",
+        "exitCode": 0,
+        "seconds": 16.55
+      },
+      {
+        "index": 19,
+        "command": "node tools/test-adr.mjs",
+        "exitCode": 0,
+        "seconds": 11.23
+      },
+      {
+        "index": 20,
+        "command": "node tools/test-governance-core.mjs",
+        "exitCode": 0,
+        "seconds": 0.1
+      },
+      {
+        "index": 21,
+        "command": "node tools/test-branch-closeout.mjs",
+        "exitCode": 0,
+        "seconds": 2.38
+      },
+      {
+        "index": 22,
+        "command": "node tools/test-wiki.mjs",
+        "exitCode": 0,
+        "seconds": 6.61
+      },
+      {
+        "index": 23,
+        "command": "node tools/test-sessions.mjs",
+        "exitCode": 0,
+        "seconds": 2.84
+      },
+      {
+        "index": 24,
+        "command": "node tools/test-notepads.mjs",
+        "exitCode": 0,
+        "seconds": 9.16
+      },
+      {
+        "index": 25,
+        "command": "node tools/test-visible-ids.mjs",
+        "exitCode": 0,
+        "seconds": 0.93
+      },
+      {
+        "index": 26,
+        "command": "node tools/test-workbench-identity.mjs",
+        "exitCode": 0,
+        "seconds": 3.01
+      },
+      {
+        "index": 27,
+        "command": "node tools/test-visible-id-consumers.mjs",
+        "exitCode": 0,
+        "seconds": 9.18
+      },
+      {
+        "index": 28,
+        "command": "node tools/test-direct-promotion.mjs",
+        "exitCode": 0,
+        "seconds": 2.8
+      },
+      {
+        "index": 29,
+        "command": "node tools/test-workbench-round-trip.mjs",
+        "exitCode": 0,
+        "seconds": 17.02
+      },
+      {
+        "index": 30,
+        "command": "node tools/test-cross-provider-fixture.mjs",
+        "exitCode": 0,
+        "seconds": 1.33
+      },
+      {
+        "index": 31,
+        "command": "node tools/test-portability-matrix.mjs",
+        "exitCode": 0,
+        "seconds": 0.5
+      },
+      {
+        "index": 32,
+        "command": "node tools/test-workbench-dogfood.mjs",
+        "exitCode": 0,
+        "seconds": 3.04
+      },
+      {
+        "index": 33,
+        "command": "node tools/test-evaluate-workbench.mjs",
+        "exitCode": 0,
+        "seconds": 0.62
+      },
+      {
+        "index": 34,
+        "command": "node tools/test-guardrail-audit.mjs",
+        "exitCode": 0,
+        "seconds": 0.32
+      },
+      {
+        "index": 35,
+        "command": "node tools/test-context-tools.mjs",
+        "exitCode": 0,
+        "seconds": 0.25
+      },
+      {
+        "index": 36,
+        "command": "node tools/test-outcome-trials.mjs",
+        "exitCode": 0,
+        "seconds": 0.55
+      },
+      {
+        "index": 37,
+        "command": "node tools/test-eval-runner.mjs",
+        "exitCode": 0,
+        "seconds": 0.47
+      },
+      {
+        "index": 38,
+        "command": "node tools/test-feedback-automation.mjs",
+        "exitCode": 0,
+        "seconds": 0.28
+      },
+      {
+        "index": 39,
+        "command": "node tools/test-symlink-invocation.mjs",
+        "exitCode": 0,
+        "seconds": 1.18
+      },
+      {
+        "index": 40,
+        "command": "node tools/test-control-fidelity.mjs",
+        "exitCode": 0,
+        "seconds": 2.81
+      },
+      {
+        "index": 41,
+        "command": "node tools/test-spec-citation-anchors.mjs",
+        "exitCode": 0,
+        "seconds": 9.4
+      },
+      {
+        "index": 42,
+        "command": "node tools/test-controls-vocabulary-sweep.mjs",
+        "exitCode": 0,
+        "seconds": 0.06
+      },
+      {
+        "index": 43,
+        "command": "node tools/test-carrier-landing.mjs",
+        "exitCode": 0,
+        "seconds": 1.54
+      },
+      {
+        "index": 44,
+        "command": "node tools/test-runbook-index.mjs",
+        "exitCode": 0,
+        "seconds": 1.23
+      },
+      {
+        "index": 45,
+        "command": "node tools/test-spec-report.mjs",
+        "exitCode": 0,
+        "seconds": 16.36
+      },
+      {
+        "index": 46,
+        "command": "node tools/test-landmark-wiki.mjs",
+        "exitCode": 1,
+        "seconds": 5.99
+      },
+      {
+        "index": 47,
+        "command": "node tools/test-self-drift.mjs",
+        "exitCode": 0,
+        "seconds": 0.26
+      },
+      {
+        "index": 48,
+        "command": "node tools/test-feedback-inventory.mjs",
+        "exitCode": 0,
+        "seconds": 0.08
+      },
+      {
+        "index": 49,
+        "command": "node tools/test-grilling-ledger.mjs",
+        "exitCode": 0,
+        "seconds": 0.13
+      },
+      {
+        "index": 50,
+        "command": "node tools/test-grill-board.mjs",
+        "exitCode": 0,
+        "seconds": 0.67
+      },
+      {
+        "index": 51,
+        "command": "node tools/test-grill-board-deploy.mjs",
+        "exitCode": 0,
+        "seconds": 3.91
+      },
+      {
+        "index": 52,
+        "command": "node tools/test-pre-commit.mjs",
+        "exitCode": 0,
+        "seconds": 2.1
+      },
+      {
+        "index": 53,
+        "command": "python3 tools/test-check-append-only.py",
+        "exitCode": 0,
+        "seconds": 406.94
+      },
+      {
+        "index": 54,
+        "command": "python3 evals/tasks/task_b_path_safety/test_grade.py",
+        "exitCode": 0,
+        "seconds": 0.36
+      },
+      {
+        "index": 55,
+        "command": "node tools/evaluate-workbench.mjs --path templates --include-controls",
+        "exitCode": 0,
+        "seconds": 0.07
+      },
+      {
+        "index": 56,
+        "command": "node workbench/tools/spec-workbench.mjs doctor",
+        "exitCode": 0,
+        "seconds": 2.12
+      }
+    ],
+    "reruns": [
+      {
+        "command": "node tools/test-workbench-tools.mjs",
+        "result": "34/34 pass",
+        "setup": "Fetched the test-pinned historical commit 9378eada35b30199a53f6b921215950d0fa7ff38; candidate unchanged."
+      },
+      {
+        "command": "node tools/test-landmark-wiki.mjs",
+        "result": "79/79 pass",
+        "setup": "Used isolated /dev/shm temporary fixtures to avoid ambient Git markers under /tmp; candidate unchanged."
+      }
+    ],
+    "coverage": "All 56 required commands have successful results on the same code candidate; the single local run was 54/56."
+  },
+  "remoteCI": {
+    "candidate": "523bf7a273b7421f799f5abcd321cc43beac07ca",
+    "result": "success",
+    "run": "https://github.com/KaydenClark/LLM_Workbench/actions/runs/37890421252",
+    "suite": "All canonical required commands",
+    "testedCommit": "7110082f3b81aa52d6a48045d12c43d2d246efa3",
+    "testedTree": "de499b41ca10e6a81dd302bed6986825fd2b8251",
+    "headTree": "de499b41ca10e6a81dd302bed6986825fd2b8251",
+    "treeEquivalent": true,
+    "elapsedSeconds": 677.7,
+    "comparison": "https://github.com/KaydenClark/LLM_Workbench/compare/523bf7a273b7421f799f5abcd321cc43beac07ca...7110082f3b81aa52d6a48045d12c43d2d246efa3",
+    "attribution": "GitHub Actions checked out a synthetic PR merge; it has the same tree as the named head, not the same commit identity."
+  },
+  "selfDrift": {
+    "preCount": 24,
+    "postCount": 24,
+    "newFindings": [],
+    "cleanUpdate": false
+  },
+  "guardrail": {
+    "before": 73,
+    "after": 73,
+    "limit": "Static score; no agent outcome claim"
+  },
+  "independentWiki": {
+    "pagesRead": 150,
+    "linesRead": 14858,
+    "linkedCardsRead": 167,
+    "newCandidateBlockers": 0,
+    "inheritedDrift": "Retained previous whole-wiki-review.md findings; additional location of existing review-policy family: skill-reviewer.md lines 52-54, Reviewer S-01R owner."
+  },
+  "firstAttempt": {
+    "candidate": "fc71468ca4f418474e931e64934e5fb2dc3297b0",
+    "result": "Interrupted, not a pass",
+    "findings": "Regenerated S-005H Taskboard projection and used CI process-local init.defaultBranch=main. Preserved interrupted evidence locally."
+  },
+  "remaining": [
+    "Final immutable assembled review",
+    "Integration containment and exact-head post-merge CI",
+    "Separately owned RingWorld pinned preservation refresh",
+    "Owner Human QA and owner-only main promotion"
+  ]
+}
