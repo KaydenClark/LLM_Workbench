@@ -3,14 +3,14 @@
 **Spec ID:** S-004D
 **Status:** active
 **Priority:** 2
-**Owner:** claude-dashboard-director
+**Owner:** claude-board-ui-corrections-2026-10-09
 **Stance:** Builder
-**Updated:** 2026-10-08
+**Updated:** 2026-10-09
 **Catalog description:** The owner's local Dashboard: Destination Tracker, Taskboard, Grilling Board, Drafts to approve and Wiki, with progressive grilling, exact wording approvals and explicit promotion handoffs.
 **Release scope:** In scope since the owner's 2026-10-04 answer; no release is assigned.
 **Blockers:** none
-**Latest event:** 2026-10-08: after repeated separate-context reviews recorded in the evidence log (the fourth passed the code at `07429c50`; every other review so far failed on code, records, owner-facing claims or link coverage, each corrected), TK-007L, TK-007M, TK-007N, TK-007O, TK-007T and TK-007X are closed with proof on `claude/workbench-dashboard-first-pass`, draft PR #440 into integration. Not delivered until merged.
-**Next gate:** The draft PR #440 merge into integration, after its reviewed candidate `fdefa9ca`. Open after that: TK-007Y (the always-open login service verified after login and a killed process: the Owner's installed service must be restarted or replaced by the Owner), the unchecked acceptance lines (the five-sections line, short of one question whose comma-listed records are unlinked and of decision records named only in Priority or Value reasons (32 open questions), which are not linked; wider shared-board lines, recommended-alternative preselection on 33 questions, applied-approval wording, sampled-path context labels and the nine grouped prompts that live on the unpublished consequential-decision lane), the question-content pass recorded in `proof/question-content-audit-2026-10-08.json`, and Owner Human QA.
+**Latest event:** TK-007Z claimed by claude-board-ui-corrections-2026-10-09.
+**Next gate:** Close TK-007Z with verification and documentation proof.
 
 > **Citation anchors.** pre=`f6af4c339b543988a3212b1940581157f573818d` post=`f6af4c339b543988a3212b1940581157f573818d`.
 

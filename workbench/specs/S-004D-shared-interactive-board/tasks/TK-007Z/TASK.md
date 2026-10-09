@@ -3,11 +3,12 @@
 **Task ID:** TK-007Z
 **Spec ID:** S-004D
 **Slice:** The Grilling Board takes the owner's three layout corrections: P/V chips, a left navigation pane and a progressively disclosed card
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: The P1–P4 and V1–V4 chips filter the list on click (OR within a row, AND across rows, no chip means all) and replace the P/V dropdowns; the five section links are a persistent left navigation pane with the Grilling Board filters under them, hash routes intact and no horizontal scroll at a narrow width; an opened card shows only its title, question, closed P/V badges, link row, recommendation and answer controls, with every other part one closed line.
 **Planned verification:** Red first in `tools/test-dashboard-board.mjs`: no chip toggle, section links still in the top bar, card blocks starting open. Green: the three page tests above plus the adjusted P/V and badge tests in `tools/test-dashboard-board.mjs` and `tools/test-grill-board.mjs`; `node tools/grill-board.mjs validate`; a browser check of the served page at desktop and 375px width (no horizontal scroll, no `details[open]` on the opened card); the Full Runbook suite on the committed candidate.
+**Claimed by:** claude-board-ui-corrections-2026-10-09
 
 ## Scope
 
