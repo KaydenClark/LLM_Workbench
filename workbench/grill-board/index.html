@@ -40,29 +40,41 @@
   [hidden] { display: none !important; }
   .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
-  /* Top bar: the five Dashboard sections and global search. */
+  /* Top bar: brand, global search and theme. The five Dashboard sections are
+     the left navigation pane below it (owner correction, 2026-10-09). */
   .topbar { position: sticky; top: 0; z-index: 10; background: var(--panel); border-bottom: 1px solid var(--line); padding: 8px 20px; display: flex; align-items: center; gap: 10px 18px; flex-wrap: wrap; }
   .topbar .brand { font-weight: 700; font-size: 16px; margin-right: 4px; }
-  .sections { display: flex; gap: 6px; flex-wrap: wrap; }
-  .sections a { padding: 7px 12px; border-radius: 8px; border: 1px solid var(--line); text-decoration: none; color: var(--ink); font-weight: 600; font-size: 14px; }
-  .sections a:hover { background: var(--soft); }
-  .sections a[aria-current="page"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
   .global-search { margin-left: auto; display: flex; gap: 6px; }
   .global-search input { width: min(280px, 60vw); padding: 7px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); font: inherit; }
   .theme { font-size: 12px; border: 1px solid var(--line); background: transparent; color: var(--muted); border-radius: 8px; padding: 4px 8px; }
 
+  /* Left pane: the section links, then the Grilling Board filters under them. */
   .shell { display: grid; grid-template-columns: 280px minmax(0, 1fr); min-height: calc(100vh - 56px); }
-  .shell.wide { grid-template-columns: minmax(0, 1fr); }
-  #grill-nav { position: sticky; top: 56px; height: calc(100vh - 56px); overflow: auto; border-right: 1px solid var(--line); background: var(--panel); padding: 16px; }
+  #sidebar { position: sticky; top: 56px; height: calc(100vh - 56px); overflow: auto; border-right: 1px solid var(--line); background: var(--panel); padding: 16px; min-width: 0; }
+  .sections { display: grid; gap: 4px; }
+  .sections a { padding: 7px 12px; border-radius: 8px; border: 1px solid var(--line); text-decoration: none; color: var(--ink); font-weight: 600; font-size: 14px; }
+  .sections a:hover { background: var(--soft); }
+  .sections a[aria-current="page"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  #grill-nav { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line); }
   #grill-nav h1 { font-size: 17px; margin: 0 0 4px; }
   #grill-nav .meta { color: var(--muted); font-size: 12px; margin-bottom: 10px; }
   #grill-nav select, #grill-nav input[type=search] { width: 100%; font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--line); padding: 7px 8px; border-radius: 8px; }
   .slice-label { display: block; font-size: 12px; font-weight: 600; margin: 12px 0 5px; }
   .progress { height: 8px; border-radius: 4px; background: var(--line); overflow: hidden; display: flex; margin: 8px 0 12px; }
   .progress span { display: block; height: 100%; }
-  .filters { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+  .filters, .grade-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+  .grade-row { margin-bottom: 8px; }
   .chip { border: 1px solid var(--line); background: transparent; color: var(--ink); border-radius: 999px; padding: 3px 10px; font-size: 12px; }
   .chip[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .chip small { font-weight: normal; opacity: .75; margin-left: 2px; }
+  /* P and V chips wear the red P and amber V badge colors: outlined when off, filled when pressed. */
+  .grade-chip { font-weight: 700; }
+  .grade-chip.priority { color: var(--p-ink); border-color: var(--p-ink); }
+  .grade-chip.priority[aria-pressed="true"] { background: var(--p-bg); color: var(--p-ink); border-color: var(--p-ink); }
+  .grade-chip.value { color: var(--v-ink); border-color: var(--v-ink); }
+  .grade-chip.value[aria-pressed="true"] { background: var(--v-bg); color: var(--v-ink); border-color: var(--v-ink); }
+  .more-filters { margin-top: 12px; }
+  .more-filters summary { cursor: pointer; font-size: 12px; font-weight: 600; color: var(--muted); }
   .nav-links { display: grid; gap: 6px; margin-top: 14px; font-size: 13px; }
   main { padding: 20px 28px 80px; min-width: 0; }
   .shell:not(.wide) main { max-width: 1080px; }
@@ -111,11 +123,17 @@
   .grade .grade-reason { position: absolute; right: 0; top: calc(100% + 6px); z-index: 6; width: min(320px, 80vw); background: var(--panel); padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 6px 18px rgba(0,0,0,.12); font-size: 13px; }
   .grade .grade-reason p { margin: 6px 0 0; }
   .grade.unclassified { color: var(--muted); font-size: 11px; border: 1px dashed var(--line); border-radius: 8px; padding: 3px 7px; white-space: nowrap; }
-  .grade-detail { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 14px 0; }
-  .grade-card { display: flex; gap: 10px; align-items: flex-start; border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; background: var(--bg); }
-  .grade-card p { margin: 4px 0 0; font-size: 14px; }
-  .grade-pill { font-weight: 700; border-radius: 8px; padding: 4px 9px; white-space: nowrap; }
-  .grade-pill.none { background: var(--line); color: var(--muted); }
+  /* On the opened card the P and V badges stay closed; a reason opens in place. */
+  .card-grades { display: flex; flex-wrap: wrap; gap: 6px; align-items: flex-start; margin: 10px 0; }
+  .card-grade .grade-reason { position: static; width: auto; box-shadow: none; margin-top: 6px; }
+  .card-grades .hint { margin: 0; align-self: center; }
+  /* The card's links (Spec, decision records, sources) read as links, not as more text. */
+  .link-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 10px 0; }
+  .link-row .wiki-links { display: contents; }
+  .link-row a, .link-row .link-button { font-size: 12.5px; text-decoration: none; border: 1px solid var(--accent); color: var(--accent); background: var(--soft); border-radius: 999px; padding: 2px 10px; }
+  .link-row a:hover, .link-row .link-button:hover { text-decoration: underline; }
+  .link-row > span, .link-row .wiki-links > span { font-size: 12px; color: var(--muted); }
+  .link-row .unavailable-link { font-size: 12.5px; border: 1px dashed var(--line); border-radius: 999px; padding: 2px 10px; }
   #focus { margin-top: 24px; scroll-margin-top: 80px; }
   .question-context { color: var(--muted); font-size: 13px; }
   article.item { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; margin-bottom: 14px; scroll-margin-top: 80px; }
@@ -142,6 +160,10 @@
   details.draft { margin-top: 12px; }
   details.draft summary { cursor: pointer; font-weight: 600; color: var(--accent); }
   details.draft .block { max-height: 70vh; overflow: auto; }
+  /* A folded part of the opened card: one quiet line until it is wanted. */
+  details.fold { margin-top: 8px; }
+  details.fold summary { cursor: pointer; font-weight: 600; font-size: 13px; color: var(--muted); }
+  details.fold[open] > summary { color: var(--ink); }
   .history-entry { margin: 10px 0; background: var(--bg); padding: 12px; border-radius: 8px; }
   .history-entry summary { cursor: pointer; font-size: 14px; }
   .sources { margin: 12px 0 0; font-size: 13px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 6px 14px; }
@@ -240,7 +262,8 @@
   #term-tip { position: fixed; z-index: 20; max-width: 360px; background: var(--panel); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; font-size: 13px; box-shadow: 0 6px 18px rgba(0,0,0,.15); pointer-events: none; }
   @media (max-width: 900px) {
     .shell { grid-template-columns: 1fr; }
-    #grill-nav { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--line); }
+    #sidebar { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--line); }
+    .sections { display: flex; flex-wrap: wrap; gap: 6px; }
     main { padding: 16px; }
     .topbar { position: static; }
     .global-search { margin-left: 0; }
@@ -252,13 +275,6 @@
 <body>
 <header class="topbar">
   <span class="brand">Workbench Dashboard</span>
-  <nav class="sections" id="section-tabs" aria-label="Dashboard sections">
-    <a href="#section=tracker" data-section="tracker">Destination Tracker</a>
-    <a href="#section=taskboard" data-section="taskboard">Taskboard</a>
-    <a href="#section=grilling" data-section="grilling">Grilling Board</a>
-    <a href="#section=drafts" data-section="drafts">Drafts to approve</a>
-    <a href="#section=wiki" data-section="wiki">Wiki</a>
-  </nav>
   <form class="global-search" id="global-search-form" role="search">
     <label class="visually-hidden" for="global-search">Search the Dashboard</label>
     <input type="search" id="global-search" placeholder="Search the Dashboard…">
@@ -267,26 +283,36 @@
   <button class="theme" id="theme" type="button">Theme</button>
 </header>
 <div class="shell" id="shell">
-  <nav id="grill-nav" aria-label="Grilling Board filters">
-    <h1>Grilling Board</h1>
-    <div class="meta" id="meta">loading…</div>
-    <div class="progress" id="progress" title="applied / answered"></div>
-    <label class="slice-label" for="intent">What do you feel like doing?</label>
-    <select id="intent"><option value="all">Anything</option><option value="unblock">Unblock / direct work</option><option value="explore">Explore / settle decisions</option><option value="review">Review existing work</option></select>
-    <label class="slice-label" for="topic">Think about…</label><select id="topic"></select>
-    <label class="slice-label" for="scope">At what scale?</label>
-    <select id="scope"><option value="all">Any scale</option><option value="BLUEPRINT">Blueprint · whole product</option><option value="LANDMARK">Landmark · a direction</option><option value="SPEC">Spec · one capability</option><option value="TASK">Task · one step</option></select>
-    <label class="slice-label" for="priority-filter">Priority</label>
-    <select id="priority-filter"><option value="all">All Priorities</option><option value="P1">P1</option><option value="P2">P2</option><option value="P3">P3</option><option value="P4">P4</option><option value="unclassified">Unclassified</option></select>
-    <label class="slice-label" for="value-filter">Value</label>
-    <select id="value-filter"><option value="all">All Values</option><option value="V1">V1</option><option value="V2">V2</option><option value="V3">V3</option><option value="V4">V4</option><option value="unclassified">Unclassified</option></select>
-    <span class="slice-label">Where is it in the workflow?</span>
-    <div class="filters" id="filters"></div>
-    <label class="slice-label" for="search">Search these questions</label>
-    <input type="search" id="search" placeholder="Titles, questions, text…">
-    <p><button class="bulk" id="reset-slice" type="button">Clear all filters</button></p>
-    <div class="nav-links"><a href="#section=whys" id="whys-link">Whys list</a><a href="#section=drafts">Drafts to approve</a></div>
-  </nav>
+  <aside id="sidebar">
+    <nav class="sections" id="section-tabs" aria-label="Dashboard sections">
+      <a href="#section=tracker" data-section="tracker">Destination Tracker</a>
+      <a href="#section=taskboard" data-section="taskboard">Taskboard</a>
+      <a href="#section=grilling" data-section="grilling">Grilling Board</a>
+      <a href="#section=drafts" data-section="drafts">Drafts to approve</a>
+      <a href="#section=wiki" data-section="wiki">Wiki</a>
+    </nav>
+    <nav id="grill-nav" aria-label="Grilling Board filters">
+      <h1>Grilling Board</h1>
+      <div class="meta" id="meta">loading…</div>
+      <div class="progress" id="progress" title="applied / answered"></div>
+      <span class="slice-label">Priority and Value</span>
+      <div id="grade-chips"></div>
+      <span class="slice-label">Where is it in the workflow?</span>
+      <div class="filters" id="filters"></div>
+      <label class="slice-label" for="search">Search these questions</label>
+      <input type="search" id="search" placeholder="Titles, questions, text…">
+      <details class="more-filters" id="more-filters">
+        <summary>More filters</summary>
+        <label class="slice-label" for="intent">What do you feel like doing?</label>
+        <select id="intent"><option value="all">Anything</option><option value="unblock">Unblock / direct work</option><option value="explore">Explore / settle decisions</option><option value="review">Review existing work</option></select>
+        <label class="slice-label" for="topic">Think about…</label><select id="topic"></select>
+        <label class="slice-label" for="scope">At what scale?</label>
+        <select id="scope"><option value="all">Any scale</option><option value="BLUEPRINT">Blueprint · whole product</option><option value="LANDMARK">Landmark · a direction</option><option value="SPEC">Spec · one capability</option><option value="TASK">Task · one step</option></select>
+      </details>
+      <p><button class="bulk" id="reset-slice" type="button">Clear all filters</button></p>
+      <div class="nav-links"><a href="#section=whys" id="whys-link">Whys list</a><a href="#section=drafts">Drafts to approve</a></div>
+    </nav>
+  </aside>
   <main id="main">
     <div class="banner" id="banner" role="status"><span>An agent updated the board since you loaded it. Your saved answers are safe.</span><button class="bulk" type="button" id="banner-reload">Reload</button></div>
     <div id="questions-panel">
@@ -313,7 +339,7 @@
     board: null, catalog: null, workflow: null, workflowError: '', dashboard: null, drafts: null, glossary: null,
     termIndex: null, termPattern: null, termSeen: null,
     edits: new Map(), comments: new Map(), refused: new Map(), errors: new Map(), inflight: new Map(), timers: new Map(), selected: new Map(), actions: new Map(),
-    query: '', topic: 'all', intent: 'all', scope: 'all', lane: 'all', priority: 'all', value: 'all',
+    query: '', topic: 'all', intent: 'all', scope: 'all', lane: 'all', priorities: [], values: [],
     focus: null, picked: new Set(), promote: new Set(), batch: null, inBatch: false, size: 5,
     route: 0, revisions: new Map(), artifact: null, view: 'grilling', questionScroll: 0, whyQuery: '', whyStatus: 'all'
   };
@@ -355,9 +381,22 @@
   }
   // Priority and Value filter independently: P alone spans every Value, V
   // alone every Priority, both select their intersection. Never a combined score.
+  // The selected grades of one row: chips selected on the page (`priorities`,
+  // `values`), or one grade named the old single-select way (`priority`,
+  // `value`); an empty row selects every grade.
+  const GRADES = { priority: ['P1', 'P2', 'P3', 'P4'], value: ['V1', 'V2', 'V3', 'V4'] };
+  function selectedGrades(slice, field) {
+    const many = slice[`${field === 'priority' ? 'priorities' : 'values'}`];
+    if (Array.isArray(many)) return many;
+    const one = slice[field];
+    return one && one !== 'all' ? [one] : [];
+  }
+  function matchesGrades(item, slice, field) {
+    const wanted = selectedGrades(slice, field);
+    return !wanted.length || wanted.includes(item[field]?.grade || 'unclassified');
+  }
   function matchesSlice(item, slice = state) {
-    if (slice.priority && slice.priority !== 'all' && (item.priority?.grade || 'unclassified') !== slice.priority) return false;
-    if (slice.value && slice.value !== 'all' && (item.value?.grade || 'unclassified') !== slice.value) return false;
+    if (!matchesGrades(item, slice, 'priority') || !matchesGrades(item, slice, 'value')) return false;
     if (slice.topic && slice.topic !== 'all' && topicFor(item) !== slice.topic) return false;
     if (slice.intent && slice.intent !== 'all' && intentFor(item) !== slice.intent) return false;
     if (slice.scope && slice.scope !== 'all' && item.brief?.scope !== slice.scope) return false;
@@ -367,8 +406,10 @@
   }
   function sliceTitle(slice = state) {
     const parts = [TOPICS.find(topic => topic.id === slice.topic)?.title || 'All topics', INTENTS[slice.intent] || INTENTS.all];
-    if (slice.priority && slice.priority !== 'all') parts.push(slice.priority === 'unclassified' ? 'Priority unclassified' : slice.priority);
-    if (slice.value && slice.value !== 'all') parts.push(slice.value === 'unclassified' ? 'Value unclassified' : slice.value);
+    for (const field of ['priority', 'value']) {
+      const wanted = selectedGrades(slice, field);
+      if (wanted.length) parts.push(wanted.map(grade => grade === 'unclassified' ? `${field === 'priority' ? 'Priority' : 'Value'} unclassified` : grade).join('/'));
+    }
     if (slice.lane && slice.lane !== 'all') parts.push(LANES[slice.lane]);
     if (slice.query) parts.push(`“${slice.query}”`);
     return parts.join(' · ');
@@ -662,9 +703,35 @@
     return `<div class="lane-counts">${Object.keys(counts).filter(key => counts[key]).map(key => `<span>${LANES[key]} <strong>${counts[key]}</strong></span>`).join('')}</div>`;
   }
   function resetSlice() {
-    state.topic = state.intent = state.scope = state.lane = state.priority = state.value = 'all';
+    state.topic = state.intent = state.scope = state.lane = 'all';
+    state.priorities = []; state.values = [];
     state.query = ''; state.focus = null; state.inBatch = false; state.picked.clear();
     document.getElementById('search').value = '';
+  }
+  function gradesFiltered() { return state.priorities.length > 0 || state.values.length > 0; }
+  // The P and V chip rows. A chip counts the questions it would list with
+  // every other filter, the workflow stage included, as it is; a row with no
+  // chip pressed shows every grade. An Unclassified chip appears only while
+  // an open question has no grade.
+  function gradeChips() {
+    const items = state.board?.items || [];
+    return ['priority', 'value'].map(field => {
+      const key = field === 'priority' ? 'priorities' : 'values';
+      const others = items.filter(item => matchesSlice(item, { ...state, [key]: [] }));
+      const grades = [...GRADES[field], ...(items.some(item => !item[field] && item.derivedStatus !== 'withdrawn') ? ['unclassified'] : [])];
+      return `<div class="grade-row" role="group" aria-label="${field === 'priority' ? 'Priority' : 'Value'}">${grades.map(grade => {
+        const count = others.filter(item => (item[field]?.grade || 'unclassified') === grade).length;
+        return `<button type="button" class="chip grade-chip ${field}" data-field="${field}" data-grade="${grade}" aria-pressed="${state[key].includes(grade)}" title="${field === 'priority' ? 'Priority' : 'Value'} ${grade}: show ${count}">${grade === 'unclassified' ? 'Unclassified' : grade} <small>${count}</small></button>`;
+      }).join('')}</div>`;
+    }).join('');
+  }
+  // Pressing a chip adds its grade to its row, pressing again removes it; the
+  // list and every count redraw at once.
+  function toggleGrade(field, grade) {
+    const key = field === 'priority' ? 'priorities' : 'values';
+    state[key] = state[key].includes(grade) ? state[key].filter(value => value !== grade) : [...state[key], grade];
+    state.inBatch = false; state.focus = null; state.picked.clear();
+    render();
   }
   function renderNavigation() {
     const board = state.board, c = sliceCounts(board.items);
@@ -675,8 +742,10 @@
     const counts = sliceCounts(scoped);
     document.getElementById('filters').innerHTML = Object.entries(LANES).map(([value, label]) => `<button type="button" class="chip" data-lane="${value}" aria-pressed="${state.lane === value}">${label} (${value === 'all' ? scoped.length : counts[value]})</button>`).join('');
     for (const chip of document.querySelectorAll('[data-lane]')) chip.onclick = () => { state.lane = chip.dataset.lane; state.inBatch = false; state.focus = null; state.picked.clear(); render(); };
+    document.getElementById('grade-chips').innerHTML = gradeChips();
+    for (const chip of document.querySelectorAll('[data-grade]')) chip.onclick = () => toggleGrade(chip.dataset.field, chip.dataset.grade);
     document.getElementById('topic').innerHTML = '<option value="all">All topics</option>' + TOPICS.filter(topic => board.items.some(item => topicFor(item) === topic.id)).map(topic => `<option value="${topic.id}">${esc(topic.title)}</option>`).join('');
-    for (const [id, key] of [['topic', 'topic'], ['intent', 'intent'], ['scope', 'scope'], ['priority-filter', 'priority'], ['value-filter', 'value']]) {
+    for (const [id, key] of [['topic', 'topic'], ['intent', 'intent'], ['scope', 'scope']]) {
       const select = document.getElementById(id);
       select.value = state[key];
       select.onchange = event => { state[key] = event.target.value; state.inBatch = false; state.focus = null; state.picked.clear(); render(); };
@@ -701,16 +770,18 @@
       overview.innerHTML = `<h1>${esc(selected.title)}</h1><p class="frame">Think about { ${esc(selected.frame)} }</p><p>${esc(selected.outcome)}</p>${summary ? countLine(summary.counts) : ''}`;
       return;
     }
-    const filtered = state.priority !== 'all' || state.value !== 'all' || state.intent !== 'all' || state.scope !== 'all' || state.lane !== 'all' || state.query;
+    const filtered = gradesFiltered() || state.intent !== 'all' || state.scope !== 'all' || state.lane !== 'all' || state.query;
     overview.innerHTML = `<h1>${filtered ? `Topics in ${esc(sliceTitle())}` : 'Choose what you want to think about'}</h1><p class="frame">One topic. A few decisions. A clear stopping point.</p><div class="topic-grid">${summaries.map(topic => `<section class="topic-card"><h3>${esc(topic.title)}</h3><p>Think about { ${esc(topic.frame)} }</p><p>${esc(topic.outcome)}</p><strong>${topic.done} / ${topic.total} answered</strong><progress value="${topic.done}" max="${Math.max(1, topic.total)}" aria-label="${esc(topic.title)} answered"></progress>${countLine(topic.counts)}<p><button type="button" class="bulk" data-topic="${topic.id}">Open this topic · ${topic.members.length} questions</button></p></section>`).join('') || '<p class="empty">No question matches these filters.</p>'}</div>`;
     for (const button of overview.querySelectorAll('[data-topic]')) button.onclick = () => { state.topic = button.dataset.topic; state.focus = null; state.picked.clear(); render(); };
   }
-  function gradeBadges(item) {
+  // Closed P and V badges; each opens only its own reason. `variant` adds a
+  // class for the opened card, where the reason opens in place.
+  function gradeBadges(item, variant = '') {
     return ['priority', 'value'].map(field => {
       const letter = field === 'priority' ? 'P' : 'V', name = field === 'priority' ? 'Priority' : 'Value';
       const grade = item[field];
       if (!grade) return `<span class="grade ${field} unclassified" title="${name} has not been graded">${letter} · Unclassified</span>`;
-      return `<details class="grade ${field}"><summary aria-label="${name} ${esc(grade.grade)}: show why">${esc(grade.grade)}</summary><div class="grade-reason" role="note"><strong>${name} ${esc(grade.grade)}</strong><p>${esc(grade.reason)}</p></div></details>`;
+      return `<details class="grade ${field}${variant ? ` ${variant}` : ''}"><summary aria-label="${name} ${esc(grade.grade)}: show why">${esc(grade.grade)}</summary><div class="grade-reason" role="note"><strong>${name} ${esc(grade.grade)}</strong><p>${esc(grade.reason)}</p></div></details>`;
     }).join('');
   }
   // The latest answer-to-card P/V reassessment recorded in item history, or
@@ -721,7 +792,7 @@
   function assessmentDetail(item) {
     if (!item.priority && !item.value) return '';
     const latest = latestAssessment(item);
-    if (!latest) return '<p class="hint">Not reassessed since grading.</p>';
+    if (!latest) return '';
     const { assessment } = latest;
     const line = (field, name) => {
       const entry = assessment[field];
@@ -731,12 +802,18 @@
     const followed = assessment.followed;
     return `<div class="block"><h4>Latest P/V reassessment · ${esc(latest.at)} · ${esc(latest.by)}</h4><p>After the owner answer on ${esc(followed.id)} saved ${esc(followed.answerAt)} (revision ${followed.itemRevision}).</p><ul>${line('priority', 'Priority')}${line('value', 'Value')}</ul></div>`;
   }
+  // P and V on the opened card: the same closed badges as the list, reasons
+  // opening in place, and the latest reassessment behind one closed line
+  // (owner correction, 2026-10-09: nothing about P/V is open until clicked).
   function gradeDetail(item) {
-    return `<section class="grade-detail" aria-label="Priority and Value">${['priority', 'value'].map(field => {
-      const letter = field === 'priority' ? 'P' : 'V', name = field === 'priority' ? 'Priority' : 'Value';
-      const grade = item[field];
-      return `<div class="grade-card"><span class="grade-pill ${grade ? field : 'none'}">${grade ? esc(grade.grade) : letter}</span><div><strong>${name}${grade ? ` ${esc(grade.grade)}` : ': Unclassified'}</strong><p>${grade ? esc(grade.reason) : 'No grade has been assigned yet; none is invented.'}</p></div></div>`;
-    }).join('')}</section>${assessmentDetail(item)}`;
+    const badges = ['priority', 'value'].map(field => {
+      const name = field === 'priority' ? 'Priority' : 'Value';
+      return item[field] ? gradeBadges({ [field]: item[field] }, 'card-grade').replace(/<span class="grade (?:priority|value) unclassified"[^>]*>[^<]*<\/span>/, '') : `<span class="grade ${field} unclassified">${name}: Unclassified</span>`;
+    }).join('');
+    const unclassified = !item.priority || !item.value ? '<p class="hint">No grade has been assigned yet; none is invented.</p>' : '';
+    const latest = latestAssessment(item);
+    const assessment = latest ? `<details class="fold"><summary>Latest P/V reassessment · ${esc(latest.at)}</summary>${assessmentDetail(item)}</details>` : '';
+    return `<section class="card-grades" aria-label="Priority and Value">${badges}${unclassified}</section>${assessment}`;
   }
   function render() {
     if (!state.board) return;
@@ -745,7 +822,7 @@
     renderOverview();
     renderRoundPanel();
     document.getElementById('notice').innerHTML = '<strong>Work at your own pace.</strong> Answer when ready and skip the rest; an unanswered question just stays unanswered. <strong>Confirm</strong> means confirmed. <strong>Rework wording</strong>, <strong>Change the why</strong> and <strong>Change</strong> need your note first. Answering, confirming, commenting or ending a round never starts an agent; promotion starts only when you ask for it.';
-    const overviewOnly = !state.inBatch && !state.focus && state.topic === 'all' && state.intent === 'all' && state.scope === 'all' && state.lane === 'all' && !state.query && state.priority === 'all' && state.value === 'all';
+    const overviewOnly = !state.inBatch && !state.focus && state.topic === 'all' && state.intent === 'all' && state.scope === 'all' && state.lane === 'all' && !state.query && !gradesFiltered();
     const content = document.getElementById('content');
     if (overviewOnly) { content.innerHTML = ''; return; }
     const shown = shownItems();
@@ -820,18 +897,24 @@
     const applied = item.applied ? `<div class="applied-box"><strong>Applied</strong> by ${esc(item.applied.by)} on ${new Date(item.applied.at).toLocaleString()}: ${esc(item.applied.where)}${item.applied.agentNote ? ` — ${esc(item.applied.agentNote)}` : ''}<br><small>Your answer then: ${esc(item.answerLabel || item.applied.verdict || '(note only)')}${item.applied.note ? ` — “${esc(item.applied.note)}”` : ''}</small></div>` : '';
     const stale = staleNotice(item);
     const history = (item.history || []).filter(entry => entry.revision > 1 || /^applied|^withdrawn|^graded|^reassessed/.test(entry.reason || '')).map(entry => `${new Date(entry.at).toLocaleDateString()} · ${esc(entry.by)}: ${esc(entry.reason)}`);
+    const base = itemBase(item);
+    const links = wikiLinks(item) || sources ? `<nav class="link-row" aria-label="Links">${wikiLinks(item)}${sources ? `<span>Sources:</span>${sources}` : ''}</nav>` : '';
+    const fold = (summary, body) => body ? `<details class="fold"><summary>${summary}</summary>${body}</details>` : '';
+    // The opened card shows the title, the question, P/V as closed badges, the
+    // links, the recommendation and the answer controls. Everything else
+    // starts collapsed, one line each (owner correction, 2026-10-09).
     return `<article class="item" id="${item.id}" data-id="${item.id}" data-status="${status}" data-revision="${item.revision}">
       <div class="item-head"><h3>${esc(item.title)}<small class="identity">${item.id} · revision ${item.revision}</small></h3><span><span class="badge ${status}">${STATUS_LABEL[status]}</span><span class="kind">${esc(KIND_LABEL[item.kind] || item.kind)}</span></span></div>
+      <p class="q">${inlineText(item.question, base)}</p>
       ${gradeDetail(item)}
-      <p class="q">${inlineText(item.question, itemBase(item))}</p>
-      ${wikiLinks(item)}
-      ${item.brief ? decisionBrief(item) : `<div class="block"><h4>Context · current</h4>${markdown(item.current, itemBase(item))}</div><div class="recommendation"><h4>Recommended answer · agent proposal</h4>${markdown(item.proposal, itemBase(item))}</div>`}
-      ${item.draft ? `<details class="draft" open><summary>Proposed wording · draft at revision ${item.revision}</summary><div class="block">${markdown(item.draft, itemBase(item))}</div></details>` : ''}
-      ${sources ? `<details class="draft"><summary>Evidence and source links</summary><div class="sources">${sources}</div><div class="block"><h4>Current</h4>${markdown(item.current, itemBase(item))}</div><div class="block"><h4>Proposal</h4>${markdown(item.proposal, itemBase(item))}</div></details>` : ''}
-      ${history.length ? `<div class="sources"><span>History:</span>${history.map(entry => `<span>${entry}</span>`).join('')}</div>` : ''}
+      ${links}
+      <div class="recommendation"><h4>Recommended answer · agent proposal</h4>${markdown(item.brief ? item.brief.recommendation : item.proposal, base)}</div>
+      ${item.brief ? decisionBrief(item) : fold('Current text', `<div class="block">${markdown(item.current, base)}</div>`)}
+      ${fold(`Proposed wording · draft at revision ${item.revision}`, item.draft ? `<div class="block">${markdown(item.draft, base)}</div>` : '')}
+      ${fold('History', history.length ? `<div class="sources">${history.map(entry => `<span>${entry}</span>`).join('')}</div>` : '')}
       ${conflictNotice(item)}${stale}${applied}
       ${answerSection(item)}
-      <div class="card-workflow" data-flow="${item.id}"></div>
+      <details class="fold card-workflow-fold"><summary>Comments, change requests and promotion · <span data-flow-state>${esc(cardState(item)?.label || 'state unknown')}</span></summary><div class="card-workflow" data-flow="${item.id}"></div></details>
     </article>`;
   }
   function staleNotice(item) {
@@ -853,13 +936,14 @@
       const lines = part.split('\n');
       return `<details class="history-entry"><summary>${esc(lines.shift().replace(/^### /, ''))}</summary>${markdown(lines.join('\n'), base)}</details>`;
     }).join('');
-    return `<div class="brief-summary">${markdown(b.summary, base)}</div>
-      <div class="block"><h4>What this concerns</h4>${markdown(b.artifacts, base)}</div>
-      <div class="block"><h4>Why this choice matters</h4>${markdown(b.why, base)}</div>
-      <div class="recommendation"><h4>Recommended answer · agent proposal</h4>${markdown(b.recommendation, base)}</div>
-      <div class="block"><h4>What would change</h4>${markdown(b.changes, base)}</div>
-      <div class="block"><h4>Consequences and tradeoffs</h4>${markdown(b.impact, base)}</div>
-      <details class="draft"><summary>Related Destination Question Cards and original grilling history</summary>${history}</details>`;
+    // Each part of the brief is one closed line; the recommendation is shown
+    // by card() above them.
+    return `<details class="fold"><summary>What this concerns</summary><div class="brief-summary">${markdown(b.summary, base)}</div><div class="block">${markdown(b.artifacts, base)}</div></details>
+      <details class="fold"><summary>Why this choice matters</summary><div class="block">${markdown(b.why, base)}</div></details>
+      <details class="fold"><summary>What would change</summary><div class="block">${markdown(b.changes, base)}</div></details>
+      <details class="fold"><summary>Consequences and tradeoffs</summary><div class="block">${markdown(b.impact, base)}</div></details>
+      <details class="fold"><summary>Current text and full proposal</summary><div class="block"><h4>Current</h4>${markdown(item.current, base)}</div><div class="block"><h4>Proposal</h4>${markdown(item.proposal, base)}</div></details>
+      <details class="fold"><summary>Related Destination Question Cards and original grilling history</summary>${history}</details>`;
   }
   function answerButtonsHtml(model) {
     const button = b => `<button type="button" class="opt" data-role="${b.role}" data-value="${esc(b.value ?? '')}" aria-pressed="${b.pressed}" ${b.disabled ? 'disabled' : ''} title="${esc(b.hint)}">${esc(b.label)}${b.requiresNote ? '<small>needs your note</small>' : ''}</button>`;
@@ -1152,6 +1236,8 @@
   function renderCardWorkflow(panel, item) {
     if (!panel) return;
     panel.innerHTML = cardWorkflowHtml(item);
+    const stateLine = panel.closest?.('.card-workflow-fold')?.querySelector('[data-flow-state]');
+    if (stateLine) stateLine.textContent = cardState(item)?.label || 'state unknown';
     if (!state.workflow) return;
     const comments = state.workflow.comments.filter(comment => comment.id === item.id);
     const text = panel.querySelector('[data-comment-text]');

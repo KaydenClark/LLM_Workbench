@@ -229,7 +229,7 @@ function element() {
 }
 function pageModel({storage={},history=[]}={}) {
  const html=fs.readFileSync(new URL('../workbench/grill-board/index.html',import.meta.url),'utf8');
- const script=html.match(/<script>([\s\S]*?)<\/script>/)[1].replace('Promise.all([load()','window.model={state,matchesSlice,topicSummaries,sliceTitle,startBatch,batchProgress,resetSlice,gradeBadges,gradeDetail,answerModel,whysList,confirmedItems,dispositionTimeline,laneFor,rememberComment,commentDraftFor,forgetComment,cardWorkflowHtml,staleNotice,promotionBlocker,openQuestion,hasUnsavedWork,approvalSummary,conflictNotice,saveFailureMessage,autoSaveBlock,noteRefused,markdown,wikiLinks,namedDecisionIds,card,itemBase,inline}; Promise.all([load()');
+ const script=html.match(/<script>([\s\S]*?)<\/script>/)[1].replace('Promise.all([load()','window.model={state,matchesSlice,topicSummaries,sliceTitle,startBatch,batchProgress,resetSlice,gradeBadges,gradeDetail,answerModel,whysList,confirmedItems,dispositionTimeline,laneFor,rememberComment,commentDraftFor,forgetComment,cardWorkflowHtml,staleNotice,promotionBlocker,openQuestion,hasUnsavedWork,approvalSummary,conflictNotice,saveFailureMessage,autoSaveBlock,noteRefused,markdown,wikiLinks,namedDecisionIds,card,itemBase,inline,toggleGrade,gradeChips,shownItems,setView,el:id=>document.getElementById(id)}; Promise.all([load()');
  const elements=new Map();
  const localStorage={getItem:key=>storage[key]??null,setItem:(key,value)=>{storage[key]=String(value);},removeItem:key=>{delete storage[key];}};
  const ctx=vm.createContext({document:{getElementById:id=>{if(!elements.has(id))elements.set(id,element());return elements.get(id);},querySelectorAll:()=>[],documentElement:{dataset:{}}},window:{addEventListener(){},scrollTo(){},scrollY:0},history:{replaceState:(_state,_title,url)=>history.push(url)},localStorage,setInterval(){},setTimeout,clearTimeout,URL,URLSearchParams,location:{hash:''},fetch:()=>new Promise(()=>{})});
@@ -262,9 +262,9 @@ test('P/V filters return exactly their members and combine with the other board 
  assert.deepEqual(ids({priority:'P2',query:'0014'}),['GB-0014']);
  items[1].derivedStatus='answered';
  assert.deepEqual(ids({value:'V1',lane:'pending'}),['GB-0002','GB-0005']);
- model.state.priority='P1'; model.state.value='V2'; model.state.topic='roles'; model.state.query='x';
+ model.state.priorities=['P1']; model.state.values=['V2']; model.state.topic='roles'; model.state.query='x';
  model.resetSlice();
- assert.deepEqual([model.state.priority,model.state.value,model.state.topic,model.state.query],['all','all','all',''],'Clear all filters also clears P/V');
+ assert.deepEqual([[...model.state.priorities],[...model.state.values],model.state.topic,model.state.query],[[],[],'all',''],'Clear all filters also clears P/V');
  assert.equal(model.sliceTitle({topic:'all',intent:'all',priority:'P3',value:'V1'}),'All topics · Any kind of decision · P3 · V1');
 });
 
@@ -284,11 +284,11 @@ test('a batch started from a P/V slice keeps its membership through saves, filte
  const first=pageModel({storage}).model;
  const items=pvInventory();
  first.state.board={items};
- first.state.value='V1';
+ first.state.values=['V1'];
  first.startBatch(items.filter(item=>first.matchesSlice(item)));
  assert.deepEqual([...first.state.batch.ids],['GB-0017','GB-0005','GB-0002']);
  assert.match(first.state.batch.title,/V1/);
- first.state.priority='P4'; first.state.value='all';
+ first.state.priorities=['P4']; first.state.values=[];
  items.find(item=>item.id==='GB-0005').value={grade:'V3',reason:'regraded'};
  items.find(item=>item.id==='GB-0017').derivedStatus='answered';
  assert.deepEqual([...first.state.batch.ids],['GB-0017','GB-0005','GB-0002'],'filters, saves and a regrade never change membership');
@@ -892,4 +892,101 @@ test('the page renders exactly the links the server counts for backlinks over th
   const server=[...questionLinkTargets(item,recordPaths)].filter(p=>catalogPaths.has(p)).sort();
   assert.deepEqual(page,server,item.id);
  }
+});
+
+// ---- Owner corrections of 2026-10-09 (S-004D, TK-007Z): P/V chips, a left
+// navigation pane and progressive disclosure on the opened card. ----
+const pageHtml=()=>fs.readFileSync(new URL('../workbench/grill-board/index.html',import.meta.url),'utf8');
+// The markup outside every <details> block, nested ones included: what an
+// opened card shows before the owner clicks anything.
+function outsideDetails(html){
+ let depth=0,out='';
+ for (const part of html.split(/(<details\b[^>]*>|<\/details>)/)) {
+  if (/^<details\b/.test(part)) depth+=1; else if (part==='</details>') depth-=1; else if (depth===0) out+=part;
+ }
+ return out;
+}
+
+test('P and V chips filter the list on click: OR within a row, AND across rows, no chip means all',()=>{
+ const {model}=pageModel();
+ const items=pvInventory();
+ model.state.board={items};
+ const shown=()=>model.shownItems().map(item=>item.id).sort();
+ assert.equal(typeof model.toggleGrade,'function','the page exposes the chip toggle');
+ model.toggleGrade('priority','P2'); model.toggleGrade('value','V1');
+ assert.deepEqual(shown(),['GB-0002'],'the P2 and V1 chips leave only the P2·V1 question, with no dropdown involved');
+ model.toggleGrade('priority','P3');
+ assert.deepEqual(shown(),['GB-0002','GB-0005'],'two chips in the P row combine as OR');
+ model.toggleGrade('value','V1');
+ assert.deepEqual(shown(),['GB-0002','GB-0004','GB-0005','GB-0014'],'clearing the V row spans every Value');
+ model.toggleGrade('priority','P2'); model.toggleGrade('priority','P3');
+ assert.deepEqual(shown(),items.map(item=>item.id).sort(),'no chip selected means all');
+ const chips=model.gradeChips();
+ for (const grade of ['P1','P2','P3','P4']) assert.match(chips,new RegExp(`<button[^>]*class="chip grade-chip priority"[^>]*data-grade="${grade}"[^>]*aria-pressed="false"`),`${grade} chip`);
+ for (const grade of ['V1','V2','V3','V4']) assert.match(chips,new RegExp(`<button[^>]*class="chip grade-chip value"[^>]*data-grade="${grade}"[^>]*aria-pressed="false"`),`${grade} chip`);
+ model.toggleGrade('value','V2');
+ assert.match(model.gradeChips(),/class="chip grade-chip value"[^>]*data-grade="V2"[^>]*aria-pressed="true"/,'a selected chip is pressed');
+ assert.match(model.gradeChips(),/data-grade="V2"[^>]*>V2 <small>3<\/small>/,'a chip counts the questions it would show');
+ model.toggleGrade('value','V2'); items[0].derivedStatus='answered'; model.state.lane='pending';
+ assert.match(model.gradeChips(),/data-grade="P1"[^>]*>P1 <small>1<\/small>/,'a chip count follows the workflow-stage filter');
+ model.state.lane='all'; items[0].derivedStatus='pending';
+ assert.equal(model.matchesSlice(items[0],{priorities:['P1','P2'],values:[]}),true);
+ assert.equal(model.matchesSlice(items[0],{priorities:['P3'],values:[]}),false);
+ assert.equal(model.sliceTitle({topic:'all',intent:'all',priorities:['P2','P3'],values:['V1']}),'All topics · Any kind of decision · P2/P3 · V1');
+ model.resetSlice();
+ assert.deepEqual([[...model.state.priorities],[...model.state.values]],[[],[]],'Clear all filters clears both rows');
+ const page=pageHtml();
+ assert.doesNotMatch(page,/id="priority-filter"|id="value-filter"/,'the P/V dropdowns are gone');
+ const more=page.match(/<details[^>]*id="more-filters"[^>]*>[\s\S]*?<\/details>/);
+ assert.ok(more,'the other dropdowns fold into a More filters section');
+ assert.doesNotMatch(more[0].slice(0,more[0].indexOf('>')),/\sopen\b/,'More filters starts closed');
+ for (const id of ['intent','topic','scope']) assert.match(more[0],new RegExp(`id="${id}"`),`${id} dropdown under More filters`);
+ assert.match(page,/\.grade-chip\.priority\[aria-pressed="true"\][^{]*\{[^}]*--p-ink/,'a pressed P chip takes the red P badge colors');
+ assert.match(page,/\.grade-chip\.value\[aria-pressed="true"\][^{]*\{[^}]*--v-ink/,'a pressed V chip takes the amber V badge colors');
+});
+
+test('the five section links are a persistent left navigation pane, with the Grilling Board filters below them',()=>{
+ const page=pageHtml();
+ const header=page.match(/<header class="topbar">[\s\S]*?<\/header>/)[0];
+ assert.doesNotMatch(header,/id="section-tabs"/,'the top bar no longer carries the section links');
+ const sidebar=page.match(/<aside id="sidebar"[\s\S]*?<\/aside>/);
+ assert.ok(sidebar,'a left pane exists');
+ assert.match(sidebar[0],/<nav class="sections" id="section-tabs" aria-label="Dashboard sections">/);
+ for (const section of ['tracker','taskboard','grilling','drafts','wiki']) assert.match(sidebar[0],new RegExp(`href="#section=${section}" data-section="${section}"`),`${section} link keeps its hash route`);
+ assert.match(sidebar[0],/<nav id="grill-nav"/,'the Grilling Board filters sit in the same pane');
+ assert.ok(sidebar[0].indexOf('id="section-tabs"')<sidebar[0].indexOf('id="grill-nav"'),'section links come first');
+ assert.ok(page.indexOf('<aside id="sidebar"')<page.indexOf('<main id="main"'),'the pane is on the left of the main column');
+ assert.match(page,/@media \(max-width: 900px\)[\s\S]*#sidebar[^{]*\{[^}]*position: static/,'at a narrow width the pane stacks instead of forcing a horizontal scroll');
+ const {model}=pageModel();
+ model.setView('tracker','tracker');
+ assert.equal(model.state.view,'tracker');
+ assert.equal(model.el('sidebar').hidden,false,'the pane stays while another section is open');
+ assert.equal(model.el('grill-nav').hidden,true,'only the Grilling Board filters hide');
+ model.setView('grilling','grilling');
+ assert.equal(model.el('grill-nav').hidden,false);
+});
+
+test('an opened card shows title, question, recommendation and the answer controls; the rest starts collapsed and the links stay visible',()=>{
+ const {model}=pageModel();
+ model.state.catalog=RECORD_CATALOG;
+ const base={revision:2,history:[{revision:2,at:'2026-10-08T00:00:00.000Z',by:'agent',reason:'revised wording'}],derivedStatus:'pending',status:'open',controls:board.answerControls({kind:'owner-decision',options:null}),sources:[{label:'Spec',path:'workbench/specs/S-0001/SPEC.md',ref:'abc'}],links:[{label:'S-0001 SPEC.md',path:'workbench/specs/S-0001/SPEC.md',ref:'abc',url:'https://github.com/example/repo/blob/abc/workbench/specs/S-0001/SPEC.md'}],...grade('P2','V1')};
+ const briefed={...base,id:'GB-0023',title:'Rename the verb',question:'Does ADR-000B still hold?',current:'Current words',proposal:'Keep it as it is.',draft:'Proposed wording draft',brief:{scope:'SPEC',summary:'Summary words',why:'Why words',recommendation:'Recommended answer words',impact:'Impact words',changes:'Changes words',history:'### Related card\n\nHistory words',artifacts:'Artifacts words'}};
+ const html=model.card(briefed);
+ assert.doesNotMatch(html,/<details[^>]*\sopen[\s>]/,'nothing on the card starts open');
+ const visible=outsideDetails(html);
+ for (const text of ['Rename the verb','Does <a class="record-link"','Recommended answer words','Your answer','>Confirm<','>Rework wording<','>Change the why<','>Change<','id="note-GB-0023"']) assert.ok(visible.includes(text),`${text} is shown at once`);
+ for (const text of ['Why words','Impact words','Changes words','History words','Artifacts words','Summary words','Current words','Proposed wording draft','P2 because of its source','V1 because of its return','revised wording']) {
+  assert.ok(html.includes(text),`${text} stays on the card`);
+  assert.ok(!visible.includes(text),`${text} starts collapsed`);
+ }
+ assert.match(visible,/<nav class="link-row" aria-label="Links">[\s\S]*Specs · A Spec \(S-0001\)[\s\S]*ADRs · Stable names stay stable \(ADR-000B\)[\s\S]*<\/nav>/,'Spec and decision-record links stay visible as one compact row');
+ assert.match(visible,/<nav class="link-row"[\s\S]*S-0001 SPEC\.md[\s\S]*<\/nav>/,'the card sources are in the same row');
+ assert.match(html,/<details class="grade priority card-grade"><summary[^>]*>P2<\/summary>[\s\S]*?P2 because of its source/,'P is a closed badge whose reason opens on click');
+ assert.match(html,/<details class="grade value card-grade"><summary[^>]*>V1<\/summary>[\s\S]*?V1 because of its return/,'V is a closed badge whose reason opens on click');
+ assert.match(pageHtml(),/\.card-grade \.grade-reason[^{]*\{[^}]*position: static/,'on the card a reason opens in place');
+ const plain={...base,id:'GB-0024',title:'A plain question',question:'Which?',current:'Current context words',proposal:'Agent proposal words',draft:null};
+ const plainVisible=outsideDetails(model.card(plain));
+ assert.ok(plainVisible.includes('Agent proposal words'),'the proposal is the recommendation on a card without a brief');
+ assert.ok(!plainVisible.includes('Current context words'),'the current context starts collapsed');
+ assert.match(model.card(plain),/Current context words/);
 });

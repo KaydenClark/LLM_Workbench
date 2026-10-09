@@ -466,5 +466,5 @@ test('the central question view shows the latest P/V assessment, retained or rev
   assert.match(html, /Priority P2 retained[\s\S]*Same urgency\./);
   assert.match(html, /Value revised V3 → V2[\s\S]*Higher return\./);
   assert.match(html, /GB-0001[\s\S]*2026-10-08T12:00:00.000Z/);
-  assert.match(model.gradeDetail({ ...graded, history }), /Not reassessed since grading/);
+  assert.doesNotMatch(model.gradeDetail({ ...graded, history }), /reassess/i, 'a card that was never reassessed shows no reassessment line');
 });
