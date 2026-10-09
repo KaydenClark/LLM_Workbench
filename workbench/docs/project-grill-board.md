@@ -104,6 +104,10 @@ files. Check `git check-ignore workbench/grill-board/answers.json` and
 has all executable runtime dependencies and questions, without owner answers.
 A clone therefore does not transport unsynchronized owner answers to a new host.
 
+The existing page can retain a stale-answer warning after a fresh confirmation
+until reload. The saved answer and CLI status remain correct; reload to refresh
+that inherited presentation. This adapter does not rewrite the producer renderer.
+
 The source `tools/test-grill-board-deploy.mjs` exercises installation, preservation,
 refusals, configured runtime, clone portability and the answer/revision protocol
 with disposable data. A real project installation is not evidence that the owner

@@ -132,6 +132,28 @@ function ordinaryInput(file) {
   ordinary(absolute);
 }
 function send(response, status, value) { response.writeHead(status, {'content-type':'application/json; charset=utf-8','cache-control':'no-store'}); response.end(JSON.stringify(value)); }
+function projectLinks(sources, config) {
+  return sources.map(source => ({...source, url: source.ref && source.ref !== 'untracked' && /^[a-f0-9]{40}$/.test(source.ref) && typeof source.path === 'string' && !path.isAbsolute(source.path) && !source.path.split('/').some(part=>!part||part==='.'||part==='..') ? `${config.repository}/blob/${source.ref}/${source.path.split('/').map(encodeURIComponent).join('/')}` : null}));
+}
+function projectView(root, config) {
+  const view=core.mergeBoard(root); view.title=config.title;
+  for (const item of view.items) item.links=projectLinks(item.sources,config);
+  return view;
+}
+// Match the producer's read-command argument semantics. Other commands and
+// missing/unknown show identities retain the producer's own validation/errors.
+function readArguments(argv) {
+  const positional=[], flags={};
+  for (let index=0;index<argv.length;index++) {
+    const arg=argv[index];
+    if (arg.startsWith('--')) {
+      const next=argv[index+1];
+      if (next===undefined || next.startsWith('--')) flags[arg.slice(2)]=true;
+      else {flags[arg.slice(2)]=next;index++;}
+    } else positional.push(arg);
+  }
+  return {positional,flags};
+}
 export function createProjectServer(root) {
   verifyProject(root);
   const delegate = core.createServer(root);
@@ -147,9 +169,7 @@ export function createProjectServer(root) {
       guardWrites(root);
       if (request.method === 'GET' && ['/api/file','/api/artifact'].includes(url.pathname)) safePath(root,url.searchParams.get('path'));
       if (request.method === 'GET' && url.pathname === '/api/board') {
-        const view = core.mergeBoard(root); view.title = config.title;
-        for (const item of view.items) item.links = item.sources.map(source => ({...source, url: source.ref && source.ref !== 'untracked' && /^[a-f0-9]{40}$/.test(source.ref) && typeof source.path === 'string' && !path.isAbsolute(source.path) && !source.path.split('/').some(part=>!part||part==='.'||part==='..') ? `${config.repository}/blob/${source.ref}/${source.path.split('/').map(encodeURIComponent).join('/')}` : null}));
-        send(response,200,view); return;
+        send(response,200,projectView(root,config)); return;
       }
       // Source API already names and bounds ordinary files; answers use its
       // original revision/history protocol. Recheck write destinations per request.
@@ -158,8 +178,8 @@ export function createProjectServer(root) {
   });
 }
 export async function main(argv) {
-  const index = argv.indexOf('--path');
-  const root = index < 0 ? core.findRoot() : path.resolve(argv[index+1] ?? '');
+  const {positional,flags}=readArguments(argv);
+  const root = flags.path ? path.resolve(flags.path) : core.findRoot();
   const {config} = verifyProject(root);
   if (argv[0] === 'serve') {
     if (argv.some(argument => ['--host','--bind','--port'].includes(argument))) fail('Host/bind/port overrides are unsupported; use reviewed project configuration');
@@ -173,6 +193,14 @@ export async function main(argv) {
   for (const flag of ['--file','--draft-file','--options-file','--brief-file']) {
     const inputIndex=argv.indexOf(flag);
     if (inputIndex>=0) { if (!argv[inputIndex+1] || argv[inputIndex+1].startsWith('--')) fail(`${flag} needs an ordinary file`); ordinaryInput(argv[inputIndex+1]); }
+  }
+  if (argv[0]==='show') {
+    const item=projectView(root,config).items.find(candidate=>candidate.id===positional[1]);
+    if (item) {process.stdout.write(`${JSON.stringify(item,null,2)}\n`);return;}
+  }
+  if (argv[0]==='pending' && flags.json) {
+    const pending=core.pendingForAgents(root).map(item=>({...item,links:projectLinks(item.sources,config)}));
+    process.stdout.write(`${JSON.stringify(pending,null,2)}\n`);return;
   }
   return core.main(argv);
 }
