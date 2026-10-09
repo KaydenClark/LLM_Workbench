@@ -5,12 +5,12 @@
 **Priority:** 2
 **Owner:** claude-dashboard-director
 **Stance:** Builder
-**Updated:** 2026-10-08
+**Updated:** 2026-10-09
 **Catalog description:** The owner's local Dashboard: Destination Tracker, Taskboard, Grilling Board, Drafts to approve and Wiki, with progressive grilling, exact wording approvals and explicit promotion handoffs.
 **Release scope:** In scope since the owner's 2026-10-04 answer; no release is assigned.
 **Blockers:** none
-**Latest event:** 2026-10-08: after repeated separate-context reviews recorded in the evidence log (the fourth passed the code at `07429c50`; every other review so far failed on code, records, owner-facing claims or link coverage, each corrected), TK-007L, TK-007M, TK-007N, TK-007O, TK-007T and TK-007X are closed with proof on `claude/workbench-dashboard-first-pass`, draft PR #440 into integration. Not delivered until merged.
-**Next gate:** The draft PR #440 merge into integration, after its reviewed candidate `fdefa9ca`. Open after that: TK-007Y (the always-open login service verified after login and a killed process: the Owner's installed service must be restarted or replaced by the Owner), the unchecked acceptance lines (the five-sections line, short of one question whose comma-listed records are unlinked and of decision records named only in Priority or Value reasons (32 open questions), which are not linked; wider shared-board lines, recommended-alternative preselection on 33 questions, applied-approval wording, sampled-path context labels and the nine grouped prompts that live on the unpublished consequential-decision lane), the question-content pass recorded in `proof/question-content-audit-2026-10-08.json`, and Owner Human QA.
+**Latest event:** 2026-10-09: TK-007Z, the owner's three Grilling Board corrections (P/V chips in place of the Priority and Value dropdowns, the five section links as a left navigation pane, a progressively disclosed card), closed with proof on `claude/grilling-board-ui-corrections-2026-10-09`, PR #445 into `claude/workbench-dashboard-first-pass`, after the reconcile lane's PR #444 (35 open questions) landed on that branch; Full suite 60/60 on candidate `2586e260`. Earlier: TK-007L, TK-007M, TK-007N, TK-007O, TK-007T and TK-007X closed on that branch after fourteen separate-context reviews (see the evidence log). Not delivered until draft PR #440 merges into integration.
+**Next gate:** The draft PR #440 merge into integration after a fresh reviewed candidate: its last passing review covered `fdefa9ca`, which PRs #444 and #445 have since moved past. Open after that: TK-007Y (the always-open login service verified after login and a killed process: the Owner's installed service must be restarted or replaced by the Owner), the unchecked acceptance lines (the five-sections line, short of one question whose comma-listed records are unlinked and of decision records named only in Priority or Value reasons, which are not linked; wider shared-board lines, recommended-alternative preselection, applied-approval wording, sampled-path context labels and the nine grouped prompts that live on the unpublished consequential-decision lane), the question-content pass recorded in `proof/question-content-audit-2026-10-08.json`, the owner's call on the folded More filters dropdowns (fold or remove) and on his tentative note about leaving a topic, and Owner Human QA.
 
 > **Citation anchors.** pre=`f6af4c339b543988a3212b1940581157f573818d` post=`f6af4c339b543988a3212b1940581157f573818d`.
 
@@ -316,10 +316,14 @@ CIC labels and meanings. Apply them as follows:
 3. Clicking a question opens all of its information in the central window,
    including P/V and both explanations. Preserve original question text,
    proposal, sources, corrections, answer history and the existing answer controls.
+   Since the owner's 2026-10-09 corrections (below) that information is
+   reachable but progressively disclosed: P/V stay closed badges on the
+   opened card too, and each explanation opens on click.
 4. Add independent P and V filters. P alone includes all Values in that
    Priority; V alone includes all Priorities in that Value; both together
    select their intersection, including P1V2 and P3V1. Combine them with the
    board's existing question filters and Owner-selected fixed-batch behavior.
+   Since 2026-10-09 the filters are P1–P4 and V1–V4 chips, not dropdowns.
    Explicit selection of a slice does not change its grades or inject
    unrelated questions. Decision-group navigation must keep matching member
    questions reachable without inventing one aggregate P/V score for a group.
@@ -331,6 +335,45 @@ CIC labels and meanings. Apply them as follows:
 6. Prove this on the real Grill Board inventory first. DQC P/V, a separate
    automatic recommended-batch feature and a generalized ongoing maintenance
    system are outside this slice. P/V supplies guidance; the Owner chooses the queue.
+
+### Confirmed Grilling Board corrections — 2026-10-09
+
+After the first answering round on draft PR #440, Kayden confirmed three
+corrections to the Grilling Board page in chat on 2026-10-09; TK-007Z carries
+them as corrective work under this still-open Spec. His stated goal for them:
+less orchestration tax, an easier page to use and to understand without added
+mental strain.
+
+1. **P/V chips.** "The filters are all tax, none of them are helping me make
+   choices faster. I should be able to select the P or V values here and it
+   dynamically filter." P1–P4 and V1–V4 are clickable chips in the red P and
+   amber V badge colors. Chips in one row combine as OR, the two rows combine
+   as AND, and a row with no chip pressed means every grade; the list and every
+   count update on click. They replace the Priority and Value dropdowns. The
+   kind, topic and scale dropdowns fold under a closed **More filters** line:
+   a reversible default awaiting the owner's call between folding and removal.
+2. **Left navigation.** "Switch where the destination tracker, taskboard,
+   grilling board, drafts, wiki, etc are at the top to on the left side, that
+   should be my navigation pane." The five section links are a persistent
+   left pane; the Grilling Board filters sit under them in the same pane. The
+   `#section=` hash routes and back/forward behavior are unchanged, and a
+   narrow window stacks the pane instead of scrolling sideways.
+3. **Progressive disclosure.** "The Priority and Value need to be collapsed
+   even when I click into the card for more details. We need to progressively
+   disclose that info for me… we should keep them available on the page like
+   the links to the spec, ADR, and draft." An opened card shows only its
+   title, the question, the closed P/V badges (reasons open in place), one
+   compact row of links styled as links, the recommended answer and the answer
+   controls (Confirm, Rework wording, Change the why, Change, with the note
+   box). What it concerns, why it matters, what would change, consequences,
+   current text and full proposal, related cards and grilling history,
+   proposed wording, history and the comments-and-promotion block each start
+   as one closed line; the last names the card's workflow state while closed.
+
+Not part of this: the owner's tentative note that leaving a topic needs a
+visible control rather than a dropdown, and his unconfirmed note about editable
+owner notes. A "Tax" note from the owner on this page means the item or layout
+was too hard to understand and is a defect to fix, not a verdict.
 
 ## Decisions And Contracts
 
@@ -630,6 +673,16 @@ before its draft PR into integration.
   Publish receipts with evidence and native source links; a knowledge-only
   decision shows its no-op reason and gains no Spec or Task.
 
+### Owner corrections of 2026-10-09 (TK-007Z)
+
+- [x] The P1–P4 and V1–V4 chips filter the list on click (OR within a row,
+  AND across rows, no chip means all) and replace the P/V dropdowns; the five
+  section links are a persistent left navigation pane with the Grilling Board
+  filters under them, hash routes intact and no horizontal scroll at a narrow
+  width; an opened card shows only its title, question, closed P/V badges,
+  link row, recommendation and answer controls, with every other part one
+  closed line.
+
 ## Verification Plan
 
 Use red/green tests at source-adapter and command boundaries, then browser
@@ -734,3 +787,4 @@ The Blueprint is unchanged, for the reason the decision gives.
 | 2026-10-08 | Separate-context review #12: fail on three new sentences; corrected | Candidate `eaa44c82ce07b24ccaf95a4e36b5432e8c99399d` (wording only; the Full suite passed all 60 commands on `1a7111c1` to 2026-10-08T20:29Z): a twelfth fresh reviewer confirmed nine of review #11's eleven corrections true and returned **fail** on three sentences written in that correction. The README said an approval's hash covers the "current text", which read as the target file's contents; the hash covers the question, its Current and Proposal fields, the draft, the source list as paths, labels and refs, the evidence and the revision, and never reads the target file (reproduced: appending to GB-0034's target DDR left its approval current). The re-read table claimed glossary latency was measured; only search and backlink latencies are recorded. The Whys paragraph pointed at a section name that does not exist. Corrected in the README and the re-read table, which also now says "verified understanding". The previous row's statement that the approval states and hash coverage were "stated as the code does them" was not yet true for the hash coverage until this correction. |
 | 2026-10-08 | Separate-context review #13: fail on the header count; corrected | Candidate `1095530ef9735bb8f211a8301b5bff4aea9e7dc6` (wording only; the Full suite passed all 60 commands on `eaa44c82` to 2026-10-08T20:40Z): a thirteenth fresh reviewer found every sentence and table cell changed by review #12's correction true (reproducing approved, stale and superseded approval states on GB-0034, including that appending to the target file leaves an approval current), re-checked the README and visible page text in full, and returned **fail** on one stale claim: the header said "after ten separate-context reviews" while twelve were recorded. The header no longer carries a count. Precision notes corrected: the README's two hash descriptions now name the Current and Proposal fields and the brief's "What this concerns" list as the evidence the hash covers; the page's stale-approval line says the confirmed wording no longer matches the question's current revision (a title-only revise also stales it); the Drafts to approve introduction says confirming freezes the proposed wording shown and that a revised question or draft makes it stale. Accepted as noted: the Drafts to approve approval state checks only the hash and revision, so a card with a pending Change request can show Approved there while the workflow does not count it as confirmed, as the README describes. |
 | 2026-10-08 | Separate-context review #14: pass; Full suite on the reviewed candidate | Candidate `fdefa9cad1ba09ae33de20f2e7e6a2dbb4dbebb2`: the Full suite passed all 60 commands on a clean detached worktree (2026-10-08T20:51Z to 21:06Z; it also passed on `1095530e` to 20:53Z). A fourteenth fresh reviewer confirmed the diff since `1095530e` touches only the Spec, README, two visible page strings and the generated board, with no logic change; found every changed sentence true against the approval snapshot and state code; found the header true without a count and matching the board row; confirmed the review #13 row, the append-only rows, unchanged acceptance lines, TK-007Y `ready`, and no Lexicon or item-revision change; and returned **pass** with no blocking or should-fix finding. Notes kept: the six Tasks were closed before reviews #5 to #13, which "are closed" states as a present fact; and the stale-approval line is exact because every board writer that changes hashed content also bumps the revision. This row and the Next gate are the only changes after the reviewed candidate. |
+| 2026-10-09 | TK-007Z | Task closed | Three red-then-green page tests in tools/test-dashboard-board.mjs; both board test files green; validate ok; browser check at desktop and 375px; Full suite 60/60 on candidate 2586e260 | Grill Board README and S-004D Spec updated; Wiki checked, no page describes the board layout, no update needed | More filters fold awaits the owner's call; All stages still lists withdrawn questions; notes 3 and 5 not built |

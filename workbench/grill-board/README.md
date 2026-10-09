@@ -146,15 +146,23 @@ entry instead, so a regrade never stales an owner answer.
 
 On the page, red **P** and amber **V** badges sit on the right of each question
 row; clicking one opens only its own reason, without opening or answering the
-question. The central question view shows P, V and both reasons beside the
-unchanged question, proposal, sources, history and answer controls. The
-**Priority** and **Value** filters are independent: P alone includes every
-Value in that Priority, V alone every Priority in that Value, and both select
-their intersection (for example P1V2 or P3V1). They combine with topic, kind,
-scale, workflow stage and search; **Clear all filters** clears them too. Topic
-cards count and open only matching questions and show no grade of their own. A
-batch started from a P/V slice keeps its members and their revisions through
-saves, later filters, regrades and reloads.
+question. The opened question shows the same closed badges under its question;
+a reason opens in place on click, and the latest reassessment, when there is
+one, is one closed line beside them (the owner, 2026-10-09: P and V stay
+collapsed even on the opened card). In the left pane, **P1–P4** and **V1–V4**
+chips in the badge colors filter the list the moment they are clicked: chips
+in one row combine as OR, the two rows combine as AND, and a row with no chip
+pressed means every grade, so P alone includes every Value in that Priority,
+V alone every Priority in that Value, and both select their intersection (for
+example P1V2 or P3V1). Each chip shows how many questions it would show with
+the other filters as they are; an **Unclassified** chip appears only while an
+open question has no grade. The chips replaced the Priority and Value
+dropdowns on 2026-10-09 ("the filters are all tax"). They combine with the
+workflow-stage chips, the search and the kind, topic and scale dropdowns,
+which now sit under a closed **More filters** line; **Clear all filters**
+clears them all. Topic cards count and open only matching questions and show
+no grade of their own. A batch started from a P/V slice keeps its members and
+their revisions through saves, later filters, regrades and reloads.
 
 ### Always open: the login service
 
@@ -251,9 +259,12 @@ node tools/grill-board.mjs serve --path ROOT --port N
 ```
 
 `--path` defaults to the current checkout and `--port` to 4646; the server
-binds 127.0.0.1 only. Open `http://127.0.0.1:N/`. The five section tabs are
-ordinary links, reachable with Tab and Enter; the current section stays in the
-address (`#section=tracker`, `#section=taskboard`, `#section=grilling`,
+binds 127.0.0.1 only. Open `http://127.0.0.1:N/`. The five section links are
+the left navigation pane (the owner, 2026-10-09; they were a top bar before),
+ordinary links reachable with Tab and Enter; on the Grilling Board its filters
+sit under them in the same pane, and at a narrow window the pane stacks above
+the content instead of forcing a sideways scroll. The current section stays in
+the address (`#section=tracker`, `#section=taskboard`, `#section=grilling`,
 `#section=drafts`, `#section=wiki`), so a reload returns to it. The search box
 in the top bar searches questions and Wiki pages (`#search=...`); when the
 server offers no full-text search the page says so and matches titles,
@@ -268,6 +279,15 @@ identifiers, question text and paths only.
   only when opened. Every card opens one inspector: title first, ID second,
   status, source path and revision, relationships, and the readable source.
 - **Grilling Board**: the questions; see the answer controls and P/V above.
+  An opened question shows its title, the question, the closed P and V
+  badges, one row of links (Wiki sources, decision records and the card's
+  sources, styled as links), the recommended answer and the answer controls.
+  Everything else starts as one closed line that opens on click: what it
+  concerns, why it matters, what would change, consequences, current text and
+  full proposal, related cards and grilling history, proposed wording, history,
+  and the comments-and-promotion block, whose closed line names the card's
+  workflow state (the owner, 2026-10-09: "hide bits of the card from me that
+  are not as important until I need them").
   Type a note, choose an answer; changes save as you go (the card says
   "Saved <time>"), except on a card with an answer conflict or a retired answer
   word, where the card asks you to choose an answer first. A save refused because the question changed (409) keeps your
@@ -400,7 +420,7 @@ history, with the full source available; they do not simulate LANDMARK.md.
 
 Reader URLs use a hash, for example
 <http://127.0.0.1:4646/#artifact=BLUEPRINT.md>. The browser's back/forward buttons and
-the section tabs preserve the question DOM, saved notes, queued saves and
+the section links preserve the question DOM, saved notes, queued saves and
 unsaved notes. A question's artifact links open its reading
 page, and each proposal links back to its own question. Relative links between
 cataloged artifacts resolve inside the reader, including section anchors. Other
