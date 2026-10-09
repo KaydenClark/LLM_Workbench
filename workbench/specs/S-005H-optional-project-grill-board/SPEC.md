@@ -119,8 +119,9 @@ Original delivery evidence: the component at e65c2d6a passed 32 public deploymen
 covers full current/draft sources, answer history, revision, stale refusal,
 fresh confirmation/application, same-origin isolation and literal framing.
 The original preflight findings were corrected before PR443 integrated. The
-post-merge review findings now continue TK-001 and require fresh proof, review,
-integration identity/CI and the RingWorld refresh under the obligations above. Owner Human QA, main promotion and PC access are not
+post-merge review findings reopened TK-001; the corrective proof below addresses
+them. Fresh assembled review, integration identity/CI and the RingWorld refresh
+remain delivery gates under the obligations above. Owner Human QA, main promotion and PC access are not
 asserted by this result.
 
 Corrective delivery evidence: the three PR443 findings have failing regressions
