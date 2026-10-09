@@ -3,13 +3,13 @@
 **Spec ID:** S-005H
 **Status:** active
 **Priority:** 1
-**Owner:** codex-board-worker
+**Owner:** codex-board-corrections
 **Stance:** Builder
 **Updated:** 2026-10-09
 **Catalog description:** Deploy the existing Grilling Board optionally into an adopted project with safe initialization, project framing, links and isolated owner answers.
 **Blockers:** none
-**Latest event:** TK-001 closed with proof.
-**Next gate:** Owner Human QA and main promotion remain owner-only; downstream deployment proof belongs to the pilot.
+**Latest event:** TK-001 claimed by codex-board-corrections.
+**Next gate:** Finish corrective full verification, close TK-001 and obtain fresh assembled review, then integration and downstream pilot refresh.
 **Baseline:** green - source evaluator self-test passes, local score 113 at integration e81fe43fdc6273221dbb484c3f7dd9a49b523e0a; doctor has no all/selection blockers, existing drift retained.
 
 ## Outcome
@@ -22,6 +22,22 @@ questions or answers or installing a full Dashboard.
 
 Owner, 2026-10-09, RingWorld progress: “Yes, let's get it all fixed an put it on integration please” in response to the bounded reusable deployment proposal.
 Base integration e81fe43fdc6273221dbb484c3f7dd9a49b523e0a; authenticated GitHub KaydenClark. Open draft PR440 at f1fa3f2 changes producer tools/grill-board.mjs, index.html, tests, S-004D, Runbook and Wiki. PR441 changes that server's entry guard. Dashboard handoff dashboard-claude-director-first-pass-2026-10-08.md inspected; the wider first pass belongs to that director. Avoid those implementation/content files and do not import those PRs or contact Claude. New optional-component files own this work; root Runbook suite/projections may gain bounded additions without changing the Dashboard workflow. No S-004D Task/claim transfers.
+
+## Corrective Return: PR443
+
+Integration at 80b17b65f3238dc205c0c27428a295be7162e7ad contains the original
+component. Its later automated review identified three bounded deployment
+findings; verdict 2 reopens TK-001 while preserving the earlier proof. Current
+Dashboard PR440 at 685fb2df and PR441 do not edit the optional component files.
+This pass owns only those files, their test and their existing documentation.
+No producer source, Dashboard state, root controls or other Spec claims transfer.
+
+Map and Plan: retain the current deployment contract and correct equivalent JSON
+comparison, the config-input ancestor guard and target-origin provenance. Add
+failing public-seam regressions, fix each with native Node/Git capabilities,
+then rerun all required checks and independent assembled review before integration.
+The downstream RingWorld writer owns its later pinned refresh; this pass changes
+no RingWorld content or runtime. No main promotion is authorized.
 
 ## Desired Behavior
 
@@ -93,18 +109,17 @@ Do not alter existing producer question/answer stores or S-004D.
 | 2026-10-09 | TK-001 | Coordinate and pin source before writes | Auth KaydenClark; integration e81fe43f; open PR440/441 exact overlap inspected; baseline evaluator passes; doctor no all/selection blocker; pre self-drift cleanUpdate false, 25 existing findings | Separate Spec and component lane; dashboard handoff read | Component delivery, full checks, review, integration and pilot pending |
 | 2026-10-09 | TK-001 | Task closed | All56 required checks pass at clean code e65c2d6a in816.9s;32 deployment checks;exact-head GitHub CI SUCCESS;disposable owner answer/history/revise/stale/refreshed-confirm/apply and isolation browser proof;corrected literal rendering smoke. | Optional guide/Runbook/Wiki;verified acceptance and bounded Completion Result;proof/verification-summary.json and proof/browser-qa.md. | Independent final assembled review then integration merge/readback/CI and required RingWorld feature refresh;owner Human QA and PC route separate. |
 | 2026-10-09 | review | Review verdict: pass at 2105e622d52ff103a741603d9d1f70c8a4443a31 [48fe7930e462] #1 | none;fresh delivery context verified32deployment/16producer checks,native complete/no gaps,guide correction,unchanged testedcode/Wiki,150page aggregate with inheriteddrift retained,all downstream obligations preserved. Final CI/integration/pilot gates remain;notownerQA/globalclean. | Codex fresh read-only context review_optional_board_delivery_candidate; inherited model, specific model ID unavailable | 3 |
+| 2026-10-09 | review | Review verdict: fail at 80b17b65f3238dc205c0c27428a295be7162e7ad [48fe7930e462] #2 | continue TK-001: PR443 automated review found reordered JSON object keys falsely treated as a configuration change; continue TK-001: PR443 automated review found configuration input linked parents accepted; continue TK-001: PR443 automated review found configured repository could differ from target origin | Codex GitHub automated review of b85c0f0, PR443 review 5465787376, received after integration | 3 |
 
 ## Completion Result
 
-The optional component meets the four source acceptance criteria. Corrected
-code at e65c2d6a passed 32 public deployment checks, all 56 required checks in
+The original component at e65c2d6a passed 32 public deployment checks, all 56 required checks in
 816.9 seconds, and the exact-head GitHub verify job. Disposable browser proof
 covers full current/draft sources, answer history, revision, stale refusal,
 fresh confirmation/application, same-origin isolation and literal framing.
-The two independent preflight findings were corrected with failing regressions
-then green checks. This result is component verification only. Independent review, integration
-identity/CI and the RingWorld refresh require their own delivery proof under
-the obligations above. Owner Human QA, main promotion and PC access are not
+The original preflight findings were corrected before PR443 integrated. The
+post-merge review findings now continue TK-001 and require fresh proof, review,
+integration identity/CI and the RingWorld refresh under the obligations above. Owner Human QA, main promotion and PC access are not
 asserted by this result.
 
 ## Remaining Limitations
