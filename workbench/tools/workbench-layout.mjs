@@ -57,7 +57,7 @@ export const coordinationSkills = ['director', 'dispatcher', 'spec-planner', 'sp
 // harness improvement for one observed job (baseline, earliest gap, smallest
 // owning intervention, native verification, fresh rerun, then retain, revise
 // or remove), after `workbench-runtime` and ahead of the coordination entries.
-export const coreSkills = [...currentCoreSkills, 'carry', 'notepad', 'save', 'promote', 'handoff', 'grill-me', 'workbench-runtime', 'improve-harness', ...coordinationSkills, ...stanceSkills];
+export const coreSkills = [...currentCoreSkills, 'carry', 'notepad', 'save', 'promote', 'handoff', 'grill-me', 'workbench-runtime', 'improve-harness', 'writing-for-agents', 'retro', ...coordinationSkills, ...stanceSkills];
 export const lanes = LANES;
 export const collections = COLLECTIONS;
 export const controls = ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md'];
@@ -458,7 +458,8 @@ export function validateManifest(project) {
   if (![lanes, SIX_LANES].some((shape) => JSON.stringify(manifest.lanes) === JSON.stringify(shape))) {
     return fail('invalid-lane', 'Manifest lanes must exactly match the seven support lanes, or the six lanes declared before the skills lane.', { lanes: manifest.lanes });
   }
-  if (!allowedCollectionShapes.some(shape => JSON.stringify(manifest.collections) === JSON.stringify(shape))) {
+  const { cdr, ...requiredCollections } = manifest.collections ?? {};
+  if ((cdr !== undefined && cdr !== 'workbench/docs/cdr') || !allowedCollectionShapes.some(shape => JSON.stringify(requiredCollections) === JSON.stringify(shape))) {
     return fail('invalid-collection', `Manifest collections must match the current layout or a preserved earlier collection set; the additive features collection, when declared, is ${collections.features}.`, { collections: manifest.collections });
   }
   for (const lane of Object.values(manifest.lanes)) {
@@ -1106,9 +1107,11 @@ function migrateUnlocked(options) {
     // `ddr` and a room stamped with the pre-DDR set gains `ddr` onward.
     // S-003Z TK-008D: a room stamped with the current pre-landmark set gains
     // only `landmarks`. Every addition is checked before the first one writes.
-    const additive = JSON.stringify(manifest.collections) === JSON.stringify(PRE_FEATURE_COLLECTIONS) ? ['features', 'ddr', 'landmarks']
-      : JSON.stringify(manifest.collections) === JSON.stringify(PRE_DDR_COLLECTIONS) ? ['ddr', 'landmarks']
-      : JSON.stringify(manifest.collections) === JSON.stringify(PRE_LANDMARK_COLLECTIONS) ? ['landmarks'] : null;
+    const { cdr, ...migrationCollections } = manifest.collections;
+    const updatedCollections = { ...collections, ...(cdr === undefined ? {} : { cdr }) };
+    const additive = JSON.stringify(migrationCollections) === JSON.stringify(PRE_FEATURE_COLLECTIONS) ? ['features', 'ddr', 'landmarks']
+      : JSON.stringify(migrationCollections) === JSON.stringify(PRE_DDR_COLLECTIONS) ? ['ddr', 'landmarks']
+      : JSON.stringify(migrationCollections) === JSON.stringify(PRE_LANDMARK_COLLECTIONS) ? ['landmarks'] : null;
     if (additive) {
       const blocked = additivePreflight(project, additive);
       if (blocked) return blocked;
@@ -1124,11 +1127,11 @@ function migrateUnlocked(options) {
       }
       const addedLandmarks = addLandmarksCollection(project);
       if (addedLandmarks.status) return addedLandmarks;
-      const updated = { ...manifest, collections };
+      const updated = { ...manifest, collections: updatedCollections };
       writeSafeFile(project, manifestPath, `${JSON.stringify(updated, null, 2)}\n`);
       return report('migrated', { manifestPath, manifest: updated, moved: [], added: additive.map(name => `collections.${name}`), ...(seeded ? { seeded } : {}) });
     }
-    if (JSON.stringify(manifest.collections) === JSON.stringify(collections)) {
+    if (JSON.stringify(migrationCollections) === JSON.stringify(collections)) {
       try { assertSafeReadPath(project, path.join(project, SEED_RECORD)); }
       catch (error) { return fail('lane-collision', error.message); }
       const seeds = readSeedRecord(project);
@@ -1160,7 +1163,7 @@ function migrateUnlocked(options) {
     const addedLandmarks = addLandmarksCollection(project);
     if (addedLandmarks.status) return addedLandmarks;
     writeSessionsIgnore(project);
-    const updated = { ...manifest, workbenchId: manifest.workbenchId ?? allocateWorkbenchId(), collections, provenance: { ...manifest.provenance, layout: { source } } };
+    const updated = { ...manifest, workbenchId: manifest.workbenchId ?? allocateWorkbenchId(), collections: updatedCollections, provenance: { ...manifest.provenance, layout: { source } } };
     writeSafeFile(project, manifestPath, `${JSON.stringify(updated, null, 2)}\n`);
     const documents = writeSeedDocuments(project, { '--version': source.release });
     return report('migrated', { manifestPath, manifest: updated, moved: [], documents });

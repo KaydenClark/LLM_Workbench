@@ -24,7 +24,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
-import { listAdrs } from '../workbench/tools/adr.mjs';
+import { listAdrs, resolveRecord } from '../workbench/tools/adr.mjs';
 
 export const ITEMS_SCHEMA = 'grill-board/items@1';
 export const ANSWERS_SCHEMA = 'grill-board/answers@1';
@@ -245,8 +245,62 @@ export function mergeBoard(root) {
     itemsMtime: fs.statSync(paths.items).mtimeMs,
     groups: board.groups,
     counts,
-    items
+    items,
+    decisions: board.decisions ? decisionGroups(root, board) : []
   };
+}
+
+// A primary record is navigation and rationale ownership, never approval of
+// all the member proposals. Grouping leaves each original question untouched.
+function validateDecisionGroups(root, board, groups) {
+  if (!Array.isArray(groups) || !groups.length) throw new BoardError('invalid-decisions', 'A complete nonempty decision map is required');
+  const records = new Set(), members = new Set();
+  for (const group of groups) {
+    if (!group || typeof group !== 'object' || !/^((ADR|DDR|CDR)-[0-9A-Z]+)$/.test(group.record ?? '')) throw new BoardError('invalid-decisions', 'Each group needs a decision-record identifier');
+    if (records.has(group.record)) throw new BoardError('invalid-decisions', `Duplicate record ${group.record}`);
+    records.add(group.record);
+    resolveRecord(root, group.record);
+    for (const field of ['question', 'why', 'proposal']) if (!isString(group[field]) || !group[field].trim()) throw new BoardError('invalid-decisions', `${group.record}: missing ${field}`);
+    if (!Array.isArray(group.members) || !group.members.length) throw new BoardError('invalid-decisions', `${group.record}: members required`);
+    for (const id of group.members) {
+      findItem(board, id);
+      if (members.has(id)) throw new BoardError('invalid-decisions', `${id} has more than one primary record`);
+      members.add(id);
+    }
+    if (group.prompt !== null) {
+      const prompt = findItem(board, group.prompt);
+      if (!group.members.includes(group.prompt) || !['choice', 'owner-decision', 'confirm-ddr'].includes(prompt.kind)) throw new BoardError('invalid-decisions', `${group.record}: prompt must be a member decision question, never a Spec approval`);
+    }
+  }
+  const missing = board.items.filter(item => !members.has(item.id));
+  if (missing.length) throw new BoardError('invalid-decisions', `Questions without a decision record: ${missing.map(item => item.id).join(', ')}`);
+}
+
+export function reconcileDecisions(root, groups, { by, reason }) {
+  if (!by || !reason) throw new BoardError('invalid-invocation', '--by and --reason are required');
+  const board = readItems(root);
+  validateDecisionGroups(root, board, groups);
+  board.decisions = groups;
+  board.decisionHistory = [...(board.decisionHistory ?? []), { at: now(), by, reason }];
+  writeJsonAtomic(boardPaths(root).items, board);
+  return { records: groups.length, questions: board.items.length };
+}
+
+export function decisionGroups(root, board = readItems(root)) {
+  if (!board.decisions) return [];
+  // Subsequent additions stay visible under Unassigned until explicitly
+  // reconciled. The full-map write above cannot silently omit a question.
+  const seen = new Set();
+  return board.decisions.map(group => {
+    const record = resolveRecord(root, group.record);
+    const members = group.members.map(id => {
+      const item = findItem(board, id);
+      if (seen.has(id)) throw new BoardError('invalid-decisions', `${id} has duplicate primary records`);
+      seen.add(id);
+      return { id, revision: item.revision };
+    });
+    return { ...group, members, title: record.title, status: record.status, path: record.relativePath };
+  });
 }
 
 export function allocateId(board) {
@@ -375,7 +429,9 @@ export function recordAnswer(root, id, { verdict, note, itemRevision }) {
 
 export function pendingForAgents(root) {
   const view = mergeBoard(root);
-  return view.items.filter((item) => item.derivedStatus === 'answered').map((item) => ({
+  return view.items.filter((item) => item.derivedStatus === 'answered').map((item) => {
+    const decision = view.decisions.find(group => group.prompt === item.id);
+    return {
     id: item.id,
     key: item.key,
     group: item.group,
@@ -390,8 +446,14 @@ export function pendingForAgents(root) {
     answeredAt: item.answer.at,
     proposal: item.proposal,
     brief: item.brief,
-    sources: item.sources
-  }));
+    sources: item.sources,
+    decision: decision ? {
+      record: decision.record,
+      scope: 'principle-only',
+      members: decision.members
+    } : null
+    };
+  });
 }
 
 export function statusSummary(root) {
@@ -429,9 +491,9 @@ export function readSourceFile(root, requested) {
 
 export function artifactCatalog(root) {
   const manifest = readJson(path.join(root, 'workbench/manifest.json'));
-  const groups = ['agents', 'runbook', 'blueprint', 'lexicon', 'landmarks', 'adrs', 'ddrs'].map((id, index) => ({ id, title: ['AGENTS', 'RUNBOOK', 'BLUEPRINT', 'LEXICON', 'Landmarks', 'ADRs', 'DDRs'][index] }));
+  const groups = ['agents', 'runbook', 'blueprint', 'lexicon', 'landmarks', 'adrs', 'ddrs', 'cdrs'].map((id, index) => ({ id, title: ['AGENTS', 'RUNBOOK', 'BLUEPRINT', 'LEXICON', 'Landmarks', 'ADRs', 'DDRs', 'CDRs'][index] }));
   const artifacts = groups.slice(0, 4).map(group => ({ group: group.id, path: `${group.title}.md`, title: group.title, status: 'current', format: 'markdown' }));
-  for (const kind of ['adr', 'ddr']) {
+  for (const kind of ['adr', 'ddr', 'cdr']) {
     if (!manifest.collections?.[kind]) continue;
     for (const record of listAdrs(root, { kind })) artifacts.push({ group: `${kind}s`, path: record.relativePath, title: record.title || record.id, id: record.id, status: record.status || 'unknown', format: 'markdown' });
     for (const name of ['REGISTER.md', 'HISTORY.md']) {
@@ -468,7 +530,7 @@ export function readArtifact(root, requested) {
     proposal: item.proposal, draft: item.draft, sources: item.sources.filter(source => source.path === requested),
     // Only a review of this exact complete text is labeled full-text. Other
     // drafts can be fragments or unrelated acceptance text; never infer a replacement.
-    draftKind: !item.draft ? 'none' : ['confirm-text', 'confirm-ddr'].includes(item.kind) && item.sources[0]?.path === requested ? 'full-text' : 'excerpt',
+    draftKind: !item.draft ? 'none' : item.sources[0]?.path === requested && (['confirm-text', 'confirm-ddr'].includes(item.kind) || item.draft === text) ? 'full-text' : 'excerpt',
     snapshotAt: board.generatedAt,
     itemUpdatedAt: item.history.at(-1)?.at || board.generatedAt
   }));
@@ -633,6 +695,12 @@ export async function main(argv) {
       out(flags, item, `${id} is now revision ${item.revision}; the owner's earlier answer, if any, shows as needing a fresh look`);
       return;
     }
+    case 'reconcile': {
+      if (!flags.file) throw new BoardError('invalid-invocation', '--file needs the complete decision group array');
+      const result = reconcileDecisions(root, readJson(path.resolve(flags.file)), { by: flags.by, reason: flags.reason });
+      out(flags, result);
+      return;
+    }
     case 'apply': {
       if (!id) throw new BoardError('invalid-invocation', USAGE);
       const item = applyAnswer(root, id, { by: flags.by, where: flags.where, note: isString(flags.note) ? flags.note : '' });
@@ -647,6 +715,7 @@ export async function main(argv) {
     }
     case 'validate': {
       const board = readItems(root);
+      if (board.decisions) validateDecisionGroups(root, board, board.decisions);
       const answers = readAnswers(root);
       const ids = new Set(board.items.map((item) => item.id));
       const orphan = Object.keys(answers.answers).filter((answerId) => !ids.has(answerId));

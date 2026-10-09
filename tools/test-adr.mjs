@@ -12,6 +12,47 @@ import { doctor, render } from '../workbench/tools/spec-workbench.mjs';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const layout = path.join(root, 'workbench', 'tools', 'workbench-layout.mjs');
 const adrTool = path.join(root, 'workbench', 'tools', 'adr.mjs');
+
+test('CDRs use the shared decision lifecycle and keep older rooms valid', () => {
+  const dir = fixture();
+  try {
+    assert.throws(() => newAdr(dir, { kind: 'cdr', title: 'Reuse consequential decisions' }), /not declared/);
+    const file = path.join(dir, 'workbench/manifest.json');
+    const manifest = JSON.parse(fs.readFileSync(file));
+    manifest.collections.cdr = 'workbench/docs/cdr';
+    fs.writeFileSync(file, JSON.stringify(manifest));
+    const created = newAdr(dir, { kind: 'cdr', title: 'Reuse consequential decisions', date: '2026-10-06' });
+    assert.match(created.id, /^CDR-/);
+    assert.equal(showRecord(dir, created.id).status, 'proposed');
+    assert.match(showRecord(dir, created.id).content, /rationale|why/);
+    const beforeMigration = fs.readFileSync(file, 'utf8');
+    const migration = spawnSync(process.execPath, [layout, 'migrate', '--project', dir, '--version', VERSION], { encoding: 'utf8' });
+    assert.equal(migration.status, 0, migration.stdout + migration.stderr);
+    assert.equal(fs.readFileSync(file, 'utf8'), beforeMigration, 'a current room keeps its optional CDR collection during migration');
+    const recordBefore = showRecord(dir, created.id).content;
+    delete manifest.collections.landmarks;
+    fs.writeFileSync(file, JSON.stringify(manifest));
+    const additiveMigration = spawnSync(process.execPath, [layout, 'migrate', '--project', dir, '--version', VERSION], { encoding: 'utf8' });
+    assert.equal(additiveMigration.status, 0, additiveMigration.stdout + additiveMigration.stderr);
+    assert.equal(JSON.parse(fs.readFileSync(file)).collections.cdr, 'workbench/docs/cdr', 'adding a missing mandatory collection retains optional CDRs');
+    assert.equal(showRecord(dir, created.id).content, recordBefore, 'migration preserves the CDR itself');
+    writeDecisionRegisters(dir);
+    assert.deepEqual(validateDecisionRecords(dir), []);
+    assert.equal(listRecords(dir).filter(record => record.kind === 'cdr').length, 1);
+    assert.equal(searchRecords(dir, 'Reuse', { kind: 'cdr' }).length, 1);
+    acceptRecord(dir, created.id);
+    assert.equal(showRecord(dir, created.id).status, 'accepted');
+    const successor = newAdr(dir, { kind: 'cdr', title: 'Reuse decisions within their scope' });
+    acceptRecord(dir, successor.id);
+    supersedeRecord(dir, created.id, successor.id);
+    assert.equal(showRecord(dir, created.id).status, 'superseded');
+    const ended = newAdr(dir, { kind: 'cdr', title: 'A temporary operating policy' });
+    acceptRecord(dir, ended.id);
+    deprecateRecord(dir, ended.id, 'Fixture policy ended');
+    assert.equal(showRecord(dir, ended.id).status, 'deprecated');
+    assert.deepEqual(validateDecisionRecords(dir), []);
+  } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+});
 const VERSION = JSON.parse(fs.readFileSync(path.join(root, 'workbench', 'manifest.json'), 'utf8')).workbenchVersion;
 
 function fixture() {
@@ -582,7 +623,8 @@ test('every intra-ADR link in the real corpus resolves literally, and the re-cou
   assert.equal(filesWithLink, 48, 're-count of ADR files carrying an intra-ADR link at this candidate');
   // S-004H TK-008C: ADR-000G's workflow-map route moved from the Blueprint's retired Desired Lifecycle to the workflow Wiki page, one more counted edge.
   // S-004G TK-006F: the ADR-000X amendment links ADR-000A and the release proof decision, two more edges.
-  assert.equal(totalLinks, 120, 're-count of total intra-ADR link edges at this candidate');
+  // The CDR scope amendment adds one edge to the decision-reuse record.
+  assert.equal(totalLinks, 121, 're-count of total decision-record link edges at this candidate');
 });
 
 // S-00I TK-001 review correction: a link is validated literally, never
@@ -1036,7 +1078,7 @@ test('new --kind ddr writes the next DDR into ddr/proposed with the DDR identifi
     const listing = fs.readdirSync(path.join(collection, 'proposed')).sort();
     assert.throws(() => newAdr(dir, { kind: 'ddr', title: 'Must refuse' }), /ordinary, singly linked DDR file/);
     assert.deepEqual(fs.readdirSync(path.join(collection, 'proposed')).sort(), listing);
-    assert.throws(() => newAdr(dir, { kind: 'xdr', title: 'Unknown kind' }), /--kind must be adr or ddr/);
+    assert.throws(() => newAdr(dir, { kind: 'xdr', title: 'Unknown kind' }), /--kind must be adr, ddr or cdr/);
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }

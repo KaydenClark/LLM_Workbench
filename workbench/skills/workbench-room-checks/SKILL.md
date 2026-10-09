@@ -24,7 +24,7 @@ The core skills ship inside every room at the manifest-declared `skills` lane,
 for Codex, `.claude/skills` for Claude Code) are tracked relative links into
 that lane, so a fresh clone discovers the skills with no provider home and no
 personal catalog. This repository's lane is the authoring source for
-the 28 core skills listed in `workbench/skills/README.md`; every other room
+the 30 core skills listed in `workbench/skills/README.md`; every other room
 receives receipt-backed copies from the release checkout:
 
 ```bash
@@ -95,6 +95,10 @@ keeps `grilling/` and `handoffs/` untracked, and also denies the legacy spaced
 `grilling diary/` name that a stale installed skill may still write (an
 existing ignore file keeps its project rules and validates without that line);
 checkpoint history and reusable templates remain tracked; operational recovery stays local.
+The optional `cdr` collection is declared at `workbench/docs/cdr` only when a
+room uses residual Consequential Decision Records. It is not added to every
+room by `init`; existing layouts remain valid, and `migrate` preserves a present
+CDR declaration and its records while adding any missing mandatory collections.
 Exercise it from a disposable project directory:
 
 ```bash

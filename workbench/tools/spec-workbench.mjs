@@ -3080,7 +3080,7 @@ function recoverTaskCollision(rootDir, specId, taskId, folder, options) {
     if (fs.readFileSync(path.join(root, file), 'utf8').includes(relative(oldDir))) fail(`unhandled JSON path reference in ${file}; reconcile its owner first`);
   }
   const projections = [path.join(root, 'BLUEPRINT.md'), path.join(root, 'TASKBOARD.md'), path.join(resolveSpecsRoot(root).specsRoot, 'CATALOG.md')];
-  for (const collection of ['adr', 'ddr']) {
+  for (const collection of ['adr', 'ddr', 'cdr']) {
     if (fs.existsSync(collectionPath(root, collection))) projections.push(...['REGISTER.md', 'HISTORY.md'].map(name => path.join(collectionPath(root, collection), name)));
   }
   const originals = new Map();

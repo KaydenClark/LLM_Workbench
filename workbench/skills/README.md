@@ -1,7 +1,7 @@
 # Workbench Core Skills
 
 This directory is the self-contained, versioned LLM Workbench skill source. It
-is a closed 28-skill bundle (twenty workflow skills, four coordination skills
+is a closed 30-skill bundle (twenty-two workflow skills, four coordination skills
 and four portable stances), counted from the manifest and catalog below, for a
 brand-new installation, not a general catalog or a project-local discovery tree.
 The checked-out LLM Workbench release owns the exact source versions.
@@ -37,6 +37,8 @@ The checked-out LLM Workbench release owns the exact source versions.
 | `auditor` | Determine whether named claims hold on the assigned target and evidence. |
 | `reviewer` | Challenge candidate correctness, downstream impact and consequential claims. |
 | `reconciler` | Leave achieved work and its existing truth owners consistent for continuation. |
+| `writing-for-agents` | Write predictable agent instructions, useful pointers and checkable completion criteria within existing authority. |
+| `retro` | On explicit request, review a session and propose severity-ranked environment improvements with evidence, owners and verification paths. |
 <!-- core-skills:end -->
 
 ## Maintainer skills

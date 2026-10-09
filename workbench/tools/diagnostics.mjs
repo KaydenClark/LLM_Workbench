@@ -135,6 +135,7 @@ const registry = Object.freeze({
   'invalid-adr': entry('error', 'adr', 'none', 'an ADR is missing required frontmatter or names an unknown canonicalization target'),
   // S-003X TK-004X: a Destination Decision Record's own validation finding.
   'invalid-ddr': entry('error', 'adr', 'none', 'a DDR is missing required frontmatter, names an unknown canonicalization target, or names the Wiki in canonicalized_in'),
+  'invalid-cdr': entry('error', 'adr', 'none', 'a CDR is missing required frontmatter or names an unknown canonicalization target'),
   // Shared since S-00V TK-00J: the ADR validator, the Spec packet checks and
   // the wiki validator emit it. A live session record may be committed
   // temporarily for a continuation, so the code's name predates that; what it

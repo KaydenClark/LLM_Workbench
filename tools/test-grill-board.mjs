@@ -13,11 +13,38 @@ import test from 'node:test';
 import vm from 'node:vm';
 import {
   ANSWERS_SCHEMA, ITEMS_SCHEMA, addItems, applyAnswer, boardPaths, createServer, itemStatus, mergeBoard,
-  pendingForAgents, readAnswers, readItems, readSourceFile, recordAnswer, reviseItem, statusSummary, withdrawItem
+  pendingForAgents, readAnswers, readItems, readSourceFile, recordAnswer, reviseItem, statusSummary, withdrawItem,
+  reconcileDecisions, decisionGroups
 } from './grill-board.mjs';
 
 const repo = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const tool = path.join(repo, 'tools', 'grill-board.mjs');
+
+test('decision reconciliation covers every question once and preserves answers and item revisions', () => {
+  const dir = room();
+  fs.writeFileSync(path.join(dir, 'workbench/manifest.json'), JSON.stringify({ collections: { adr: 'workbench/docs/adr' } }));
+  fs.mkdirSync(path.join(dir, 'workbench/docs/adr'), { recursive: true });
+  fs.writeFileSync(path.join(dir, 'workbench/docs/adr/000A-context.md'), '---\ndate: 2026-10-06\ncanonicalized_in:\n  - workbench/grill-board/items.json\n---\n\n# Preserve context\n\nWhy: decisions must outlive a chat.\n');
+  addItems(dir, [sample('a'), sample('b', { kind: 'approve-spec' })], { by: 'tester' });
+  recordAnswer(dir, 'GB-0001', { verdict: 'confirm', note: 'my reason', itemRevision: 1 });
+  const before = fs.readFileSync(boardPaths(dir).answers, 'utf8');
+  const items = readItems(dir).items;
+  const groups = [{ record: 'ADR-000A', members: ['GB-0001', 'GB-0002'], prompt: 'GB-0001', question: 'Why must context survive?', why: 'Reuse the reason.', proposal: 'Preserve decisions before cleanup.' }];
+  reconcileDecisions(dir, groups, { by: 'tester', reason: 'owner asked for decision groups' });
+  assert.deepEqual(readItems(dir).items, items, 'navigation must not rewrite any proposal or revision');
+  assert.equal(fs.readFileSync(boardPaths(dir).answers, 'utf8'), before);
+  const result = decisionGroups(dir);
+  assert.equal(result[0].record, 'ADR-000A');
+  assert.equal(result[0].status, 'accepted');
+  assert.equal(result[0].members.length, 2);
+  assert.equal(mergeBoard(dir).items[1].derivedStatus, 'pending', 'a principle answer never approves a member Spec');
+  assert.equal(mergeBoard(dir).decisions[0].record, 'ADR-000A');
+  for (const bad of [[], [{ ...groups[0], members: ['GB-0001'] }], [groups[0], groups[0]], [{ ...groups[0], record: 'ADR-999Z' }], [{ ...groups[0], prompt: 'GB-0002' }]]) {
+    const boardBefore = fs.readFileSync(boardPaths(dir).items, 'utf8');
+    assert.throws(() => reconcileDecisions(dir, bad, { by: 'tester', reason: 'bad map' }));
+    assert.equal(fs.readFileSync(boardPaths(dir).items, 'utf8'), boardBefore, 'invalid maps fail before writing');
+  }
+});
 
 function room() {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'grill-board-'));
@@ -233,7 +260,7 @@ test('artifact reader follows manifest collections, preserves full records and d
   const get = async p => (await fetch(base + p)).json();
   try {
     const catalog = await get('/api/artifacts');
-    assert.deepEqual(catalog.groups.map(g => g.id), ['agents', 'runbook', 'blueprint', 'lexicon', 'landmarks', 'adrs', 'ddrs']);
+    assert.deepEqual(catalog.groups.map(g => g.id), ['agents', 'runbook', 'blueprint', 'lexicon', 'landmarks', 'adrs', 'ddrs', 'cdrs']);
     assert.ok(catalog.artifacts.some(a => a.title === 'Accepted decision' && a.status === 'accepted'));
     assert.ok(catalog.artifacts.some(a => a.title === 'Proposed decision' && a.status === 'proposed'));
     assert.ok(catalog.artifacts.some(a => a.title === 'Old decision' && a.status === 'superseded'));
@@ -310,8 +337,8 @@ test('the CLI exposes no command that writes answers.json and reports with exit 
 
 function sliceModel() {
   const html = fs.readFileSync(path.join(repo, 'workbench/grill-board/index.html'), 'utf8');
-  const script = html.match(/<script>([\s\S]*?)<\/script>/)[1].replace('Promise.all([load()', 'window.sliceTest = { topicFor, intentFor, laneFor, sliceCounts, batchProgress, matchesSlice, state, TOPICS }; Promise.all([load()');
-  const context = vm.createContext({ document: { getElementById: () => ({}), documentElement: { dataset: {} } }, window: { addEventListener() {} }, setInterval() {}, URL, URLSearchParams, fetch: () => new Promise(() => {}) });
+  const script = html.match(/<script>([\s\S]*?)<\/script>/)[1].replace('Promise.all([load()', 'window.sliceTest = { topicFor, intentFor, laneFor, sliceCounts, batchProgress, matchesSlice, decisionMatches, decisionPromptItems, routePage, state, TOPICS, prepareRoute(hash) { location.hash = hash; render = () => {}; } }; Promise.all([load()');
+  const context = vm.createContext({ document: { getElementById: () => ({ scrollIntoView() {} }), querySelector: () => ({ classList: { toggle() {} } }), documentElement: { dataset: {} } }, window: { addEventListener() {}, scrollTo() {} }, location: { hash: '#questions' }, setInterval() {}, URL, URLSearchParams, fetch: () => new Promise(() => {}) });
   vm.runInContext(script, context);
   return context.window.sliceTest;
 }
@@ -328,6 +355,33 @@ test('board slices separate owner work, review, and exploration without losing a
   assert.equal(model.intentFor({ kind: 'choice' }), 'explore');
   assert.equal(model.matchesSlice({ id: 'GB-0018', kind: 'owner-decision', derivedStatus: 'pending', title: 'Maintainer procedures' }, { topic: 'context', intent: 'unblock', lane: 'pending', query: 'maintainer' }), true);
   assert.equal(model.matchesSlice({ id: 'GB-0018', kind: 'owner-decision', derivedStatus: 'pending' }, { topic: 'workflow' }), false);
+});
+
+test('decision progress counts rationale prompts while original approvals remain separately pending', () => {
+  const model = sliceModel();
+  model.state.board = { items: [
+    { id: 'GB-0020', title: 'Retirement QA', kind: 'approve-spec', derivedStatus: 'pending' },
+    { id: 'GB-0182', title: 'Underlying why', kind: 'owner-decision', derivedStatus: 'answered' }
+  ], decisions: [{ record: 'CDR-000A', members: [{ id: 'GB-0020' }, { id: 'GB-0182' }], prompt: 'GB-0182' }] };
+  assert.deepEqual(Array.from(model.decisionPromptItems(), item => item.id), ['GB-0182']);
+  assert.equal(model.sliceCounts(model.decisionPromptItems()).answered, 1);
+  assert.equal(model.decisionMatches(model.state.board.decisions[0], { topic: 'workflow', lane: 'answered' }), true, 'group topics come from related original questions');
+  assert.equal(model.decisionMatches(model.state.board.decisions[0], { lane: 'pending' }), false, 'an unanswered approval cannot make an answered principle pending');
+  assert.equal(model.state.board.items[0].derivedStatus, 'pending');
+});
+
+test('a reader question link opens its original question from the decision view without losing a draft', async () => {
+  const model = sliceModel();
+  const draft = { note: 'unfinished rationale', verdict: '' };
+  model.state.catalog = { groups: [], artifacts: [] };
+  model.state.board = { items: [{ id: 'GB-0012', title: 'Search corrections', kind: 'choice' }] };
+  model.state.view = 'decisions';
+  model.state.drafts.set('GB-0183', draft);
+  model.prepareRoute('#GB-0012');
+  await model.routePage();
+  assert.equal(model.state.view, 'questions', 'the existing question renderer must open the requested identity');
+  assert.equal(model.state.focus, 'GB-0012');
+  assert.equal(model.state.drafts.get('GB-0183'), draft);
 });
 
 test('workflow counts partition items and a parked or unsaved answer never finishes a batch', () => {

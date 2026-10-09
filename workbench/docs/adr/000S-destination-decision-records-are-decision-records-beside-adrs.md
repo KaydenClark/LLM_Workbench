@@ -6,6 +6,24 @@ canonicalized_in:
 
 # Destination Decision Records are decision records beside ADRs
 
+## Scope amendment — 2026-10-06
+
+The owner introduced Consequential Decision Records (CDRs) for consequential
+choices that fit neither architecture nor destination. All three kinds are
+consequential; CDR names the residual category. The original two-kind wording
+below preserves the 2026-10-01 decision. Its scope test now asks first whether
+this is architecture, then whether it defines the finished product's destination;
+other consequential choices belong in a CDR. The fact that a choice survives an
+architectural rebuild alone does not make it a destination choice.
+
+The three kinds share identity, folder lifecycle and tooling. The manifest's
+optional `cdr` collection is `workbench/docs/cdr`. Reuse or amend an existing
+record when it already owns the choice; split mixed decisions into linked
+records. The owner wants the Grill Board grouped by these records so underlying
+rationale and prior approvals guide later derivation without repeated decisions.
+See the [decision-reuse record](../cdr/000A-consequential-decisions-preserve-the-why-and-are-reused-before-asking-again.md)
+and the [board procedure](../../grill-board/README.md#decision-reconciliation-and-reuse).
+
 ## Decision
 
 The Workbench keeps two kinds of **decision record**. An ADR records a

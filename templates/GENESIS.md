@@ -379,7 +379,7 @@ Do not call bootstrap done on vibes. All of the following must hold:
 - [ ] One end-to-end path runs from a single command (the demo artifact).
 - [ ] `workbench/manifest.json` is schema 2 and declares the seven support
       lanes, twelve collections (with the additive `wiki/features` and
-      `docs/ddr`), wiki profile, exact 28-skill policy, version,
+      `docs/ddr`), wiki profile, exact 30-skill policy, version,
       the `git` block, and Genesis provenance with its source commit; the layout validator
       passes with `--genesis`. When it fails, its JSON `message` names the
       failing control or predicate, and first-spec and generated-region

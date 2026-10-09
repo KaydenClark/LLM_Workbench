@@ -187,6 +187,23 @@ still apply to individual claims in the current operation.
 | **Ticket** | Retired as a live term. `Task` names the execution slice. | Historical `TK-###` identifiers stay readable exactly as written in append-only evidence and are never rewritten; `TK` is the Task identifier prefix, so newly allocated slices keep the `TK-###` form. |
 | **Coordination hand-back** | A point during an assigned run where the owner had to supply something that was not a preference, tradeoff, authorization, or unavailable resource under `AGENTS.md`'s governing gate: a settled decision repeated, evidence already in the project located for the agent, a routine technical finding reconciled, or an already-authorized step prompted. | It is a defect in a record, route, skill, or tool, recorded per occurrence with its cause and smallest correction in the assigned spec's evidence log by the `carry` skill. Answering a genuine owner decision is not one, and neither is a new framework built in response to one. `AGENTS.md` Safety And Change Control owns when an owner is asked; these four reasons restate that gate and never widen it. |
 
+### Priority And Value
+
+**Priority** describes when to attend. **Value** describes return versus
+investment. They are separate classifications, never a summed score.
+
+| Priority: when to attend | Value: return versus investment |
+|---|---|
+| **P1 — Interrupt:** stop normal work | **V1 — Quick Win:** high return, low investment |
+| **P2 — Committed:** current expected work | **V2 — Strategic Value:** high return, high investment |
+| **P3 — Secondary:** when committed work allows | **V3 — Fill-In:** low return, low investment |
+| **P4 — Backlog:** retained without current expectation | **V4 — Defer / Eliminate:** low return, high investment |
+
+P1 remains an interrupt regardless of Value. Value informs choices within an
+attention lane; quick wins must not continually crowd out strategic work.
+An Owner-selected filter chooses a slice without changing either classification.
+Labels alone establish neither approval nor delivery state.
+
 ### Feedback Dispositions
 
 Every feedback finding has exactly one disposition from this closed set, recorded
@@ -290,7 +307,8 @@ collection and destination decisions in its `workbench/docs/ddr/` collection.
 | **Skills lane** | The `workbench/skills` lane: the core skills tracked inside this room, marked by a receipt naming their source release, commit and hash, and replaced only by the Workbench update. The tracked `.agents/skills` and `.claude/skills` links resolve into it. | A skill this room adds under another name is room-owned and never replaced by the update; a personal skills catalog is never on this room's critical path. |
 | **Collection** | A manifest-declared, machine-used directory inside a lane: `docs/adr`, `wiki/design-concepts`, `wiki/guidebooks`, `wiki/archive`, `sessions/grilling`, `sessions/handoffs`, `sessions/checkpoints`, `sessions/notepads`, `sessions/notepads/templates`, `sessions/recovery`, and the additive `wiki/features` and `docs/ddr`. | Collection names are lowercase; local notepads may use nested type folders; a collection is never promoted to a lane because its contents differ in kind. |
 | **ADR** | An architecture decision record in `workbench/docs/adr/`: title, decision, considered alternatives, consequences, provenance, and frontmatter naming its operational owners. | Active accepted ADR decision claims are architectural Canon; rationale and history remain distinct; `canonicalized_in` names operational owners. |
-| **Decision Record** | A record of one consequential decision and why it was made: an ADR for an architectural choice and a DDR for a destination choice. | Both are atomic, superseded whole and managed alike by one tool, `adr.mjs`, which creates, validates, registers, accepts, supersedes, deprecates and reads both. The test that chooses between them: would the choice still hold if the architecture were rebuilt differently? Yes is a DDR. One decision that needs both records links them rather than merging them. |
+| **Decision Record** | One consequential choice with its underlying why, scope, alternatives, consequences, source approvals and conditions for revisiting it. ADRs hold architecture choices; DDRs hold destination choices; CDRs hold other consequential choices. | All three share one tool and folder lifecycle. Reuse or amend a fitting record before creating another. A mixed decision links distinct records; a grouped rationale never automatically approves related work. |
+| **CDR** | A Consequential Decision Record for a consequential choice that is neither architecture nor destination. | The residual category beside ADRs and DDRs, not their umbrella. When declared, the `cdr` collection is `workbench/docs/cdr/`; `adr.mjs new --kind cdr` creates a proposed record. Accepted records live at the top level; superseded and deprecated records remain in `archive/`. |
 | **DDR** | A Destination Decision Record in `workbench/docs/ddr/`: one consequential choice about what the finished product must be or do, and why it was chosen over the alternatives, with the frontmatter keys `date`, `supersedes` and `canonicalized_in` and a free-prose body. | An active accepted DDR owns destination Canon beside the ADR; it serves a destination goal rather than an architecture choice. Lifecycle is its folder, as for an ADR: `proposed/`, the accepted top level, and the permanent `archive/`. `adr.mjs new --kind ddr` writes the next one into `proposed/`. A DDR that changes or contradicts the Blueprint names `BLUEPRINT.md` in `canonicalized_in`, which never names the Wiki; the Wiki cites it and keeps no page per DDR. It is not a Blueprint paragraph. |
 | **Read words** | The five kinds of read every record is to answer, defined once: **list** (the records that exist), **show** (one whole record; `get` is an accepted synonym), **search** (records found by a query), **history** (how a record changed) and **inspect** (part of a record, a field or a range). | Create, Read, Update and Delete remain the frame; what kind of each a tool needs differs. `capture` is Create, not a read. The decision-record tool answers all five for ADRs and DDRs; other tools gain them as they are revised, and existing command names keep working. |
 | **Checkpoint** | A retained historical tracked copy in `sessions/checkpoints/`; new copy creation is retired. | Preserve existing bytes and citations. New claims reconcile into their durable owners; operational recovery is separate. |

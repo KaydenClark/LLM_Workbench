@@ -10,6 +10,11 @@ const archivedSkillsRoot = path.join(root, 'skills-archive', 'optional-active-20
 import { coordinationSkills, coreSkills as runtimeCoreSkills } from '../workbench/tools/workbench-layout.mjs';
 import { readMaintainerSkills } from './maintainer-skills.mjs';
 const coreSkills = [...runtimeCoreSkills].sort();
+// Owner-directed adoption: these references must travel with every room.
+for (const name of ['writing-for-agents', 'retro']) {
+  assert.ok(coreSkills.includes(name), `${name} must ship in the required Core bundle`);
+}
+
 const read = (relative) => fs.readFileSync(path.join(root, relative), 'utf8');
 const assertIncludesAll = (content, requiredTerms, label) => {
   for (const term of requiredTerms) {
@@ -108,7 +113,7 @@ const bundleSize = coreSkills.length;
 const stanceCount = 4;
 const words = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine',
   'ten', 'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen',
-  'nineteen', 'twenty'];
+  'nineteen', 'twenty', 'twenty-one', 'twenty-two'];
 const workflowWord = words[bundleSize - stanceCount - coordinationSkills.length];
 for (const [relative, expected] of [
   ['workbench/skills/README.md', [`closed ${bundleSize}-skill bundle`, `${workflowWord} workflow skills`,

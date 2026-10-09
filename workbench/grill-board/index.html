@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Consequential Decision Record · Grill Board</title>
+<title>Consequential Decisions · Grill Board</title>
 <style>
   :root {
     --bg: #f6f5f1; --panel: #ffffff; --ink: #1d1c19; --muted: #6b675e; --line: #e2dfd6;
@@ -178,12 +178,13 @@
 </style>
 </head>
 <body>
-<header class="page-header"><strong>Consequential Decision Record</strong><label for="page-select">Read</label><select id="page-select"><option value="questions">Questions</option><option value="agents">AGENTS</option><option value="runbook">RUNBOOK</option><option value="blueprint">BLUEPRINT</option><option value="lexicon">LEXICON</option><option value="landmarks">Landmarks</option><option value="adrs">ADRs</option><option value="ddrs">DDRs</option></select><a href="#questions">Return to questions</a></header>
+<header class="page-header"><strong>Consequential Decisions</strong><label for="page-select">Read</label><select id="page-select"><option value="questions">Decision board</option><option value="agents">AGENTS</option><option value="runbook">RUNBOOK</option><option value="blueprint">BLUEPRINT</option><option value="lexicon">LEXICON</option><option value="landmarks">Landmarks</option><option value="adrs">ADRs</option><option value="ddrs">DDRs</option><option value="cdrs">CDRs</option></select><a href="#questions">Return to board</a></header>
 <div class="shell">
   <nav>
     <h1>Grill Board</h1><div id="title" class="meta">Choose a manageable slice</div>
     <div class="meta" id="meta">loading…</div>
     <div class="progress" id="progress" title="pending / re-answer / answered / applied"></div>
+    <label class="slice-label" for="board-view">Organize by</label><select id="board-view"><option value="decisions">Consequential decisions</option><option value="questions">Original questions</option></select>
     <label class="slice-label" for="intent">What do you feel like doing?</label>
     <select id="intent"><option value="all">Anything</option><option value="unblock">Unblock / direct work</option><option value="explore">Explore / settle decisions</option><option value="review">Review existing work</option></select>
     <label class="slice-label" for="topic">Think about…</label><select id="topic"></select>
@@ -205,7 +206,7 @@
 (() => {
   const STATUS_LABEL = { pending: 'Pending', stale: 'Re-answer', answered: 'Answered', applied: 'Applied', withdrawn: 'Withdrawn' };
   const STATUS_ORDER = ['pending', 'stale', 'answered', 'applied', 'withdrawn'];
-  const state = { drafts: new Map(), errors: new Map(), inflight: new Map(), board: null, query: '', timers: new Map(), catalog: null, artifact: null, route: 0, revisions: new Map(), topic: 'all', intent: 'all', scope: 'all', lane: 'all', focus: null, picked: new Set(), batch: null, inBatch: false, size: 5 };
+  const state = { drafts: new Map(), errors: new Map(), inflight: new Map(), board: null, query: '', timers: new Map(), catalog: null, artifact: null, route: 0, revisions: new Map(), topic: 'all', intent: 'all', scope: 'all', lane: 'all', focus: null, picked: new Set(), batch: null, inBatch: false, size: 5, view: 'decisions', decision: null };
   try {
     const saved = JSON.parse(localStorage.getItem('grill-board-batch'));
     if (saved && Array.isArray(saved.ids) && saved.ids.length && saved.ids.every(id => typeof id === 'string') && saved.revisions && typeof saved.title === 'string') { state.batch = saved; state.inBatch = true; }
@@ -246,6 +247,15 @@
     if (slice.lane && slice.lane !== 'all' && laneFor(item) !== slice.lane) return false;
     const hay = `${JSON.stringify(item.brief || {})} ${item.id} ${item.title} ${item.question} ${item.current} ${item.proposal} ${item.draft ?? ''} ${(item.tags || []).join(' ')}`.toLowerCase();
     return !slice.query || hay.includes(slice.query);
+  }
+  function decisionMatches(group, slice = state) {
+    const prompt = state.board.items.find(item => item.id === group.prompt);
+    if (slice.lane && slice.lane !== 'all' && (!prompt || laneFor(prompt) !== slice.lane)) return false;
+    const memberSlice = { ...slice, lane: 'all' };
+    return group.members.some(member => matchesSlice(state.board.items.find(item => item.id === member.id), memberSlice));
+  }
+  function decisionPromptItems(slice = { ...state, lane: 'all' }) {
+    return (state.board.decisions || []).filter(group => group.prompt && decisionMatches(group, slice)).map(group => state.board.items.find(item => item.id === group.prompt));
   }
   function batchProgress() {
     const ids = state.batch?.ids || [];
@@ -365,11 +375,12 @@
   }
 
   function renderNavigation() {
-    const board = state.board, c = sliceCounts(board.items);
-    const completed = c.answered + c.applied, active = board.items.length - c.withdrawn;
-    document.getElementById('meta').textContent = `${completed} / ${active} answered · ${c.applied} applied · ${c.withdrawn} withdrawn`;
+    const board = state.board, decisionView = state.view === 'decisions' && !state.inBatch && board.decisions?.length;
+    const counted = decisionView ? decisionPromptItems({ lane: 'all' }) : board.items, c = sliceCounts(counted);
+    const completed = c.answered + c.applied, active = counted.length - c.withdrawn;
+    document.getElementById('meta').textContent = `${completed} / ${active} ${decisionView ? 'rationale prompts answered' : 'answered'} · ${c.applied} applied · ${c.withdrawn} withdrawn`;
     document.getElementById('progress').innerHTML = `<span style="width:${100 * c.applied / Math.max(1, active)}%;background:var(--applied)" title="Applied ${c.applied}"></span><span style="width:${100 * c.answered / Math.max(1, active)}%;background:var(--ok)" title="With agents ${c.answered}"></span>`;
-    const scoped = board.items.filter(item => matchesSlice(item, { ...state, lane: 'all' }));
+    const scoped = decisionView ? decisionPromptItems() : board.items.filter(item => matchesSlice(item, { ...state, lane: 'all' }));
     const counts = sliceCounts(scoped);
     document.getElementById('filters').innerHTML = Object.entries(LANES).map(([value, label]) => `<button class="chip" data-lane="${value}" aria-pressed="${state.lane === value}">${label} (${value === 'all' ? scoped.length : counts[value]})</button>`).join('');
     for (const chip of document.querySelectorAll('[data-lane]')) chip.onclick = () => { state.lane = chip.dataset.lane; state.inBatch = false; state.focus = null; state.picked.clear(); render(); };
@@ -379,6 +390,8 @@
       document.getElementById(key).onchange = event => { state[key] = event.target.value; state.inBatch = false; state.focus = null; state.picked.clear(); render(); };
     }
     document.getElementById('reset-slice').onclick = () => { state.topic = state.intent = state.scope = state.lane = 'all'; state.query = ''; state.focus = null; state.inBatch = false; state.picked.clear(); document.getElementById('search').value = ''; render(); };
+    document.getElementById('board-view').value = state.view;
+    document.getElementById('board-view').onchange = event => { state.view = event.target.value; state.decision = null; state.focus = null; state.inBatch = false; render(); };
   }
 
   function renderBatchProgress() {
@@ -408,8 +421,35 @@
     for (const button of overview.querySelectorAll('[data-topic]')) button.onclick = () => { state.topic = button.dataset.topic; state.focus = null; state.picked.clear(); render(); };
   }
 
+  function renderDecisions() {
+    const groups = state.board.decisions || [];
+    const membership = new Set(groups.flatMap(group => group.members.map(member => member.id)));
+    const unassigned = state.board.items.filter(item => !membership.has(item.id));
+    document.getElementById('batch-panel').innerHTML = '';
+    document.getElementById('notice').innerHTML = '<strong>Start with the why.</strong> ADRs hold architecture choices, DDRs hold destination choices, and CDRs hold other consequential choices. Read the accepted rationale first. One answer can establish the principle agents use to resolve its related questions. Specific approvals remain attached to the work they approve.';
+    const selected = groups.find(group => group.record === state.decision);
+    const overview = document.getElementById('overview'), content = document.getElementById('content');
+    if (!selected) {
+      const shown = groups.filter(group => decisionMatches(group) || (state.query && `${group.record} ${group.title} ${group.question} ${group.why}`.toLowerCase().includes(state.query.toLowerCase())));
+      const cards = list => list.map(group => `<section class="topic-card"><small>${esc(group.record)} · ${esc(group.status)}</small>${group.prompt ? `<span class="badge ${state.board.items.find(item => item.id === group.prompt).derivedStatus}">${LANES[laneFor(state.board.items.find(item => item.id === group.prompt))]}</span>` : ''}<h3>${esc(group.title)}</h3><p>${esc(group.question)}</p><p>${esc(group.why)}</p><button class="bulk" data-decision="${esc(group.record)}">${group.prompt ? 'Discuss the rationale' : group.status === 'proposed' ? 'Read proposed record' : 'Read established rationale'} · ${group.members.length} questions</button></section>`).join('');
+      const prompts = shown.filter(group => group.prompt), retained = shown.filter(group => !group.prompt);
+      const originals = state.board.items.filter(item => !item.tags?.includes('decision-rationale')).length;
+      overview.innerHTML = `<h1>Consequential decisions</h1><p>${originals} preserved questions · ${groups.length} record homes · ${groups.filter(group => group.prompt).length} grouped rationale prompts</p><p>Start with a remaining premise below. Accepted decisions and their prior approvals stay available without another confirmation.</p><div class="topic-grid">${cards(prompts)}</div><details><summary>Browse the other decision-record homes (${retained.length})</summary><div class="topic-grid">${cards(retained)}</div></details>${unassigned.length ? `<p>${unassigned.length} new questions need a decision-record home. They remain available in Original questions.</p>` : ''}`;
+      content.innerHTML = '';
+      for (const button of overview.querySelectorAll('[data-decision]')) button.onclick = () => { state.decision = button.dataset.decision; state.focus = null; render(); };
+      return;
+    }
+    overview.innerHTML = `<button class="bulk" id="all-decisions">All decisions</button><h1>${esc(selected.title)}</h1><p>${esc(selected.record)} · ${esc(selected.status)} · ${selected.members.length} related questions</p><div class="block"><h4>The underlying question</h4>${markdown(selected.question)}<h4>Why this matters</h4>${markdown(selected.why)}</div><p><a href="${esc(artifactHref(selected.path))}">Read the full ${selected.status === 'proposed' ? 'proposed' : 'current'} decision and its rationale</a></p>`;
+    const prompt = state.board.items.find(item => item.id === selected.prompt);
+    content.innerHTML = `${prompt ? card(prompt) : `<div class="notice">${selected.status === 'accepted' ? 'This principle is already accepted; you do not need to confirm it again.' : 'This record is proposed or historical. Its lifecycle is preserved; grouping does not accept it.'}</div>`}<details><summary>Supporting questions, prior answers and specific approvals (${selected.members.length})</summary><p>These retain their own identities and revisions. The grouped answer establishes rationale; it does not select every alternative below or approve delivered work.</p><div class="question-list">${selected.members.filter(member => member.id !== selected.prompt).map(member => { const item = state.board.items.find(item => item.id === member.id); return `<div class="question-row"><button data-member="${item.id}">${esc(item.title)}<small>${item.id} · revision ${item.revision}${item.kind === 'approve-spec' ? ' · specific delivery approval' : ''}</small></button><span class="badge ${item.derivedStatus}">${LANES[laneFor(item)]}</span></div>`; }).join('')}</div></details><div id="focus"></div>`;
+    document.getElementById('all-decisions').onclick = () => { state.decision = null; state.focus = null; render(); };
+    wire();
+    for (const button of content.querySelectorAll('[data-member]')) button.onclick = () => { state.focus = button.dataset.member; const item = state.board.items.find(item => item.id === state.focus); document.getElementById('focus').innerHTML = card(item); wire(); document.getElementById('focus').scrollIntoView({ block: 'start' }); };
+  }
+
   function render() {
     renderNavigation();
+    if (state.view === 'decisions' && !state.inBatch && state.board.decisions?.length) { renderDecisions(); return; }
     renderBatchProgress();
     renderOverview();
     document.getElementById('notice').innerHTML = '<strong>Choose your own slice.</strong> Filter by kind of decision, topic, scale or workflow stage. Pick a batch of 3, 5 or 10, or select your own questions. Each opens on its own. <strong>Answered</strong> means your saved decision is ready for an agent; <strong>Applied</strong> means it was carried into its owner. These counts track this review, not implementation progress.';
@@ -577,6 +617,7 @@
 
   function refreshCounts() {
     renderNavigation();
+    if (state.view === 'decisions' && !state.inBatch && state.board.decisions?.length) return;
     renderBatchProgress();
     renderOverview();
     const start = document.getElementById('start-batch');
@@ -640,7 +681,7 @@
       const id = location.hash.slice(1);
       if (/^GB-\d{4}$/.test(id)) {
         const target = state.board.items.find(item => item.id === id);
-        if (target) { state.inBatch = false; state.topic = topicFor(target); state.intent = state.scope = state.lane = 'all'; state.query = ''; state.focus = target.id; document.getElementById('search').value = ''; render(); }
+        if (target) { state.view = 'questions'; state.decision = null; state.inBatch = false; state.topic = topicFor(target); state.intent = state.scope = state.lane = 'all'; state.query = ''; state.focus = target.id; document.getElementById('search').value = ''; render(); }
         document.getElementById(id)?.scrollIntoView({ block: 'start' });
       } else if (returning) window.scrollTo(0, state.questionScroll || 0);
       return;

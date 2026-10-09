@@ -3,12 +3,12 @@
 **Spec ID:** S-004D
 **Status:** planned
 **Stance:** Builder
-**Updated:** 2026-10-04
-**Catalog description:** The browser workspace the Grill Board grows into: connected Taskboard and Tracker cards, discussion and update requests, preserving their distinct source and progress semantics.
+**Updated:** 2026-10-07
+**Catalog description:** The Grill Board's P/V-filtered answering queue, growing into connected Taskboard and Tracker cards, discussion and update requests with distinct source and progress semantics.
 **Release scope:** In scope since the owner's 2026-10-04 answer; no release is assigned.
 **Blockers:** none
-**Latest event:** Owner answered 2026-10-04 that the Grill Board is this board's first working form; activation gate cleared and the map remapped from the Grill Board.
-**Next gate:** Activate and cut Tasks from live Actuality with `/to-tasks`, starting from the Grill Board; settle the open design choices as each slice needs them.
+**Latest event:** 2026-10-07: Owner confirmed visible P/V grades, independent filters, click-open rationale and central question detail for an Owner-selected answering queue; docs and requirements captured. P/V delivery and the wider shared-board Spec remain planned.
+**Next gate:** At activation, cut a bounded Grill Board P/V proof from live Actuality with `/to-tasks`; leave DQC P/V and the wider board capabilities outside that proof.
 
 > **Citation anchors.** pre=`f6af4c339b543988a3212b1940581157f573818d` post=`f6af4c339b543988a3212b1940581157f573818d`.
 
@@ -26,6 +26,11 @@ and agents carry the answers into their owners. This Spec is the destination it
 grows into. It remains planned with no claimed owner or Tasks; the remaining
 work is the path from the Grill Board to the outcome above.
 
+The next confirmed board capability lets the Owner evaluate questions by
+Priority and Value and filter them into an answering queue of the Owner's
+choosing, with grading reasons available on demand. The first P/V proof stays
+on this board and its questions.
+
 ## Why It Matters
 
 The owner needs a familiar visual place to see the concepts and work as agents
@@ -34,6 +39,11 @@ without reconstructing everything in chat or adopting a Markdown-reading habit.
 Structured object retrieval already exists; this capability gives the human an
 interface to the same maintained records and operations. Browser presentation
 need not force all underlying artifacts into one storage format.
+
+For the P/V proof, the immediate problem is choosing what to answer among
+more than 150 questions by effort and impact. Visible classifications and
+filters make that judgment practical; the explanations must not distract
+from the questions themselves.
 
 ## Current Verified State
 
@@ -77,6 +87,25 @@ What each Desired Behavior item has today:
 | 6 | Identity across views; no collisions or mixed progress numbers | Partly: stable item identity and one count per item; Task and Spec identities are not shown as cards |
 | 7 | Honest stale and conflicting state; coordinated writers; recovery | Partly: stale answers are refused and shown as Re-answer, and reader text shows revision changes; nothing checks who sends the page's save request, and `items.json` writes are atomic replacements with no cross-writer check |
 | 8 | Bounded agent retrieval through the same operations | Partly: `status`, `pending --json` and `show` serve agents the same records; size and latency are not measured |
+
+### Priority and Value: current implementation boundary
+
+Read on 2026-10-07 in the shared working tree based on
+`42431879fab3057db9e26ae661b4e92512c281f0`, which also contains unrelated
+uncommitted decision-reconciliation work. This observation is a source read,
+not a clean candidate or browser delivery proof:
+
+- `tools/grill-board.mjs` validates item fields through `ITEM_KEYS`; the
+  inspected list contains no dedicated Priority, Value or grading-rationale
+  fields. The current `items.json` has no such fields on its questions.
+- `workbench/grill-board/index.html` filters topic, intent, scope, status and
+  search, and supports a fixed Owner-selected batch. It has no P/V selectors,
+  numbered grade badges or grade explanation cards.
+- The existing central full-question display is the detail surface to extend.
+  The answer/revision and fixed-batch behavior already exists and must be preserved.
+
+The requirements below are Owner-confirmed; the P/V capability and its
+real-board usefulness proof are **not delivered** by this documentation pass.
 
 ### Board sources
 
@@ -135,6 +164,40 @@ not promises about the baseline when Tasks are cut:
    operations. Agents need not browse rendered pages. Measure retrieval size
    and latency before claiming token or performance improvement.
 
+### Priority and Value for answering questions
+
+This is a bounded addition to the existing Grill Board, governed by
+[DDR-001L — Priority and Value help the Owner choose Grill Board questions](../../docs/ddr/proposed/001L-priority-and-value-help-the-owner-choose-grill-board-questions.md).
+The [Lexicon](../../../LEXICON.md#priority-and-value) owns the unchanged
+CIC labels and meanings. Apply them as follows:
+
+1. Each board question carries its own Priority and Value, with a reason for
+   each. Priority guides when to attend to the question. Value measures the
+   governed capability or change's return versus investment, not the time
+   spent discussing or approving the question. Never combine P and V into a score.
+2. Display numbered red P and amber V badges on the right of each question
+   card. Clicking either opens a small card explaining why its particular
+   grade was assigned. Keep these details closed until requested so the
+   question remains prominent.
+3. Clicking a question opens all of its information in the central window,
+   including P/V and both explanations. Preserve original question text,
+   proposal, sources, corrections, answer history and the existing answer controls.
+4. Add independent P and V filters. P alone includes all Values in that
+   Priority; V alone includes all Priorities in that Value; both together
+   select their intersection, including P1V2 and P3V1. Combine them with the
+   board's existing question filters and Owner-selected fixed-batch behavior.
+   Explicit selection of a slice does not change its grades or inject
+   unrelated questions. Decision-group navigation must keep matching member
+   questions reachable without inventing one aggregate P/V score for a group.
+5. Agents assign grades with source-backed reasons. After the Owner answers,
+   reconsider P/V when updating question cards from those answers; change a
+   grade only when its basis warrants it. The Owner can direct corrections.
+   Use validated board operations and preserve question identity, source
+   lineage, revision history and saved answers; agents never write `answers.json`.
+6. Prove this on the real Grill Board inventory first. DQC P/V, a separate
+   automatic recommended-batch feature and a generalized ongoing maintenance
+   system are outside this slice. P/V supplies guidance; the Owner chooses the queue.
+
 ## Decisions And Contracts
 
 - **The Grill Board is this board's first form.** The owner, 2026-10-04: "No
@@ -153,6 +216,29 @@ not promises about the baseline when Tasks are cut:
   during design, rather than becoming hand-authored generated card content.
 - General Markdown-to-JSON migration is unnecessary to this outcome. The
   browser consumes data and operations supplied by the appropriate owners.
+- **P/V is a confirmed board destination, not delivered behavior.** DDR-001L
+  records the Owner's 2026-10-07 readbacks and CIC source lineage. Its first
+  proof uses existing board questions; it does not change any DQC owner or
+  establish CIC authority to override a project's classifications.
+
+## Decision-centered reconciliation — 2026-10-06
+
+The owner requested a board organized by consequential decisions: every question
+has an ADR, DDR or residual CDR home, so one underlying rationale guides related
+questions and later issues without repeated owner orchestration. The existing
+local board remains the surface; this does not activate the unfinished discussion,
+Taskboard/Tracker or dispatch capabilities.
+
+This local slice preserves 181 original question records and adds nine grouped
+rationale prompts. Its complete navigation map has 64 primary record homes:
+32 ADRs, 28 DDRs and four CDRs. Prior decisions remain accepted or proposed as
+recorded. One CDR preserves the owner's new decision-reuse direction; three
+other CDRs are agent-proposed policies. Specific delivery approvals retain their
+identities and content-bound gates. The original question view and fixed batches
+remain available, and agent operations never write the owner's answer file.
+
+Verification and the exact branch candidate are recorded in the appended evidence;
+this slice does not close the planned Spec or establish owner Human QA.
 
 ## Open Design Choices
 
@@ -177,6 +263,8 @@ policies. Resolve them within the existing owners before adding executable work.
 ## Non-Goals
 
 - Task creation or implementation in this Map pass.
+- DQC P/V, automatic recommended batches, a summed grading score or a new
+  periodic maintenance system in the first Grill Board P/V proof.
 - A second board beside the Grill Board.
 - Replacing Taskboard or Tracker sources with a new authoritative mega-board.
 - Flattening execution and understanding into one lifecycle or one percentage.
@@ -196,6 +284,13 @@ browser slice can be planned. Do not add this Spec to their dependencies. No
 release is assigned; this record does not add it to
 [Workbench v4.0.0 Release](../S-00O-workbench-v4-0-0-release/SPEC.md).
 
+The bounded P/V proof consumes the existing local board, question inventory,
+validated item operations, answer ownership and fixed-batch interaction. It
+does not wait on DQC P/V, live Taskboard/Tracker integration, a hosting change
+or the unfinished discussion/dispatch capabilities. No P/V concept blocker
+remains after the Owner's final confirmation; record new implementation
+findings against this slice instead of silently extending its scope.
+
 ## Vertical Implementation Slices
 
 No Tasks are cut. The Grill Board is the delivered first slice, built outside
@@ -204,6 +299,12 @@ the "Not yet" and "Partly" rows above, growing the Grill Board rather than
 starting a new page; for example, live Taskboard and Tracker cards with their
 distinct dimensions, then discussion attached to artifact identities. This
 sequence is a proposal, not an assignment.
+
+For the next bounded proof, start with question-level P/V validation and
+reasoned classifications, then the existing page's filters, grade badges and
+central detail, and finally the answer-to-card-update cycle against real
+questions. Cut actual Tasks from the then-current source at activation;
+this planning pass creates none.
 
 ## Acceptance Criteria
 
@@ -222,6 +323,30 @@ sequence is a proposal, not an assignment.
 - [ ] A less-than-one-minute demo shows browse -> comment -> request update ->
   disposition -> refreshed card with traceable source and preserved history.
 
+### P/V proof on the Grill Board
+
+- [ ] Every in-scope live question has valid P1–P4 and V1–V4 grades with reasons
+  traceable to its question and governed capability/change. Missing grades
+  remain visible as unclassified rather than receiving invented defaults.
+- [ ] Numbered red P and amber V badges appear on the right of question cards;
+  clicking each reveals its own rationale without replacing or answering the
+  question. Opening the question centrally shows all information, P/V and reasons.
+- [ ] P1V2, P3V1, P2 alone and V alone return exactly their matching questions.
+  Clearing filters restores the wider inventory; other board filters still combine.
+- [ ] The Owner can select a fixed answering batch from a P/V-filtered slice,
+  inspect details, answer, pause/resume and reload without lost drafts,
+  changed batch membership, missing history or double-counted questions.
+- [ ] Grade updates through validated operations retain stable identity and
+  revision/history behavior. Invalid classifications and stale updates are
+  refused without losing prior data; agent operations never write Owner answers.
+- [ ] A demonstrated answer-to-card-update cycle shows the agent assessing
+  whether each affected grade's basis changed, retaining grades when it did
+  not and recording justified revisions when it did. No periodic DQC work is needed.
+- [ ] Browser checks on a disposable copy of the real inventory show the
+  Owner's P3V1 -> grade explanation -> central question -> answer -> card-update
+  scenario. Record exact source/candidate, matched question identities and
+  results; technical tests alone do not establish Owner usefulness or Human QA.
+
 ## Verification Plan
 
 Use red/green tests at source-adapter and command boundaries, then browser
@@ -232,16 +357,36 @@ persistence and disposition separately from applying source changes. Re-run
 against a representative real inventory; fixture success alone is insufficient.
 The applicable full suite and owner evaluation remain future delivery gates.
 
+For P/V, confirm failing tests before implementation at the item-validation
+and filter-intersection seams, then prove the listed exact matches, independent
+filters, legacy unclassified records and revision-safe grade updates. Exercise
+both original-question and decision-group navigation. Browser checks cover
+badge popovers, central detail, draft preservation and the fixed queue using
+a disposable copy of the real board; never submit fixture answers to the
+Owner's live `answers.json`. Read grading reasons for semantic fidelity to the
+Lexicon and sources: valid labels alone do not prove a correct assessment.
+
 ## Documentation Impact
 
 The 2026-10-02 planning change added the Spec and a link in the Landmark
 Tracker Wiki article. The 2026-10-04 remap links this Spec and the
 [Grill Board procedure](../../grill-board/README.md) both ways and updates that
 Wiki article.
-Generic templates and runtime are unchanged because no harness behavior or
-portable contract is being delivered. At implementation, maintain the existing
+Those planning changes left generic templates and runtime unchanged. The
+2026-10-07 local reconciliation adds optional CDR lifecycle support, the
+generic Lexicon definitions, the decision-reuse procedure and this Wiki
+synthesis. Further implementation must maintain the existing
 operation owners, add browser usage/recovery instructions and update the Wiki
 with verified capability and limits. No general documentation migration is in scope.
+
+The 2026-10-07 P/V planning pass adds the shared definitions to root and generic
+Lexicons, the Owner-confirmed DDR-001L with CIC source lineage, one promised
+outcome to this project's Blueprint, and a planned-capability pointer in the
+Grill Board README. This Spec owns the detailed requirements and proof above.
+Generic templates receive the definitions; the project-specific board promise
+and interface do not belong in the generic Blueprint template. No runtime,
+question inventory, Owner answer file, DQC, Task or release assignment changes
+are part of this documentation/specification endpoint.
 
 ## Append-Only Evidence And Execution Log
 
@@ -251,3 +396,7 @@ with verified capability and limits. No general documentation migration is in sc
 | 2026-10-02 | Pinned preflight | Base f6af4c339b543988a3212b1940581157f573818d; doctor has no blocking findings. Self-drift pre receipt reports cleanUpdate=false; existing drift remains outside this planning scope. Dated source investigation and focused results are recorded above, not website verification. |
 | 2026-10-02 | Planning validation | Render succeeded; doctor had no blocking findings; whole-Wiki validation returned no findings; diff whitespace check passed. Pre/post self-drift retained the same seven findings (one stale claim, five historical seed limitations, one provenance limitation), cleanUpdate=false. Manual read-back confirmed planned state, explicit v4 exclusion, no Tasks and unchanged runtime/templates/release owner. Existing unrelated drift is not repaired or claimed clean. |
 | 2026-10-04 | Owner answer; remapped from the Grill Board | Owner, 2026-10-04: "No the shared board is the grilling board. that is good to know that there was a spec for that." and "Hold on, so that shared board spec is what the grilling board is supposed to turn into". `owner:shared-board-activation` cleared; v4 exclusion and future-intent-only wording removed; release unassigned. Grill Board read at 46ad9789 (tool, README, items.json: 180 items) and `node tools/test-grill-board.mjs` 16/16; Desired Behavior mapped to partly delivered or not yet. Status stays planned: no Task is cut and the Grill Board was built outside a claimed Task. Grill Board item GB-0017 withdrawn as answered here. Map only; no code. |
+| 2026-10-07 | Local consequential-decision reconciliation and verification | Owner direction of 2026-10-06; implementation candidate 2e30115e1de3e8351fb01ba8a68c48dd79ea9f27 on codex/consequential-decision-board, pinned base 9b524db33ac00aad96d2faae51348c0b98719c92. Preserved all 181 original item objects and the unchanged owner answer-file hash; mapped 190 total items to 64 ADR/DDR/CDR homes with nine rationale prompts. CDR-000A accepted from direct owner direction; CDR-000B/C/D remain proposed. [Verification receipt](decision-reconciliation-verification-2026-10-07.json) records all 53 Runbook commands eventually passing, the first failures and repairs, final affected checks (ADR 58, board 19, layout 76, upgrade 8), disposable browser answer/navigation checks and complete pre/post room findings. Shared-checkout fast rubric fails on the pre-existing AGENTS draft; fixture initialization refuses its uncommitted source. Isolated candidate passes. Fifteen room findings are unchanged and cleanUpdate=false. Local installation only: no push, merge, Spec closure, owner Human QA or blanket member approval. |
+| 2026-10-07 | Final live-copy verification limit | The live board suite passes 19/19 with localhost socket permission (restricted attempt: listen EPERM). After copying the new durable verification receipt into the still-uncommitted shared checkout, self-drift reports its original 15 findings unchanged plus one untracked-controls finding for that receipt; cleanUpdate remains false. The complete receipt is committed in the isolated source candidate. This is a local working-tree installation, not a clean update or publication. |
+| 2026-10-07 | P/V concept confirmed; documentation/specification | Owner confirmed the final Question / Answer / Why / Impact readback and invoked `to-docs` and `to-spec`. [DDR-001L](../../docs/ddr/proposed/001L-priority-and-value-help-the-owner-choose-grill-board-questions.md) records the confirmed board-only scope and source map at CIC commit af9296e31bb15f11aaf84fa04e01b7e6a7524eea. Current source inspected in the dirty shared tree based on 42431879fab3057db9e26ae661b4e92512c281f0 has no P/V fields or filters. Requirements, unchecked acceptance and future board proof added to this existing planned Spec; no Task, implementation, answer application or Owner Human QA claimed. Pre-edit fast evaluator already fails at 69.8 against the required 90 on the existing AGENTS draft; unrelated state is preserved. |
+| 2026-10-07 | P/V planning verification and limits | [Planning verification receipt](priority-value-planning-verification-2026-10-07.json) preserves results for all 53 Runbook commands: first run 21 pass / 32 fail. Existing AGENTS draft/control assertions and uncommitted-source identity checks prevent a full-suite pass; the board's initial localhost EPERM is separately resolved by a socket-enabled rerun, 19/19 pass, leaving 31 failed commands recorded. Exact CIC table fidelity in both Lexicons, ten added local links/anchors, DDR validation, render and diff whitespace checks pass; prior S-004D evidence is preserved byte-for-byte. Pre/post self-drift retains the same 16 code/artifact pairs and cleanUpdate=false; the final doctor exposes those 16 findings, including untracked planning receipts. Confirmed DDR content remains proposed lifecycle in this dirty tree. No executable P/V behavior or real-board usefulness proof is claimed. |

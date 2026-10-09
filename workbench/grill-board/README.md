@@ -1,11 +1,23 @@
 # Grill Board
 
-The page is titled **Consequential Decision Record**. It is this objective's
-shared working review package, using the existing Grill Board protocol. It is
-not a newly accepted artifact type. The owner explicitly requested package
-review instead of the ordinary one-question-at-a-time interview.
+The page is titled **Consequential Decisions**. Its opening view groups the
+original questions by their durable **ADR**, **DDR** or **CDR** home. A CDR
+holds a consequential choice outside architecture and destination; all three
+kinds are consequential. The owner requested this grouping on 2026-10-06 to
+reduce repeated orchestration and preserve a reusable logic path through prior
+decisions and approvals.
 
-The opening view groups items into **topics with thinking frames**. Decision
+The current reconciliation preserves 181 original questions under 64 record
+homes (32 ADRs, 28 DDRs, 4 CDRs). Nine grouped rationale prompts address missing
+premises. Other record homes are collapsed for browsing; accepted decisions do
+not demand another confirmation. Three new CDR policies remain proposed. The
+fourth preserves the owner's decision-reuse direction. These counts describe
+this reconciliation, not a permanent inventory or completed Spec delivery.
+
+Open a record to read its full current or proposed text, answer the underlying
+question and why, and expand its original questions, prior answers and specific
+approvals. **Original questions** retains the topic view and fixed batches.
+The topic view groups items into **topics with thinking frames**. Decision
 kind, workflow stage, and **Blueprint, Landmark, Spec and Task** scale are
 independent filters, so the owner can choose a slice without reading the whole
 package. These navigation topics do not change the accepted landmark map.
@@ -45,13 +57,27 @@ that Spec is the destination this page grows into (the owner, 2026-10-04), and
 its Current Verified State maps what the page already delivers and what is
 still to come. There is one board, not two.
 
+## Priority and Value — confirmed design, awaiting delivery
+
+The Owner confirmed on 2026-10-07 that P/V should make the board's questions
+visible and filterable into an answering queue the Owner chooses. The shared
+meanings live in the [Lexicon](../../LEXICON.md#priority-and-value); rationale
+and source lineage live in the [Grill Board P/V decision](../docs/ddr/proposed/001L-priority-and-value-help-the-owner-choose-grill-board-questions.md).
+
+The [Shared Interactive Workbench Board Spec](../specs/S-004D-shared-interactive-board/SPEC.md#priority-and-value-for-answering-questions)
+owns the numbered red P / amber V badges, click-open grade explanations, full
+central question view, independent filters and the answer-to-card-update cycle.
+Those controls are **planned**, not available in the current page. The first
+proof is confined to this board and its questions; DQC classifications are deferred.
+Continue using the existing filters and batches until this slice is delivered.
+
 ## Agents: read this before touching anything here
 
 **You do not edit these files by hand, and you never edit the owner's file.**
 
 | File | Who writes it | How |
 |---|---|---|
-| `items.json` | agents | only through `node tools/grill-board.mjs add / revise / apply / withdraw` |
+| `items.json` | agents | only through `node tools/grill-board.mjs add / revise / apply / withdraw / reconcile` |
 | `answers.json` | the owner | only through the served page; untracked in Git; **agents never write it** |
 | `index.html` | agents, rarely | the page; change it only when the owner asks for a page change |
 
@@ -96,6 +122,46 @@ and run `apply` / `revise` / `add` in your own worktree against your branch's
 `items.json`, then bring the main checkout forward once your PR has merged
 (`git -C /Users/kayden/LLM_Workbench pull --ff-only`). The main checkout keeps
 an unrelated dirty file; leave it alone.
+
+## Decision reconciliation and reuse
+
+`items.json` carries a navigation map in `decisions`, not another decision
+store. Each group names a real record, its original member identities and an
+optional grouped rationale prompt. The records own their decisions; `answers.json`
+owns the owner's live responses. Original proposals and revisions stay intact.
+
+Write a complete map through:
+
+```bash
+node tools/grill-board.mjs reconcile --file GROUPS.json --by NAME --reason "WHY"
+```
+
+The file is an array of groups with `record`, `members`, `prompt` (a member
+identity or null), `question`, `why` and `proposal`. The operation validates every
+record and covers every item exactly once before writing. A Spec approval
+cannot serve as the grouped rationale prompt. Invalid or incomplete maps leave
+the board unchanged; navigation changes never rewrite answers or item revisions.
+A later addition remains visible as Unassigned until its record is reconciled.
+Changing the actual prompt still uses `revise`, preserving the existing protocol.
+
+Before asking again, read the active record with `adr.mjs show ID` and follow
+its operational owners. Check the present facts against its rationale, scope
+and recorded approvals, then state the derivation. Resolve applications the
+record supports. Ask only for a missing consequential premise, a conflict or a
+proposed change, carrying forward the already settled parts. A record's existence
+is not proof that its implementation is complete.
+
+Process a grouped answer once into its named decision record, preserving the
+owner's exact rationale and source revision; use the lifecycle operations for a
+confirmed proposed record or a corrected successor. Reconcile derived member
+questions individually with evidence of how the principle applies. Mark a member
+applied only if its own saved verdict is current and has actually reached its
+owner; otherwise preserve its pending state or withdraw an obsolete question
+with the specific governing source. Never mark every member applied from a group
+answer. Spec delivery approvals and other concrete actions keep their own gates.
+**Record my principle and why** uses the owner's note as the answer; an empty
+note stays pending. The proposed CDR prompts can Confirm their full candidate
+text or Correct it with owner words. Neither is permission for an operational run.
 
 ## Owner: how to use it
 
@@ -161,7 +227,7 @@ to the owner's live board.
 ### Read the consequential artifacts
 
 The persistent **Read** dropdown switches between **Questions**, **AGENTS**,
-**RUNBOOK**, **BLUEPRINT**, **LEXICON**, **Landmarks**, **ADRs** and **DDRs**.
+**RUNBOOK**, **BLUEPRINT**, **LEXICON**, **Landmarks**, **ADRs**, **DDRs** and **CDRs**.
 Root files open directly. The collections list records by title, with identity
 and lifecycle secondary; accepted active decisions appear first, and proposed,
 superseded and deprecated records remain readable. Register and history pages
