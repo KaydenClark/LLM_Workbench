@@ -316,10 +316,14 @@ CIC labels and meanings. Apply them as follows:
 3. Clicking a question opens all of its information in the central window,
    including P/V and both explanations. Preserve original question text,
    proposal, sources, corrections, answer history and the existing answer controls.
+   Since the owner's 2026-10-09 corrections (below) that information is
+   reachable but progressively disclosed: P/V stay closed badges on the
+   opened card too, and each explanation opens on click.
 4. Add independent P and V filters. P alone includes all Values in that
    Priority; V alone includes all Priorities in that Value; both together
    select their intersection, including P1V2 and P3V1. Combine them with the
    board's existing question filters and Owner-selected fixed-batch behavior.
+   Since 2026-10-09 the filters are P1–P4 and V1–V4 chips, not dropdowns.
    Explicit selection of a slice does not change its grades or inject
    unrelated questions. Decision-group navigation must keep matching member
    questions reachable without inventing one aggregate P/V score for a group.
@@ -331,6 +335,45 @@ CIC labels and meanings. Apply them as follows:
 6. Prove this on the real Grill Board inventory first. DQC P/V, a separate
    automatic recommended-batch feature and a generalized ongoing maintenance
    system are outside this slice. P/V supplies guidance; the Owner chooses the queue.
+
+### Confirmed Grilling Board corrections — 2026-10-09
+
+After the first answering round on draft PR #440, Kayden confirmed three
+corrections to the Grilling Board page in chat on 2026-10-09; TK-007Z carries
+them as corrective work under this still-open Spec. His stated goal for them:
+less orchestration tax, an easier page to use and to understand without added
+mental strain.
+
+1. **P/V chips.** "The filters are all tax, none of them are helping me make
+   choices faster. I should be able to select the P or V values here and it
+   dynamically filter." P1–P4 and V1–V4 are clickable chips in the red P and
+   amber V badge colors. Chips in one row combine as OR, the two rows combine
+   as AND, and a row with no chip pressed means every grade; the list and every
+   count update on click. They replace the Priority and Value dropdowns. The
+   kind, topic and scale dropdowns fold under a closed **More filters** line:
+   a reversible default awaiting the owner's call between folding and removal.
+2. **Left navigation.** "Switch where the destination tracker, taskboard,
+   grilling board, drafts, wiki, etc are at the top to on the left side, that
+   should be my navigation pane." The five section links are a persistent
+   left pane; the Grilling Board filters sit under them in the same pane. The
+   `#section=` hash routes and back/forward behavior are unchanged, and a
+   narrow window stacks the pane instead of scrolling sideways.
+3. **Progressive disclosure.** "The Priority and Value need to be collapsed
+   even when I click into the card for more details. We need to progressively
+   disclose that info for me… we should keep them available on the page like
+   the links to the spec, ADR, and draft." An opened card shows only its
+   title, the question, the closed P/V badges (reasons open in place), one
+   compact row of links styled as links, the recommended answer and the answer
+   controls (Confirm, Rework wording, Change the why, Change, with the note
+   box). What it concerns, why it matters, what would change, consequences,
+   current text and full proposal, related cards and grilling history,
+   proposed wording, history and the comments-and-promotion block each start
+   as one closed line; the last names the card's workflow state while closed.
+
+Not part of this: the owner's tentative note that leaving a topic needs a
+visible control rather than a dropdown, and his unconfirmed note about editable
+owner notes. A "Tax" note from the owner on this page means the item or layout
+was too hard to understand and is a defect to fix, not a verdict.
 
 ## Decisions And Contracts
 
@@ -629,6 +672,16 @@ before its draft PR into integration.
 - [x] Each promotion shows ordered Record → Publish → Map → Publish → Plan →
   Publish receipts with evidence and native source links; a knowledge-only
   decision shows its no-op reason and gains no Spec or Task.
+
+### Owner corrections of 2026-10-09 (TK-007Z)
+
+- [ ] The P1–P4 and V1–V4 chips filter the list on click (OR within a row,
+  AND across rows, no chip means all) and replace the P/V dropdowns; the five
+  section links are a persistent left navigation pane with the Grilling Board
+  filters under them, hash routes intact and no horizontal scroll at a narrow
+  width; an opened card shows only its title, question, closed P/V badges,
+  link row, recommendation and answer controls, with every other part one
+  closed line.
 
 ## Verification Plan
 
