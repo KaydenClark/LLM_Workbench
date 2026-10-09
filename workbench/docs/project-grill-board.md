@@ -30,8 +30,9 @@ Create a configuration file outside the Board directory:
 Use the project's own title, canonical HTTPS GitHub repository URL, unique
 instance name and manually selected unused port. Topic membership uses item
 `group`, never producer question numbers. Each group belongs to one topic.
-Other topics remains available for ungrouped questions. Configuration strings
-are escaped as data, including embedded script delimiters.
+The inherited Other topics fallback remains in the renderer; installed questions
+must use a configured group. Configuration strings are escaped as data, including
+embedded script delimiters.
 
 From the reviewed Workbench source:
 
