@@ -140,7 +140,7 @@ so TK-002 stamps `v4.0.0` without an owner question.
 | GitHub Coordination package | [S-003P](../S-003P-github-coordination-room-binding-and-identity/SPEC.md) (codex-github-binding) to [S-003V](../S-003V-github-coordination-claim-authority-cutover/SPEC.md) | S-003P active with its first binding slices closed; S-003Q to S-003V planned with no Tasks, cut in the dependency order of the table above, with the claim cutover last. The owner settled the actor policy, Issue write floor and per-item claim authority on 2026-10-02. |
 | Direct Blueprint Tasks | Director: allocate the successor the [ownership proposal](direct-blueprint-task-proposal.md) names | In v4: ledger E-3 ("Not every Task has to belong to a Spec") and E-9 (home `workbench/tasks/TK-XXXX/TASK.md`), and ADR-000U lets Tasks sit directly under a landmark. No owning Spec exists and `workbench/tasks/` does not exist yet. Allocating the owner is a Director disposition, not an owner question. |
 | Template Upgrade Release Gate | This Spec, TK-003 | Unchanged procedure; the five update-tool gaps recorded under TK-003 still need an owning delivery or a named limit. [S-01N](../S-01N-update-harness-skill-rebuild/SPEC.md) (update-harness skill rebuild) is planned and unassigned. |
-| Release proof (Puffer Pond) | [S-004I](../S-004I-template-release-proof-puffer-pond/SPEC.md), unassigned | [DDR-000Q](../../docs/ddr/000Q-a-release-is-proven-by-the-template-building-a-real-product-in-one-pass.md) (locked 2026-10-03): the Template, updated to the release and deployed in the cloud, builds Puffer Pond from a prewritten grill-me-and-genesis script in one pass. S-004I's cloud form, script content and build landing are its own Plan items. |
+| Release proof (Puffer Pond) | [S-004I](../S-004I-template-release-proof-puffer-pond/SPEC.md), unassigned | [DDR-000Q](../../docs/ddr/archive/000Q-a-release-is-proven-by-the-template-building-a-real-product-in-one-pass.md) (locked 2026-10-03): the Template, updated to the release and deployed in the cloud, builds Puffer Pond from a prewritten grill-me-and-genesis script in one pass. S-004I's cloud form, script content and build landing are its own Plan items. |
 | Every other v4 Spec | Each Spec's named owner | The owner's WF-12 answer is "I want every spec completed before we call this done". At integration 145ab2f9 plus this change, 55 Specs are active and 47 planned (the Taskboard and `CATALOG.md` project them); TK-001 checks which are v4 scope, since anything outside v4 went to the backlog (ledger E-4A). |
 | Integration target binding | S-00J (above) | Open requirement carried from S-054, not yet delivered: review evidence must name the expected integration tip and the merge path must refuse a moved tip. S-00J has no Task for it yet. |
 
@@ -164,7 +164,7 @@ for these three, and all three are already on the Grill Board:
   during the transition (GB-0025)? He set claim authority per item of work on
   2026-10-02, but did not answer coexistence.
 - Does he confirm correcting the release-proof decision record
-  ([DDR-000Q](../../docs/ddr/000Q-a-release-is-proven-by-the-template-building-a-real-product-in-one-pass.md))
+  ([DDR-000Q](../../docs/ddr/archive/000Q-a-release-is-proven-by-the-template-building-a-real-product-in-one-pass.md))
   so its verb list matches the open verb set and the Journey correction he
   confirmed on 2026-10-03 (GB-0026, raised by S-004G)? DDRs are
   owner-confirmed, so the S-004I proof plan reads the stale verbs until he

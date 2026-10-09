@@ -91,7 +91,7 @@ agent work and were not separately confirmed.
   release's Template-update proof did not establish the later personalization
   stages.
 - **A second kind of release proof.** The decision
-  ["A release is proven by the Template building a real product in one pass"](../../docs/ddr/000Q-a-release-is-proven-by-the-template-building-a-real-product-in-one-pass.md)
+  ["A release is proven by the Template building a real product in one pass"](../../docs/ddr/archive/000Q-a-release-is-proven-by-the-template-building-a-real-product-in-one-pass.md)
   adds, among a release's other gates, a run in which the Template, updated and
   deployed in the cloud, builds the Puffer Pond site from a prewritten script.
   How it relates to the upgrade gate is left to

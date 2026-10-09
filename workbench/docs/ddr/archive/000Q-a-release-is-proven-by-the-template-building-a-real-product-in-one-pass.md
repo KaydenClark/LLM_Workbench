@@ -3,6 +3,7 @@ date: 2026-10-03
 supersedes:
 canonicalized_in:
   - BLUEPRINT.md
+superseded_by: 001P-a-release-is-proven-by-the-template-taking-a-confirmed-concept-through-the-five-parent-workflows-in-one-pass.md
 ---
 
 # A release is proven by the Template building a real product in one pass

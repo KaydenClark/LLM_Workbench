@@ -127,7 +127,7 @@ per-Task review spending his tokens. The text before this amendment reads at
 
 The Lexicon's Workflow, Journey and verb rows carry the current meanings. The
 release proof decision
-([A release is proven by the Template building a real product in one pass](../ddr/000Q-a-release-is-proven-by-the-template-building-a-real-product-in-one-pass.md))
+([A release is proven by the Template building a real product in one pass](../ddr/archive/000Q-a-release-is-proven-by-the-template-building-a-real-product-in-one-pass.md))
 still quotes "Idea, Align, Confirm, Journey, Complete", where the owner changed
 the last verb to Delivered; it needs a visible correction by its owner, not a
 silent edit. This records no owner approval.

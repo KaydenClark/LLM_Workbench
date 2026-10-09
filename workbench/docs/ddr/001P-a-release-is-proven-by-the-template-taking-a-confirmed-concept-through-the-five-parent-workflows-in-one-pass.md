@@ -1,6 +1,7 @@
 ---
 date: 2026-10-09
 supersedes:
+  - 000Q-a-release-is-proven-by-the-template-building-a-real-product-in-one-pass.md
 canonicalized_in:
   - BLUEPRINT.md
 ---

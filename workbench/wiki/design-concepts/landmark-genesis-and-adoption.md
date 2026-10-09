@@ -109,7 +109,7 @@ Decisions: ["Preservation contracts for genesis, adoption and upgrade"](../../do
 ["Core skills ship in the workbench skills lane"](../../docs/adr/000M-core-skills-ship-in-the-workbench-skills-lane.md),
 ["Visible, deliberate control divergence"](../../docs/adr/0050-visible-deliberate-control-divergence.md)
 and the destination records
-["A release is proven by the Template building a real product in one pass"](../../docs/ddr/000Q-a-release-is-proven-by-the-template-building-a-real-product-in-one-pass.md)
+["A release is proven by the Template building a real product in one pass"](../../docs/ddr/archive/000Q-a-release-is-proven-by-the-template-building-a-real-product-in-one-pass.md)
 and ["LLM Workbench owns what a workbench is; the project owns what it says and may add without tearing apart what works"](../../docs/ddr/000R-llm-workbench-owns-what-a-workbench-is-the-project-owns-what-it-says-and-may-add-without-tearing-apart-what-works.md).
 
 Specs: [S-021: Portable Workbench v3](../../specs/S-021-portable-workbench-v3/SPEC.md)
