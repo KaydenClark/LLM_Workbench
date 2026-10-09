@@ -19,6 +19,7 @@ import {
   FRESHNESS_STATES,
   validateRecordShape
 } from './socket-registry/schema.mjs';
+import { isMainModule } from '../workbench/tools/workbench-paths.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 export const DEFAULT_REGISTRY_PATH = path.join(HERE, 'socket-registry', 'registry.json');
@@ -196,7 +197,6 @@ function main(argv) {
   return 2;
 }
 
-const invokedDirectly = process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
-if (invokedDirectly) {
+if (isMainModule(import.meta.url)) {
   process.exit(main(process.argv.slice(2)));
 }

@@ -21,10 +21,10 @@
 import fs from 'node:fs';
 import http from 'node:http';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
 import { listAdrs } from '../workbench/tools/adr.mjs';
+import { isMainModule } from '../workbench/tools/workbench-paths.mjs';
 
 export const ITEMS_SCHEMA = 'grill-board/items@1';
 export const ANSWERS_SCHEMA = 'grill-board/answers@1';
@@ -659,7 +659,7 @@ export async function main(argv) {
   }
 }
 
-if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+if (isMainModule(import.meta.url)) {
   main(process.argv.slice(2)).catch((error) => {
     const code = error.code ?? 'internal';
     process.stdout.write(`${JSON.stringify({ status: 'blocked', error: { code, message: error.message } })}\n`);
