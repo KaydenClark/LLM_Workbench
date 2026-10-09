@@ -3,7 +3,7 @@
 **Task ID:** TK-001
 **Spec ID:** S-005H
 **Slice:** Optional receipt-backed Board component with safe project initialization and configured existing Board behavior
-**Status:** done
+**Status:** in-progress
 **Blockers:** none
 **Destination:** spec-acceptance: S-005H Acceptance Criteria
 **Claimed by:** codex-board-worker, codex-board-corrections
@@ -22,6 +22,7 @@
 | 7 | codex/optional-grill-board-deployment | ae784fa4bd1fdd3770581aa111143fb9092c1ed1 | ahead 0 behind 0 | 0 | All56 required checks pass at clean code e65c2d6a in816.9s;32 deployment checks;exact-head GitHub CI SUCCESS;disposable owner answer/history/revise/stale/refreshed-confirm/apply and isolation browser proof;corrected literal rendering smoke. | Optional guide/Runbook/Wiki;verified acceptance and bounded Completion Result;proof/verification-summary.json and proof/browser-qa.md. | Independent final assembled review then integration merge/readback/CI and required RingWorld feature refresh;owner Human QA and PC route separate. | eeb2a9369b49bc8e2ef7e5b92d245c8830b73a4550bbb5e57d96ca745ab12c05 |
 | 8 | codex/board-deployment-review-fixes | f98f375dd18c852b096dd59849addd4f45dfd866 | none | 7 | RED: reordered keys rejected, linked config parent accepted, and mismatched repository accepted. GREEN: 37 public deployment checks including byte preservation, nested key order, array changes, HTTPS/SSH identity and runtime origin drift. Full suite pending. | Optional deployment guide, existing Wiki capability and corrective Spec context updated. Templates unchanged because optional explicit installation is outside standard managed deployment. | Required full suite, fresh independent assembled review, integration and exact-head CI, then separately owned RingWorld refresh. | 67befe535fbc6f754ed4899af8b6c9a1dd5db3fa67c586733e6dcd8bebdd37ab |
 | 9 | codex/board-deployment-review-fixes | 523bf7a273b7421f799f5abcd321cc43beac07ca | none | 0 | Corrected code 523bf7a273b7421f799f5abcd321cc43beac07ca: GitHub CI run 37890421252 full canonical suite SUCCESS. Local full run 54/56, then unchanged runtime 34/34 and landmark Wiki 79/79 reruns pass after fetching historical fixture and isolating temporary roots. Deployment 37/37; producer 16/16; self-drift retains 24 baseline findings; guardrail 73/100. | Existing optional deployment guide and Wiki updated; all 150 Wiki pages independently read with inherited drift retained. Correction proof summary records exact checks and limits. | Fresh assembled review, reviewed PR447 integration and post-merge CI, then separately owned RingWorld preservation refresh. Owner Human QA and main promotion remain open. | 7d473e5bb0e609c5ee8be63a92f1b6b9c5db2a3c5423714f977413e8130ec078 |
+| 10 | codex/board-deployment-review-fixes | 893e1828f636ae5a0f9786bc5221b380abf3ae41 | none | 6 | PR447 explicit-port RED reproduced the valid ssh://git@github.com:22 origin refusal. GREEN 37 public deployment checks cover SSH port 22 and 2222, HTTPS 443, and refusal of invalid ports, unsupported user and mismatched repository; full suite pending. | Optional guide names valid explicit URI ports; current Spec and continuation preserve earlier proof and failed automated review. | Fresh full verification and assembled review, final-head CI and integration, then RingWorld preservation refresh. | 0f49440767b5222c536470d48a70b8536736923bf7f70514c555969c4ee5cf02 |
 
 ## Continuation
 
@@ -30,3 +31,4 @@
 | 1 | 2026-10-09 | evidence row 4 (fail verdict at 80b17b65f3238dc205c0c27428a295be7162e7ad on 2026-10-09) | PR443 automated review found reordered JSON object keys falsely treated as a configuration change |
 | 2 | 2026-10-09 | evidence row 4 (fail verdict at 80b17b65f3238dc205c0c27428a295be7162e7ad on 2026-10-09) | PR443 automated review found configuration input linked parents accepted |
 | 3 | 2026-10-09 | evidence row 4 (fail verdict at 80b17b65f3238dc205c0c27428a295be7162e7ad on 2026-10-09) | PR443 automated review found configured repository could differ from target origin |
+| 4 | 2026-10-09 | evidence row 8 (fail verdict at 893e1828f636ae5a0f9786bc5221b380abf3ae41 on 2026-10-09) | PR447 automated review found valid SSH GitHub origin URIs with explicit ports rejected. Normalize valid URI ports and prove supported and invalid forms without weakening repository identity checks. |

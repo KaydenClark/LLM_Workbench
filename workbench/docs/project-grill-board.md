@@ -30,7 +30,8 @@ symlinked parent directories (the existing macOS system aliases remain supported
 
 Use the project's own title, canonical HTTPS GitHub repository URL, unique
 instance name and manually selected unused port. The repository must match the
-target checkout's origin. HTTPS and SSH GitHub origins, optional `.git` suffixes,
+target checkout's origin. HTTPS and SSH GitHub origins (including valid explicit
+URI ports), optional `.git` suffixes,
 and case differences identify the same repository. Missing, local-only,
 non-GitHub or mismatched origins refuse initialization and runtime verification;
 a local-copy clone must retain its project's GitHub origin before using the Board. Topic membership uses item

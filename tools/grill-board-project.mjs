@@ -65,8 +65,17 @@ export function validateConfig(config) {
 // GitHub repository identities are case-insensitive across HTTPS and SSH remotes.
 function githubIdentity(repository) {
   if (typeof repository !== 'string') return null;
-  const match=repository.match(/^(?:https:\/\/github\.com\/|git@github\.com:|ssh:\/\/git@github\.com\/)([A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+?)\/?$/i);
-  return match ? match[1].replace(/\.git$/i,'').toLowerCase() : null;
+  const scp=repository.match(/^git@github\.com:([A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+?)\/?$/i);
+  let identity=scp?.[1];
+  if (!identity) {
+    let url;
+    try { url=new URL(repository); } catch { return null; }
+    if (!['https:','ssh:'].includes(url.protocol) || url.hostname.toLowerCase()!=='github.com' || url.password || url.search || url.hash) return null;
+    if (url.protocol==='ssh:' ? url.username!=='git' : url.username) return null;
+    if (url.port && Number(url.port)===0) return null;
+    identity=url.pathname.match(/^\/([A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+?)\/?$/)?.[1];
+  }
+  return identity ? identity.replace(/\.git$/i,'').toLowerCase() : null;
 }
 export function validateProjectRepository(root, config) {
   let origin;

@@ -37,14 +37,14 @@ try {
     reject(directory,()=>initializeProject({project:directory,source,commit,config:{...config,repository:'https://github.com/Other/Project'}}),/repository.*origin|origin.*repository/i);
   });
   check('equivalent GitHub HTTPS and SSH origins retain project identity',()=>{
-    for(const [index,origin] of ['https://github.com/kaydenclark/ringworld','https://github.com/KaydenClark/RingWorld.git/','git@github.com:KaydenClark/RingWorld.git','ssh://git@github.com/KaydenClark/RingWorld.git'].entries()){
+    for(const [index,origin] of ['https://github.com/kaydenclark/ringworld','https://github.com/KaydenClark/RingWorld.git/','git@github.com:KaydenClark/RingWorld.git','ssh://git@github.com/KaydenClark/RingWorld.git','ssh://git@github.com:22/KaydenClark/RingWorld.git','https://github.com:443/KaydenClark/RingWorld.git','ssh://git@github.com:2222/KaydenClark/RingWorld.git'].entries()){
       const directory=project(`origin-format-${index}`);git(directory,['remote','set-url','origin',origin]);
       assert.equal(init(directory).status,'initialized');verifyProject(directory);
     }
   });
   check('missing unsupported and changed origins refuse without Board mutation',()=>{
     const missing=project('missing-origin');git(missing,['remote','remove','origin']);reject(missing,()=>init(missing),/origin/i);
-    for(const [index,origin] of ['/local/clone','https://example.invalid/KaydenClark/RingWorld.git','https://github.com/Other/Project.git'].entries()){
+    for(const [index,origin] of ['/local/clone','https://example.invalid/KaydenClark/RingWorld.git','https://github.com/Other/Project.git','ssh://git@github.com:65536/KaydenClark/RingWorld.git','ssh://git@github.com:0/KaydenClark/RingWorld.git','ssh://git@github.com:not-a-port/KaydenClark/RingWorld.git','ssh://other@github.com:22/KaydenClark/RingWorld.git','ssh://git@github.com:22/Other/Project.git'].entries()){
       const directory=project(`invalid-origin-${index}`);git(directory,['remote','set-url','origin',origin]);reject(directory,()=>init(directory),/origin/i);
     }
     const before=snapshot(target);git(target,['remote','set-url','origin','git@github.com:Other/Project.git']);
