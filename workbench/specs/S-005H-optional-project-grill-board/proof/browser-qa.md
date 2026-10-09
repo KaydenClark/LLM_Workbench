@@ -31,3 +31,12 @@ were unchanged by that CLI correction.
 
 Screenshot retained in task deliverables as optional-board-browser-applied.jpg;
 it shows disposable QA, not owner acceptance or in-game testing.
+
+## Same-origin instance isolation
+
+Source f238781910e3c16415d7c3e2ce973041cefa050e: first disposable instance
+saved dark theme through its button. Its temporary server was stopped, then a
+new empty project with a different instance key served the same127.0.0.1:4767
+origin. Page title was Second disposable project instance and data-theme was
+null, so it did not inherit the first saved theme. No real answers were touched.
+Second screenshot: optional-board-browser-isolation.jpg. Both servers stopped.
