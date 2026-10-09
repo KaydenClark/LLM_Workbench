@@ -54,27 +54,22 @@
       "key": "delivered-two-meanings",
       "group": "open-choices",
       "kind": "choice",
-      "title": "Give the integration stage its own name instead of the Delivered qualifier (Lexicon Delivered row; AGENTS.md Work Selection)",
-      "question": "Should the `S-###:delivered` blocker qualifier be renamed so that Delivered means only your approved work on main, and if so, to what?",
-      "current": "You answered rename the qualifier on 2026-10-04, at an earlier revision of this question; that answer is kept but needs a fresh click. Since then you confirmed the five parent workflows (2026-10-09): Complete is Delivered → Clean Up, and Delivered needs your approval and main promotion (RUNBOOK Workflows). The `S-###:delivered` qualifier in AGENTS.md Work Selection and the Lexicon's Delivered row still name the earlier stage, a reviewed PASS contained in integration. The Lexicon says renaming it changes a public contract and is your call; no Spec owns the rename.",
-      "proposal": "Agent proposal: rename the qualifier to `S-###:integrated` through one small Spec, keeping the old spelling as an alias until the Workbench Template upgrades. Delivered then means one thing.",
+      "title": "Your corrected workflow map: Chart Course in the middle, Promote → Clean Up → Delivered at the end",
+      "question": "Is this the workflow map you meant? And now that Delivered means \"done on main\", should the blocker tag `S-###:delivered` (today: reviewed and merged into integration) be renamed to `S-###:integrated`?",
+      "current": "The Runbook Workflows table today: Explore is Idea → Align → Confirm; Promote is Record → Publish → Map → Publish → Plan → Publish; Journey is Implement → Check → QA → Submit; Judge is Review → Verify → Approve; Complete is Delivered → Clean Up. The blocker tag `S-###:delivered` in AGENTS.md Work Selection means a reviewed Spec merged into integration.",
+      "proposal": "Agent proposal (readback of your round-1 note): five parent workflows, with Promote renamed Chart Course. Explore: Idea → Align → Confirm. Chart Course: Promote → Map → Publish → Plan → Publish. Journey: Implement → Check → QA → Submit. Judge: Review → Verify → Approve. Complete: Promote → Clean Up → Delivered. The Promote step is Record → Publish. Approve is you saying the work passes and is good for main; a Promote runs after it because your approval is a more important confirm; Clean Up comes before Delivered; Delivered is your confirmed decision landed and done on main. Because Delivered now means done on main, rename the blocker tag to `S-###:integrated`, keeping `delivered` as an alias until the Template upgrades.",
       "draft": null,
       "options": [
         {
-          "value": "rename_qualifier",
-          "label": "Rename the qualifier to integrated",
+          "value": "map_and_rename",
+          "label": "Confirm the map and rename the blocker tag to integrated",
           "recommended": true,
-          "hint": "One small Spec; the verb row is untouched; the old spelling stays an alias for a version."
+          "hint": "The map as read back; Delivered means only done on main."
         },
         {
-          "value": "keep_both",
-          "label": "Keep both spellings with the Lexicon distinction",
-          "hint": "No change; the Delivered row keeps explaining the difference."
-        },
-        {
-          "value": "rename_verb",
-          "label": "Rename the verb instead",
-          "hint": "Reopens your locked Delivered answer; the verb row and the workflow reference change."
+          "value": "map_keep_tag",
+          "label": "Confirm the map; keep the blocker tag as delivered",
+          "hint": "The map as read back; the tag keeps its older meaning."
         }
       ],
       "sources": [
@@ -105,7 +100,7 @@
         "workflow-verbs",
         "lexicon"
       ],
-      "revision": 5,
+      "revision": 6,
       "status": "open",
       "applied": null,
       "history": [
@@ -170,17 +165,55 @@
           "at": "2026-10-09T02:50:08.650Z",
           "by": "claude-reconcile",
           "reason": "graded: Reconcile 2026-10-09: graded the 22 questions brought across from integration and regraded the 12 rewritten questions against the Priority and Value meanings (LEXICON Priority And Value; DDR-001L)."
+        },
+        {
+          "revision": 6,
+          "at": "2026-10-09T05:30:39.740Z",
+          "by": "claude-opus-5.5",
+          "reason": "Round-1 Change the why: your workflow rework read back for Confirm, with the blocker-tag question folded in",
+          "changes": [
+            "title",
+            "question",
+            "current",
+            "proposal",
+            "options",
+            "brief"
+          ]
+        },
+        {
+          "revision": 6,
+          "gradeRevision": 3,
+          "at": "2026-10-09T05:31:15.110Z",
+          "by": "claude-opus-5.5",
+          "reason": "reassessed (P retained, V retained): Round-1 revisions: grades retained, bases unchanged",
+          "assessment": {
+            "followed": {
+              "id": "GB-0001",
+              "answerAt": "2026-10-09T04:38:35.758Z",
+              "itemRevision": 5
+            },
+            "priority": {
+              "outcome": "retained",
+              "grade": "P3",
+              "basis": "Still a naming change with no Task blocked on it."
+            },
+            "value": {
+              "outcome": "retained",
+              "grade": "V1",
+              "basis": "One confirmed map still settles the verbs and the tag together."
+            }
+          }
         }
       ],
       "brief": {
-        "scope": "SPEC",
-        "summary": "Two milestones share the word Delivered; decide which keeps it.",
-        "artifacts": "Lexicon Delivered row (LEXICON.md, moving to GLOSSARY.md under the Lexicon retirement, S-004O); AGENTS.md Work Selection, which defines the `S-###:delivered` blocker; Workbench Terms And Workflow Verb Rows (S-004G), which recorded the distinction and left the rename to you; RUNBOOK Workflows, the five parent workflows you confirmed.",
-        "why": "Agents read `S-###:delivered` as a dependency gate on every blocker list, while the workflow now says Delivered is your approval on main. One word for two gates is where a fresh session misreads what is done.",
-        "recommendation": "Agent proposal: rename the qualifier to `integrated` through one small Spec, with the old spelling accepted as an alias for one Template version.",
-        "changes": "A planned Spec renames the qualifier in the lifecycle tool, AGENTS.md Work Selection, the Delivered row (or its glossary successor) and the Template, and keeps `delivered` as an alias until the Template upgrades.",
-        "impact": "Rename: coordinated edits and a short alias period. Keep both: no work now, and the ambiguity stays in every blocker list.",
-        "history": "Locked 2026-10-03 (VERB-complete): the verb is Delivered, not Complete. Your 2026-10-04 answer at revision 1: rename the qualifier. Five parent workflows confirmed 2026-10-09 (GB-0026)."
+        "scope": "BLUEPRINT",
+        "summary": "Your round-1 rework of the five workflows, read back for your Confirm.",
+        "artifacts": "The Runbook Workflows table and its diagram (the map you confirmed earlier on 2026-10-09); the workflow verbs Wiki page; AGENTS.md Work Selection, which defines the `S-###:delivered` blocker tag; the Lexicon Delivered row.",
+        "why": "Your words, round 1: Approve is you saying \"this passes and is good for main\", and Delivered is your confirmed decision landed and done on main. That raised moving Clean Up before Delivered, and running a Promote after your approval, since it is just a more important confirm. Promote then only needs to be Record → Publish, which frees the parent name: Chart Course.",
+        "recommendation": "Agent proposal, the map as read back:\n\n| Parent workflow | Steps |\n|---|---|\n| Explore | Idea → Align → Confirm |\n| Chart Course | Promote → Map → Publish → Plan → Publish |\n| Journey | Implement → Check → QA → Submit |\n| Judge | Review → Verify → Approve |\n| Complete | Promote → Clean Up → Delivered |\n\nThe Promote step is Record → Publish wherever it appears.\n\nAnd rename the blocker tag to `S-###:integrated` (old spelling kept as an alias until the Template upgrades), so Delivered means one thing.",
+        "changes": "Once you confirm: a decision record replaces the earlier five-workflow map; the Runbook Workflows table, its diagram and the workflow verbs Wiki page change to this map. If you choose the rename, a small Spec renames the blocker tag in the lifecycle tool, AGENTS.md, the Delivered row and the Template.",
+        "impact": "Reopens the map you confirmed earlier on 2026-10-09: the steps stay, Complete gains a Promote and changes order. Keeping the blocker tag leaves one word naming two different gates.",
+        "history": "Delivered locked as the verb 2026-10-03. You answered \"rename the qualifier\" 2026-10-04. Five parent workflows confirmed 2026-10-09 (GB-0026). Round 1 (2026-10-09): your Change the why note carried this rework; you asked for the readback to come back here for your Confirm."
       },
       "priority": {
         "grade": "P3",
@@ -190,7 +223,7 @@
         "grade": "V1",
         "reason": "One small Spec removes a standing source of misreads."
       },
-      "gradeRevision": 2
+      "gradeRevision": 3
     },
     {
       "id": "GB-0002",
@@ -9388,10 +9421,10 @@
       "key": "dqc-DQC-003B",
       "group": "dqcs",
       "kind": "confirm-dqc",
-      "title": "Decide how approved recurring maintenance runs without asking you each time (card DQC-003B; proposed CDR-000B)",
-      "question": "When a maintenance action has to repeat, is one bounded owner authorization naming the exact action and cadence enough, with each run recorded in the existing owner? Or is there no present need, so recurrence waits until a real case appears?",
-      "current": "The card How should recurring approved maintenance fit the work model? (DQC-003B) is unanswered; its source question FND-Q17f is open and no recurring action is pending today. The proposed record Recurring maintenance needs an explicit bounded authorization (CDR-000B, unpublished) states a policy; its full text is the draft below. GB-0189 asked the same and is folded here.",
-      "proposal": "Agent proposal: adopt the policy now so a later case needs no new decision. A recurring maintenance action is an ordinary bounded action whose owner authorization names its exact scope and cadence; each run records its result and any exception in the existing owner; no scheduler or new artifact is added until a case needs one.",
+      "title": "Recurring maintenance · approve a repeating job once?",
+      "question": "When a maintenance job has to repeat, can you approve it once, naming exactly what it does and how often, so agents run it on that schedule and record each run without asking you again?",
+      "current": "No repeating maintenance job exists today. The proposed rule is the text under \"Proposed wording\" on this card. Your other choice is to wait and decide with the first real case.",
+      "proposal": "Agent proposal: adopt the rule now. One approval names the exact job and how often it runs; each run records its result where that job already reports; no scheduler is built until a real job needs one.",
       "draft": "---\ndate: 2026-10-06\ncanonicalized_in:\n  - workbench/grill-board/README.md\n  - workbench/specs/S-004D-shared-interactive-board/SPEC.md\n---\n\n# Recurring maintenance needs an explicit bounded authorization\n\n## Agent proposal\n\nA recurring maintenance action is an ordinary bounded action whose owner-approved authorization names its exact scope and cadence. Each run records the observed result and any exception in the existing owner. If no present recurring need exists, defer the recurring form while using ordinary Tasks for one-off maintenance.\n\n## Underlying question and why\n\nWhat invariant should let repeated approved maintenance run without repeated owner orchestration, while keeping its action and authority bounded? The original question has no owner answer. The record proposes a policy, not an accepted recurring capability or authorization of a run.\n\n## Alternatives\n\nDefer recurrence until a concrete need exists; encode a bounded recurring Task; or introduce a distinct recurring artifact only if the ordinary model demonstrably cannot express the need. GB-0088 preserves these choices and the original FND-Q17f uncertainty.\n\n## Consequences and revisiting\n\nA selected policy could guide later capability work. This draft adds no scheduler, cadence or recurring job. Revisit when a real recurring action exposes a gap.\n\n## Provenance\n\nGB-0088 and its source history (grill-board/README.md), DQC-003B and FND-Q17f. The 2026-09-23 triage's backlog label was an agent classification, not owner approval.\n",
       "options": [
         {
@@ -9431,7 +9464,7 @@
         "aligning-related",
         "owner-decision"
       ],
-      "revision": 5,
+      "revision": 6,
       "status": "open",
       "applied": null,
       "history": [
@@ -9496,17 +9529,54 @@
           "changes": [
             "draft"
           ]
+        },
+        {
+          "revision": 6,
+          "at": "2026-10-09T05:30:40.602Z",
+          "by": "claude-opus-5.5",
+          "reason": "Round-1 tax: plainer question and brief",
+          "changes": [
+            "title",
+            "question",
+            "current",
+            "proposal",
+            "brief"
+          ]
+        },
+        {
+          "revision": 6,
+          "gradeRevision": 3,
+          "at": "2026-10-09T05:31:15.110Z",
+          "by": "claude-opus-5.5",
+          "reason": "reassessed (P retained, V retained): Round-1 revisions: grades retained, bases unchanged",
+          "assessment": {
+            "followed": {
+              "id": "GB-0088",
+              "answerAt": "2026-10-09T05:02:56.996Z",
+              "itemRevision": 5
+            },
+            "priority": {
+              "outcome": "retained",
+              "grade": "P4",
+              "basis": "Still no repeating job pending."
+            },
+            "value": {
+              "outcome": "retained",
+              "grade": "V3",
+              "basis": "Same policy, plainer words."
+            }
+          }
         }
       ],
       "brief": {
         "scope": "BLUEPRINT",
-        "summary": "One rule for repeated maintenance, so it never comes back as a question.",
-        "artifacts": "The card How should recurring approved maintenance fit the work model? (DQC-003B); Recurring maintenance needs an explicit bounded authorization (CDR-000B, proposed, full text in the draft); AGENTS.md Safety And Change Control, which already bounds standing approvals; Prove one Task runs reliably before building an unattended coordinator (BT-D7, your locked drop of a coordinator for now).",
-        "why": "Recurring work either keeps asking you or runs under an authorization nobody wrote down. A bounded authorization with a cadence and a record per run is the smallest rule that avoids both.",
-        "recommendation": "Agent proposal: adopt the bounded-authorization policy now; add no scheduler.",
-        "changes": "The record is accepted when its collection lands; the card records the answer and closes FND-Q17f.",
-        "impact": "Adopt now: later recurring cases run under one rule. No need yet: the question returns with the first real case.",
-        "history": "FND-Q17f sorted to backlog by the 2026-09-23 triage (agent sort, not your words). CDR-000B proposed 2026-10-06. Folded: GB-0189."
+        "summary": "One approval per repeating job, so it never comes back as a question.",
+        "artifacts": "The draft decision record \"Recurring maintenance needs an explicit bounded authorization\" (under \"Proposed wording\" on this card); the card How should recurring approved maintenance fit the work model?; AGENTS.md Safety And Change Control, which already limits standing approvals.",
+        "why": "Without a rule, a repeating job either asks you every time or runs on an approval nobody wrote down.",
+        "recommendation": "Agent proposal: adopt the rule now; build no scheduler.",
+        "changes": "The decision record is accepted, and the card records your answer.",
+        "impact": "Adopt now: later repeating jobs run under one rule. Wait: the question returns with the first real case.",
+        "history": "Open since the 2026-09 foundation grilling (FND-Q17f). Rule drafted 2026-10-06. Round 1 (2026-10-09): you flagged the wording as too taxing; this is the plainer version."
       },
       "priority": {
         "grade": "P4",
@@ -9516,7 +9586,7 @@
         "grade": "V3",
         "reason": "A small rule that prevents a repeated question."
       },
-      "gradeRevision": 2
+      "gradeRevision": 3
     },
     {
       "id": "GB-0089",
@@ -22075,10 +22145,10 @@
       "key": "retro-guardrail-r-1",
       "group": "open-choices",
       "kind": "choice",
-      "title": "Tracked Full suite runner · dirty-tree refusal (R-1)",
-      "question": "Should the Full suite runner refuse to run on any tracked or untracked change, with no override flag?",
-      "current": "The draft refuses a dirty tree and an empty command list. A dirty tree causes about 30 invalid-source-identity failures, so a dirty-tree run cannot produce a trustworthy result; hand-built runners each reinvented this check.",
-      "proposal": "Agent proposal: strict refusal with no override. A result from a dirty tree names no committed candidate, so it cannot be cited as evidence anyway; an override would bring back the caveated reports the runner exists to stop.",
+      "title": "Full suite runner · refuse to run with uncommitted changes? (R-1)",
+      "question": "Should the Full suite runner refuse to start while there are uncommitted changes, with no override?",
+      "current": "A run with uncommitted changes fails about 30 tests for that reason alone, and its result can't be tied to a commit, so it can't be used as proof.",
+      "proposal": "Agent proposal: yes, refuse with no override. Commit first (or use a worktree), then run.",
       "draft": null,
       "options": [
         {
@@ -22114,7 +22184,7 @@
         "S-004R",
         "R-1"
       ],
-      "revision": 1,
+      "revision": 2,
       "status": "open",
       "applied": null,
       "history": [
@@ -22130,17 +22200,54 @@
           "at": "2026-10-09T02:50:08.651Z",
           "by": "claude-reconcile",
           "reason": "graded: Reconcile 2026-10-09: graded the 22 questions brought across from integration and regraded the 12 rewritten questions against the Priority and Value meanings (LEXICON Priority And Value; DDR-001L)."
+        },
+        {
+          "revision": 2,
+          "at": "2026-10-09T05:30:40.389Z",
+          "by": "claude-opus-5.5",
+          "reason": "Round-1 tax: smaller, plainer question",
+          "changes": [
+            "title",
+            "question",
+            "current",
+            "proposal",
+            "brief"
+          ]
+        },
+        {
+          "revision": 2,
+          "gradeRevision": 2,
+          "at": "2026-10-09T05:31:15.110Z",
+          "by": "claude-opus-5.5",
+          "reason": "reassessed (P retained, V retained): Round-1 revisions: grades retained, bases unchanged",
+          "assessment": {
+            "followed": {
+              "id": "GB-0191",
+              "answerAt": "2026-10-09T04:42:17.710Z",
+              "itemRevision": 1
+            },
+            "priority": {
+              "outcome": "retained",
+              "grade": "P3",
+              "basis": "Only the wording got smaller."
+            },
+            "value": {
+              "outcome": "retained",
+              "grade": "V1",
+              "basis": "Same rule."
+            }
+          }
         }
       ],
       "brief": {
         "scope": "SPEC",
-        "summary": "Should the Full suite runner refuse to run on any tracked or untracked change, with no override flag?",
-        "artifacts": "**Tracked Full suite runner** (S-004R) — a planned Spec drafted from the 2026-10-07 implement-spec retros. It sits on branch claude/retro-guardrail-specs in PR #432 (open, not merged), so it is not on integration yet. Its \"Open owner choices\" section holds this question as R-1.",
-        "why": "Every agent hand-builds its own Full suite runner from the RUNBOOK block. One extracted zero commands with BSD sed and reported pass=0 fail=0 as green; lanes overwrote each other's shared runner; a dirty tree causes about 30 invalid-source-identity failures; a 10-minute timeout killed a 13-15 minute run.",
-        "recommendation": "Agent proposal: strict refusal with no override. A result from a dirty tree names no committed candidate, so it cannot be cited as evidence anyway; an override would bring back the caveated reports the runner exists to stop.",
-        "changes": "The runner's refusal rule and its acceptance line in the Spec.",
-        "impact": "Strict refusal means agents must commit (or work in a worktree) before running the suite; that is already the rule the suite needs.",
-        "history": "Raised when the retro findings were drafted into Specs. It stayed open through grilling rounds 1 and 2 of the retro guardrail Specs (2026-10-07), which settled README counts, the Core skill operation's home, execution order, Template reach and the not-drafted items, then promoted the drafts into PR #432. The Spec's recommendation is the drafting agent's, not an owner answer."
+        "summary": "Should the suite runner refuse uncommitted changes?",
+        "artifacts": "[Tracked Full suite runner (S-004R), Open owner choices R-1](https://github.com/KaydenClark/LLM_Workbench/blob/claude/retro-guardrail-specs/workbench/specs/S-004R-tracked-full-suite-runner/SPEC.md#open-owner-choices), a planned Spec on the open retro-guardrail pull request #432.",
+        "why": "Every agent builds its own suite runner today. One counted zero tests as a pass; uncommitted changes fail about 30 tests. One shared runner that refuses a dirty tree gives a result you can trust.",
+        "recommendation": "Agent proposal: refuse, no override.",
+        "changes": "The runner's refusal rule in the Spec.",
+        "impact": "Agents must commit before running the suite, which the suite already needs.",
+        "history": "Raised with the 2026-10-07 retro guardrail Specs. Round 1 (2026-10-09): you flagged it as too taxing; this is the smaller version."
       },
       "priority": {
         "grade": "P3",
@@ -22150,7 +22257,7 @@
         "grade": "V1",
         "reason": "A one-line rule that stops caveated suite reports."
       },
-      "gradeRevision": 1
+      "gradeRevision": 2
     },
     {
       "id": "GB-0192",
@@ -22399,9 +22506,9 @@
       "group": "open-choices",
       "kind": "choice",
       "title": "Required checks on pull requests into integration · adding .github/ to the edit scope (S-1)",
-      "question": "Should `.github/` join the edit scope in AGENTS.md (and its Template counterpart) so agents can add the required-checks workflow?",
-      "current": "AGENTS.md lists the folders agents may edit; `.github/` is not among them, and the repository has no `.github/` folder today. The required-checks workflow has to live in `.github/workflows/`.",
-      "proposal": "Agent proposal: add `.github/` to the edit scope in AGENTS.md and the Template's AGENTS.md, so the portable workflow can ship with the Template and rooms can carry it.",
+      "question": "Should agents be allowed to edit `.github/`, so they can add the required-checks workflow that runs on every pull request into `integration`?",
+      "current": "Required checks are three automatic checks GitHub runs on a pull request: the fast check, the Full suite, and a verdict gate that blocks merging while a Spec it touches has an unanswered failed review. They run on every pull request into `integration`, whichever workflow opened it: a Worker's Task pull request (Journey Submit), an implement-spec assembly pull request, or a Director or Dispatcher state pull request. Pull requests into `main` are not included; promoting to main stays yours. GitHub only runs workflow files kept in `.github/workflows/`, and AGENTS.md does not let agents edit `.github/` today.",
+      "proposal": "Agent proposal: add `.github/` to the edit scope in AGENTS.md and in the Template's AGENTS.md, so agents can write the workflow and every room made from the Template carries it.",
       "draft": null,
       "options": [
         {
@@ -22437,7 +22544,7 @@
         "S-004S",
         "S-1"
       ],
-      "revision": 1,
+      "revision": 2,
       "status": "open",
       "applied": null,
       "history": [
@@ -22453,17 +22560,53 @@
           "at": "2026-10-09T02:50:08.651Z",
           "by": "claude-reconcile",
           "reason": "graded: Reconcile 2026-10-09: graded the 22 questions brought across from integration and regraded the 12 rewritten questions against the Priority and Value meanings (LEXICON Priority And Value; DDR-001L)."
+        },
+        {
+          "revision": 2,
+          "at": "2026-10-09T05:30:39.960Z",
+          "by": "claude-opus-5.5",
+          "reason": "Round-1 Change the why: name which pull requests the checks guard (every one into integration) and give the why",
+          "changes": [
+            "question",
+            "current",
+            "proposal",
+            "brief"
+          ]
+        },
+        {
+          "revision": 2,
+          "gradeRevision": 2,
+          "at": "2026-10-09T05:31:15.110Z",
+          "by": "claude-opus-5.5",
+          "reason": "reassessed (P retained, V retained): Round-1 revisions: grades retained, bases unchanged",
+          "assessment": {
+            "followed": {
+              "id": "GB-0195",
+              "answerAt": "2026-10-09T04:53:13.133Z",
+              "itemRevision": 1
+            },
+            "priority": {
+              "outcome": "retained",
+              "grade": "P3",
+              "basis": "Owner said yes; only the why was reworded."
+            },
+            "value": {
+              "outcome": "retained",
+              "grade": "V1",
+              "basis": "Same one-line edit-scope change."
+            }
+          }
         }
       ],
       "brief": {
         "scope": "SPEC",
-        "summary": "Should `.github/` join the edit scope in AGENTS.md (and its Template counterpart) so agents can add the required-checks workflow?",
-        "artifacts": "**Required checks on pull requests into integration** (S-004S) — a planned Spec drafted from the 2026-10-07 implement-spec retros. It sits on branch claude/retro-guardrail-specs in PR #432 (open, not merged), so it is not on integration yet. Its \"Open owner choices\" section holds this question as S-1.",
-        "why": "PR #412 (pr skill adoption assembly) merged into integration on 2026-10-07 with a head commit recording a fail verdict. The rule against that was written down and nothing mechanical read it. The Full suite likewise runs only when an agent runs it by hand.",
-        "recommendation": "Agent proposal: add `.github/` to the edit scope in AGENTS.md and the Template's AGENTS.md, so the portable workflow can ship with the Template and rooms can carry it.",
-        "changes": "AGENTS.md and templates' AGENTS.md edit-scope line (through the Spec's Tasks, not now).",
-        "impact": "Without it the Spec cannot deliver its workflow by an agent Task.",
-        "history": "Raised when the retro findings were drafted into Specs. It stayed open through grilling rounds 1 and 2 of the retro guardrail Specs (2026-10-07), which settled README counts, the Core skill operation's home, execution order, Template reach and the not-drafted items, then promoted the drafts into PR #432. The Spec's recommendation is the drafting agent's, not an owner answer."
+        "summary": "Let agents write the GitHub workflow that checks every pull request into integration.",
+        "artifacts": "[Required checks on pull requests into integration (S-004S), Open owner choices S-1](https://github.com/KaydenClark/LLM_Workbench/blob/claude/retro-guardrail-specs/workbench/specs/S-004S-required-checks-on-pull-requests-into-integration/SPEC.md#open-owner-choices), a planned Spec on the open retro-guardrail pull request #432; AGENTS.md Edit Scope and its Template copy.",
+        "why": "The checks guard the one door every workflow uses into integration. On 2026-10-07 the pr skill assembly (PR #412) merged even though its last commit recorded a failed review: the rule was written down, but nothing mechanical read it. The Full suite has the same gap: it runs only when an agent remembers to. With required checks, GitHub refuses the merge while either is red, for Task, assembly and state pull requests alike.",
+        "recommendation": "Agent proposal: add `.github/` to the edit scope in AGENTS.md and the Template's AGENTS.md.",
+        "changes": "One edit-scope line in AGENTS.md and in templates/AGENTS.md, made by the Spec's first Task, not now.",
+        "impact": "Without it, an agent Task cannot deliver the workflow and you would place the file yourself. Whether docs-only pull requests also run the full suite is a separate open choice in the same Spec (S-7).",
+        "history": "Raised when the 2026-10-07 retro findings were drafted into Specs; open since. Round 1 (2026-10-09): you said yes, and asked for a better why naming which workflow the checks are for. Answer: all of them, at the integration door."
       },
       "priority": {
         "grade": "P3",
@@ -22473,7 +22616,7 @@
         "grade": "V1",
         "reason": "One edit-scope line lets the portable workflow ship."
       },
-      "gradeRevision": 1
+      "gradeRevision": 2
     },
     {
       "id": "GB-0196",
@@ -22729,11 +22872,11 @@
       "key": "retro-guardrail-s-5",
       "group": "open-choices",
       "kind": "choice",
-      "title": "Required checks on pull requests into integration · the verdict-gate rule (S-5)",
-      "question": "Should the verdict gate fail when a Spec the PR touches has `fail` as its latest verdict and no Task that verdict continued or created has closed since?",
-      "current": "This is the rule the draft proposes. It turns PR #412's state red and lets the same branch turn green once its corrective Task closes.",
+      "title": "Required checks on pull requests into integration · when the verdict gate blocks a merge (S-5)",
+      "question": "Should GitHub block a pull request into `integration` while a Spec it touches has a failed review as its latest verdict and no fix Task for that failure has closed since? (The rule's full text is in \"Proposed wording\" on this card.)",
+      "current": "The rule as drafted: the gate looks only at Specs whose files the pull request changes. For each, it reads the latest review verdict. If that verdict is `fail` and no Task it continued or created has closed since, the gate goes red and names the Spec and the findings. Closing the fix Task turns it green. A fix pull request for another Spec is never blocked.",
       "proposal": "Agent proposal: confirm the rule as drafted.",
-      "draft": null,
+      "draft": "Quoted from the Spec draft \"Required checks on pull requests into integration\" (S-004S) on the open retro-guardrail pull request #432. Full Spec: https://github.com/KaydenClark/LLM_Workbench/blob/claude/retro-guardrail-specs/workbench/specs/S-004S-required-checks-on-pull-requests-into-integration/SPEC.md\n\nThe rule (open owner choice S-5): the verdict gate fails when a Spec the pull request touches has `fail` as its latest verdict and no Task that verdict continued or created has closed since.\n\nDesired Behavior 3: the verdict gate finds every Spec whose files the pull request changes and runs `report` for each at the pull request head. It fails under the rule above, naming the Spec, the verdict's candidate and its findings.\n\nDesired Behavior 5: a deliberately bad branch, such as one whose head is the state of the pr skill assembly's failed-review commit (e205ea42), turns the verdict gate red; the same branch with its corrective Task closed turns it green.\n\nContracts: the gate reads verdicts only and never writes evidence, verdicts or approvals. A check blocks only the change it evaluates: the gate reads only Specs the pull request touches.\n\nAcceptance lines: a branch reproducing PR #412's head turns the gate red, naming the pr skill Spec and the fail verdict, and closing the continued Task turns it green; a pull request that touches no Spec with an unanswered fail verdict passes.\n",
       "options": [
         {
           "value": "confirm",
@@ -22763,7 +22906,7 @@
         "S-004S",
         "S-5"
       ],
-      "revision": 1,
+      "revision": 2,
       "status": "open",
       "applied": null,
       "history": [
@@ -22779,17 +22922,55 @@
           "at": "2026-10-09T02:50:08.651Z",
           "by": "claude-reconcile",
           "reason": "graded: Reconcile 2026-10-09: graded the 22 questions brought across from integration and regraded the 12 rewritten questions against the Priority and Value meanings (LEXICON Priority And Value; DDR-001L)."
+        },
+        {
+          "revision": 2,
+          "at": "2026-10-09T05:30:40.174Z",
+          "by": "claude-opus-5.5",
+          "reason": "Round-1 tax: the rule text now sits on the card and the question says where",
+          "changes": [
+            "title",
+            "question",
+            "current",
+            "proposal",
+            "draft",
+            "brief"
+          ]
+        },
+        {
+          "revision": 2,
+          "gradeRevision": 2,
+          "at": "2026-10-09T05:31:15.110Z",
+          "by": "claude-opus-5.5",
+          "reason": "reassessed (P retained, V retained): Round-1 revisions: grades retained, bases unchanged",
+          "assessment": {
+            "followed": {
+              "id": "GB-0199",
+              "answerAt": "2026-10-09T04:55:50.019Z",
+              "itemRevision": 1
+            },
+            "priority": {
+              "outcome": "retained",
+              "grade": "P3",
+              "basis": "Only the layout of the rule text changed."
+            },
+            "value": {
+              "outcome": "retained",
+              "grade": "V1",
+              "basis": "Same rule."
+            }
+          }
         }
       ],
       "brief": {
         "scope": "SPEC",
-        "summary": "Should the verdict gate fail when a Spec the PR touches has `fail` as its latest verdict and no Task that verdict continued or created has closed since?",
-        "artifacts": "**Required checks on pull requests into integration** (S-004S) — a planned Spec drafted from the 2026-10-07 implement-spec retros. It sits on branch claude/retro-guardrail-specs in PR #432 (open, not merged), so it is not on integration yet. Its \"Open owner choices\" section holds this question as S-5.",
-        "why": "PR #412 (pr skill adoption assembly) merged into integration on 2026-10-07 with a head commit recording a fail verdict. The rule against that was written down and nothing mechanical read it. The Full suite likewise runs only when an agent runs it by hand.",
+        "summary": "The rule that decides when an unanswered failed review stops a merge.",
+        "artifacts": "The rule's text is on this card under \"Proposed wording\". Its home: [Required checks on pull requests into integration (S-004S), Desired Behavior 3 and Open owner choices S-5](https://github.com/KaydenClark/LLM_Workbench/blob/claude/retro-guardrail-specs/workbench/specs/S-004S-required-checks-on-pull-requests-into-integration/SPEC.md#desired-behavior), a planned Spec on the open retro-guardrail pull request #432.",
+        "why": "This is the check that would have stopped the pr skill assembly (PR #412) merging on 2026-10-07 with its failed review unanswered. It reads only the Specs a pull request touches, so fixing one Spec never waits on another Spec's failure.",
         "recommendation": "Agent proposal: confirm the rule as drafted.",
-        "changes": "The verdict gate in the Spec's Desired Behavior 3 and its acceptance test (Desired Behavior 5).",
-        "impact": "Defines exactly which PRs the gate blocks.",
-        "history": "Raised when the retro findings were drafted into Specs. It stayed open through grilling rounds 1 and 2 of the retro guardrail Specs (2026-10-07), which settled README counts, the Core skill operation's home, execution order, Template reach and the not-drafted items, then promoted the drafts into PR #432. The Spec's recommendation is the drafting agent's, not an owner answer."
+        "changes": "The verdict gate's rule (Desired Behavior 3) and its red/green acceptance test (Desired Behavior 5) in the Spec.",
+        "impact": "Defines exactly which pull requests the gate blocks: only ones touching a Spec with an unanswered failed review.",
+        "history": "Raised with the 2026-10-07 retro guardrail Specs; the recommendation is the drafting agent's. Round 1 (2026-10-09): you could not find the draft; it is now quoted on this card."
       },
       "priority": {
         "grade": "P3",
@@ -22799,7 +22980,7 @@
         "grade": "V1",
         "reason": "The one rule that turns a failed-verdict PR red."
       },
-      "gradeRevision": 1
+      "gradeRevision": 2
     },
     {
       "id": "GB-0200",
@@ -23861,6 +24042,67 @@
       "value": {
         "grade": "V2",
         "reason": "Adds a review rule to the core code-review skill; owner wording approval."
+      },
+      "gradeRevision": 1
+    },
+    {
+      "id": "GB-0213",
+      "key": "dashboard-round1-fixes-2026-10-09",
+      "group": "owner-decisions",
+      "kind": "owner-decision",
+      "title": "Workbench Dashboard fixes from Grilling Board round 1 (Workbench Dashboard, S-004D)",
+      "question": "Are these the dashboard fixes you asked for in round 1, including bringing the Promote button back into view?",
+      "current": "Since the last board update (P/V chips, left navigation, progressive disclosure), most of each card starts closed: the draft, comments and the \"Start promotion for this confirmed card\" button sit inside closed lines. The Grilling Board's filters and progress live in the left pane. Points 1-7 below were confirmed in chat on 2026-10-09; point 8 answers your question about the Promote button.",
+      "proposal": "Agent proposal: build these eight fixes as Workbench Dashboard (S-004D) Tasks. 1. Tax button on each card. It is not a verdict: it flags the question as too hard to work with, an agent rewrites it, and it comes back in a later round. 2. \"Was this a good question?\" One to five stars on every card, saved with your answer. 3. Back button to the previous question, next to \"Next question\". 4. Comments. A comment can go with any verdict button, Confirm included. One board-level place for notes that don't belong to any question. Cards get lighter: instead of stacked closed sections, links in the text lead you on, such as \"See the draft here:\" or \"as seen in the workflow\" with the workflow linked. Why (yours): be led down a path, not dig; that is how orchestration load drops. 5. Top navigation for the Grilling Board. Priority/Value chips, \"Where is it in the workflow?\", the other filters, search, the progress bar, the Whys list and Drafts to approve move into a bar across the top. The left pane keeps only the Dashboard sections. 6. Lead you to the draft and back. A link at the point of reading the question opens the draft; the draft has a clear way back to the card you were on. A dropdown \"Current text and proposed replacement\" shows only the part being replaced or updated. 7. No size limit. The Full suite runner question likely read as taxing because it was the first card after the remodel and its why looked missing; that question is rewritten plainer. 8. Promote button in view. \"Start promotion for this confirmed card\" shows on a confirmed card, not inside the closed \"Comments, change requests and promotion\" line.",
+      "draft": "Confirmed in chat on 2026-10-09 (points 1-7); point 8 is new and needs your Confirm here.\n\n1. **Tax button** on each card. It is not a verdict: it flags the question as too hard to work with, an agent rewrites it, and it comes back in a later round.\n2. **\"Was this a good question?\"** One to five stars on every card, saved with your answer.\n3. **Back button** to the previous question, next to \"Next question\".\n4. **Comments.** A comment can go with any verdict button, Confirm included. One board-level place for notes that don't belong to any question. Cards get lighter: instead of stacked closed sections, links in the text lead you on, such as \"See the draft here:\" or \"as seen in the workflow\" with the workflow linked. Why (yours): be led down a path, not dig; that is how orchestration load drops.\n5. **Top navigation for the Grilling Board.** Priority/Value chips, \"Where is it in the workflow?\", the other filters, search, the progress bar, the Whys list and Drafts to approve move into a bar across the top. The left pane keeps only the Dashboard sections.\n6. **Lead you to the draft and back.** A link at the point of reading the question opens the draft; the draft has a clear way back to the card you were on. A dropdown \"Current text and proposed replacement\" shows only the part being replaced or updated.\n7. **No size limit.** The Full suite runner question likely read as taxing because it was the first card after the remodel and its why looked missing; that question is rewritten plainer.\n8. **Promote button in view.** \"Start promotion for this confirmed card\" shows on a confirmed card, not inside the closed \"Comments, change requests and promotion\" line.",
+      "options": null,
+      "sources": [
+        {
+          "label": "Workbench Dashboard Spec (S-004D)",
+          "path": "workbench/specs/S-004D-shared-interactive-board/SPEC.md",
+          "ref": "b58d63e8"
+        }
+      ],
+      "tags": [
+        "dashboard",
+        "S-004D",
+        "round-1"
+      ],
+      "revision": 1,
+      "status": "open",
+      "applied": null,
+      "history": [
+        {
+          "revision": 1,
+          "at": "2026-10-09T05:30:44.643Z",
+          "by": "claude-opus-5.5",
+          "reason": "Round-1 dashboard fixes, confirmed in chat, put on the board for Confirm and promotion"
+        },
+        {
+          "revision": 1,
+          "gradeRevision": 1,
+          "at": "2026-10-09T05:30:44.808Z",
+          "by": "claude-opus-5.5",
+          "reason": "graded: Grade the new round-1 dashboard fixes card"
+        }
+      ],
+      "brief": {
+        "scope": "SPEC",
+        "summary": "Your round-1 dashboard fixes, so they live on the board, not in a chat.",
+        "artifacts": "Workbench Dashboard (S-004D), the Spec the fixes land in; the Grilling Board page (workbench/grill-board/index.html); the last board update (PR #445), which these partly reverse.",
+        "why": "Your words: you need to bounce around a lot, be led to the answer instead of digging for it, and have a route back to the decision you were working on. Reading a question and then asking yourself \"what next?\" is the tax.",
+        "recommendation": "Confirmed in chat on 2026-10-09 (points 1-7); point 8 is new and needs your Confirm here.\n\n1. **Tax button** on each card. It is not a verdict: it flags the question as too hard to work with, an agent rewrites it, and it comes back in a later round.\n2. **\"Was this a good question?\"** One to five stars on every card, saved with your answer.\n3. **Back button** to the previous question, next to \"Next question\".\n4. **Comments.** A comment can go with any verdict button, Confirm included. One board-level place for notes that don't belong to any question. Cards get lighter: instead of stacked closed sections, links in the text lead you on, such as \"See the draft here:\" or \"as seen in the workflow\" with the workflow linked. Why (yours): be led down a path, not dig; that is how orchestration load drops.\n5. **Top navigation for the Grilling Board.** Priority/Value chips, \"Where is it in the workflow?\", the other filters, search, the progress bar, the Whys list and Drafts to approve move into a bar across the top. The left pane keeps only the Dashboard sections.\n6. **Lead you to the draft and back.** A link at the point of reading the question opens the draft; the draft has a clear way back to the card you were on. A dropdown \"Current text and proposed replacement\" shows only the part being replaced or updated.\n7. **No size limit.** The Full suite runner question likely read as taxing because it was the first card after the remodel and its why looked missing; that question is rewritten plainer.\n8. **Promote button in view.** \"Start promotion for this confirmed card\" shows on a confirmed card, not inside the closed \"Comments, change requests and promotion\" line.",
+        "changes": "Once you confirm: Workbench Dashboard Tasks for the eight fixes, built on the dashboard branch and served on the board you use.",
+        "impact": "Partly reverses the last update's folding: the draft, comments and the Promote button come back into view, and filters move to a top bar.",
+        "history": "Round 1 (2026-10-09): asked in your notes on the recurring-maintenance, verdict-gate and Full suite runner questions; points 1-7 read back and confirmed in chat; point 8 from your question about the Promote decision button."
+      },
+      "priority": {
+        "grade": "P1",
+        "reason": "The board is how every other question gets answered; these fixes cut the tax on each one."
+      },
+      "value": {
+        "grade": "V1",
+        "reason": "Mostly reversing folds and moving controls the page already has."
       },
       "gradeRevision": 1
     }
