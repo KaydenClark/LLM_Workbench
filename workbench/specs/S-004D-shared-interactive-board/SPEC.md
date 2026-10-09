@@ -3,14 +3,14 @@
 **Spec ID:** S-004D
 **Status:** active
 **Priority:** 2
-**Owner:** claude-board-ui-corrections-2026-10-09
+**Owner:** claude-dashboard-director
 **Stance:** Builder
 **Updated:** 2026-10-09
 **Catalog description:** The owner's local Dashboard: Destination Tracker, Taskboard, Grilling Board, Drafts to approve and Wiki, with progressive grilling, exact wording approvals and explicit promotion handoffs.
 **Release scope:** In scope since the owner's 2026-10-04 answer; no release is assigned.
 **Blockers:** none
-**Latest event:** TK-007Z closed with proof.
-**Next gate:** Complete TK-007Y.
+**Latest event:** 2026-10-09: TK-007Z, the owner's three Grilling Board corrections (P/V chips in place of the Priority and Value dropdowns, the five section links as a left navigation pane, a progressively disclosed card), closed with proof on `claude/grilling-board-ui-corrections-2026-10-09`, PR #445 into `claude/workbench-dashboard-first-pass`, after the reconcile lane's PR #444 (35 open questions) landed on that branch; Full suite 60/60 on candidate `2586e260`. Earlier: TK-007L, TK-007M, TK-007N, TK-007O, TK-007T and TK-007X closed on that branch after fourteen separate-context reviews (see the evidence log). Not delivered until draft PR #440 merges into integration.
+**Next gate:** The draft PR #440 merge into integration after a fresh reviewed candidate: its last passing review covered `fdefa9ca`, which PRs #444 and #445 have since moved past. Open after that: TK-007Y (the always-open login service verified after login and a killed process: the Owner's installed service must be restarted or replaced by the Owner), the unchecked acceptance lines (the five-sections line, short of one question whose comma-listed records are unlinked and of decision records named only in Priority or Value reasons, which are not linked; wider shared-board lines, recommended-alternative preselection, applied-approval wording, sampled-path context labels and the nine grouped prompts that live on the unpublished consequential-decision lane), the question-content pass recorded in `proof/question-content-audit-2026-10-08.json`, the owner's call on the folded More filters dropdowns (fold or remove) and on his tentative note about leaving a topic, and Owner Human QA.
 
 > **Citation anchors.** pre=`f6af4c339b543988a3212b1940581157f573818d` post=`f6af4c339b543988a3212b1940581157f573818d`.
 
