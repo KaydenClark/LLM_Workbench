@@ -23,7 +23,7 @@ for(const relative of ['tools/grill-board.mjs','tools/grill-board-project.mjs','
 git(source,['init','-q']);git(source,['config','user.name','Disposable fixture']);git(source,['config','user.email','fixture@example.invalid']);git(source,['remote','add','origin','https://github.com/KaydenClark/LLM_Workbench.git']);git(source,['add','.']);git(source,['commit','-qm','Fixture clean source']);
 const commit=git(source,['rev-parse','HEAD']);
 const config={schema:'grill-board/project@1',title:'Gun decisions </script><b>data</b>',repository:'https://github.com/KaydenClark/RingWorld',instance:'ringworld-guns',port:4767,topics:[{id:'guns',title:'Guns',frame:'Weapon choices </script><img src=x onerror=alert(1)>',outcome:'Approved sprites',groups:['pistol','rifle']}]};
-function project(name){const directory=path.join(temp,name);fs.mkdirSync(path.join(directory,'workbench'),{recursive:true});fs.writeFileSync(path.join(directory,'workbench/manifest.json'),'{}');git(directory,['init','-q']);git(directory,['config','user.name','Fixture']);git(directory,['config','user.email','fixture@example.invalid']);return directory;}
+function project(name){const directory=path.join(temp,name);fs.mkdirSync(path.join(directory,'workbench'),{recursive:true});fs.writeFileSync(path.join(directory,'workbench/manifest.json'),'{}');git(directory,['init','-q']);git(directory,['config','user.name','Fixture']);git(directory,['config','user.email','fixture@example.invalid']);git(directory,['remote','add','origin',config.repository+'.git']);return directory;}
 const target=project('target');const init=directory=>initializeProject({project:directory,source,commit,config});
 let count=0;const check=(name,fn)=>{fn();count++;console.log(`ok ${count} - ${name}`);};
 const boardFile=(name,directory=target)=>path.join(directory,'workbench/grill-board',name);
@@ -32,6 +32,38 @@ const reject=(directory,fn,pattern)=>{const before=snapshot(directory);assert.th
 const input=path.join(temp,'config.json');fs.writeFileSync(input,JSON.stringify(config));
 try {
   check('public initializer creates empty Board and no answers',()=>{const result=JSON.parse(execFileSync('node',[path.join(source,'tools/grill-board-deploy.mjs'),'init','--project',target,'--source',source,'--commit',commit,'--config',input],{encoding:'utf8'}));assert.equal(result.status,'initialized');assert.deepEqual(JSON.parse(fs.readFileSync(boardFile('items.json'))).items,[]);assert.ok(!fs.existsSync(boardFile('answers.json')));assert.equal(result.source.commit,commit);});
+  check('repository mismatch refuses initialization without writes',()=>{
+    const directory=project('wrong-repository');
+    reject(directory,()=>initializeProject({project:directory,source,commit,config:{...config,repository:'https://github.com/Other/Project'}}),/repository.*origin|origin.*repository/i);
+  });
+  check('equivalent GitHub HTTPS and SSH origins retain project identity',()=>{
+    for(const [index,origin] of ['https://github.com/kaydenclark/ringworld','https://github.com/KaydenClark/RingWorld.git/','git@github.com:KaydenClark/RingWorld.git','ssh://git@github.com/KaydenClark/RingWorld.git'].entries()){
+      const directory=project(`origin-format-${index}`);git(directory,['remote','set-url','origin',origin]);
+      assert.equal(init(directory).status,'initialized');verifyProject(directory);
+    }
+  });
+  check('missing unsupported and changed origins refuse without Board mutation',()=>{
+    const missing=project('missing-origin');git(missing,['remote','remove','origin']);reject(missing,()=>init(missing),/origin/i);
+    for(const [index,origin] of ['/local/clone','https://example.invalid/KaydenClark/RingWorld.git','https://github.com/Other/Project.git'].entries()){
+      const directory=project(`invalid-origin-${index}`);git(directory,['remote','set-url','origin',origin]);reject(directory,()=>init(directory),/origin/i);
+    }
+    const before=snapshot(target);git(target,['remote','set-url','origin','git@github.com:Other/Project.git']);
+    try {
+      assert.throws(()=>verifyProject(target),/origin/i);
+      assert.throws(()=>createProjectServer(target),/origin/i);
+      assert.throws(()=>init(target),/origin/i);
+      const result=spawnSync('node',[boardFile('runtime/tools/grill-board-project.mjs'),'status','--path',target,'--json'],{encoding:'utf8'});
+      assert.notEqual(result.status,0);assert.match(result.stderr,/origin/i);assert.deepEqual(snapshot(target),before);
+    } finally {git(target,['remote','set-url','origin',config.repository+'.git']);}
+  });
+  check('initializer rejects linked configuration ancestors before target writes',()=>{
+    const inputs=path.join(temp,'config-inputs');fs.mkdirSync(inputs);fs.writeFileSync(path.join(inputs,'config.json'),JSON.stringify(config));
+    const linkedParent=path.join(temp,'config-parent-link');fs.symlinkSync(inputs,linkedParent);
+    const directory=project('linked-config-target');
+    reject(directory,()=>deploy(['init','--project',directory,'--source',source,'--commit',commit,'--config',path.join(linkedParent,'config.json')]),/Unsafe/);
+    const linkedLeaf=path.join(temp,'config-leaf-link');fs.symlinkSync(path.join(inputs,'config.json'),linkedLeaf);
+    reject(directory,()=>deploy(['init','--project',directory,'--source',source,'--commit',commit,'--config',linkedLeaf]),/Unsafe/);
+  });
   check('receipt verifies source identity, hashes, configured rendering',()=>{const {receipt}=verifyProject(target);assert.equal(receipt.source.repository,'https://github.com/KaydenClark/LLM_Workbench.git');assert.ok(Object.keys(receipt.files).length>=10);const page=fs.readFileSync(boardFile('index.html'),'utf8');assert.match(page,/Gun decisions &lt;\/script&gt;/);assert.ok(!page.includes('topic.numbers'));assert.ok(!page.includes('GB-0180'));assert.ok(page.includes('grill-board:ringworld-guns:batch'));assert.ok(page.includes('grill-board:ringworld-guns:theme'));assert.ok(page.includes('\\u003c/script\\u003e'));assert.ok(!page.includes('what the Workbench is'));});
   const runtime=boardFile('runtime/tools/grill-board-project.mjs');
   const cli=args=>execFileSync('node',[runtime,...args,'--path',target],{encoding:'utf8'});
@@ -105,6 +137,15 @@ try {
   answer=await fetchJson('/api/answers/GB-0001',{method:'PUT',headers:{'content-type':'application/json'},body:JSON.stringify({verdict:'confirm',note:'Owner confirms after review',itemRevision:1})});assert.equal(answer.body.history[0].note,'Owner exact words');count++;console.log(`ok ${count} - owner answers and edit history saved only through HTTP`);
   check('pending JSON retains owner words and configured project links',()=>{const output=cli(['pending','--json']);const pending=JSON.parse(output);assert.equal(pending[0].note,'Owner confirms after review');assert.equal(pending[0].sources[0].ref,commit);assert.equal(pending[0].links[0].url,`${config.repository}/blob/${commit}/GUNS.md`);assert.equal(pending[0].links[1].url,null);assert.ok(!output.includes('https://github.com/KaydenClark/LLM_Workbench/blob/'));assert.match(cli(['pending']),/GB-0001.*Confirm/);});
   check('reinitialization preserves questions answers and config byte for byte',()=>{const before=snapshot(target);assert.equal(init(target).status,'preserved');assert.deepEqual(snapshot(target),before);});
+  check('reordered configuration object keys preserve every installed byte',()=>{
+    const reordered=Object.fromEntries(Object.entries(config).reverse());
+    reordered.topics=config.topics.map(topic=>Object.fromEntries(Object.entries(topic).reverse()));
+    const reorderedInput=path.join(temp,'reordered-config.json');fs.writeFileSync(reorderedInput,JSON.stringify(reordered));
+    const before=snapshot(target);
+    const result=deploy(['init','--project',target,'--source',source,'--commit',commit,'--config',reorderedInput]);
+    assert.equal(result.status,'preserved');assert.deepEqual(snapshot(target),before);
+    reject(target,()=>initializeProject({project:target,source,commit,config:{...config,topics:[{...config.topics[0],groups:[...config.topics[0].groups].reverse()}]}}),/configuration differs/);
+  });
   check('answers are ignored and no answer CLI exists',()=>{assert.equal(git(target,['check-ignore','workbench/grill-board/answers.json']),'workbench/grill-board/answers.json');assert.equal(git(target,['ls-files','workbench/grill-board/answers.json']),'');assert.notEqual(spawnSync('node',[runtime,'answer','GB-0001','--path',target]).status,0);});
   check('revision invalidates answer and stale apply refuses preserving owner file',()=>{const before=fs.readFileSync(boardFile('answers.json'));cli(['revise','GB-0001','--question','New approved question?','--by','fixture','--reason','New evidence']);assert.equal(JSON.parse(cli(['show','GB-0001','--json'])).derivedStatus,'stale');assert.throws(()=>cli(['apply','GB-0001','--by','fixture','--where','GUNS.md']),/stale|older|revision/);assert.ok(fs.readFileSync(boardFile('answers.json')).equals(before));});
   result=await fetchJson('/api/answers/GB-0001',{method:'PUT',headers:{'content-type':'application/json'},body:JSON.stringify({verdict:'confirm',note:'Second revision confirmed',itemRevision:1})});assert.equal(result.response.status,409);count++;console.log(`ok ${count} - HTTP refuses stale item revision`);
@@ -125,7 +166,7 @@ try {
   check('symlink Board/root/ancestor and hardlinked protected files refused',()=>{const outside=path.join(temp,'outside');fs.mkdirSync(outside);const directory=project('linked-target');fs.symlinkSync(outside,boardFile('',directory));reject(directory,()=>init(directory),/Unsafe/);const rootLink=path.join(temp,'root-link');fs.symlinkSync(target,rootLink);assert.throws(()=>init(rootLink),/Unsafe/);const directory2=project('ancestor-link');fs.rmSync(path.join(directory2,'workbench'),{recursive:true});fs.symlinkSync(path.join(target,'workbench'),path.join(directory2,'workbench'));assert.throws(()=>init(directory2),/Unsafe/);const answers=boardFile('answers.json');const linked=path.join(temp,'linked-answer');fs.linkSync(answers,linked);assert.throws(()=>verifyProject(target),/Unsafe/);fs.unlinkSync(linked);});
   check('linked project parent and forced tracked answers refused',()=>{const alias=path.join(temp,'parent-alias');fs.symlinkSync(temp,alias);assert.throws(()=>verifyProject(path.join(alias,'target')),/Unsafe/);git(target,['add','-f','workbench/grill-board/answers.json']);assert.throws(()=>verifyProject(target),/never be tracked/);git(target,['rm','--cached','-q','workbench/grill-board/answers.json']);});
   check('receipt and unsafe relative entry refuse without writes',()=>{const file=boardFile('deployment.json');const saved=fs.readFileSync(file);const receipt=JSON.parse(saved);receipt.files['../escape']='a'.repeat(64);fs.writeFileSync(file,JSON.stringify(receipt));reject(target,()=>init(target),/Unsafe/);fs.writeFileSync(file,saved);});
-  check('clean clone retains executable component but no local answers',()=>{git(target,['add','.']);git(target,['commit','-qm','Project Board fixture']);const cloned=path.join(temp,'clone');git(temp,['clone','-q','--no-hardlinks',target,cloned]);assert.ok(!fs.existsSync(boardFile('answers.json',cloned)));verifyProject(cloned);fs.renameSync(source,path.join(temp,'source-hidden'));const status=JSON.parse(execFileSync('node',[boardFile('runtime/tools/grill-board-project.mjs',cloned),'status','--path',cloned,'--json'],{encoding:'utf8'}));assert.equal(status.total,1);fs.renameSync(path.join(temp,'source-hidden'),source);});
+  check('clean clone retains executable component but no local answers',()=>{git(target,['add','.']);git(target,['commit','-qm','Project Board fixture']);const cloned=path.join(temp,'clone');git(temp,['clone','-q','--no-hardlinks',target,cloned]);git(cloned,['remote','set-url','origin',config.repository+'.git']);assert.ok(!fs.existsSync(boardFile('answers.json',cloned)));verifyProject(cloned);fs.renameSync(source,path.join(temp,'source-hidden'));const status=JSON.parse(execFileSync('node',[boardFile('runtime/tools/grill-board-project.mjs',cloned),'status','--path',cloned,'--json'],{encoding:'utf8'}));assert.equal(status.total,1);fs.renameSync(path.join(temp,'source-hidden'),source);});
   const cloned=path.join(temp,'clone');
   fs.renameSync(source,path.join(temp,'source-hidden'));
   const installed=await import(pathToFileURL(boardFile('runtime/tools/grill-board-project.mjs',cloned)));
