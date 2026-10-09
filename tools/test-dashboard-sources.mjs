@@ -300,5 +300,5 @@ test('on the real board ADR-000F lists every question that links to it', () => {
   const items = readItems(root).items;
   const result = route(root, `/api/backlinks?path=${encodeURIComponent('workbench/docs/adr/000F-work-passes-two-qa-gates-spec-branch-to-integration-and-integration-to-main.md')}`, items);
   const questions = result.links.filter(link => link.kind === 'question').map(link => link.id);
-  for (const id of ['GB-0023', 'GB-0025', 'GB-0063', 'GB-0105', 'GB-0146', 'GB-0173', 'GB-0180']) assert.ok(questions.includes(id), `${id} links ADR-000F`);
+  for (const id of ['GB-0025', 'GB-0063', 'GB-0105', 'GB-0146', 'GB-0173', 'GB-0180', 'GB-0196']) assert.ok(questions.includes(id), `${id} links ADR-000F`);
 });

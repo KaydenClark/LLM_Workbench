@@ -810,7 +810,7 @@ test('on the real board every named, cataloged decision record in an open questi
    checked+=1;
   }
  }
- assert.ok(checked>=100,`checked ${checked} named records`);
+ assert.ok(checked>=20,`checked ${checked} named records`); // the reconciled board of 2026-10-09 keeps 35 open questions
 });
 
 const SHORTHAND_CATALOG={groups:[{id:'adrs',title:'ADRs'},{id:'ddrs',title:'DDRs'}],artifacts:['000B','000C','000H','0017','0054'].map(code=>({group:'adrs',id:`ADR-${code}`,title:code==='000C'?'**Bold** second record':`Record ${code}`,path:`workbench/docs/adr/${code}-r.md`,status:'accepted'})).concat(['000P','000Q'].map(code=>({group:'ddrs',id:`DDR-${code}`,title:`Destination ${code}`,path:`workbench/docs/ddr/${code}-d.md`,status:'accepted'})))};
@@ -878,7 +878,7 @@ test('independently: every cataloged decision record and link an open question n
   for (const id of expected.ids) assert.ok(hrefPaths(listHtml).has(records.get(id).path),`${item.id} lists ${id}`);
   ids+=expected.ids.length; if(expected.ids.length) questions+=1;
  }
- assert.ok(ids>=100&&questions>=100,`${ids} named records over ${questions} questions`);
+ assert.ok(ids>=20&&questions>=10,`${ids} named records over ${questions} questions`); // the reconciled board of 2026-10-09 keeps 35 open questions
 });
 
 test('the page renders exactly the links the server counts for backlinks over the real board',()=>{
