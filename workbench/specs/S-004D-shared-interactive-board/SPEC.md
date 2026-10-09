@@ -340,7 +340,9 @@ CIC labels and meanings. Apply them as follows:
 
 After the first answering round on draft PR #440, Kayden confirmed three
 corrections to the Grilling Board page in chat on 2026-10-09; TK-007Z carries
-them as corrective work under this still-open Spec. His stated goal for them:
+them as corrective work under this still-open Spec. A fourth followed the same
+day, after he had read cards in the changed layout (correction 4 below); it
+has no Task and was made directly on the dashboard branch. His stated goal for them:
 less orchestration tax, an easier page to use and to understand without added
 mental strain.
 
@@ -365,10 +367,22 @@ mental strain.
    title, the question, the closed P/V badges (reasons open in place), one
    compact row of links styled as links, the recommended answer and the answer
    controls (Confirm, Rework wording, Change the why, Change, with the note
-   box). What it concerns, why it matters, what would change, consequences,
-   current text and full proposal, related cards and grilling history,
+   box). Current text and full proposal, related cards and grilling history,
    proposed wording, history and the comments-and-promotion block each start
    as one closed line; the last names the card's workflow state while closed.
+   What it concerns, what would change and the consequences are not among
+   them: correction 4 keeps those open.
+4. **The why beside the recommendation; the three reading sections open.**
+   "The why needs to be just as prominent as the recommend answer." And:
+   "don't collapse what this concerns, what would change consequences or,
+   trade-offs by default. Those are what I read every time." He may collapse
+   them when he wants a lighter card, but they start open. The opened card
+   shows the why (**Why this choice matters**) as a panel of the same weight
+   directly under the recommended answer, never as a closed line, and **What
+   this concerns**, **What would change** and **Consequences and tradeoffs**
+   as sections that start open and collapse on click. Every other part of the
+   card keeps correction 3's closed line. A question with no recorded why shows
+   that fact in the panel instead of leaving it out.
 
 Not part of this: the owner's tentative note that leaving a topic needs a
 visible control rather than a dropdown, and his unconfirmed note about editable

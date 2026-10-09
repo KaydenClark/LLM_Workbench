@@ -164,6 +164,9 @@
   details.fold { margin-top: 8px; }
   details.fold summary { cursor: pointer; font-weight: 600; font-size: 13px; color: var(--muted); }
   details.fold[open] > summary { color: var(--ink); }
+  /* The three sections he reads on every card start open, headed like sections. */
+  details.fold.read { margin-top: 14px; }
+  details.fold.read > summary { font-size: 15px; color: var(--ink); }
   .history-entry { margin: 10px 0; background: var(--bg); padding: 12px; border-radius: 8px; }
   .history-entry summary { cursor: pointer; font-size: 14px; }
   .sources { margin: 12px 0 0; font-size: 13px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 6px 14px; }
@@ -910,14 +913,18 @@
     const links = wikiLinks(item) || sources ? `<nav class="link-row" aria-label="Links">${wikiLinks(item)}${sources ? `<span>Sources:</span>${sources}` : ''}</nav>` : '';
     const fold = (summary, body) => body ? `<details class="fold"><summary>${summary}</summary>${body}</details>` : '';
     // The opened card shows the title, the question, P/V as closed badges, the
-    // links, the recommendation and the answer controls. Everything else
-    // starts collapsed, one line each (owner correction, 2026-10-09).
+    // links, the recommendation, the why beside it in the same weight, what the
+    // question concerns, what would change, the consequences and tradeoffs, and
+    // the answer controls. Those three sections start open and he may collapse
+    // them; everything else starts collapsed, one line each (owner corrections,
+    // 2026-10-09).
     return `<article class="item" id="${item.id}" data-id="${item.id}" data-status="${status}" data-revision="${item.revision}">
       <div class="item-head"><h3>${esc(item.title)}<small class="identity">${item.id} · revision ${item.revision}</small></h3><span><span class="badge ${status}">${status === 'withdrawn' ? settledLabel(item) : STATUS_LABEL[status]}</span><span class="kind">${esc(KIND_LABEL[item.kind] || item.kind)}</span></span></div>
       <p class="q">${inlineText(item.question, base)}</p>
       ${gradeDetail(item)}
       ${links}
       <div class="recommendation"><h4>Recommended answer · agent proposal</h4>${markdown(item.brief ? item.brief.recommendation : item.proposal, base)}</div>
+      ${item.brief ? whyPanel(item) : ''}
       ${item.brief ? decisionBrief(item) : fold('Current text', `<div class="block">${markdown(item.current, base)}</div>`)}
       ${fold(`Proposed wording · draft at revision ${item.revision}`, item.draft ? `<div class="block">${markdown(item.draft, base)}</div>` : '')}
       ${fold('History', history.length ? `<div class="sources">${history.map(entry => `<span>${entry}</span>`).join('')}</div>` : '')}
@@ -938,6 +945,13 @@
     if (!conflict) return '';
     return `<div class="stale-box" data-conflict-notice><strong>Answer conflict.</strong> ${esc(conflict.message)}<ul>${conflict.answers.map(answer => `<li>${esc(answer.at)}: <strong>${esc(item.controls?.options.find(option => option.value === answer.verdict)?.label || answer.verdict || '(note only)')}</strong>${answer.note ? ` — “${esc(answer.note)}”` : ''}</li>`).join('')}</ul></div>`;
   }
+  // The why sits directly under the recommended answer in the same panel
+  // (class `recommendation`), so the two read with equal weight. A brief with
+  // no why says so instead of leaving the panel out.
+  function whyPanel(item) {
+    const why = String(item.brief.why || '').trim();
+    return `<div class="recommendation why"><h4>Why this choice matters</h4>${why ? markdown(why, itemBase(item)) : '<p>No reason is recorded for this question.</p>'}</div>`;
+  }
   function decisionBrief(item) {
     const b = item.brief;
     const base = itemBase(item);
@@ -945,12 +959,13 @@
       const lines = part.split('\n');
       return `<details class="history-entry"><summary>${esc(lines.shift().replace(/^### /, ''))}</summary>${markdown(lines.join('\n'), base)}</details>`;
     }).join('');
-    // Each part of the brief is one closed line; the recommendation is shown
-    // by card() above them.
-    return `<details class="fold"><summary>What this concerns</summary><div class="brief-summary">${markdown(b.summary, base)}</div><div class="block">${markdown(b.artifacts, base)}</div></details>
-      <details class="fold"><summary>Why this choice matters</summary><div class="block">${markdown(b.why, base)}</div></details>
-      <details class="fold"><summary>What would change</summary><div class="block">${markdown(b.changes, base)}</div></details>
-      <details class="fold"><summary>Consequences and tradeoffs</summary><div class="block">${markdown(b.impact, base)}</div></details>
+    // What this concerns, what would change and the consequences and tradeoffs
+    // are what he reads on every card, so they start open (and stay his to
+    // collapse); the rest of the brief is one closed line. The recommendation
+    // and the why are shown by card() above them.
+    return `<details class="fold read" open><summary>What this concerns</summary><div class="brief-summary">${markdown(b.summary, base)}</div><div class="block">${markdown(b.artifacts, base)}</div></details>
+      <details class="fold read" open><summary>What would change</summary><div class="block">${markdown(b.changes, base)}</div></details>
+      <details class="fold read" open><summary>Consequences and tradeoffs</summary><div class="block">${markdown(b.impact, base)}</div></details>
       <details class="fold"><summary>Current text and full proposal</summary><div class="block"><h4>Current</h4>${markdown(item.current, base)}</div><div class="block"><h4>Proposal</h4>${markdown(item.proposal, base)}</div></details>
       <details class="fold"><summary>Related Destination Question Cards and original grilling history</summary>${history}</details>`;
   }

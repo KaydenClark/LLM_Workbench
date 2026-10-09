@@ -966,19 +966,26 @@ test('the five section links are a persistent left navigation pane, with the Gri
  assert.equal(model.el('grill-nav').hidden,false);
 });
 
-test('an opened card shows title, question, recommendation and the answer controls; the rest starts collapsed and the links stay visible',()=>{
+test('an opened card shows title, question, recommendation, the why in the same weight and the answer controls; what it concerns, what would change and the consequences start open; the rest starts collapsed and the links stay visible',()=>{
  const {model}=pageModel();
  model.state.catalog=RECORD_CATALOG;
  const base={revision:2,history:[{revision:2,at:'2026-10-08T00:00:00.000Z',by:'agent',reason:'revised wording'}],derivedStatus:'pending',status:'open',controls:board.answerControls({kind:'owner-decision',options:null}),sources:[{label:'Spec',path:'workbench/specs/S-0001/SPEC.md',ref:'abc'}],links:[{label:'S-0001 SPEC.md',path:'workbench/specs/S-0001/SPEC.md',ref:'abc',url:'https://github.com/example/repo/blob/abc/workbench/specs/S-0001/SPEC.md'}],...grade('P2','V1')};
  const briefed={...base,id:'GB-0023',title:'Rename the verb',question:'Does ADR-000B still hold?',current:'Current words',proposal:'Keep it as it is.',draft:'Proposed wording draft',brief:{scope:'SPEC',summary:'Summary words',why:'Why words',recommendation:'Recommended answer words',impact:'Impact words',changes:'Changes words',history:'### Related card\n\nHistory words',artifacts:'Artifacts words'}};
  const html=model.card(briefed);
- assert.doesNotMatch(html,/<details[^>]*\sopen[\s>]/,'nothing on the card starts open');
+ const openDetails=html.match(/<details[^>]*\sopen\b[^>]*>\s*<summary>[^<]*<\/summary>/g)||[];
+ assert.deepEqual(openDetails.map(tag=>tag.match(/<summary>([^<]*)<\/summary>/)[1]),['What this concerns','What would change','Consequences and tradeoffs'],'only the three sections he reads on every card start open');
+ assert.ok(openDetails.every(tag=>/^<details class="fold read" open>/.test(tag)),'each stays a details block, so he can collapse it');
  const visible=outsideDetails(html);
- for (const text of ['Rename the verb','Does <a class="record-link"','Recommended answer words','Your answer','>Confirm<','>Rework wording<','>Change the why<','>Change<','id="note-GB-0023"']) assert.ok(visible.includes(text),`${text} is shown at once`);
- for (const text of ['Why words','Impact words','Changes words','History words','Artifacts words','Summary words','Current words','Proposed wording draft','P2 because of its source','V1 because of its return','revised wording']) {
+ for (const text of ['Rename the verb','Does <a class="record-link"','Recommended answer words','Why words','Your answer','>Confirm<','>Rework wording<','>Change the why<','>Change<','id="note-GB-0023"']) assert.ok(visible.includes(text),`${text} is shown at once`);
+ assert.match(html,/<div class="recommendation"><h4>Recommended answer[^<]*<\/h4>[\s\S]*?<\/div>\s*<div class="recommendation why"><h4>Why this choice matters<\/h4>[\s\S]*?Why words/,'the why is its own panel directly under the recommended answer, in the same recommendation class');
+ assert.doesNotMatch(pageHtml(),/\.recommendation\.why\s*\{/,'the why has no style of its own, so it matches the recommended answer');
+ for (const [summary,text] of [['What this concerns','Summary words'],['What this concerns','Artifacts words'],['What would change','Changes words'],['Consequences and tradeoffs','Impact words']]) assert.match(html,new RegExp(`<details class="fold read" open><summary>${summary}</summary>[\\s\\S]*?${text}`),`${text} is shown open under ${summary}`);
+ for (const text of ['History words','Current words','Proposed wording draft','P2 because of its source','V1 because of its return','revised wording']) {
   assert.ok(html.includes(text),`${text} stays on the card`);
   assert.ok(!visible.includes(text),`${text} starts collapsed`);
  }
+ assert.ok(!/<details[^>]*>\s*<summary>Why this choice matters/.test(html),'the why is not a collapsible line');
+ assert.match(model.card({...briefed,brief:{...briefed.brief,why:'  '}}),/<div class="recommendation why"><h4>Why this choice matters<\/h4><p>No reason is recorded for this question\.<\/p>/,'a brief with no why says so');
  assert.match(visible,/<nav class="link-row" aria-label="Links">[\s\S]*Specs · A Spec \(S-0001\)[\s\S]*ADRs · Stable names stay stable \(ADR-000B\)[\s\S]*<\/nav>/,'Spec and decision-record links stay visible as one compact row');
  assert.match(visible,/<nav class="link-row"[\s\S]*S-0001 SPEC\.md[\s\S]*<\/nav>/,'the card sources are in the same row');
  assert.match(html,/<details class="grade priority card-grade"><summary[^>]*>P2<\/summary>[\s\S]*?P2 because of its source/,'P is a closed badge whose reason opens on click');
