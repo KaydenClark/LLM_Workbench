@@ -85,8 +85,9 @@ function seam(html, expression, replacement, count = 1) {
 export function renderProjectPage(page, config) {
   validateConfig(config);
   const topics = [...config.topics, { id:'other', title:'Other topics', frame:'New project questions awaiting grouping', outcome:'Every question stays reachable', groups:[] }];
-  let html = seam(page, /<title>Consequential Decision Record · Grill Board<\/title>/g, `<title>${escapeHtml(config.title)} · Grill Board</title>`);
-  html = seam(html, /<strong>Consequential Decision Record<\/strong>/g, `<strong>${escapeHtml(config.title)}</strong>`);
+  let html = seam(page, /<title>Workbench Dashboard · Grill Board<\/title>/g, `<title>${escapeHtml(config.title)} · Grill Board</title>`);
+  html = seam(html, /<span class="brand">Workbench Dashboard<\/span>/g, `<span class="brand">${escapeHtml(config.title)}</span>`);
+  html = seam(html, /document\.title = `\$\{SECTIONS\[tab\] \|\| 'Search'\} · Workbench Dashboard`;/g, `document.title = \`\${SECTIONS[tab] || 'Search'} · \` + ${js(config.title)};`);
   html = seam(html, /  const TOPICS = \[[\s\S]*?\n  \];/g, `  const TOPICS = ${js(topics)};`);
   html = seam(html, /  function topicFor\(item\) \{ return TOPICS\.find\(topic => topic\.numbers\.includes\(Number\(item\.id\?\.replace\('GB-', ''\)\)\)\)\?\.id \|\| 'other'; \}/g, "  function topicFor(item) { return TOPICS.find(topic => topic.groups.includes(item.group))?.id || 'other'; }");
   html = seam(html, /item\.id === 'GB-0180' \|\| /g, '');

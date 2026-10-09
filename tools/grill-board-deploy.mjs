@@ -8,12 +8,17 @@ import { fileURLToPath } from 'node:url';
 import { DIRECTORY, RECEIPT_SCHEMA, sha256, ordinary, ordinaryInput, safePath, validateConfig, validateProjectRepository, renderProjectPage, verifyProject } from './grill-board-project.mjs';
 const fail = message => {throw new Error(message);};
 const git = (root,args) => execFileSync('git',args,{cwd:root,encoding:'utf8',stdio:['ignore','pipe','pipe']}).trim();
-function moduleClosure(root, relative, files = new Map()) {
+// A module specifier counts only where it is an import or re-export statement:
+// at the start of a line, or after the closing brace of a multi-line import.
+// Words inside a string, template or comment (such as a message that says
+// 'derives from "related"') are not dependencies.
+const IMPORT_STATEMENT = /^[ \t]*(?:(?:import|export)\b[^\n'"]*?\bfrom[ \t]*|import[ \t]*|\}[ \t]*from[ \t]*)['"]([^'"\n]+)['"]/gm;
+export function moduleClosure(root, relative, files = new Map()) {
   if (files.has(relative)) return files;
   if (!/^(?:tools|workbench\/tools)\/[A-Za-z0-9_.\/-]+\.mjs$/.test(relative)) fail(`Unsupported module dependency ${relative}`);
   const file = safePath(root,relative); const bytes=fs.readFileSync(file); files.set(relative,bytes);
   const text=bytes.toString('utf8');
-  for (const match of text.matchAll(/(?:from\s+|import\s*)['"]([^'"]+)['"]/g)) {
+  for (const match of text.matchAll(IMPORT_STATEMENT)) {
     if (match[1].startsWith('node:')) continue;
     if (!match[1].startsWith('.')) fail(`External dependency ${match[1]} is unsupported`);
     moduleClosure(root,path.posix.normalize(path.posix.join(path.posix.dirname(relative),match[1])),files);
