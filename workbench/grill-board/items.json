@@ -3120,7 +3120,16 @@
       ],
       "revision": 3,
       "status": "open",
-      "applied": null,
+      "applied": {
+        "verdict": "change",
+        "note": "That gives us five parent workflows:\n\nExplore: Idea → Align → Confirm\nPromote: Record → Publish → Map → Publish → Plan → Publish\nJourney: Implement → Check → QA → Submit\nJudge: Review → Verify → Approve\nComplete: Delivered → Clean Up\n\nJudge and Complete group the existing steps without changing their gates. The remaining confirmation is the boundary change above: Confirm finishes Explore, and Promote starts from the confirmed concept. Is this full map confirmed?",
+        "answerAt": "2026-10-09T02:07:01.546Z",
+        "itemRevision": 3,
+        "by": "claude-reconcile",
+        "where": "Carried 2026-10-09: the successor record A release is proven by the Template taking a confirmed concept through the five parent workflows in one pass (DDR-001P) was accepted and supersedes DDR-000Q on branch claude/ddr-000q-five-workflows-2026-10-09 (pushed; PR to integration follows its Full suite), and the Workbench Terms And Workflow Verb Rows Spec (S-004G) header and evidence record the correction",
+        "at": "2026-10-09T02:58:41.839Z",
+        "agentNote": "Owner note: the five-parent-workflow map; chat confirmation the same day: \"yes. that map is.\""
+      },
       "history": [
         {
           "revision": 1,
@@ -3153,6 +3162,12 @@
           "at": "2026-10-08T17:02:51.538Z",
           "by": "claude-worker-d",
           "reason": "graded: TK-007N owner-decision batch: Priority and Value from cited Spec, DDR and Task sources"
+        },
+        {
+          "revision": 3,
+          "at": "2026-10-09T02:58:41.839Z",
+          "by": "claude-reconcile",
+          "reason": "applied: Carried 2026-10-09: the successor record A release is proven by the Template taking a confirmed concept through the five parent workflows in one pass (DDR-001P) was accepted and supersedes DDR-000Q on branch claude/ddr-000q-five-workflows-2026-10-09 (pushed; PR to integration follows its Full suite), and the Workbench Terms And Workflow Verb Rows Spec (S-004G) header and evidence record the correction"
         }
       ],
       "brief": {
