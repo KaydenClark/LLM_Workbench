@@ -74,7 +74,7 @@
   },
   "review": {
     "codePreflight": "Independent context rechecked immutable code and source/test bytes; no remaining bounded finding.",
-    "automatic": "Completed for a14b362a without new findings.",
+    "automatic": "Final assembled-head automatic review pending.",
     "assembled": "Pending immutable closure/proof candidate review; previous verdicts remain historical."
   },
   "drift": {
@@ -89,7 +89,7 @@
   },
   "limitations": [
     "Original browser proof remains bounded to unchanged UI; no fresh browser outcome in this correction pass.",
-    "PR447 description and final merge await owner permission; no substitute metadata publication.",
+    "PR447 description must reflect the final reviewed candidate before the authorized gated integration merge.",
     "Final-head CI, integration readback and post-merge CI remain required.",
     "RingWorld refresh will use a separate feature branch preserving the delivered gun runtime; not performed here.",
     "Owner Human QA, main promotion and PC access are not asserted."

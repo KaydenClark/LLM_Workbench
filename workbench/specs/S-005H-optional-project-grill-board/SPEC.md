@@ -9,7 +9,7 @@
 **Catalog description:** Deploy the existing Grilling Board optionally into an adopted project with safe initialization, project framing, links and isolated owner answers.
 **Blockers:** none
 **Latest event:** TK-001 closed with proof.
-**Next gate:** Fresh assembled review and final-head CI; PR447 description and final merge await owner permission.
+**Next gate:** Fresh assembled review, final-head CI and automatic review, then accurate PR447 metadata and gated integration.
 **Baseline:** green - source evaluator self-test passes, local score 113 at integration e81fe43fdc6273221dbb484c3f7dd9a49b523e0a; doctor has no all/selection blockers, existing drift retained.
 
 ## Outcome
@@ -166,8 +166,10 @@ The local run passed 52 commands before interruption and is not a full pass.
 The earlier unchanged round-trip fixture failure passed three isolated
 diagnostic reruns and the current canonical suite; no unrelated test was weakened.
 TK-001 is closed with that proof. See the [final correction proof](proof/final-corrective-verification.json).
-Fresh assembled review and final-head CI remain required; PR447 description
-and final merge await owner permission. Integration CI and the separately
+Fresh assembled review, final-head CI and automatic review remain required;
+PR447 metadata must reflect the reviewed candidate before gated integration.
+The owner subsequently authorized milestone release; the release Director
+owns its broader scope and any main promotion. Integration CI and the separately
 branched RingWorld refresh remain delivery obligations.
 
 ## Remaining Limitations
