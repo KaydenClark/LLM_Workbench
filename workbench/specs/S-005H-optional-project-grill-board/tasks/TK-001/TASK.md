@@ -3,10 +3,11 @@
 **Task ID:** TK-001
 **Spec ID:** S-005H
 **Slice:** Optional receipt-backed Board component with safe project initialization and configured existing Board behavior
-**Status:** in-progress
+**Status:** done
 **Blockers:** none
 **Destination:** spec-acceptance: S-005H Acceptance Criteria
 **Claimed by:** codex-board-worker
+**Proof:** All56 required checks pass at clean code e65c2d6a in816.9s;32 deployment checks;exact-head GitHub CI SUCCESS;disposable owner answer/history/revise/stale/refreshed-confirm/apply and isolation browser proof;corrected literal rendering smoke.
 
 ## Receipt
 
@@ -18,3 +19,4 @@
 | 4 | codex/optional-grill-board-deployment | f238781910e3c16415d7c3e2ce973041cefa050e | none | 0 | Independent preflight found duplicate input-flag guard bypass and replacement-string token expansion; render-only probe reproduced title $& corruption and topic quote-token seam refusal. Full run atf238 cancelled exit143 before completion; not a pass. Browser second-instance theme isolation passed at same localhost origin. | Corrections routed to same Worker; Spec retains mandatory final suite/review/integration/pilot gates. Source/main unchanged. | Correct two proven review findings; fresh full suite and final separate assembled review; integration and RingWorld refresh. | 2fd36cdb139d283f6d6492b8b41cded4b8b5e3ba5da2f9d2a6067c069609f364 |
 | 5 | codex/optional-grill-board-deployment | e2f7dddd678270e3bf6f1bf68cd32d442f7e8f2d | ahead 1 behind 0 | 3 | Worker correction e2f7dddd: RED duplicatefile symlink accepted exit0; literal title assertion failed; quote-tokenframe seam refusal. GREEN32public checks including all4effective last input flags,8linked leaf/parent refusals,literal config roundtrip,cloned HTTP Spec/Task/Wiki sources and artifact inventory. Syntax/diff pass. | Preflight-review proof retained; browser isolation proof appended. Producer files unchanged; no owner answers touched. | Fresh corrected rendering browser smoke,required56-command suite,final separate assembled review,integration/CI and RingWorld feature refresh. | 942f91981482402ce943c97934625284ca910297ddb6058f793dd5b7702fa03b |
 | 6 | codex/optional-grill-board-deployment | e65c2d6a1bea03da1c2f3a5ffbe06f79b7ef497d | ahead 0 behind 0 | 3 | Corrected code e65c2d6a: all 56 required commands passed in 816.9s;32 deployment checks;exact-head GitHub verify SUCCESS run37880958152;third browser exact literal title/frame and readable draft/source passed. Prior answer/history/isolation browser proof retained. | Source acceptance checked from actual proof;Completion Result bounded to component;verification-summary.json and browser-qa.md updated. | Final independent assembled review,integration merge/readback/CI and required RingWorld feature refresh;owner Human QA and PC route remain separate. | e773afc0e756567bc2ec0822711988919ae8f5c7ff667a2b1c783ad9ab7fd10e |
+| 7 | codex/optional-grill-board-deployment | ae784fa4bd1fdd3770581aa111143fb9092c1ed1 | ahead 0 behind 0 | 0 | All56 required checks pass at clean code e65c2d6a in816.9s;32 deployment checks;exact-head GitHub CI SUCCESS;disposable owner answer/history/revise/stale/refreshed-confirm/apply and isolation browser proof;corrected literal rendering smoke. | Optional guide/Runbook/Wiki;verified acceptance and bounded Completion Result;proof/verification-summary.json and proof/browser-qa.md. | Independent final assembled review then integration merge/readback/CI and required RingWorld feature refresh;owner Human QA and PC route separate. | eeb2a9369b49bc8e2ef7e5b92d245c8830b73a4550bbb5e57d96ca745ab12c05 |
