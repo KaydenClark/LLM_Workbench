@@ -74,6 +74,7 @@ its orchestration entry belongs to this repository's Runbook and lane adapters.
 | `implement-spec` | Orchestrate a sliced Spec through Workers and assembly to a PR ready for integration review; Workbench-only first delivery. |
 | `promote-decision` | Orchestrate one confirmed decision through delegated Record, Map, Plan and stage publication; Workbench-only first delivery. |
 | `readback` | Read an answer, concept or direction back for confirmation or correction at any time; Workbench-only first delivery. |
+| `publish` | Carry one authored stage from its branch to integration and prove it arrived: the gate its form names, the merge, containment of the exact candidate and a byte read-back of every changed owner; Workbench-only first delivery. |
 <!-- maintainer-skills:end -->
 
 ## Normal setup

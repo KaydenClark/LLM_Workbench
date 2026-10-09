@@ -126,7 +126,8 @@
     "workbench-evaluation",
     "implement-spec",
     "promote-decision",
-    "readback"
+    "readback",
+    "publish"
   ],
   "workbenchId": "WB-4oRql1XWpf6VgsNwHUXW4Q"
 }
