@@ -195,7 +195,7 @@ CIC labels and meanings. Apply them as follows:
    spent discussing or approving the question. Never combine P and V into a score.
 2. Display numbered Priority and Value badges on the right of each question
    card, colored by the Dashboard color system the owner confirmed on
-   2026-10-09 ([DDR-001Q](../../docs/ddr/proposed/001Q-the-dashboard-colors-by-five-questions-each-strong-or-soft.md),
+   2026-10-09 ([DDR-001Q](../../docs/ddr/001Q-the-dashboard-colors-by-five-questions-each-strong-or-soft.md),
    [Lexicon Dashboard Colors](../../../LEXICON.md#dashboard-colors)): Priority
    orange and Value yellow, grade 1 a strong fill, 2 a soft tint, 3 an outline
    and 4 grey, with the same theme values the Lexicon's Wiki page lists. This

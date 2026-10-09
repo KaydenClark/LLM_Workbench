@@ -34,7 +34,7 @@ and Value grades use only their two colors: grade 1 strong, grade 2 soft,
 grade 3 an outline, grade 4 grey.
 
 The Priority and Value badges the owner confirmed in
-[Priority and Value help the Owner choose Grill Board questions (DDR-001L)](../001L-priority-and-value-help-the-owner-choose-grill-board-questions.md)
+[Priority and Value help the Owner choose Grill Board questions (DDR-001L)](001L-priority-and-value-help-the-owner-choose-grill-board-questions.md)
 keep every meaning that record gives them; this record sets their colors to
 Priority orange and Value yellow in place of that record's red and amber.
 
@@ -77,12 +77,12 @@ finished work stops asking for attention.
 
 ## Consequences And Revisit Conditions
 
-The [Lexicon](../../../../LEXICON.md#dashboard-colors) owns the shared names and
+The [Lexicon](../../../LEXICON.md#dashboard-colors) owns the shared names and
 meanings of the five hues and the strong/soft rule. The
-[Shared Interactive Workbench Board Spec (S-004D)](../../../specs/S-004D-shared-interactive-board/SPEC.md#priority-and-value-for-answering-questions)
+[Shared Interactive Workbench Board Spec (S-004D)](../../specs/S-004D-shared-interactive-board/SPEC.md#priority-and-value-for-answering-questions)
 owns the badge colors as a requirement and the delivery proof; the real Grill
 Board page still carries its earlier colors until that Spec delivers them. The
-[Dashboard color system](../../../wiki/design-concepts/dashboard-color-system.md)
+[Dashboard color system](../../wiki/design-concepts/dashboard-color-system.md)
 Wiki page explains the mapping, the per-theme values and the contrast method.
 
 Revisit if a Dashboard section needs a sixth question the five cannot carry,

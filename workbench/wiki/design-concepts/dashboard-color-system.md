@@ -23,7 +23,7 @@ workspace whose first working form is the
 [Grill Board](../../grill-board/README.md) and whose destination is the
 [Shared Interactive Workbench Board Spec (S-004D)](../../specs/S-004D-shared-interactive-board/SPEC.md).
 The decision itself is
-[The Dashboard colors by five questions, each strong or soft (DDR-001Q)](../../docs/ddr/proposed/001Q-the-dashboard-colors-by-five-questions-each-strong-or-soft.md);
+[The Dashboard colors by five questions, each strong or soft (DDR-001Q)](../../docs/ddr/001Q-the-dashboard-colors-by-five-questions-each-strong-or-soft.md);
 the shared names live in the [Lexicon](../../../LEXICON.md#dashboard-colors).
 This page adds the reasoning, the per-section mapping, the theme values and
 the contrast method.
@@ -138,7 +138,7 @@ into the page; its Priority and Value requirement names the colors.
 
 ## Evidence and Sources
 
-- Governing: [The Dashboard colors by five questions, each strong or soft (DDR-001Q)](../../docs/ddr/proposed/001Q-the-dashboard-colors-by-five-questions-each-strong-or-soft.md); the [Lexicon's Dashboard Colors](../../../LEXICON.md#dashboard-colors); the [Shared Interactive Workbench Board Spec (S-004D)](../../specs/S-004D-shared-interactive-board/SPEC.md#priority-and-value-for-answering-questions) for the badge requirement.
+- Governing: [The Dashboard colors by five questions, each strong or soft (DDR-001Q)](../../docs/ddr/001Q-the-dashboard-colors-by-five-questions-each-strong-or-soft.md); the [Lexicon's Dashboard Colors](../../../LEXICON.md#dashboard-colors); the [Shared Interactive Workbench Board Spec (S-004D)](../../specs/S-004D-shared-interactive-board/SPEC.md#priority-and-value-for-answering-questions) for the badge requirement.
 - Evidentiary: the design canvas Grilling Board Redesign, version 19, and its contrast audit of 2026-10-09 (202 pairs, no failures), reported in the chat readback the owner confirmed.
 
 ## History

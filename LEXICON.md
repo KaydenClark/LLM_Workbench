@@ -263,7 +263,7 @@ badges take no hue, and selection, focus, Save and Next are ink.
 
 Grades use only their hue's two colors: 1 strong, 2 soft, 3 outline, 4 grey.
 A filled dot is live and a hollow dot is at rest. The destination decision is
-[The Dashboard colors by five questions, each strong or soft (DDR-001Q)](workbench/docs/ddr/proposed/001Q-the-dashboard-colors-by-five-questions-each-strong-or-soft.md);
+[The Dashboard colors by five questions, each strong or soft (DDR-001Q)](workbench/docs/ddr/001Q-the-dashboard-colors-by-five-questions-each-strong-or-soft.md);
 the mapping per section, theme values and contrast method are explained in
 the [Dashboard color system](workbench/wiki/design-concepts/dashboard-color-system.md)
 Wiki page; the badge colors are a requirement of
