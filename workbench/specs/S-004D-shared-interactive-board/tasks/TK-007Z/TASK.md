@@ -39,3 +39,9 @@ in chat on 2026-10-09 after the first answering round on draft PR #440:
 The owner's tentative note 3 (a visible control for leaving a topic) and
 unconfirmed note 5 (editable owner notes); any change to `items.json` (a
 parallel reconcile lane owns it); the owner's answer files; merging PR #440.
+
+## Receipt
+
+| Run | Branch | HEAD SHA | Upstream | Dirty | Tests | Docs touched | Remaining gap | Checksum |
+|---|---|---|---|---|---|---|---|---|
+| 1 | claude/grilling-board-ui-corrections-2026-10-09 | 2586e26017a2c5ca9f6d41a0438a434a5a77b2ca | ahead 0 behind 0 | 1 | Red first in tools/test-dashboard-board.mjs (no chip toggle; section links in the top bar; card blocks starting open), then green: tools/test-dashboard-board.mjs 48/48, tools/test-grill-board.mjs 18/18, node tools/grill-board.mjs validate ok (212 items on the reconciled board); browser check of the served page from this worktree at desktop and 375px (scrollWidth equals clientWidth, zero details[open] on the opened card, chip counts follow the stage filter: To answer gives P1 1, P2 2, P3 17, P4 15); Full Runbook suite 60/60 on committed candidate 2586e260 (2026-10-09T03:29Z to 03:44Z), rebased onto the reconciled PR #440 tip f62bdd49 | workbench/grill-board/README.md (P/V chips, left pane, opened-card disclosure, section links); SPEC.md (confirmed corrections subsection, P/V items 3-4, acceptance line); no Wiki page describes the board layout, so the Wiki needs no update | Owner call pending on the folded More filters dropdowns (fold or remove); the All stages default still lists 177 withdrawn questions; owner notes 3 (leaving a topic) and 5 (editable notes) are not built | 8d9ec8da29cb5541a65749a1971b9c125b0a38b0c18486a260297d745c771b15 |

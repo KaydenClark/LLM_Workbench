@@ -675,7 +675,7 @@ before its draft PR into integration.
 
 ### Owner corrections of 2026-10-09 (TK-007Z)
 
-- [ ] The P1–P4 and V1–V4 chips filter the list on click (OR within a row,
+- [x] The P1–P4 and V1–V4 chips filter the list on click (OR within a row,
   AND across rows, no chip means all) and replace the P/V dropdowns; the five
   section links are a persistent left navigation pane with the Grilling Board
   filters under them, hash routes intact and no horizontal scroll at a narrow
