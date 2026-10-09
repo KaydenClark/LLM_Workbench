@@ -466,6 +466,20 @@ recorded assembled-Spec verdict and an owner Human QA approval naming the
 The same holds for S-00J itself and for any build Spec that closes after
 S-00J TK-005 lands.
 
+Re-test resolved retro items (owner grilling 2026-10-07). Each was judged
+fixed or not broken at the commit named; confirm it still holds at the
+candidate:
+
+- `claim` takes a reopened Task: fixed at `503fd63b`.
+- `next-id` reads every remote tip when allocating: checked at `d0fb161c`.
+- `templates/SPEC.md` carries the Priority and Owner header fields: checked at
+  `d0fb161c`.
+- The verdict findings error states the rule it enforces: checked at
+  `d0fb161c`.
+- `claim` past a same-branch blocker: the cause was a bad Task cut, not the
+  command, and the Adding A Required Core Skill Spec (S-004X) guards it;
+  checked at `d0fb161c`.
+
 ### TK-002 - Stamp v4.0.0 and validate the stamp
 
 **Stance:** Builder
@@ -605,6 +619,7 @@ workflow is owned by S-00P, not here.
 | 2026-10-04 | spec | Review correction: open owner decisions now include the release-proof verb-list correction (GB-0026) | Separate-context review of f0f9169 (Codex gpt-5.5, read-only) FAIL, one Medium: the current-state section named only GB-0023 and GB-0025 while GB-0026 is open and release-proof related; Grill Board read at the candidate shows 20 open owner-decision items | Header Blockers and the Current release state owner-decision list name GB-0023, GB-0025 and GB-0026 and scope the other 17 to their own Specs | Fresh separate-context review of the corrected candidate |
 | 2026-10-04 | spec | Review correction: the integration target binding row reads as an open requirement, not delivered behavior | Separate-context review of 2cf10bf (Codex gpt-5.5, read-only) FAIL, one Medium: the S-00O row stated the S-054 binding as present while S-054 and S-00J record it undelivered; all other checks passed | The Current release state row now says the requirement is open in S-00J with no Task | Fresh separate-context review of the corrected candidate |
 | 2026-10-05 | spec | Owner-confirmed readback adds the whole-Workbench Automated Review to the release destination (Desired Behavior 6 and its acceptance box) | Owner confirmed after readback in chat, 2026-10-05; grilling note review-timing-and-codex-spend-2026-10-05 decision for question 1 | Docs: this Spec; the Automated review dictionary page names it unbuilt | No procedure or tooling for a whole-Workbench Review exists |
+| 2026-10-07 | spec | TK-001 gained the list "Re-test resolved retro items (owner grilling 2026-10-07)": five implement-spec retro items the owner left out of the retro guardrail Specs as already fixed or not broken, to be re-tested at the v4 release review | Owner grilling of 2026-10-07, read back and confirmed; items judged at `503fd63b` (claim of reopened Tasks) and integration `d0fb161c` (the other four) | Docs: this Spec's TK-001 section only; no Task row or Receipt row changed | The five re-tests run with TK-001 |
 
 ## Completion Result
 
