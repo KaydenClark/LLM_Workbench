@@ -7,7 +7,7 @@ provenance:
   - The owner's palette request and confirmed readback on the Grilling Board Redesign design canvas, 2026-10-09
   - The destination decision The Dashboard colors by five questions, each strong or soft (DDR-001Q), 2026-10-09
 source_paths:
-  - workbench/docs/ddr/proposed/001Q-the-dashboard-colors-by-five-questions-each-strong-or-soft.md
+  - workbench/docs/ddr/001Q-the-dashboard-colors-by-five-questions-each-strong-or-soft.md
   - LEXICON.md
   - workbench/specs/S-004D-shared-interactive-board/SPEC.md
   - workbench/grill-board/README.md
