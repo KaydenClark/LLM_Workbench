@@ -276,7 +276,7 @@ function migrate(options) {
   const declaration = gitDeclaration(project, options);
   if (declaration.status !== 'declared') return declaration;
   const integration = ensureIntegrationBranch(project, declaration.git);
-  if (integration.status === 'blocked') return integration;
+  if (!['created', 'existing'].includes(integration.status)) return integration;
   const residue = {
     rootManagedTools: RUNTIME_TOOLS.filter((name) => Boolean(lstatOrNull(path.join(project, 'tools', name)))),
     movedExternalLinks: movedExternalLinks(project)
