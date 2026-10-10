@@ -53,7 +53,7 @@ meanings live in the [Lexicon](../../LEXICON.md#priority-and-value); rationale
 and source lineage live in the [Grill Board P/V decision](../docs/ddr/001L-priority-and-value-help-the-owner-choose-grill-board-questions.md).
 
 The [Shared Interactive Workbench Board Spec](../specs/S-004D-shared-interactive-board/SPEC.md#priority-and-value-for-answering-questions)
-owns the numbered red P / amber V badges, click-open grade explanations, full
+owns the numbered P / V badges (Priority orange, Value yellow, per the [Dashboard colors](../../LEXICON.md#dashboard-colors)), click-open grade explanations, full
 central question view, independent filters and the answer-to-card-update cycle.
 Those controls are **planned**, not available in the current page. The first
 proof is confined to this board and its questions; DQC classifications are deferred.
