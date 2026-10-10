@@ -8,8 +8,8 @@
 **Updated:** 2026-10-10
 **Catalog description:** Every Workbench stages work on a distinct integration branch created during genesis or adoption.
 **Blockers:** none
-**Latest event:** Corrected Task merged into integration at acc318fe; assembled review candidate prepared.
-**Next gate:** Fresh-context assembled-Spec Review; owner approval and main verification remain open.
+**Latest event:** TK-008Q claimed by codex.
+**Next gate:** Close TK-008Q with verification and documentation proof.
 
 > **Citation anchors.** pre=`bcb8cfa0a685b67d151e5102d3f2cc855a13613b` post=`aae2f71a11db88c71703d4bcf81a9b807f49b112`.
 
