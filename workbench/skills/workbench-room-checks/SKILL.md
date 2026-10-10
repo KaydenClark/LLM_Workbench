@@ -134,9 +134,13 @@ The manifest may also carry a `git` block (`defaultBranch`,
 gate merges into ([ADR-0039](../../docs/adr/0039-the-integration-branch-is-a-manifest-declared-fact.md)).
 `init` and `migrate` write it from `--default-branch` and
 `--integration-branch`, defaulting to an existing integration-named branch by
-its exact case, then `origin/HEAD` (or the checked-out branch) and
-`integration`; `workbench-adoption.mjs migrate` does the same and lists an
-unresolved branch as `residue.missingIntegrationBranch`. A manifest without
+its exact case, then `origin/HEAD` (or existing `main` or `master`, then the
+checked-out branch) and `integration`. Setup requires distinct default and
+integration names. `workbench-adoption.mjs migrate` creates a missing local
+integration branch from the resolved default branch without switching HEAD and
+preserves existing local or remote integration refs. Genesis and Adoption
+completion require publishing and verifying the integration branch; an omission
+reason records a blocker and leaves setup incomplete. A manifest without
 the block stays valid, and `workbench-paths.mjs` exposes the block as
 `declaredGit`. `doctor` reports `integration-branch-undeclared` when the block
 is absent and `integration-branch-missing` when the declared name resolves

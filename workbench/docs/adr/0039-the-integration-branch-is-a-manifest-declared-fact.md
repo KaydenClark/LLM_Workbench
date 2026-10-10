@@ -8,6 +8,23 @@ canonicalized_in:
 
 # The integration branch is a manifest-declared fact
 
+## Owner amendment, 2026-10-09
+
+Every Workbench project uses a distinct integration branch as its default
+staging branch before its owner-controlled default branch. Genesis and Adoption
+create it from the default branch when absent, preserve existing branch names
+and refs, publish it, and verify the remote ref before setup is complete. An
+omission reason records a blocker; it cannot satisfy completion. All project
+workflows use this staging boundary. Existing diagnostic effects remain as
+registered; changing them is outside this amendment.
+
+Delivery owner: [Required Integration Branch (S-005I)](../../specs/S-005I-required-integration-branch/SPEC.md).
+
+## Original decision, 2026-09-05
+
+The following records the original policy and its rationale. The amendment above
+replaces its optional-creation and omission-as-completion clauses.
+
 Every Workbench room declares the branch its independent-review gate merges into as `git.integrationBranch` in `workbench/manifest.json`, beside `git.defaultBranch`, by exact name. Controls, skills, and tools resolve the branch from that declaration instead of a literal that can drift from it; `doctor` reports an undeclared or unresolvable declaration as an `error` finding with effect `none`, and only the Genesis readiness gate and the Genesis, Adoption, and upgrade completion checklists fail closed on it.
 
 Considered and rejected: keeping `integration` a prose convention in `AGENTS.md`, which left two of four live rooms without a merge target and let `Integration` and `integration` pass or fail the same containment check by room; blocking every spec selection on a missing branch, which a room can create in one command and which ADR-0020 forbids for a check that does not evaluate that change; a schema bump, since the block is additive and a manifest without it stays valid.

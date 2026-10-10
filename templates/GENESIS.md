@@ -277,10 +277,13 @@ before writing, even when source strings are supplied.
 The `init` flags declare, by exact case, the default branch and the branch the
 independent review gate merges into (`git.defaultBranch` and
 `git.integrationBranch` in the manifest; the same names fill `AGENTS.md` Git
-Rules). Declaring never creates the branch: when authorization permits, create
-it from the default branch and push it (`git branch NAME DEFAULT` then
-`git push -u origin NAME`); otherwise record the omission reason in the first
-spec. The readiness gate fails `integration-branch-missing` until it resolves.
+Rules). Integration is the project's required default staging branch and is
+distinct from the owner-controlled default branch. Declaring alone creates no
+branch: create it from the default branch when absent (`git branch NAME DEFAULT`),
+push it (`git push -u origin NAME`), and verify the remote ref. Preserve an
+existing integration branch and its exact case. The readiness gate fails
+`integration-branch-missing` until it resolves. If creation or publication is
+blocked, record the blocker in the first Spec and leave Genesis incomplete.
 
 The second command installs the Workbench-managed runtime tools into the
 project's `workbench/tools/` lane with a receipt recording the exact source
@@ -405,8 +408,8 @@ Do not call bootstrap done on vibes. All of the following must hold:
       untracked files is `in-progress`, not `done`.
 - [ ] The declared integration branch (`git.integrationBranch` in
       `workbench/manifest.json`) exists on the default remote at the generation
-      commit, or the first spec records the explicit reason it was omitted;
-      `doctor` reports `integration-branch-missing` until it resolves.
+      commit, is distinct from the default branch, and is verified remotely.
+      A creation or publication blocker leaves Genesis incomplete.
 
 If any box is unchecked, bootstrap is `in-progress`, not `done`. State which box
 failed and why.

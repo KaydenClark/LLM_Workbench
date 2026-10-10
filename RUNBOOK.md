@@ -115,6 +115,11 @@ The real-room release gate that upgrades the reference Template: a maintainer pr
 
 ## Workflows
 
+All Workbench project workflows stage through the manifest-declared integration
+branch before owner promotion to the default branch. Genesis and Adoption
+establish that distinct branch when absent; an omission note leaves setup
+incomplete.
+
 Use this as the maintained workflow reference: verbs in order, next to the
 scenario and the skills that carry it. Definitions and explanations stay in
 the [workflow verbs](workbench/wiki/design-concepts/workflow-verbs.md) and
@@ -408,6 +413,7 @@ node tools/test-configured-host.mjs
 node tools/test-core-skill-installer.mjs
 node tools/test-workbench-layout.mjs
 node tools/test-workbench-adoption.mjs
+node tools/test-integration-setup.mjs
 node tools/test-workbench-upgrade.mjs
 node tools/test-workbench-tools.mjs
 node tools/test-diagnostics.mjs

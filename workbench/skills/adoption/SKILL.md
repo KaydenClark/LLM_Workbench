@@ -55,8 +55,11 @@ v3 support root through `/update-harness`, which runs
    `workbench/skills` lane with a receipt and discovery adapters (it never
    reads or writes a skill in `[USER_HOME]`, although `--home` is still a
    required argument), declares `git.integrationBranch` by the
-   exact case of an existing integration-named branch (listing an unresolved
-   one as `residue.missingIntegrationBranch`), writes the recovery record
+   exact case of an existing integration-named branch, creates a missing local
+   integration branch from the default branch without switching HEAD, and
+   preserves existing local or remote refs. Pass `--default-branch NAME` and
+   `--integration-branch NAME` for other project names. Missing default refs or
+   identical branch names block before layout migration. It writes the recovery record
    `workbench/sessions/recovery/adoption-recovery.json`, renders the
    projections, and runs doctor. An existing support root (including a room
    already adopted), path collision, or missing or bracketed root control is a
@@ -71,8 +74,9 @@ v3 support root through `/update-harness`, which runs
    finished Adoption. Promote verified work only to the declared integration
    branch (`git.integrationBranch` in `workbench/manifest.json`; the migration
    declares an existing integration-named branch or `integration`). When
-   authorization permits, create it from the default branch and push it;
-   otherwise record the omission reason in the owning spec. The merge from the
+   absent, create it from the default branch, push it and verify the remote ref.
+   Every project requires this distinct staging branch. A creation or publication
+   blocker stays in the owning Spec and leaves Adoption incomplete. The merge from the
    declared branch into the default branch stays with the owner.
 6. Record the executed self-tests and any vendored-helper checksum beside the
    provenance recorded in step 2 in the owning spec. Put fresh-clone reproduction

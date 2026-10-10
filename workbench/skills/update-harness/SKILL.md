@@ -309,5 +309,6 @@ update is `done` only when both boxes hold:
       `done`.
 - [ ] The declared integration branch (`git.integrationBranch` in
       `workbench/manifest.json`, which the migration declares) exists on the
-      default remote at the migration commit, or the upgrade spec
-      records the explicit reason it was omitted.
+      default remote at the migration commit and is distinct from the default
+      branch. Create it from the default branch when absent, push it and verify
+      the remote ref. A creation or publication blocker leaves the upgrade incomplete.

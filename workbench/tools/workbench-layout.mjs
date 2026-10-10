@@ -357,26 +357,50 @@ export function listBranchNames(project) {
 }
 
 // origin/HEAD names the default branch; a repository without one falls back
-// to its checked-out branch, and a project outside Git to main.
+// to main or master when present, then its checked-out branch.
 export function defaultBranchName(project) {
   const originHead = gitRead(project, ['symbolic-ref', '--quiet', 'refs/remotes/origin/HEAD']);
   if (originHead?.startsWith('refs/remotes/origin/')) return originHead.slice('refs/remotes/origin/'.length);
-  return gitRead(project, ['symbolic-ref', '--quiet', '--short', 'HEAD']) || 'main';
+  const names = listBranchNames(project);
+  return ['main', 'master'].find((name) => names.includes(name)) ?? gitRead(project, ['symbolic-ref', '--quiet', '--short', 'HEAD']) ?? 'main';
+}
+
+// Setup creates only a missing local staging ref. Publishing remains a
+// protocol step, and existing local or remote integration refs stay intact.
+export function ensureIntegrationBranch(project, declared) {
+  if (!declared || !isBranchName(declared.defaultBranch) || !isBranchName(declared.integrationBranch)) {
+    return fail('invalid-branch', 'Setup requires valid default and integration branch names.');
+  }
+  if (declared.defaultBranch.toLowerCase() === declared.integrationBranch.toLowerCase()) {
+    return fail('integration-branch-not-distinct', 'Integration must be distinct from the owner-controlled default branch.');
+  }
+  if (!insideWorkTree(project)) return fail('integration-branch-missing', 'Initialize and commit the project repository before creating integration.');
+  if (resolveBranchRefs(project, declared.integrationBranch).length) return report('existing', { branch: declared.integrationBranch });
+  const base = resolveBranchRefs(project, declared.defaultBranch)[0];
+  if (!base) return fail('default-branch-missing', `Default branch ${declared.defaultBranch} must resolve before creating integration.`);
+  const created = spawnSync('git', ['branch', '--', declared.integrationBranch, base.ref], { cwd: project, encoding: 'utf8' });
+  if (created.status !== 0 || !resolveBranchRefs(project, declared.integrationBranch).length) {
+    return fail('integration-branch-missing', `Could not create ${declared.integrationBranch}: ${created.stderr?.trim() || 'Git branch creation failed'}`);
+  }
+  return report('created', { branch: declared.integrationBranch, base: base.ref });
 }
 
 // The manifest git block init and migrate write: explicit flags win, then an
 // existing integration-named branch by its exact case, then the defaults.
 // Declaring never creates a branch; the Genesis gate and doctor check it.
-function gitDeclaration(project, options) {
+export function gitDeclaration(project, options) {
   for (const flag of ['--default-branch', '--integration-branch']) {
     if (options[flag] !== undefined && !isBranchName(options[flag])) return fail('invalid-branch', `${flag} must be a Git branch name; received ${options[flag]}.`);
   }
   const names = listBranchNames(project);
   const existing = names.find((name) => name === 'integration') ?? names.find((name) => name.toLowerCase() === 'integration');
+  const defaultBranch = options['--default-branch'] ?? defaultBranchName(project);
+  const integrationBranch = options['--integration-branch'] ?? existing ?? 'integration';
+  if (defaultBranch.toLowerCase() === integrationBranch.toLowerCase()) return fail('integration-branch-not-distinct', 'Integration must be distinct from the owner-controlled default branch.');
   return report('declared', {
     git: {
-      defaultBranch: options['--default-branch'] ?? defaultBranchName(project),
-      integrationBranch: options['--integration-branch'] ?? existing ?? 'integration'
+      defaultBranch,
+      integrationBranch
     }
   });
 }
@@ -1727,11 +1751,12 @@ function validateGenesisGit(project) {
   if (!declared) {
     return fail('integration-branch-undeclared', 'workbench/manifest.json must declare git.integrationBranch, the branch the independent review gate merges into; run init with --integration-branch or add the git block.', { reason: 'the manifest has no git block' });
   }
+  if (declared.defaultBranch.toLowerCase() === declared.integrationBranch.toLowerCase()) return fail('integration-branch-not-distinct', 'Integration must be distinct from the owner-controlled default branch.');
   if (!insideWorkTree(project)) {
     return fail('integration-branch-missing', `The project is not inside a Git work tree, so declared integration branch ${declared.integrationBranch} cannot resolve; initialize the repository and create the branch from ${declared.defaultBranch}.`, { branch: declared.integrationBranch, reason: 'the project is not inside a Git work tree' });
   }
   if (resolveBranchRefs(project, declared.integrationBranch).length === 0) {
-    return fail('integration-branch-missing', `Declared integration branch ${declared.integrationBranch} resolves neither as a local head nor on a remote; create it from ${declared.defaultBranch} and push it, or record the omission reason in the owning spec.`, { branch: declared.integrationBranch, reason: `no refs/heads/${declared.integrationBranch} and no remote carries ${declared.integrationBranch}` });
+    return fail('integration-branch-missing', `Declared integration branch ${declared.integrationBranch} resolves neither as a local head nor on a remote; create it from ${declared.defaultBranch} and push it before completing setup.`, { branch: declared.integrationBranch, reason: `no refs/heads/${declared.integrationBranch} and no remote carries ${declared.integrationBranch}` });
   }
   return null;
 }

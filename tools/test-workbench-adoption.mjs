@@ -35,6 +35,10 @@ function seedControls(project) {
   for (const control of ['AGENTS.md', 'BLUEPRINT.md', 'LEXICON.md', 'RUNBOOK.md', 'TASKBOARD.md', 'CLAUDE.md', 'README.md']) {
     write(project, control, `# ${control}\n\nProject-specific adoption truth.\n`);
   }
+  for (const args of [['init', '-q', '-b', 'main'], ['commit', '-q', '--allow-empty', '-m', 'Default baseline']]) {
+    const result = spawnSync('git', ['-c', 'user.name=Fixture', '-c', 'user.email=fixture@invalid.example', ...args], { cwd: project, encoding: 'utf8' });
+    assert.equal(result.status, 0, result.stderr);
+  }
   write(project, 'BLUEPRINT.md', '# Blueprint\n\n<!-- spec-catalog:start -->\n<!-- spec-catalog:end -->\n');
   write(project, 'TASKBOARD.md', '# Taskboard\n\n<!-- hot-specs:start -->\n<!-- hot-specs:end -->\n');
 }
@@ -229,10 +233,11 @@ function fixtureSpec() {
       'manifest and managed-tools receipt must record one source commit');
     assert.deepEqual(report.residue.rootManagedTools, ['spec-workbench.mjs'],
       'matching application-root tool names are reported without moving or deleting them');
-    assert.equal(report.residue.missingIntegrationBranch, 'integration',
-      'a room without an integration branch declares the default name and reports it missing rather than blocking');
+    assert.equal(report.residue.missingIntegrationBranch, null, 'adoption creates the missing integration branch');
+    assert.equal(report.residue.integrationBranch.status, 'created');
+    assert.equal(spawnSync('git', ['rev-parse', 'integration'], { cwd: project, encoding: 'utf8' }).stdout, spawnSync('git', ['rev-parse', 'main'], { cwd: project, encoding: 'utf8' }).stdout);
     assert.deepEqual(JSON.parse(read(project, 'workbench/manifest.json')).git, { defaultBranch: 'main', integrationBranch: 'integration' });
-    assert.ok(report.findings.some((issue) => issue.code === 'integration-branch-missing' && issue.blocks === 'none'));
+    assert.equal(report.findings.some((issue) => issue.code === 'integration-branch-missing'), false);
     assert.deepEqual(report.residue.movedExternalLinks, [
       {
         file: 'workbench/specs/S-101-adopted/SPEC.md',

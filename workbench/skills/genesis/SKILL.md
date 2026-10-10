@@ -54,15 +54,17 @@ inheriting the Template's room state.
    completed work to a prefixed task branch and promote verified work only to
    the declared integration branch (`git.integrationBranch` in
    `workbench/manifest.json`; `init` declares `integration` unless told
-   otherwise). When authorization permits, create that branch from the default branch
-   and push it (`git branch NAME DEFAULT` then `git push -u origin NAME`);
-   otherwise record the omission reason in the first spec. The merge from the
+   otherwise). Every project requires this staging branch, distinct from the
+   default branch. Create it from the default branch when absent and push it
+   (`git branch NAME DEFAULT` then `git push -u origin NAME`); verify the remote
+   ref and preserve an existing branch. A creation or publication blocker stays
+   in the first Spec and leaves Genesis incomplete. The merge from the
    declared branch into the default branch stays with the owner.
 7. Always commit and push after every completed task and before yielding incomplete
    work. A local-only scaffold, or a working tree that was never committed, is
    not a completed Genesis handoff; the `templates/GENESIS.md` completion boxes
    require the commit on a prefixed branch and the resolving integration branch
-   or its recorded omission reason.
+   verified on the remote, distinct from the default branch.
 8. Run the generated project's targeted and full verification, update the
    owning spec evidence, render its Taskboard, run doctor, pass the readiness
    gate `node workbench/tools/workbench-layout.mjs validate --project PATH --genesis`

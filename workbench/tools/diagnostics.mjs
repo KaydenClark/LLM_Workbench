@@ -171,6 +171,8 @@ const registry = Object.freeze({
   // git: the review gate's merge target is a declared fact; its absence is
   // visible in every doctor run and blocks only the Genesis readiness gate
   'integration-branch-undeclared': entry('error', 'git', 'none', 'the manifest declares no git.integrationBranch; declare the branch the independent review gate merges into'),
+  'integration-branch-not-distinct': entry('error', 'git', 'none', 'choose a distinct integration staging branch before completing setup'),
+  'default-branch-missing': entry('error', 'git', 'none', 'resolve the declared default branch before creating integration'),
   'integration-branch-missing': entry('error', 'git', 'none', 'the declared integration branch resolves neither as a local head nor on a remote'),
   // S-00M TK-002 (ADR-000J): the repository state a completion claim can
   // hide. Both are visible in every doctor run and block nothing: detached is

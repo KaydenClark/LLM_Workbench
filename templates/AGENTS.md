@@ -323,8 +323,11 @@ not be their only discovery route.
 - The integration branch is a declared fact, not a convention:
   `workbench/manifest.json` `git.integrationBranch` names
   `[INTEGRATION_BRANCH_OR_DEFAULT]` by exact case and `git.defaultBranch` names
-  the branch it is created from when the two differ (a room that merges
-  straight into its default branch declares the same name twice). `doctor` reports
+  the owner-controlled release branch. Every Workbench uses a distinct
+  integration branch as its default staging branch before the default branch;
+  Genesis and Adoption create it from the default branch when absent. The
+  legacy placeholder above is filled with that integration branch, never the
+  default branch. `doctor` reports
   `integration-branch-undeclared` or `integration-branch-missing` until the
   declared branch resolves; neither blocks selection.
 
