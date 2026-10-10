@@ -8,8 +8,8 @@
 **Updated:** 2026-10-10
 **Catalog description:** Every Workbench stages work on a distinct integration branch created during genesis or adoption.
 **Blockers:** none
-**Latest event:** TK-008Q closed with proof.
-**Next gate:** Assembled-Spec Review after Task integration; owner Human QA and main promotion remain open.
+**Latest event:** Corrected Task merged into integration at acc318fe; assembled review candidate prepared.
+**Next gate:** Fresh-context assembled-Spec Review; owner approval and main verification remain open.
 
 > **Citation anchors.** pre=`bcb8cfa0a685b67d151e5102d3f2cc855a13613b` post=`aae2f71a11db88c71703d4bcf81a9b807f49b112`.
 
@@ -80,6 +80,17 @@ AGENTS root/template, Genesis and Adoption protocols and skills, upgrade complet
 | 2026-10-10 | TK-008Q | Corrected refusal path verified in Task run 2 | Runtime candidate aae2f71a11db88c71703d4bcf81a9b807f49b112: canonical local Full suite 57/57 in 930.2 seconds; CI run 38015157081 SUCCESS; CLI refusal red then green before layout writes | [Corrected verification](verification.md#corrected-task-run-2); earlier close and self-QA correction retained | Final Task submission, assembled-Spec Review, owner Human QA and main promotion; no consumer upgrade |
 | 2026-10-10 | TK-008Q | Task closed (run 2) | Run 2: canonical Full suite 57/57 locally at aae2f71a in 930.2 seconds and canonical CI run 38015157081 SUCCESS; actual CLI refusal red then green with no layout writes; verification.md#corrected-task-run-2 records scope and limits; Wiki validation, small lint and diff checks pass | Setup controls and protocols, skills, branch decision and Wiki; corrected run-2 verification and source anchors | Assembled Spec Review, owner Human QA and main promotion; no consumer repository upgrade; existing room-wide drift |
 
+| 2026-10-10 | TK-008Q | Corrected Task delivered to integration | PR 453 MERGED at acc318fecddc8b4d3a0cccb3e5e2884d06ee377a; fresh origin/integration contains exact submitted 5f6dd2a1d297a993704ff15395111f8932bc86eb; CI 38017004701 attempt 2 SUCCESS | Real assembled result prepared; [delivery and CI record](verification.md#integration-delivery) | Fresh assembled-Spec Review, owner approval and main verification; existing notepad CI race observed on attempt 1 remains outside this capability |
+
 ## Completion Result
 
-Pending assembled-Spec Review. Owner Human QA and main promotion remain open.
+Implemented the required integration staging rule in producer setup tools,
+shared controls, protocols and skills. Adoption creates a missing branch from
+the resolved default branch, preserves existing refs and HEAD, and refuses
+failed branch setup before layout writes. All 57 canonical commands passed
+locally, and the submitted Task passed CI on retry without changing runtime
+code or test criteria. Integration at `acc318fecddc8b4d3a0cccb3e5e2884d06ee377a`
+contains submitted head `5f6dd2a1d297a993704ff15395111f8932bc86eb`.
+
+No consumer room was upgraded. Owner approval and verification on main remain
+open; this records the implemented result without claiming Spec completion.

@@ -29,3 +29,11 @@ Runtime candidate: `aae2f71a11db88c71703d4bcf81a9b807f49b112`.
 - The post-correction self-drift result still has the same 24 baseline findings and does not certify a clean whole-Workbench update. Scope, consumer-installation limits and owner gates above remain in force.
 
 The run-2 results replace the first run's sufficiency claim for the refusal path. Later Task/Spec receipt and closure changes are administrative state, verified with render, doctor, Wiki validation and diff checks; they change no runtime code.
+
+## Integration delivery
+
+[Task PR 453](https://github.com/KaydenClark/LLM_Workbench/pull/453) merged into integration at `acc318fecddc8b4d3a0cccb3e5e2884d06ee377a`. A fresh fetch and `git merge-base --is-ancestor 5f6dd2a1d297a993704ff15395111f8932bc86eb origin/integration` proved exact submitted-head containment.
+
+[Final submission CI run 38017004701](https://github.com/KaydenClark/LLM_Workbench/actions/runs/38017004701) attempt 1 failed in the unchanged notepad mixed-writer barrier test, returning retained-dependency instead of stale-revision. That test and notepad implementation have no diff from the integration base. Its isolated local probe passed 1/1. Attempt 2 passed the canonical full suite on the same head. No notepad code or test criterion was changed. This records an observed timing-dependent CI failure; it does not claim that the underlying notepad race is resolved.
+
+Main and consumer repositories remain unchanged. Assembled Spec review and owner gates are separately recorded in the Spec.

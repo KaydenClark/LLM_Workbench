@@ -94,6 +94,8 @@ visible without blocking deliberately pinned work.
 
 ## History
 
+- 2026-10-09: The mandatory setup correction reached integration at `acc318fecddc8b4d3a0cccb3e5e2884d06ee377a` through [Task PR 453](https://github.com/KaydenClark/LLM_Workbench/pull/453). Its [Required Integration Branch delivery owner (S-005I)](../../specs/S-005I-required-integration-branch/SPEC.md) retains exact check, retry, review and owner-gate evidence; this is source delivery, not a consumer upgrade.
+
 - 2026-10-09: Recorded the owner amendment requiring distinct integration staging and removing omission as a completed setup path. Candidate source is on the Required Integration Branch correction (S-005I) branch; its Spec retains test and delivery gates.
 
 - 2026-09-19: Created on owner direction as one article for this legacy Spec after reading its full record and checking named live sources. Evolved or superseded claims are identified explicitly. No Spec was moved, retired or discarded, and no retrospective Human QA is asserted.
