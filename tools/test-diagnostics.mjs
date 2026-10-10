@@ -1024,6 +1024,8 @@ const PINNED_EFFECTS = {
   'promotion-recovery-required': ['error', 'sessions', 'none'],
   'integration-branch-undeclared': ['error', 'git', 'none'],
   'integration-branch-missing': ['error', 'git', 'none'],
+  'integration-branch-not-distinct': ['error', 'git', 'none'],
+  'default-branch-missing': ['error', 'git', 'none'],
   // S-00M TK-002 (ADR-000J): repository state a completion claim can hide is
   // visible in every doctor run and never blocks; detached is an inspection
   // state, and untracked lane files are the close check's business (TK-003).

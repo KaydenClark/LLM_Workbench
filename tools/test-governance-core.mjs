@@ -173,7 +173,9 @@ test('Genesis, Adoption, and update-harness completion require a committed prefi
   for (const relative of ['templates/GENESIS.md', 'templates/ADOPTION.md', 'workbench/skills/update-harness/SKILL.md']) {
     const content = read(relative);
     assert.match(content, /^- \[ \] [^\n]*exists as a commit on a prefixed task branch/m, `${relative} requires the run to exist as a commit on a prefixed branch`);
-    assert.match(content, /^- \[ \] [^\n]*declared integration branch[\s\S]{0,400}records the explicit reason/m, `${relative} requires the declared integration branch on the remote or a recorded omission reason`);
+    assert.match(content, /^- \[ \] [^\n]*declared integration branch[\s\S]{0,400}distinct from the default/m, `${relative} requires a distinct integration branch on the remote`);
+    assert.match(content, /(?:creation or publication blocker)[^\n]*incomplete/i, `${relative} keeps blocked branch publication incomplete`);
+    assert.doesNotMatch(content, /records the explicit reason it was omitted/, `${relative} cannot finish through an omission note`);
   }
 });
 

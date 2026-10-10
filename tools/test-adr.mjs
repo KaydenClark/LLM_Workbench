@@ -436,7 +436,8 @@ test('every accepted-ADR-to-spec reference in the real corpus resolves literally
   assert.equal(filesWithLink, 30, 're-count of accepted ADR files carrying a live Spec-path reference at this candidate');
   // S-004G TK-006F: the ADR-000X amendment routes the Workbench Terms And Workflow Verb Rows Spec.
   // S-003Y TK-006J: ADR-000Z links that Spec twice.
-  assert.equal(totalLinks, 42, 're-count of total accepted-ADR-to-spec link edges at this candidate');
+  // Required Integration Branch (S-005I) adds the owner amendment's delivery route to ADR-0039.
+  assert.equal(totalLinks, 43, 're-count of total accepted-ADR-to-spec link edges at this candidate');
 });
 
 test('durable references distinguish tracked notepad templates from ignored live records', () => {
