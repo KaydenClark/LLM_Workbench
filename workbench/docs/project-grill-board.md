@@ -6,7 +6,8 @@ The source must be a clean checkout at the exact reviewed commit. Node 18 or
 newer and Git are sufficient; no packages, service, hooks or credentials are
 installed. Never install into a producer Board or overwrite an existing Board.
 
-Create a configuration file outside the Board directory:
+Create an ordinary configuration file outside the Board directory, with no
+symlinked parent directories (the existing macOS system aliases remain supported):
 
 ```json
 {
@@ -28,8 +29,18 @@ Create a configuration file outside the Board directory:
 ```
 
 Use the project's own title, canonical HTTPS GitHub repository URL, unique
-instance name and manually selected unused port. Topic membership uses item
-`group`, never producer question numbers. Each group belongs to one topic.
+instance name and manually selected unused port. The target must be the Git
+checkout root, including a linked worktree; a nested non-repository directory
+is refused. The repository must match that checkout's origin. HTTPS and SSH
+GitHub origins (including valid explicit URI ports), optional `.git` suffixes,
+and host/owner/repository case differences identify the same repository. URI
+schemes and the SSH user remain lowercase. Malformed raw origins, invalid ports
+and empty or dot-only identity segments are refused. Missing, local-only,
+non-GitHub or mismatched origins refuse initialization and runtime verification;
+a local-copy clone must retain its project's GitHub origin before using the Board.
+
+Topic membership uses item `group`, never producer question numbers. Each group
+belongs to one topic.
 The inherited Other topics fallback remains in the renderer; installed questions
 must use a configured group. Configuration strings are escaped as data, including
 embedded script delimiters.
@@ -50,6 +61,8 @@ owner answers. Receipt hashes cover immutable deployment files; `items.json`
 and owner-local `answers.json` remain mutable through their respective writers.
 Rerunning initialization verifies and preserves an existing deployment; different
 configuration, collisions or modified managed bytes refuse rather than overwrite.
+Object-key order in equivalent JSON does not count as a configuration change;
+array order and actual values still do.
 There is no automatic update or destructive recovery command. A component update
 needs a separately reviewed preservation plan. Do not edit receipt-managed files.
 

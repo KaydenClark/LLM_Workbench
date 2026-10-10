@@ -48,7 +48,7 @@ export function validateConfig(config) {
   if (Object.keys(config).some(key => !allowed.includes(key))) fail('Unknown configuration field');
   const text = value => typeof value === 'string' && value.trim() && value.length <= 1000 && !/[\u0000-\u001f]/.test(value);
   if (!text(config.title)) fail('Project title required');
-  if (typeof config.repository !== 'string' || !/^https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(config.repository)) fail('Repository must be a canonical HTTPS GitHub owner/repository URL');
+  if (typeof config.repository !== 'string' || !/^https:\/\/github\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+$/.test(config.repository) || !githubIdentity(config.repository)) fail('Repository must be a canonical HTTPS GitHub owner/repository URL');
   if (!/^[a-z0-9][a-z0-9-]{2,79}$/.test(config.instance ?? '')) fail('Unique project instance key required (3–80 lowercase letters/digits/hyphens)');
   if (!Number.isInteger(config.port) || config.port < 1024 || config.port > 65535) fail('Manual loopback port must be 1024–65535');
   if (!Array.isArray(config.topics) || !config.topics.length || config.topics.length > 50) fail('One to fifty topics required');
@@ -61,6 +61,29 @@ export function validateConfig(config) {
     for (const group of topic.groups) { if (!/^[a-z][a-z0-9-]*$/.test(group ?? '') || groups.has(group)) fail('Group must belong to exactly one topic'); groups.add(group); }
   }
   return config;
+}
+// GitHub repository identities are case-insensitive across HTTPS and SSH remotes.
+function githubIdentity(repository) {
+  if (typeof repository !== 'string' || !['https://','ssh://git@','git@'].some(prefix=>repository.startsWith(prefix))) return null;
+  // Match Git's URI and SCP forms literally: WHATWG URL repairs malformed
+  // HTTPS prefixes and dot segments that Git can interpret differently.
+  const match=repository.match(/^(?:(?:https:\/\/|ssh:\/\/git@)github\.com(?::([0-9]+))?\/|git@github\.com:)([A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+?)\/?$/i);
+  if (!match) return null;
+  if (match[1] && (Number(match[1])<1 || Number(match[1])>65535)) return null;
+  const identity=match[2].replace(/\.git$/i,'').toLowerCase();
+  return identity.split('/').some(segment=>!segment || /^\.+$/.test(segment)) ? null : identity;
+}
+export function validateProjectRepository(root, config) {
+  const read=args=>execFileSync('git',args,{cwd:root,encoding:'utf8',stdio:['ignore','pipe','pipe']}).replace(/\n$/,'');
+  let top;
+  try { top=read(['rev-parse','--show-toplevel']); }
+  catch { fail('Selected project must be a Git checkout root'); }
+  if (fs.realpathSync(top)!==fs.realpathSync(root)) fail('Selected project must equal the Git checkout root');
+  let origin;
+  try { origin=read(['remote','get-url','origin']); }
+  catch { fail('Target origin must identify the configured GitHub repository'); }
+  const identity=githubIdentity(origin);
+  if (!identity || identity!==githubIdentity(config.repository)) fail('Configured repository must match the target GitHub origin');
 }
 const escapeHtml = value => value.replace(/[&<>"']/g, character => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[character]));
 const js = value => JSON.stringify(value).replace(/</g,'\\u003c').replace(/>/g,'\\u003e').replace(/&/g,'\\u0026').replace(/\u2028/g,'\\u2028').replace(/\u2029/g,'\\u2029');
@@ -88,6 +111,7 @@ export function verifyProject(root) {
   const configPath = safePath(root, `${DIRECTORY}/project.json`);
   const receipt = JSON.parse(fs.readFileSync(safePath(root, `${DIRECTORY}/deployment.json`), 'utf8'));
   const config = validateConfig(JSON.parse(fs.readFileSync(configPath, 'utf8')));
+  validateProjectRepository(root,config);
   if (receipt.schema !== RECEIPT_SCHEMA || !/^[a-f0-9]{40}$/.test(receipt.source?.commit ?? '') || typeof receipt.source?.repository !== 'string' || !receipt.files || Array.isArray(receipt.files)) fail('Invalid deployment receipt');
   const required = ['project.json','index.html','.gitignore','README.md','runtime/tools/grill-board-project.mjs','runtime/producer/tools/grill-board.mjs','runtime/producer/workbench/grill-board/index.html'];
   if (required.some(file => !Object.hasOwn(receipt.files, file))) fail('Incomplete deployment receipt');
@@ -120,16 +144,12 @@ function guardWrites(root) {
     try { fs.lstatSync(file); fail(`Existing Board temporary write destination: ${relative}`); } catch (error) { if (error.code !== 'ENOENT') throw error; }
   }
 }
-function ordinaryInput(file) {
+export function ordinaryInput(file) {
   const absolute = path.resolve(file);
-  // Do not silently traverse a linked parent of agent-provided input files.
-  let directory = path.dirname(absolute);
-  while (directory !== path.dirname(directory)) {
-    // macOS system aliases are outside the caller's project boundary.
-    if (!['/var','/tmp'].includes(directory)) ordinary(directory,'directory');
-    directory = path.dirname(directory);
-  }
+  // Share the same ancestor and leaf checks with initialization inputs.
+  ordinaryRoot(path.dirname(absolute));
   ordinary(absolute);
+  return absolute;
 }
 function send(response, status, value) { response.writeHead(status, {'content-type':'application/json; charset=utf-8','cache-control':'no-store'}); response.end(JSON.stringify(value)); }
 function projectLinks(sources, config) {

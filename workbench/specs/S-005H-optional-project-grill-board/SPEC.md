@@ -3,13 +3,13 @@
 **Spec ID:** S-005H
 **Status:** active
 **Priority:** 1
-**Owner:** codex-board-worker
+**Owner:** codex-board-corrections
 **Stance:** Builder
 **Updated:** 2026-10-09
 **Catalog description:** Deploy the existing Grilling Board optionally into an adopted project with safe initialization, project framing, links and isolated owner answers.
 **Blockers:** none
 **Latest event:** TK-001 closed with proof.
-**Next gate:** Owner Human QA and main promotion remain owner-only; downstream deployment proof belongs to the pilot.
+**Next gate:** Fresh assembled review, final-head CI and automatic review, then accurate PR447 metadata and gated integration.
 **Baseline:** green - source evaluator self-test passes, local score 113 at integration e81fe43fdc6273221dbb484c3f7dd9a49b523e0a; doctor has no all/selection blockers, existing drift retained.
 
 ## Outcome
@@ -22,6 +22,22 @@ questions or answers or installing a full Dashboard.
 
 Owner, 2026-10-09, RingWorld progress: “Yes, let's get it all fixed an put it on integration please” in response to the bounded reusable deployment proposal.
 Base integration e81fe43fdc6273221dbb484c3f7dd9a49b523e0a; authenticated GitHub KaydenClark. Open draft PR440 at f1fa3f2 changes producer tools/grill-board.mjs, index.html, tests, S-004D, Runbook and Wiki. PR441 changes that server's entry guard. Dashboard handoff dashboard-claude-director-first-pass-2026-10-08.md inspected; the wider first pass belongs to that director. Avoid those implementation/content files and do not import those PRs or contact Claude. New optional-component files own this work; root Runbook suite/projections may gain bounded additions without changing the Dashboard workflow. No S-004D Task/claim transfers.
+
+## Corrective Return: PR443
+
+Integration at 80b17b65f3238dc205c0c27428a295be7162e7ad contains the original
+component. Its later automated review identified three bounded deployment
+findings; verdict 2 reopens TK-001 while preserving the earlier proof. Current
+Dashboard PR440 at 685fb2df and PR441 do not edit the optional component files.
+This pass owns only those files, their test and their existing documentation.
+No producer source, Dashboard state, root controls or other Spec claims transfer.
+
+Map and Plan: retain the current deployment contract and correct equivalent JSON
+comparison, the config-input ancestor guard and target-origin provenance. Add
+failing public-seam regressions, fix each with native Node/Git capabilities,
+then rerun all required checks and independent assembled review before integration.
+The downstream RingWorld writer owns its later pinned refresh; this pass changes
+no RingWorld content or runtime. No main promotion is authorized.
 
 ## Desired Behavior
 
@@ -93,19 +109,68 @@ Do not alter existing producer question/answer stores or S-004D.
 | 2026-10-09 | TK-001 | Coordinate and pin source before writes | Auth KaydenClark; integration e81fe43f; open PR440/441 exact overlap inspected; baseline evaluator passes; doctor no all/selection blocker; pre self-drift cleanUpdate false, 25 existing findings | Separate Spec and component lane; dashboard handoff read | Component delivery, full checks, review, integration and pilot pending |
 | 2026-10-09 | TK-001 | Task closed | All56 required checks pass at clean code e65c2d6a in816.9s;32 deployment checks;exact-head GitHub CI SUCCESS;disposable owner answer/history/revise/stale/refreshed-confirm/apply and isolation browser proof;corrected literal rendering smoke. | Optional guide/Runbook/Wiki;verified acceptance and bounded Completion Result;proof/verification-summary.json and proof/browser-qa.md. | Independent final assembled review then integration merge/readback/CI and required RingWorld feature refresh;owner Human QA and PC route separate. |
 | 2026-10-09 | review | Review verdict: pass at 2105e622d52ff103a741603d9d1f70c8a4443a31 [48fe7930e462] #1 | none;fresh delivery context verified32deployment/16producer checks,native complete/no gaps,guide correction,unchanged testedcode/Wiki,150page aggregate with inheriteddrift retained,all downstream obligations preserved. Final CI/integration/pilot gates remain;notownerQA/globalclean. | Codex fresh read-only context review_optional_board_delivery_candidate; inherited model, specific model ID unavailable | 3 |
+| 2026-10-09 | review | Review verdict: fail at 80b17b65f3238dc205c0c27428a295be7162e7ad [48fe7930e462] #2 | continue TK-001: PR443 automated review found reordered JSON object keys falsely treated as a configuration change; continue TK-001: PR443 automated review found configuration input linked parents accepted; continue TK-001: PR443 automated review found configured repository could differ from target origin | Codex GitHub automated review of b85c0f0, PR443 review 5465787376, received after integration | 3 |
+| 2026-10-09 | TK-001 | Task closed (run 2) | Corrected code 523bf7a273b7421f799f5abcd321cc43beac07ca: GitHub CI run 37890421252 full canonical suite SUCCESS. Local full run 54/56, then unchanged runtime 34/34 and landmark Wiki 79/79 reruns pass after fetching historical fixture and isolating temporary roots. Deployment 37/37; producer 16/16; self-drift retains 24 baseline findings; guardrail 73/100. | Existing optional deployment guide and Wiki updated; all 150 Wiki pages independently read with inherited drift retained. Correction proof summary records exact checks and limits. | Fresh assembled review, reviewed PR447 integration and post-merge CI, then separately owned RingWorld preservation refresh. Owner Human QA and main promotion remain open. |
+
+| 2026-10-09 | verification correction | Qualify CI checkout identity in the preceding proof | GitHub run 37890421252 is associated with head 523bf7a2 but executes synthetic merge 7110082f3b81aa52d6a48045d12c43d2d246efa3; both trees are de499b41ca10e6a81dd302bed6986825fd2b8251, GitHub comparison has zero changed files, and the job reports all 56 commands passing in 677.7 seconds. | Current Completion Result and corrective verification summary corrected; previous evidence rows preserved. | Final assembled review, integration and downstream pilot gates remain. |
+| 2026-10-09 | review | Review verdict: pass at 1db47d00f1f1adbaafc9733b5fe1edd92dd4a03f [2d841eb8bdc5] #3 | none; three bounded defects corrected. Independently verified 37 deployment and 16 producer checks, original local 54/56 plus successful unchanged reruns, GitHub 56-command synthetic-merge tree-equivalence proof, all 150 Wiki pages and 167 linked cards, native complete/no gaps, doctor and clean candidate. Inherited drift and final-head CI/integration/pilot gates remain. | Codex fresh read-only context review_board_deployment_corrections; inherited model, specific model ID unavailable | 2 |
+| 2026-10-09 | review | Review verdict: fail at 893e1828f636ae5a0f9786bc5221b380abf3ae41 [2d841eb8bdc5] #4 | continue TK-001: PR447 automated review found valid SSH GitHub origin URIs with explicit ports rejected. Normalize valid URI ports and prove supported and invalid forms without weakening repository identity checks. | Codex GitHub automated review of 523bf7a, PR447 review 5466342446 | 1 |
+| 2026-10-09 | review | Review verdict: fail at 9aada29fee677899ae8b57607e012c1ac63dd001 [d784513680bb] #5 | continue TK-001: PR447 automated review found nested non-repository directories inherit the enclosing Git origin. Require selected target to equal the Git checkout root while retaining linked worktrees; continue TK-001: PR447 automated review found dot-only owner or repository segments accepted. Reject dot segments before provenance or source links can be generated. | Codex GitHub automated review of 9aada29f, PR447 review 5466489395 | 2 |
+| 2026-10-09 | TK-001 | Task closed (run 3) | Code a14b362a7f3bfb566851bddc88aa364003cbd8ed: canonical GitHub run 37894074727 passed all 56 commands in 887.3 seconds on synthetic merge 25c093698d68cf2f58c311f1b8537882507422a9, with identical tree 0689579a24a6e45ccefe9d67701b9c1d49f150fa. Independent deployment 40/40 and producer 16/16 pass. Local 52 commands passed before interruption; not a local full-suite pass. Earlier unchanged round-trip fixture failure passed three isolated diagnostic reruns and the current canonical CI. Self-drift retains 24 baseline findings; guardrail 73/100. | Optional deployment guide and existing Wiki checked; prior proof preserved; final correction verification records root, port, literal-origin and byte-preservation boundaries. | Fresh assembled review and final-head CI; PR447 description and final merge await owner permission. Integration CI and separate RingWorld preservation refresh remain; owner Human QA, main promotion and PC access are not asserted. |
 
 ## Completion Result
 
-The optional component meets the four source acceptance criteria. Corrected
-code at e65c2d6a passed 32 public deployment checks, all 56 required checks in
+Original delivery evidence: the component at e65c2d6a passed 32 public deployment checks, all 56 required checks in
 816.9 seconds, and the exact-head GitHub verify job. Disposable browser proof
 covers full current/draft sources, answer history, revision, stale refusal,
 fresh confirmation/application, same-origin isolation and literal framing.
-The two independent preflight findings were corrected with failing regressions
-then green checks. This result is component verification only. Independent review, integration
-identity/CI and the RingWorld refresh require their own delivery proof under
-the obligations above. Owner Human QA, main promotion and PC access are not
+The original preflight findings were corrected before PR443 integrated. The
+post-merge review findings reopened TK-001; the corrective proof below addresses
+them. Fresh assembled review, integration identity/CI and the RingWorld refresh
+remain delivery gates under the obligations above. Owner Human QA, main promotion and PC access are not
 asserted by this result.
+
+Corrective delivery evidence: the three PR443 findings have failing regressions
+and pass the 37-check deployment suite at 523bf7a273b7421f799f5abcd321cc43beac07ca.
+GitHub run 37890421252 passed all 56 canonical commands on synthetic merge
+7110082f3b81aa52d6a48045d12c43d2d246efa3, whose tree exactly matches that head.
+The local 56-command run passed 54 commands; both remaining unchanged commands
+passed after fixture setup was corrected. This is complete command coverage,
+not a retroactive claim that the local run was 56/56. The runtime test lacked
+its pinned historical commit in the single-branch clone; the Wiki test found
+ambient Git markers above temporary fixtures. No product code was changed for
+those reruns. See [corrective proof](proof/corrective-verification.json).
+
+Self-drift retains the same 24 baseline findings and `cleanUpdate: false`;
+guardrail stays 73/100. Independent whole-Wiki reading covered all 150 pages
+and 167 linked cards with no candidate-attributable blocker; inherited drift
+remains, including the existing Reviewer skill's blanket-new-SHA wording.
+The original browser/renderer proof remains bounded to that unchanged UI.
+The corrected backend's public CLI/HTTP fixtures cover byte preservation,
+origin drift, sources, owner history/revision and clone-portable runtime.
+No fresh browser or installed RingWorld outcome is claimed in this pass.
+
+PR447 automatic review subsequently found a valid SSH origin with an explicit
+port was rejected. Verdict 4 continued TK-001 for that bounded compatibility
+case. A failing regression reproduces the refusal; URI parsing now accepts
+valid HTTPS/SSH ports while rejecting invalid ports, different owners and
+unsupported users. Its later review also found nested-root and dot-only identity
+acceptance; verdict 5 continued the same Task. The bounded correction requires
+the selected Git worktree root, rejects empty/dot-only normalized identities,
+and keeps raw whitespace and case-sensitive Git URI syntax intact. At source
+a14b362a7f3bfb566851bddc88aa364003cbd8ed, independent deployment checks pass
+40/40 and producer checks pass 16/16. Canonical CI run 37894074727 passed all
+56 commands in 887.3 seconds at synthetic merge
+25c093698d68cf2f58c311f1b8537882507422a9, whose tree exactly matches that source.
+The local run passed 52 commands before interruption and is not a full pass.
+The earlier unchanged round-trip fixture failure passed three isolated
+diagnostic reruns and the current canonical suite; no unrelated test was weakened.
+TK-001 is closed with that proof. See the [final correction proof](proof/final-corrective-verification.json).
+Fresh assembled review, final-head CI and automatic review remain required;
+PR447 metadata must reflect the reviewed candidate before gated integration.
+The owner subsequently authorized milestone release; the release Director
+owns its broader scope and any main promotion. Integration CI and the separately
+branched RingWorld refresh remain delivery obligations.
 
 ## Remaining Limitations
 

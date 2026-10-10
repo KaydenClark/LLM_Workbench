@@ -27,11 +27,14 @@ A pinned, clean source checkout supplies the adapter, original page and module
 import closure. Their hashes and source identity travel with the installed
 component, so another clone can execute without the producer checkout.
 Initialization starts with no questions or answers. Existing deployments are
-verified and preserved; collisions and modified managed files require explicit
+verified and preserved, including equivalent JSON with reordered object keys;
+configuration input paths reject linked parents. Collisions and modified managed files require explicit
 resolution rather than an automatic overwrite.
 
 Project topic membership follows item groups. Project identity also controls
-repository links and browser batch/theme storage keys, preventing an unrelated
+repository links and browser batch/theme storage keys. The configured GitHub
+repository must match the target origin at initialization and runtime entry,
+with HTTPS/SSH forms normalized and mismatches refused, preventing an unrelated
 project from inheriting Workbench question numbering or a previous room's batch.
 Named current documents and question drafts stay separate review material. The
 component preserves the existing inert renderer and the ordinary named-source
@@ -57,3 +60,6 @@ standard adoption/template behavior or mandatory dependency for other rooms.
 - 2026-10-09: Added under the owner-authorized optional Board deployment to
   explain reuse, isolation and limitations; verification lives in the linked
   tests and delivery Spec.
+
+- 2026-10-09: Corrected PR443 findings on idempotent configuration, linked input
+  parents and target-origin identity; preserved deployment and owner-answer boundaries.
