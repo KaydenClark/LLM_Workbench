@@ -9,7 +9,7 @@
 **Catalog description:** Every Workbench stages work on a distinct integration branch created during genesis or adoption.
 **Blockers:** none
 **Latest event:** TK-008Q closed with proof.
-**Next gate:** Confirm acceptance criteria and completion result.
+**Next gate:** Assembled-Spec Review after Task integration; owner Human QA and main promotion remain open.
 
 ## Outcome
 
@@ -77,4 +77,4 @@ AGENTS root/template, Genesis and Adoption protocols and skills, upgrade complet
 
 ## Completion Result
 
-Pending. Owner Human QA and main promotion remain open.
+Pending assembled-Spec Review. Owner Human QA and main promotion remain open.
