@@ -1,0 +1,12 @@
+# Text is stored and checked out as LF on every host. The suite, doctor and
+# runtime tools read tracked files directly, and a CRLF working tree from
+# core.autocrlf on Windows broke them (workbench/feedback/REPORT-v3-1-1-2026-09-04.md F-004).
+* text=auto eol=lf
+
+*.png binary
+*.gz binary
+
+# Evidence committed with CRLF; recorded SHA-256s depend on these exact bytes.
+workbench/feedback/REPORT-notepad-json-definition-2026-09-12.md -text
+workbench/feedback/decision-triage-2026-09-07.csv -text
+workbench/feedback/decision-triage-second-pass-2026-09-07/decision-ledger.csv -text
