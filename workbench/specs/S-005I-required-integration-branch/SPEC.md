@@ -8,8 +8,8 @@
 **Updated:** 2026-10-10
 **Catalog description:** Every Workbench stages work on a distinct integration branch created during genesis or adoption.
 **Blockers:** none
-**Latest event:** TK-008Q closed with proof.
-**Next gate:** Assembled-Spec Review after Task integration; owner Human QA and main promotion remain open.
+**Latest event:** Self-QA found branch failure status mismatch; the same Task continues with an adjusted handoff.
+**Next gate:** Claim the continued Task and correct the refusal path before submission.
 
 ## Outcome
 
@@ -49,10 +49,10 @@ One Task corrects the setup runtime, protocols, shared controls and documentatio
 ## Acceptance Criteria
 
 - [x] Adoption creates a missing integration branch from the default branch without switching HEAD or changing an existing branch.
-- [x] Default and integration branch declarations are distinct; setup refuses unresolved branch creation.
+- [ ] Default and integration branch declarations are distinct; setup refuses unresolved branch creation.
 - [x] Genesis, adoption and upgrade completion require the published integration branch; an omission note cannot satisfy completion.
 - [x] Shared workflow instructions stage through integration and preserve owner-only default-branch promotion.
-- [x] Targeted checks and the full required suite pass; guardrail and self-drift limits are recorded.
+- [ ] Targeted checks and the full required suite pass; guardrail and self-drift limits are recorded.
 
 ## Testing Seams
 
@@ -74,6 +74,8 @@ AGENTS root/template, Genesis and Adoption protocols and skills, upgrade complet
 | 2026-10-09 | planning | Owner direction captured; isolated from unrelated dirty work | Read setup source, protocols and branch capability Wiki at parent integration tree | Spec created | Implementation and checks pending |
 | 2026-10-09 | TK-008Q | Required integration staging implemented | [Verification record](verification.md): Full suite 56/57 plus corrected fidelity 39/39; focused branch regression green; Wiki validation and small lint; diff check; guardrail 73 to 73; unchanged 24 self-drift findings | Root and generic controls, setup skills/protocols, active branch decision amendment and branch feature Wiki | Task submission; assembled Spec Review; owner Human QA and main promotion; existing room-wide drift remains |
 | 2026-10-10 | TK-008Q | Task closed | Setup runtime regression red then green; required suite all commands have passing results through 56/57 full run plus corrected fidelity 39/39; verification.md records exact candidates and limits; Wiki validation, small lint and diff check passed | Root and generic controls, setup and diagnostic procedure skills, ADR amendment, branch capability Wiki and verification.md | Assembled Spec Review, owner Human QA and main promotion; no consumer repository upgrade; pre-existing room-wide drift |
+
+| 2026-10-10 | TK-008Q | Self-QA found branch failure status mismatch | New adoption CLI refusal regression is red: missing integration returns migration-failed after layout writes because caller accepts the layout helper invalid status | Same Task continuation records the adjusted handoff; earlier proof retained | Correct caller success-state check and reverify before submission |
 
 ## Completion Result
 
