@@ -975,6 +975,8 @@ test('the page wears the five-hue Dashboard colors: Priority orange, Value yello
  assert.match(css,/\.opt\[data-role="sendback"\]\[aria-pressed="true"\] \{[^}]*background: var\(--returned\)/,'Rework wording, Change the why and Change are purple');
  assert.match(css,/\.recommendation \{[^}]*background: var\(--agent-soft\)/,'the agent recommendation box is green');
  assert.match(css,/\.banner \{[^}]*background: var\(--agent-soft\)/,'the agent-update banner is green');
+ assert.match(css,/\.error-box \{[^}]*background: var\(--priority-soft\)/,'an error is heat, so it wears Priority orange');
+ assert.match(css,/\.save \.err, \.err \{[^}]*color: var\(--priority-ink\)/,'error text is Priority orange');
  const {model}=pageModel();
  model.state.board={items:[{id:'GB-0001',revision:1,title:'t',derivedStatus:'pending',priority:{grade:'P1',reason:'r'},value:{grade:'V3',reason:'r'}}]};
  assert.match(model.gradeBadges(model.state.board.items[0]),/<details class="grade priority" data-grade="P1">/,'a P badge carries its grade for the ramp');
@@ -1014,7 +1016,7 @@ test('an opened card shows title, question, recommendation, the why in the same 
  const visible=outsideDetails(html);
  for (const text of ['Rename the verb','Does <a class="record-link"','Recommended answer words','Why words','Your answer','>Confirm<','>Rework wording<','>Change the why<','>Change<','id="note-GB-0023"']) assert.ok(visible.includes(text),`${text} is shown at once`);
  assert.match(html,/<div class="recommendation"><h4>Recommended answer[^<]*<\/h4>[\s\S]*?<\/div>\s*<div class="recommendation why"><h4>Why this choice matters<\/h4>[\s\S]*?Why words/,'the why is its own panel directly under the recommended answer, in the same recommendation class');
- assert.doesNotMatch(pageHtml(),/\.recommendation\.why\s*\{/,'the why has no style of its own, so it matches the recommended answer');
+ assert.match(pageHtml(),/\.recommendation\.why \{[^}]*background: var\(--value-soft\)/,'the why says what the answer is worth, so it wears Value yellow (owner correction, 2026-10-09)');
  for (const [summary,text] of [['What this concerns','Summary words'],['What this concerns','Artifacts words'],['What would change','Changes words'],['Consequences and tradeoffs','Impact words']]) assert.match(html,new RegExp(`<details class="fold read" open><summary>${summary}</summary>[\\s\\S]*?${text}`),`${text} is shown open under ${summary}`);
  for (const text of ['History words','Current words','Proposed wording draft','P2 because of its source','V1 because of its return','revised wording']) {
   assert.ok(html.includes(text),`${text} stays on the card`);
