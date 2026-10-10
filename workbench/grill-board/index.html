@@ -5,31 +5,44 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Workbench Dashboard · Grill Board</title>
 <style>
+  /* The Dashboard colors (DDR-001Q, Lexicon "Dashboard Colors"; the why and the
+     contrast method are in the Wiki's dashboard-color-system page). Five hues,
+     each answering one question wherever it appears: Priority orange (how soon?),
+     Value yellow (how much is it worth?), Yours blue (is the ball with me?),
+     Agents green (are agents carrying it?), Returned purple (did it come back?).
+     Strong means now, soft means the same thing at rest; everything else is grey.
+     Selection, focus and Save are ink, because none of them is a state of the work.
+     Each hue has one base per theme; tints, inks, outlines and dots derive from it
+     in OKLab, mixed toward the pole (black on light, white on dark). */
   :root {
-    --bg: #f6f5f1; --panel: #ffffff; --ink: #1d1c19; --muted: #6b675e; --line: #e2dfd6;
-    --accent: #3b5bdb; --accent-ink: #ffffff; --soft: #eef0fb;
-    --ok: #2f8f5b; --ok-soft: #e6f4ec; --warn: #b7791f; --warn-soft: #fbf1dc; --bad: #c0392b; --bad-soft: #fbe7e4;
-    --stale: #8e5bd6; --stale-soft: #f0e8fb; --applied: #2f6f8f; --applied-soft: #e3eff5;
-    --p-bg: #f9dbd9; --p-ink: #a42c28; --v-bg: #fff0cb; --v-ink: #805600;
-    --s1: #c9c4b8; --s2: #e0a84a; --s3: #3b5bdb; --s4: #5b8def; --s5: #8e5bd6; --s6: #2f8f5b; --s7: #2f6f8f; --s8: #1d6b42;
+    --ground: #F7F7F7; --surface: #FFFFFF; --raised: #EFEFEF; --line: #E0E0E0; --line-strong: #808080; --muted: #474747; --ink: #0A0A0A; --pole: #000000;
+    --priority: #F04E12; --value: #F5C400; --owner: #2F86DC; --agent: #27A046; --returned: #A66BE0;
+    --line-pct: 68%; --dot-pct: 72%;
+    --soft-pct: 22%; --on: #0A0A0A;
+    --priority-soft: color-mix(in oklab, var(--priority) var(--soft-pct), var(--surface)); --priority-ink: color-mix(in oklab, var(--priority) 40%, var(--pole)); --priority-line: color-mix(in oklab, var(--priority) var(--line-pct), var(--pole)); --priority-dot: color-mix(in oklab, var(--priority) var(--dot-pct), var(--pole));
+    --value-soft: color-mix(in oklab, var(--value) var(--soft-pct), var(--surface)); --value-ink: color-mix(in oklab, var(--value) 40%, var(--pole)); --value-line: color-mix(in oklab, var(--value) var(--line-pct), var(--pole)); --value-dot: color-mix(in oklab, var(--value) var(--dot-pct), var(--pole));
+    --owner-soft: color-mix(in oklab, var(--owner) var(--soft-pct), var(--surface)); --owner-ink: color-mix(in oklab, var(--owner) 40%, var(--pole)); --owner-line: color-mix(in oklab, var(--owner) var(--line-pct), var(--pole)); --owner-dot: color-mix(in oklab, var(--owner) var(--dot-pct), var(--pole));
+    --agent-soft: color-mix(in oklab, var(--agent) var(--soft-pct), var(--surface)); --agent-ink: color-mix(in oklab, var(--agent) 40%, var(--pole)); --agent-line: color-mix(in oklab, var(--agent) var(--line-pct), var(--pole)); --agent-dot: color-mix(in oklab, var(--agent) var(--dot-pct), var(--pole));
+    --returned-soft: color-mix(in oklab, var(--returned) var(--soft-pct), var(--surface)); --returned-ink: color-mix(in oklab, var(--returned) 40%, var(--pole)); --returned-line: color-mix(in oklab, var(--returned) var(--line-pct), var(--pole)); --returned-dot: color-mix(in oklab, var(--returned) var(--dot-pct), var(--pole));
+    /* Older names the page still uses, pointed at the neutrals. */
+    --bg: var(--ground); --panel: var(--surface); --soft: var(--raised); --accent: var(--ink); --accent-ink: var(--surface);
+    /* Tracker understanding steps: a grey ramp, light to ink. */
+    --s1: color-mix(in oklab, var(--ink) 12%, var(--surface)); --s2: color-mix(in oklab, var(--ink) 24%, var(--surface)); --s3: color-mix(in oklab, var(--ink) 36%, var(--surface)); --s4: color-mix(in oklab, var(--ink) 48%, var(--surface));
+    --s5: color-mix(in oklab, var(--ink) 60%, var(--surface)); --s6: color-mix(in oklab, var(--ink) 72%, var(--surface)); --s7: color-mix(in oklab, var(--ink) 84%, var(--surface)); --s8: var(--ink);
     --mono: ui-monospace, SFMono-Regular, Menlo, monospace;
     --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
-      --bg: #15161a; --panel: #1e2026; --ink: #ecebe6; --muted: #a39f94; --line: #2f323b;
-      --accent: #7f97ff; --accent-ink: #0f1120; --soft: #232a44;
-      --ok: #5cc48a; --ok-soft: #1d3328; --warn: #e0a84a; --warn-soft: #3a2e17; --bad: #ef7466; --bad-soft: #3d1f1b;
-      --stale: #b793f2; --stale-soft: #2c2340; --applied: #7fb6d6; --applied-soft: #1b2c36;
-      --p-bg: #4a1f1c; --p-ink: #ffb4ab; --v-bg: #43340f; --v-ink: #ffd88a;
+      --ground: #0A0A0A; --surface: #191919; --raised: #232323; --line: #333333; --line-strong: #757575; --muted: #A8A8A8; --ink: #F7F7F7; --pole: #FFFFFF;
+      --priority: #FF5A1F; --value: #FFD60A; --owner: #4C9BE8; --agent: #3DBE5A; --returned: #A66BE0;
+      --line-pct: 62%; --dot-pct: 80%;
     }
   }
   :root[data-theme="dark"] {
-    --bg: #15161a; --panel: #1e2026; --ink: #ecebe6; --muted: #a39f94; --line: #2f323b;
-    --accent: #7f97ff; --accent-ink: #0f1120; --soft: #232a44;
-    --ok: #5cc48a; --ok-soft: #1d3328; --warn: #e0a84a; --warn-soft: #3a2e17; --bad: #ef7466; --bad-soft: #3d1f1b;
-    --stale: #b793f2; --stale-soft: #2c2340; --applied: #7fb6d6; --applied-soft: #1b2c36;
-    --p-bg: #4a1f1c; --p-ink: #ffb4ab; --v-bg: #43340f; --v-ink: #ffd88a;
+    --ground: #0A0A0A; --surface: #191919; --raised: #232323; --line: #333333; --line-strong: #757575; --muted: #A8A8A8; --ink: #F7F7F7; --pole: #FFFFFF;
+    --priority: #FF5A1F; --value: #FFD60A; --owner: #4C9BE8; --agent: #3DBE5A; --returned: #A66BE0;
+    --line-pct: 62%; --dot-pct: 80%;
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 var(--sans); }
@@ -53,8 +66,8 @@
   #sidebar { position: sticky; top: 56px; height: calc(100vh - 56px); overflow: auto; border-right: 1px solid var(--line); background: var(--panel); padding: 16px; min-width: 0; }
   .sections { display: grid; gap: 4px; }
   .sections a { padding: 7px 12px; border-radius: 8px; border: 1px solid var(--line); text-decoration: none; color: var(--ink); font-weight: 600; font-size: 14px; }
-  .sections a:hover { background: var(--soft); }
-  .sections a[aria-current="page"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+  .sections a:hover { background: var(--raised); }
+  .sections a[aria-current="page"] { background: var(--raised); border-color: var(--line-strong); box-shadow: inset 0 0 0 1px var(--ink); }
   #grill-nav { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line); }
   #grill-nav h1 { font-size: 17px; margin: 0 0 4px; }
   #grill-nav .meta { color: var(--muted); font-size: 12px; margin-bottom: 10px; }
@@ -65,61 +78,78 @@
   .filters, .grade-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
   .grade-row { margin-bottom: 8px; }
   .chip { border: 1px solid var(--line); background: transparent; color: var(--ink); border-radius: 999px; padding: 3px 10px; font-size: 12px; }
-  .chip[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .chip[aria-pressed="true"] { background: var(--raised); border-color: var(--ink); font-weight: 600; }
+  /* A lane chip leads with its court's dot: filled is live, a hollow ring is the same lane at rest. */
+  .chip[data-lane]::before { content: ""; display: inline-block; width: 9px; height: 9px; border-radius: 50%; margin-right: 6px; vertical-align: 0; box-sizing: border-box; }
+  .chip[data-lane="all"]::before { display: none; }
+  .chip[data-lane="pending"]::before { background: var(--owner-dot); }
+  .chip[data-lane="parked"]::before { border: 2px solid var(--owner-dot); }
+  .chip[data-lane="answered"]::before { background: var(--agent-dot); }
+  .chip[data-lane="applied"]::before { border: 2px solid var(--agent-dot); }
+  .chip[data-lane="stale"]::before { background: var(--returned-dot); }
+  .chip[data-lane="withdrawn"]::before { border: 2px solid var(--line-strong); }
   .chip small { font-weight: normal; opacity: .75; margin-left: 2px; }
-  /* P and V chips wear the red P and amber V badge colors: outlined when off, filled when pressed. */
+  /* P and V grades use only their two colors: 1 strong fill, 2 soft tint, 3 an
+     outline, 4 grey (P4 Backlog and V4 Defer are not worth a color). The number is
+     always printed. A pressed chip keeps its grade color and gains an ink ring. */
   .grade-chip { font-weight: 700; }
-  .grade-chip.priority { color: var(--p-ink); border-color: var(--p-ink); }
-  .grade-chip.priority[aria-pressed="true"] { background: var(--p-bg); color: var(--p-ink); border-color: var(--p-ink); }
-  .grade-chip.value { color: var(--v-ink); border-color: var(--v-ink); }
-  .grade-chip.value[aria-pressed="true"] { background: var(--v-bg); color: var(--v-ink); border-color: var(--v-ink); }
+  .grade-chip[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--ink); }
+  .grade-chip[data-grade="P1"], details.grade[data-grade="P1"] summary { background: var(--priority); color: var(--on); border: 1px solid var(--priority-dot); }
+  .grade-chip[data-grade="P2"], details.grade[data-grade="P2"] summary { background: var(--priority-soft); color: var(--priority-ink); border: 1px solid transparent; }
+  .grade-chip[data-grade="P3"], details.grade[data-grade="P3"] summary { background: transparent; color: var(--priority-ink); border: 1px solid var(--priority-line); }
+  .grade-chip[data-grade="P4"], details.grade[data-grade="P4"] summary { background: transparent; color: var(--muted); border: 1px dashed var(--line-strong); }
+  .grade-chip[data-grade="V1"], details.grade[data-grade="V1"] summary { background: var(--value); color: var(--on); border: 1px solid var(--value-dot); }
+  .grade-chip[data-grade="V2"], details.grade[data-grade="V2"] summary { background: var(--value-soft); color: var(--value-ink); border: 1px solid transparent; }
+  .grade-chip[data-grade="V3"], details.grade[data-grade="V3"] summary { background: transparent; color: var(--value-ink); border: 1px solid var(--value-line); }
+  .grade-chip[data-grade="V4"], details.grade[data-grade="V4"] summary { background: transparent; color: var(--muted); border: 1px dashed var(--line-strong); }
   .more-filters { margin-top: 12px; }
   .more-filters summary { cursor: pointer; font-size: 12px; font-weight: 600; color: var(--muted); }
   .nav-links { display: grid; gap: 6px; margin-top: 14px; font-size: 13px; }
   main { padding: 20px 28px 80px; min-width: 0; }
   .shell:not(.wide) main { max-width: 1080px; }
-  .banner { position: sticky; top: 64px; z-index: 5; background: var(--warn-soft); border: 1px solid var(--warn); border-radius: 10px; padding: 10px 14px; margin-bottom: 16px; display: none; align-items: center; justify-content: space-between; gap: 12px; }
+  .banner { position: sticky; top: 64px; z-index: 5; background: var(--agent-soft); color: var(--agent-ink); border: 1px solid var(--agent-line); border-radius: 10px; padding: 10px 14px; margin-bottom: 16px; display: none; align-items: center; justify-content: space-between; gap: 12px; }
   .banner.show { display: flex; }
   .notice { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px 18px; margin-bottom: 20px; color: var(--muted); font-size: 14px; }
   .notice strong { color: var(--ink); }
-  .semantics { background: var(--soft); border-left: 4px solid var(--accent); padding: 10px 14px; border-radius: 4px; }
+  .semantics { background: var(--raised); border-left: 4px solid var(--line-strong); padding: 10px 14px; border-radius: 4px; }
   .bulk { font-size: 13px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 8px; padding: 5px 10px; }
   .primary { background: var(--accent); color: var(--accent-ink); border: 1px solid var(--accent); border-radius: 8px; padding: 7px 12px; }
   .empty { color: var(--muted); padding: 30px 0; text-align: center; }
-  .stale-box { margin-top: 10px; background: var(--stale-soft); border: 1px solid var(--stale); border-radius: 10px; padding: 8px 12px; font-size: 13px; }
-  .error-box { margin: 10px 0; background: var(--bad-soft); border: 1px solid var(--bad); border-radius: 10px; padding: 8px 12px; font-size: 14px; }
-  .applied-box { margin-top: 10px; background: var(--applied-soft); border: 1px solid var(--applied); border-radius: 10px; padding: 8px 12px; font-size: 13px; }
-  .ok-box { margin-top: 10px; background: var(--ok-soft); border: 1px solid var(--ok); border-radius: 10px; padding: 8px 12px; font-size: 13px; }
+  .stale-box { margin-top: 10px; background: var(--returned-soft); border: 1px solid var(--returned-line); border-radius: 10px; padding: 8px 12px; font-size: 13px; }
+  .error-box { margin: 10px 0; background: var(--surface); border: 2px solid var(--ink); font-weight: 600; border-radius: 10px; padding: 8px 12px; font-size: 14px; }
+  .applied-box { margin-top: 10px; background: var(--surface); border: 1px solid var(--agent-line); border-radius: 10px; padding: 8px 12px; font-size: 13px; }
+  .ok-box { margin-top: 10px; background: var(--agent-soft); border: 1px solid var(--agent-line); border-radius: 10px; padding: 8px 12px; font-size: 13px; }
 
   /* Grilling Board: topics, rows, badges and the central question. */
   .topic-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin: 20px 0; }
   .topic-card { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 18px; }
   .topic-card h3 { margin: 0 0 8px; font-size: 17px; }
   .topic-card p { color: var(--muted); margin: 8px 0; font-size: 13px; }
-  .topic-card progress, .batch-panel progress { width: 100%; accent-color: var(--ok); height: 8px; }
+  .topic-card progress, .batch-panel progress { width: 100%; accent-color: var(--agent); height: 8px; }
   .frame { font-size: 19px; line-height: 1.5; margin: 12px 0; }
   .lane-counts { display: flex; gap: 6px 12px; flex-wrap: wrap; font-size: 12px; color: var(--muted); }
   .slice-toolbar, .batch-actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 14px 0; }
   .slice-toolbar select { font: inherit; background: var(--panel); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: 6px; }
-  .batch-panel { background: var(--soft); border: 1px solid var(--accent); border-radius: 12px; padding: 16px 20px; margin-bottom: 20px; }
+  .batch-panel { background: var(--raised); border: 1px solid var(--line-strong); border-radius: 12px; padding: 16px 20px; margin-bottom: 20px; }
   .batch-panel h2 { font-size: 18px; margin: 0 0 8px; }
   .question-row { display: flex; gap: 10px; align-items: center; border-bottom: 1px solid var(--line); padding: 8px 0; }
   .question-row .row-open { flex: 1; background: transparent; color: var(--ink); border: 0; text-align: left; padding: 4px; min-width: 0; }
   .question-row small { display: block; color: var(--muted); }
-  .question-row.current { border-left: 3px solid var(--accent); padding-left: 8px; }
+  .question-row.current { background: var(--raised); box-shadow: inset 0 0 0 2px var(--ink); border-radius: 8px; padding-left: 8px; }
   .row-end { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
   .badge { display: inline-block; font-size: 11px; font-weight: 600; letter-spacing: .02em; text-transform: uppercase; border-radius: 6px; padding: 2px 8px; }
-  .badge.pending { background: var(--soft); color: var(--accent); }
-  .badge.answered { background: var(--ok-soft); color: var(--ok); }
-  .badge.applied { background: var(--applied-soft); color: var(--applied); }
-  .badge.stale { background: var(--stale-soft); color: var(--stale); }
-  .badge.withdrawn, .badge.superseded { background: var(--line); color: var(--muted); }
+  /* Status badges by court: To answer is Yours (strong), Revisit is Returned
+     (strong), Answered · awaiting an agent is Agents (strong), Applied is Agents at
+     rest (soft), settled history is grey. */
+  .badge.pending { background: var(--owner); color: var(--on); box-shadow: inset 0 0 0 1px var(--owner-dot); }
+  .badge.stale { background: var(--returned); color: var(--on); box-shadow: inset 0 0 0 1px var(--returned-dot); }
+  .badge.answered { background: var(--agent); color: var(--on); box-shadow: inset 0 0 0 1px var(--agent-dot); }
+  .badge.applied { background: var(--agent-soft); color: var(--agent-ink); }
+  .badge.withdrawn, .badge.superseded { background: transparent; color: var(--muted); box-shadow: inset 0 0 0 1px var(--line-strong); }
   .grades { display: flex; gap: 6px; align-items: flex-start; }
   .grade { position: relative; font-size: 13px; }
   .grade summary { list-style: none; border-radius: 8px; padding: 4px 9px; cursor: pointer; font-weight: 700; }
   .grade summary::-webkit-details-marker { display: none; }
-  .grade.priority summary, .grade-pill.priority { background: var(--p-bg); color: var(--p-ink); }
-  .grade.value summary, .grade-pill.value { background: var(--v-bg); color: var(--v-ink); }
   .grade .grade-reason { position: absolute; right: 0; top: calc(100% + 6px); z-index: 6; width: min(320px, 80vw); background: var(--panel); padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 6px 18px rgba(0,0,0,.12); font-size: 13px; }
   .grade .grade-reason p { margin: 6px 0 0; }
   .grade.unclassified { color: var(--muted); font-size: 11px; border: 1px dashed var(--line); border-radius: 8px; padding: 3px 7px; white-space: nowrap; }
@@ -130,16 +160,16 @@
   /* The card's links (Spec, decision records, sources) read as links, not as more text. */
   .link-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 10px 0; }
   .link-row .wiki-links { display: contents; }
-  .link-row a, .link-row .link-button { font-size: 12.5px; text-decoration: none; border: 1px solid var(--accent); color: var(--accent); background: var(--soft); border-radius: 999px; padding: 2px 10px; }
+  .link-row a, .link-row .link-button { font-size: 12.5px; text-decoration: none; border: 1px solid var(--line-strong); color: var(--ink); background: var(--surface); border-radius: 999px; padding: 2px 10px; }
   .link-row a:hover, .link-row .link-button:hover { text-decoration: underline; }
   .link-row > span, .link-row .wiki-links > span { font-size: 12px; color: var(--muted); }
   .link-row .unavailable-link { font-size: 12.5px; border: 1px dashed var(--line); border-radius: 999px; padding: 2px 10px; }
   #focus { margin-top: 24px; scroll-margin-top: 80px; }
   .question-context { color: var(--muted); font-size: 13px; }
   article.item { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; margin-bottom: 14px; scroll-margin-top: 80px; }
-  article.item[data-status="applied"] { border-color: var(--applied); }
-  article.item[data-status="answered"] { border-color: var(--ok); }
-  article.item[data-status="stale"] { border-color: var(--stale); }
+  article.item[data-status="applied"] { border-color: var(--agent-line); }
+  article.item[data-status="answered"] { border-color: var(--agent-dot); }
+  article.item[data-status="stale"] { border-color: var(--returned-dot); }
   article.item[data-status="withdrawn"] { opacity: .6; }
   .item-head { display: flex; gap: 10px; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; }
   .item-head h3 { margin: 0; font-size: 18px; line-height: 1.35; }
@@ -154,11 +184,12 @@
   .block code { font: 12.5px var(--mono); background: var(--panel); border: 1px solid var(--line); border-radius: 4px; padding: 0 4px; }
   .block h1, .block h2, .block h3 { font-size: 14px; margin: 10px 0 4px; }
   .brief-summary { font-size: 17px; line-height: 1.6; }
-  .recommendation { border-left: 4px solid var(--accent); background: var(--soft); padding: 10px 18px; margin: 16px 0; border-radius: 4px; }
+  .recommendation { border: 1px solid var(--agent-line); background: var(--agent-soft); padding: 10px 18px; margin: 16px 0; border-radius: 10px; }
+  .recommendation h4 { color: var(--agent-ink); }
   .recommendation h4 { margin: 0 0 6px; font-size: 13px; }
   .recommendation p { margin: 0; }
   details.draft { margin-top: 12px; }
-  details.draft summary { cursor: pointer; font-weight: 600; color: var(--accent); }
+  details.draft summary { cursor: pointer; font-weight: 600; color: var(--ink); }
   details.draft .block { max-height: 70vh; overflow: auto; }
   /* A folded part of the opened card: one quiet line until it is wanted. */
   details.fold { margin-top: 8px; }
@@ -181,15 +212,19 @@
   .alternatives .opt { text-align: left; }
   .answer-buttons { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 4px; }
   .opt { border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 10px; padding: 7px 12px; font-size: 14px; }
-  .opt:hover:not(:disabled) { border-color: var(--accent); }
-  .opt[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
-  .opt[data-role="confirm"] { font-weight: 700; }
-  .opt[data-role="sendback"][aria-pressed="true"] { background: var(--warn); border-color: var(--warn); color: #fff; }
+  .opt:hover:not(:disabled) { border-color: var(--ink); }
+  /* A picked alternative is the agents' option taken: soft green. Confirm is green
+     because confirming hands the ball to the agents; Rework wording, Change the why
+     and Change are purple because the card comes back. */
+  .opt[aria-pressed="true"] { background: var(--agent-soft); color: var(--ink); border-color: var(--agent-line); box-shadow: inset 0 0 0 1px var(--agent-line); }
+  .opt[data-role="confirm"] { font-weight: 700; border: 2px solid var(--agent-line); }
+  .opt[data-role="confirm"][aria-pressed="true"] { background: var(--agent); color: var(--on); border: 2px solid var(--agent-dot); box-shadow: none; }
+  .opt[data-role="sendback"][aria-pressed="true"] { background: var(--returned); color: var(--on); border-color: var(--returned-dot); box-shadow: none; }
   .opt small { display: block; font-weight: normal; opacity: .8; }
   .hint { font-size: 12.5px; color: var(--muted); margin: 6px 0; }
   .save { font-size: 12px; color: var(--muted); margin-top: 6px; display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
-  .save .err, .err { color: var(--bad); }
-  .legacy-answer { background: var(--warn-soft); border: 1px solid var(--warn); border-radius: 10px; padding: 8px 12px; font-size: 13px; margin: 8px 0; }
+  .save .err, .err { color: var(--ink); font-weight: 700; text-decoration: underline wavy var(--line-strong); }
+  .legacy-answer { background: var(--returned-soft); border: 1px solid var(--returned-line); border-radius: 10px; padding: 8px 12px; font-size: 13px; margin: 8px 0; }
 
   /* Comments, rounds and promotion. */
   .round-workflow { padding: 16px 20px; margin-bottom: 20px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; }
@@ -200,8 +235,8 @@
   .timeline { list-style: none; padding: 0; margin: 10px 0; border-left: 2px solid var(--line); }
   .timeline li { position: relative; padding: 4px 0 10px 18px; font-size: 13.5px; }
   .timeline li::before { content: ""; position: absolute; left: -7px; top: 8px; width: 12px; height: 12px; border-radius: 50%; background: var(--panel); border: 2px solid var(--line); }
-  .timeline li.done::before { background: var(--ok); border-color: var(--ok); }
-  .timeline li.next::before { border-color: var(--accent); }
+  .timeline li.done::before { background: var(--agent-dot); border-color: var(--agent-dot); }
+  .timeline li.next::before { border-color: var(--ink); }
   .timeline small { display: block; color: var(--muted); }
   .confirmed-list { display: grid; gap: 4px; margin: 8px 0; max-height: 260px; overflow: auto; }
 
@@ -216,7 +251,7 @@
   .table-scroll { overflow-x: auto; }
   table { border-collapse: collapse; width: 100%; margin: 14px 0; font-size: 14px; }
   th, td { border: 1px solid var(--line); padding: 8px 10px; text-align: left; vertical-align: top; }
-  th { background: var(--soft); }
+  th { background: var(--raised); }
   .reader-meta { color: var(--muted); font-size: 12px; overflow-wrap: anywhere; }
   .reader-tabs { display: flex; gap: 10px; flex-wrap: wrap; margin: 18px 0; }
   .reader-tabs a, .artifact-list a, .group-card { display: block; border: 1px solid var(--line); border-radius: 10px; padding: 12px 16px; background: var(--panel); text-decoration: none; color: var(--ink); }
@@ -225,7 +260,7 @@
   .group-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin: 16px 0; }
   .artifact-section { padding: 20px; margin: 20px 0; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); scroll-margin-top: 80px; }
   .artifact-section > h2 { margin-top: 0; }
-  .source-change { padding: 12px; border: 1px solid var(--warn); background: var(--warn-soft); border-radius: 10px; margin: 12px 0; }
+  .source-change { padding: 12px; border: 1px solid var(--returned-line); background: var(--returned-soft); border-radius: 10px; margin: 12px 0; }
   .unavailable-link { color: var(--muted); text-decoration: underline dotted; }
   .draft-comparison { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap: 24px; }
   .draft-group { padding: 18px 20px; margin: 18px 0; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); }
@@ -250,7 +285,7 @@
   .section-filter input, .section-filter select { font: inherit; padding: 6px 9px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); color: var(--ink); }
   .why-row { border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; margin: 10px 0; background: var(--panel); }
   .why-row h3 { margin: 0; font-size: 16px; }
-  .why-row blockquote { margin: 8px 0; padding-left: 12px; border-left: 3px solid var(--warn); }
+  .why-row blockquote { margin: 8px 0; padding-left: 12px; border-left: 3px solid var(--line-strong); }
   .search-result { border-bottom: 1px solid var(--line); padding: 10px 0; }
   dialog { width: min(1000px, 94vw); max-height: 90vh; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); color: var(--ink); padding: 0; }
   dialog::backdrop { background: rgba(0,0,0,.45); }
@@ -749,7 +784,7 @@
     const board = state.board, c = sliceCounts(board.items);
     const completed = c.answered + c.applied, active = board.items.length - c.withdrawn;
     document.getElementById('meta').textContent = `${completed} / ${active} answered · ${c.applied} applied`;
-    document.getElementById('progress').innerHTML = `<span style="width:${100 * c.applied / Math.max(1, active)}%;background:var(--applied)" title="Applied ${c.applied}"></span><span style="width:${100 * c.answered / Math.max(1, active)}%;background:var(--ok)" title="Answered ${c.answered}"></span>`;
+    document.getElementById('progress').innerHTML = `<span style="width:${100 * c.applied / Math.max(1, active)}%;background:var(--agent)" title="Applied ${c.applied}"></span><span style="width:${100 * c.answered / Math.max(1, active)}%;background:var(--agent-line)" title="Answered ${c.answered}"></span>`;
     const scoped = board.items.filter(item => matchesSlice(item, { ...state, lane: 'all' }));
     const counts = { ...sliceCounts(scoped), withdrawn: board.items.filter(item => matchesSlice(item, { ...state, lane: 'withdrawn' })).length };
     document.getElementById('filters').innerHTML = Object.entries(LANES).map(([value, label]) => `<button type="button" class="chip" data-lane="${value}" aria-pressed="${state.lane === value}">${label} (${value === 'all' ? scoped.length : counts[value]})</button>`).join('');
@@ -793,7 +828,7 @@
       const letter = field === 'priority' ? 'P' : 'V', name = field === 'priority' ? 'Priority' : 'Value';
       const grade = item[field];
       if (!grade) return `<span class="grade ${field} unclassified" title="${name} has not been graded">${letter} · Unclassified</span>`;
-      return `<details class="grade ${field}${variant ? ` ${variant}` : ''}"><summary aria-label="${name} ${esc(grade.grade)}: show why">${esc(grade.grade)}</summary><div class="grade-reason" role="note"><strong>${name} ${esc(grade.grade)}</strong><p>${esc(grade.reason)}</p></div></details>`;
+      return `<details class="grade ${field}${variant ? ` ${variant}` : ''}" data-grade="${esc(grade.grade)}"><summary aria-label="${name} ${esc(grade.grade)}: show why">${esc(grade.grade)}</summary><div class="grade-reason" role="note"><strong>${name} ${esc(grade.grade)}</strong><p>${esc(grade.reason)}</p></div></details>`;
     }).join('');
   }
   // The latest answer-to-card P/V reassessment recorded in item history, or

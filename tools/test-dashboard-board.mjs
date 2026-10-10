@@ -301,12 +301,12 @@ test('a batch started from a P/V slice keeps its membership through saves, filte
  assert.deepEqual({...reloaded.state.batch.revisions},{'GB-0017':1,'GB-0005':1,'GB-0002':1});
 });
 
-test('red P and amber V badges open only their own reason; the central view shows both reasons',()=>{
+test('orange P and yellow V badges open only their own reason; the central view shows both reasons',()=>{
  const {model}=pageModel();
  const item=pvInventory()[0];
  const badges=model.gradeBadges(item);
- assert.equal((badges.match(/<details class="grade priority">/g)||[]).length,1);
- assert.equal((badges.match(/<details class="grade value">/g)||[]).length,1);
+ assert.equal((badges.match(/<details class="grade priority" data-grade="P\d">/g)||[]).length,1);
+ assert.equal((badges.match(/<details class="grade value" data-grade="V\d">/g)||[]).length,1);
  assert.ok(!/data-open|<details[^>]*open/.test(badges),'badges are closed and do not open the question');
  const [priority,value]=badges.split('</details>');
  assert.match(priority,/P1 because of its source/); assert.doesNotMatch(priority,/V2 because/);
@@ -941,8 +941,44 @@ test('P and V chips filter the list on click: OR within a row, AND across rows, 
  assert.ok(more,'the other dropdowns fold into a More filters section');
  assert.doesNotMatch(more[0].slice(0,more[0].indexOf('>')),/\sopen\b/,'More filters starts closed');
  for (const id of ['intent','topic','scope']) assert.match(more[0],new RegExp(`id="${id}"`),`${id} dropdown under More filters`);
- assert.match(page,/\.grade-chip\.priority\[aria-pressed="true"\][^{]*\{[^}]*--p-ink/,'a pressed P chip takes the red P badge colors');
- assert.match(page,/\.grade-chip\.value\[aria-pressed="true"\][^{]*\{[^}]*--v-ink/,'a pressed V chip takes the amber V badge colors');
+ assert.match(page,/\.grade-chip\[aria-pressed="true"\][^{]*\{[^}]*box-shadow:[^}]*var\(--ink\)/,'a pressed P or V chip keeps its grade color and gains an ink ring');
+});
+
+// The Dashboard color system (DDR-001Q): five hues, each answering one question,
+// each strong (now) or soft (at rest); greys are the page.
+test('the page wears the five-hue Dashboard colors: Priority orange, Value yellow, Yours blue, Agents green, Returned purple',()=>{
+ const page=pageHtml();
+ const css=page.match(/<style>([\s\S]*?)<\/style>/)[1];
+ const light=css.match(/:root \{[^}]*\}/)[0];
+ const dark=css.match(/:root\[data-theme="dark"\] \{[^}]*\}/)[0];
+ for (const [name,hex] of [['priority','#F04E12'],['value','#F5C400'],['owner','#2F86DC'],['agent','#27A046'],['returned','#A66BE0']]) assert.match(light,new RegExp(`--${name}: ${hex};`,'i'),`light ${name} base`);
+ for (const [name,hex] of [['priority','#FF5A1F'],['value','#FFD60A'],['owner','#4C9BE8'],['agent','#3DBE5A'],['returned','#A66BE0']]) assert.match(dark,new RegExp(`--${name}: ${hex};`,'i'),`dark ${name} base`);
+ assert.doesNotMatch(css,/--(p|v)-(ink|bg)\b|--bad\b|--warn\b|#c0392b|#a42c28/i,'the red and amber colors are gone');
+ for (const hue of ['priority','value','owner','agent','returned']) {
+  assert.match(css,new RegExp(`--${hue}-soft: color-mix\\(in oklab, var\\(--${hue}\\) var\\(--soft-pct\\), var\\(--surface\\)\\)`),`${hue} soft tint mixes into the surface`);
+  assert.match(css,new RegExp(`--${hue}-ink: color-mix\\(in oklab, var\\(--${hue}\\) 40%, var\\(--pole\\)\\)`),`${hue} tone ink mixes toward the pole`);
+ }
+ // Grades: 1 strong, 2 soft, 3 outline, 4 grey.
+ for (const [hue,letter] of [['priority','P'],['value','V']]) {
+  assert.match(css,new RegExp(`\\[data-grade="${letter}1"\\][^{]*\\{[^}]*background: var\\(--${hue}\\)`),`${letter}1 is the strong fill`);
+  assert.match(css,new RegExp(`\\[data-grade="${letter}2"\\][^{]*\\{[^}]*background: var\\(--${hue}-soft\\)`),`${letter}2 is the soft tint`);
+  assert.match(css,new RegExp(`\\[data-grade="${letter}3"\\][^{]*\\{[^}]*border: 1px solid var\\(--${hue}-line\\)`),`${letter}3 is an outline`);
+  assert.match(css,new RegExp(`\\[data-grade="${letter}4"\\][^{]*\\{[^}]*color: var\\(--muted\\)`),`${letter}4 is grey`);
+ }
+ // Each workflow lane wears its court: Yours blue, Agents green, Returned purple, history grey.
+ for (const [lane,token] of [['pending','owner'],['stale','returned'],['answered','agent'],['applied','agent'],['parked','owner']]) assert.match(css,new RegExp(`\\.chip\\[data-lane="${lane}"\\]::before[^{]*\\{[^}]*var\\(--${token}-dot\\)`),`${lane} lane dot is ${token}`);
+ assert.match(css,/\.badge\.pending \{[^}]*background: var\(--owner\)/,'To answer is Yours blue, strong');
+ assert.match(css,/\.badge\.stale \{[^}]*background: var\(--returned\)/,'Revisit is Returned purple, strong');
+ assert.match(css,/\.badge\.answered \{[^}]*background: var\(--agent\)/,'Answered · awaiting an agent is Agents green, strong');
+ assert.match(css,/\.badge\.applied \{[^}]*background: var\(--agent-soft\)/,'Applied is Agents green, soft');
+ assert.match(css,/\.opt\[data-role="confirm"\]\[aria-pressed="true"\] \{[^}]*background: var\(--agent\)/,'Confirm is green: it hands the ball to the agents');
+ assert.match(css,/\.opt\[data-role="sendback"\]\[aria-pressed="true"\] \{[^}]*background: var\(--returned\)/,'Rework wording, Change the why and Change are purple');
+ assert.match(css,/\.recommendation \{[^}]*background: var\(--agent-soft\)/,'the agent recommendation box is green');
+ assert.match(css,/\.banner \{[^}]*background: var\(--agent-soft\)/,'the agent-update banner is green');
+ const {model}=pageModel();
+ model.state.board={items:[{id:'GB-0001',revision:1,title:'t',derivedStatus:'pending',priority:{grade:'P1',reason:'r'},value:{grade:'V3',reason:'r'}}]};
+ assert.match(model.gradeBadges(model.state.board.items[0]),/<details class="grade priority" data-grade="P1">/,'a P badge carries its grade for the ramp');
+ assert.match(model.gradeBadges(model.state.board.items[0]),/<details class="grade value" data-grade="V3">/,'a V badge carries its grade for the ramp');
 });
 
 test('the five section links are a persistent left navigation pane, with the Grilling Board filters below them',()=>{
@@ -988,8 +1024,8 @@ test('an opened card shows title, question, recommendation, the why in the same 
  assert.match(model.card({...briefed,brief:{...briefed.brief,why:'  '}}),/<div class="recommendation why"><h4>Why this choice matters<\/h4><p>No reason is recorded for this question\.<\/p>/,'a brief with no why says so');
  assert.match(visible,/<nav class="link-row" aria-label="Links">[\s\S]*Specs · A Spec \(S-0001\)[\s\S]*ADRs · Stable names stay stable \(ADR-000B\)[\s\S]*<\/nav>/,'Spec and decision-record links stay visible as one compact row');
  assert.match(visible,/<nav class="link-row"[\s\S]*S-0001 SPEC\.md[\s\S]*<\/nav>/,'the card sources are in the same row');
- assert.match(html,/<details class="grade priority card-grade"><summary[^>]*>P2<\/summary>[\s\S]*?P2 because of its source/,'P is a closed badge whose reason opens on click');
- assert.match(html,/<details class="grade value card-grade"><summary[^>]*>V1<\/summary>[\s\S]*?V1 because of its return/,'V is a closed badge whose reason opens on click');
+ assert.match(html,/<details class="grade priority card-grade" data-grade="P2"><summary[^>]*>P2<\/summary>[\s\S]*?P2 because of its source/,'P is a closed badge whose reason opens on click');
+ assert.match(html,/<details class="grade value card-grade" data-grade="V1"><summary[^>]*>V1<\/summary>[\s\S]*?V1 because of its return/,'V is a closed badge whose reason opens on click');
  assert.match(pageHtml(),/\.card-grade \.grade-reason[^{]*\{[^}]*position: static/,'on the card a reason opens in place');
  const plain={...base,id:'GB-0024',title:'A plain question',question:'Which?',current:'Current context words',proposal:'Agent proposal words',draft:null};
  const plainVisible=outsideDetails(model.card(plain));
