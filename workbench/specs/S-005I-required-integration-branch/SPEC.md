@@ -8,8 +8,8 @@
 **Updated:** 2026-10-10
 **Catalog description:** Every Workbench stages work on a distinct integration branch created during genesis or adoption.
 **Blockers:** none
-**Latest event:** Runtime and documentation correction delivered on integration; fresh assembled Review underway.
-**Next gate:** Fresh assembled-Spec Review, then owner approval and main verification.
+**Latest event:** Runtime and documentation correction delivered on integration; fresh assembled Review passed.
+**Next gate:** Owner approval and verification on main; Spec remains active.
 
 > **Citation anchors.** pre=`bcb8cfa0a685b67d151e5102d3f2cc855a13613b` post=`aae2f71a11db88c71703d4bcf81a9b807f49b112`.
 
@@ -85,6 +85,7 @@ AGENTS root/template, Genesis and Adoption protocols and skills, upgrade complet
 | 2026-10-10 | TK-008Q | Task closed (run 3) | Documentation correction: Full suite 57/57 at b168b7fb in 821.0 seconds; Wiki validation, branch regression, small lint and diff checks pass; verification.md#review-documentation-correction records exact scope and limits | Setup Wiki, explicit Spec baseline and correction verification; failed Review and dated evidence retained | Corrective Task merge then fresh assembled Spec Review; owner approval/main, unchanged room drift and notepad race; no consumer upgrade |
 
 | 2026-10-10 | TK-008Q | Documentation correction delivered to integration | PR 456 MERGED at 3a3fa8176b1cae055653a389bee6bd418aa0f9da, CI 38021922862 SUCCESS, fresh origin/integration contains submitted 7020caddc6e0c03eb458faa5ed837323f9919cac | Setup Wiki and exact baseline correction, prior failure retained | Fresh assembled Review, owner approval/main, existing room drift and notepad race |
+| 2026-10-10 | review | Review verdict: pass at 74bda06e3589a2e3a72d25dd9e2e75fd65457715 [6c52a16882a0] #2 | none | Codex fresh context /root/integration_final_spec_review, inherited session model, review-only; [actual report](review.md) | none |
 
 ## Completion Result
 
