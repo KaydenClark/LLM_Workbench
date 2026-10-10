@@ -8,8 +8,8 @@
 **Updated:** 2026-10-10
 **Catalog description:** Every Workbench stages work on a distinct integration branch created during genesis or adoption.
 **Blockers:** none
-**Latest event:** Setup documentation correction closed with proof; submission pending.
-**Next gate:** Corrective Task integration delivery, then fresh assembled Review; owner/main gates remain open.
+**Latest event:** Runtime and documentation correction delivered on integration; fresh assembled Review underway.
+**Next gate:** Fresh assembled-Spec Review, then owner approval and main verification.
 
 > **Citation anchors.** pre=`bcb8cfa0a685b67d151e5102d3f2cc855a13613b` post=`aae2f71a11db88c71703d4bcf81a9b807f49b112`.
 
@@ -83,6 +83,8 @@ AGENTS root/template, Genesis and Adoption protocols and skills, upgrade complet
 | 2026-10-10 | TK-008Q | Corrected Task delivered to integration | PR 453 MERGED at acc318fecddc8b4d3a0cccb3e5e2884d06ee377a; fresh origin/integration contains exact submitted 5f6dd2a1d297a993704ff15395111f8932bc86eb; CI 38017004701 attempt 2 SUCCESS | Real assembled result prepared; [delivery and CI record](verification.md#integration-delivery) | Fresh assembled-Spec Review, owner approval and main verification; existing notepad CI race observed on attempt 1 remains outside this capability |
 | 2026-10-10 | review | Review verdict: fail at f8ccf5c26cad18751462f280d9d1e2a38850a1bd [a867734916f9] #1 | continue TK-008Q: setup Wiki permits incomplete branch setup and retains a partly resolved default-detection gap, so update current guidance and preserve dated history; continue TK-008Q: anchor the Spec old state explicitly to baseline bcb8cfa and distinguish current delivery | Codex fresh context /root/integration_spec_review, inherited session model, review-only | 2 |
 | 2026-10-10 | TK-008Q | Task closed (run 3) | Documentation correction: Full suite 57/57 at b168b7fb in 821.0 seconds; Wiki validation, branch regression, small lint and diff checks pass; verification.md#review-documentation-correction records exact scope and limits | Setup Wiki, explicit Spec baseline and correction verification; failed Review and dated evidence retained | Corrective Task merge then fresh assembled Spec Review; owner approval/main, unchanged room drift and notepad race; no consumer upgrade |
+
+| 2026-10-10 | TK-008Q | Documentation correction delivered to integration | PR 456 MERGED at 3a3fa8176b1cae055653a389bee6bd418aa0f9da, CI 38021922862 SUCCESS, fresh origin/integration contains submitted 7020caddc6e0c03eb458faa5ed837323f9919cac | Setup Wiki and exact baseline correction, prior failure retained | Fresh assembled Review, owner approval/main, existing room drift and notepad race |
 
 ## Completion Result
 
