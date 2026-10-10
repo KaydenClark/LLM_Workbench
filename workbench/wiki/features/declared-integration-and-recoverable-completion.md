@@ -31,6 +31,8 @@ the diagnostics that report an undeclared or missing integration branch, and the
 rule that generated work lands on a prefixed branch rather than as untracked
 artifacts labeled complete.
 
+Source tree for the setup amendment: `codex/required-integration-branch`, runtime candidate `aae2f71a11db88c71703d4bcf81a9b807f49b112`. The Required Integration Branch correction (S-005I) owns its later integration and review proof.
+
 ## What It Does
 
 - **Declared branches.** The manifest declares `git.defaultBranch` and

@@ -15,3 +15,17 @@ Source comparison: integration `bcb8cfa0a685b67d151e5102d3f2cc855a13613b` to run
 The under-one-minute demo is `node tools/test-integration-setup.mjs`.
 
 Limits: no Ringworld or other consumer repository was edited or upgraded. Existing installed rooms need the updated source applied through their normal update route. Independent assembled-Spec review, owner Human QA and default-branch promotion remain separate gates.
+
+## Corrected Task run 2
+
+Self-QA after the first close found that adoption checked for `blocked`, but the layout helper returns `invalid` on failure. The same Task continued with an adjusted handoff; its first proof and close evidence remain preserved. The new CLI regression failed with `migration-failed` instead of the branch error, showing that migration had continued after failed branch setup.
+
+Runtime candidate: `aae2f71a11db88c71703d4bcf81a9b807f49b112`.
+
+- Adoption now accepts only `created` or `existing` branch setup states.
+- The actual CLI now refuses a project outside Git and an unresolved declared default branch with the named branch errors. Both tests verify no `workbench/` layout was written. Existing successful branch creation and preservation checks still pass.
+- `node tools/verify.mjs` passed all 57 commands on this clean candidate in 930.2 seconds, including the corrected fidelity reference and the append-only history replay.
+- [Canonical CI run 38015157081](https://github.com/KaydenClark/LLM_Workbench/actions/runs/38015157081) completed successfully for that runtime candidate.
+- The post-correction self-drift result still has the same 24 baseline findings and does not certify a clean whole-Workbench update. Scope, consumer-installation limits and owner gates above remain in force.
+
+The run-2 results replace the first run's sufficiency claim for the refusal path. Later Task/Spec receipt and closure changes are administrative state, verified with render, doctor, Wiki validation and diff checks; they change no runtime code.
