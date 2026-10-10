@@ -24209,6 +24209,1562 @@
         "reason": "One answer settles five verb rows, one skill split and the already-drafted Publish skill; the build after it is small."
       },
       "gradeRevision": 1
+    },
+    {
+      "id": "GB-0215",
+      "key": "ask-before-spending-usage",
+      "group": "owner-decisions",
+      "kind": "owner-decision",
+      "title": "Ask before spending your usage: no background lanes, parallel subagents or provider reviews without a yes",
+      "question": "Should this become a standing rule in AGENTS Safety And Change Control, in the words of the draft?",
+      "current": "AGENTS Safety And Change Control forbids running another provider (Codex) unless you ask in the current request, and says you manage the budget and the usage meter. It says nothing about background subagents, parallel lanes or workflows on your own provider, and it does not say that a decision about what to do is separate from permission to spend.",
+      "proposal": "Agent proposal (readback of your words, 2026-10-04): add one bullet to AGENTS Safety And Change Control. Before any background subagent, parallel lane, workflow or review run, state the plan and its rough cost and wait for a yes. Default to one lane, in the foreground. Never resume a lane that hit a rate limit without asking. An owner decision about what should happen is not authorization to spend.",
+      "draft": "## Proposed bullet, AGENTS Safety And Change Control\n\n- Spending is the owner's call. Before launching a background subagent, a parallel lane, a workflow or a review run, state the plan and its rough cost and wait for the owner's yes. Default to one lane in the foreground. Never resume a lane that hit a rate limit without asking. A decision about what should happen is not permission to spend; the owner's usage is shared with his own lanes.",
+      "options": null,
+      "sources": [
+        {
+          "label": "AGENTS.md (the always-loaded contract)",
+          "path": "AGENTS.md",
+          "ref": "179fdc4f"
+        }
+      ],
+      "tags": [
+        "AGENTS",
+        "usage",
+        "safety"
+      ],
+      "revision": 1,
+      "status": "open",
+      "applied": null,
+      "history": [
+        {
+          "revision": 1,
+          "at": "2026-10-10T05:09:18.545Z",
+          "by": "claude",
+          "reason": "Owner request 2026-10-10: put every memory-guidance finding (Claude audit plus the Codex review of 2026-10-09) on the board as pending readbacks and two real choices"
+        },
+        {
+          "revision": 1,
+          "gradeRevision": 1,
+          "at": "2026-10-10T05:09:18.753Z",
+          "by": "claude",
+          "reason": "graded: Agent grades for the memory-guidance batch, 2026-10-10: P2 for standing rules the owner asked to land, P3 for the agent-knowledge batch, V1 quick wins, V2 for the import-default choice"
+        }
+      ],
+      "brief": {
+        "scope": "BLUEPRINT",
+        "summary": "Agents ask before spending your usage on background lanes, parallel subagents, workflows or review runs; a decision is not spending authorization.",
+        "why": "Your words, 2026-10-04, after three background lanes ran repeated reviews at once: \"STOP YOU HAVE USED ALL OF MY USEAGE. WHO AUTHORIZED THAT\". Nobody had; I had read six owner answers as authorization to spend.",
+        "recommendation": "Agent proposal: confirm the bullet as drafted. It narrows nothing already granted; it adds the spending question beside the provider rule that already exists.",
+        "impact": "Director and Dispatcher runs start one lane at a time and ask before widening. Fewer surprise usage drains; slightly slower large runs.",
+        "changes": "One bullet in AGENTS Safety And Change Control; the same bullet in templates/AGENTS.md; the director and dispatcher skills point at it where they dispatch Workers.",
+        "history": "Provider clause landed 2026-10-05 (AGENTS Git Rules and Safety). The spending half of the same incident lived only in host memory until this card.",
+        "artifacts": "AGENTS Safety And Change Control; templates/AGENTS.md; director skill; dispatcher skill."
+      },
+      "priority": {
+        "grade": "P2",
+        "reason": "You asked on 2026-10-10 for these findings to go on the board; each is one answer that lets a standing rule land."
+      },
+      "value": {
+        "grade": "V1",
+        "reason": "One confirmation, one small edit in one owner; prevents a repeat of a recorded failure."
+      },
+      "gradeRevision": 1
+    },
+    {
+      "id": "GB-0216",
+      "key": "memory-never-adds-steps",
+      "group": "owner-decisions",
+      "kind": "owner-decision",
+      "title": "If it is not in the Workbench instructions, do not do it: memory notes never add a step",
+      "question": "Should AGENTS Instruction Authority say this for every practice, not only for the provider rule?",
+      "current": "AGENTS Instruction Authority lists the sources that may instruct. The only place it names memory notes is inside the provider bullet (\"a memory note ... never substitutes\"). The general rule that an agent's own notes may help run a required step but never add one is not written.",
+      "proposal": "Agent proposal (readback of your words, 2026-10-04): add one sentence to Instruction Authority. A practice that no Contract carrier, assigned Spec or pointed skill names is not done; an agent's memory, notes or habits may help carry out a required step and never add one. If a step seems needed, propose it to the Workbench and wait.",
+      "draft": "## Proposed sentence, AGENTS Instruction Authority\n\nA practice that none of these sources names is not performed. An agent's own memory, notes and habits may help carry out a step the Workbench already requires; they never add a step, a reviewer, a route or a ceremony. When a practice seems needed, propose it to its owner and wait.",
+      "options": null,
+      "sources": [
+        {
+          "label": "AGENTS.md (the always-loaded contract)",
+          "path": "AGENTS.md",
+          "ref": "179fdc4f"
+        }
+      ],
+      "tags": [
+        "AGENTS",
+        "authority"
+      ],
+      "revision": 1,
+      "status": "open",
+      "applied": null,
+      "history": [
+        {
+          "revision": 1,
+          "at": "2026-10-10T05:09:18.547Z",
+          "by": "claude",
+          "reason": "Owner request 2026-10-10: put every memory-guidance finding (Claude audit plus the Codex review of 2026-10-09) on the board as pending readbacks and two real choices"
+        },
+        {
+          "revision": 1,
+          "gradeRevision": 1,
+          "at": "2026-10-10T05:09:18.753Z",
+          "by": "claude",
+          "reason": "graded: Agent grades for the memory-guidance batch, 2026-10-10: P2 for standing rules the owner asked to land, P3 for the agent-knowledge batch, V1 quick wins, V2 for the import-default choice"
+        }
+      ],
+      "brief": {
+        "scope": "BLUEPRINT",
+        "summary": "The Workbench is the single source of how work is done; agent memory never adds procedure.",
+        "why": "Your words, 2026-10-04: \"IF IT NOT IN THE WORKBENCH INSTRUCTIONS DO NOT DO IT\", after learning that using Codex as reviewer came from my memory note, not the repo.",
+        "recommendation": "Agent proposal: confirm the sentence. It generalizes the clause already in the provider bullet.",
+        "impact": "Agents stop importing ceremonies from their notes; practices that are worth keeping get proposed to the Workbench instead.",
+        "changes": "One sentence in AGENTS Instruction Authority and templates/AGENTS.md.",
+        "history": "The provider-specific form landed 2026-10-05. Host memory was promoted to the Wiki on 2026-09-26 as curated context, which is consistent with this rule.",
+        "artifacts": "AGENTS Instruction Authority; templates/AGENTS.md."
+      },
+      "priority": {
+        "grade": "P2",
+        "reason": "You asked on 2026-10-10 for these findings to go on the board; each is one answer that lets a standing rule land."
+      },
+      "value": {
+        "grade": "V1",
+        "reason": "One confirmation, one small edit in one owner; prevents a repeat of a recorded failure."
+      },
+      "gradeRevision": 1
+    },
+    {
+      "id": "GB-0217",
+      "key": "read-origin-and-locate-existing-work-first",
+      "group": "owner-decisions",
+      "kind": "owner-decision",
+      "title": "Before measuring, building or asking you anything: fetch origin and locate the work that already exists",
+      "question": "Should the ordinary entry procedure require this, as drafted?",
+      "current": "The director skill fetches origin only before `complete`. The Wiki page on parallel lane dispatch says to check the worktree list for an existing lane. Nothing says to read Specs, controls and owner state from origin/integration before presenting a question, and nothing names the gap types (creation, delivery, installation, discovery, proof).",
+      "proposal": "Agent proposal: add to the Runbook Ordinary Entry procedure. Fetch origin first and read state at origin/integration, since the shared checkout is often stale. Before writing new work, check owners, branches, worktrees, open PRs and published content, and name which gap is real: creation, delivery, installation, discovery or proof. The first half is a readback of the 2026-10-05 incident; the second half is from the Codex review of 2026-10-09; I do not hold your original words for this one, so the wording is agent restatement.",
+      "draft": "## Proposed addition, Runbook Ordinary Entry\n\nFetch origin before measuring anything or asking the owner anything, and read Specs, Tasks, controls and owner answers at origin/integration or a worktree cut from it; the shared checkout's local integration is often a day stale and proves nothing. Before creating work, locate what exists: owners, branches, worktrees, open PRs and published content. Name the gap that is real, creation, delivery, installation, discovery or proof, and do only that missing work.",
+      "options": null,
+      "sources": [
+        {
+          "label": "Runbook",
+          "path": "RUNBOOK.md",
+          "ref": "179fdc4f"
+        },
+        {
+          "label": "Director skill",
+          "path": "workbench/skills/director/SKILL.md",
+          "ref": "179fdc4f"
+        },
+        {
+          "label": "Wiki: parallel lane dispatch",
+          "path": "workbench/wiki/parallel-lane-dispatch.md",
+          "ref": "179fdc4f"
+        }
+      ],
+      "tags": [
+        "RUNBOOK",
+        "entry",
+        "git"
+      ],
+      "revision": 1,
+      "status": "open",
+      "applied": null,
+      "history": [
+        {
+          "revision": 1,
+          "at": "2026-10-10T05:09:18.547Z",
+          "by": "claude",
+          "reason": "Owner request 2026-10-10: put every memory-guidance finding (Claude audit plus the Codex review of 2026-10-09) on the board as pending readbacks and two real choices"
+        },
+        {
+          "revision": 1,
+          "gradeRevision": 1,
+          "at": "2026-10-10T05:09:18.753Z",
+          "by": "claude",
+          "reason": "graded: Agent grades for the memory-guidance batch, 2026-10-10: P2 for standing rules the owner asked to land, P3 for the agent-knowledge batch, V1 quick wins, V2 for the import-default choice"
+        }
+      ],
+      "brief": {
+        "scope": "BLUEPRINT",
+        "summary": "Agents read state from origin and locate existing work before they measure, build or ask.",
+        "why": "On 2026-10-05 the shared checkout was 20 PRs behind origin and I presented the maintainer-skill-home question to you as open; you had answered it the day before, and the answer you then gave on my stale premise had to be deprecated and merged back in. The Codex review found the same shape in skill adoption: an implementation in another worktree was mistaken for work still to create.",
+        "recommendation": "Agent proposal: confirm the addition to Ordinary Entry; it costs one fetch per session.",
+        "impact": "Fewer re-asked questions and duplicate builds. Every session starts with a fetch.",
+        "changes": "Runbook Ordinary Entry; templates/RUNBOOK.md; a line in the Wiki page on deriving before asking.",
+        "history": "Duplicate-lane discovery 2026-09-16; stale-checkout question 2026-10-05; Codex review 2026-10-09.",
+        "artifacts": "Runbook Ordinary Entry; director skill; Wiki parallel-lane-dispatch and derive-before-asking pages."
+      },
+      "priority": {
+        "grade": "P2",
+        "reason": "You asked on 2026-10-10 for these findings to go on the board; each is one answer that lets a standing rule land."
+      },
+      "value": {
+        "grade": "V1",
+        "reason": "One confirmation, one small edit in one owner; prevents a repeat of a recorded failure."
+      },
+      "gradeRevision": 1
+    },
+    {
+      "id": "GB-0218",
+      "key": "how-agents-write-to-the-owner",
+      "group": "owner-decisions",
+      "kind": "owner-decision",
+      "title": "One Wiki page on how agents write to you: lead with the answer, name things, and \"Correct\" means good to go",
+      "question": "Should these be gathered into one curated Wiki page routed from Agent Operating Knowledge, as drafted?",
+      "current": "AGENTS says final proof states what changed, why, risks and verification, and that chat never refers to an artifact by its identifier alone. The Dashboard branch README defines the four verdict words. There is no single page that tells an agent how you read a message: that \"Correct\" means approval, that fix-it is \"Change\", that recurring results are visual, and the plain-English rules the Codex review listed.",
+      "proposal": "Agent proposal (readback of your words, 2026-10-07 and 2026-09-05; plus the writing rules from the Codex review of 2026-10-09; I do not hold your original words for this one, so the wording is agent restatement, some of which Codex took from its own system instructions rather than from you): one Wiki page, \"How agents write to the owner\", with the draft below.",
+      "draft": "# How agents write to the owner (draft Wiki page)\n\n- Lead with the answer or the actual outcome. Plain English, active voice, short words. No filler, no checklist language, no emojis, no em dashes.\n- Name every artifact with its title and what it is; an identifier alone means nothing in chat. In the Wiki an identifier always carries the name and context.\n- \"Correct\" means \"it is correct, good to go\". Offer \"Change\" for fix-it. Dashboard verdicts are Confirm, Rework wording, Change the why and Change; the last three need a note.\n- Recurring, comparable results are a dashboard or chart, not a Markdown report. Prose is right for a one-off analysis the owner asked to read.\n- Give enough evidence to judge the result without turning tool logs into the response.",
+      "options": null,
+      "sources": [
+        {
+          "label": "AGENTS.md (the always-loaded contract)",
+          "path": "AGENTS.md",
+          "ref": "179fdc4f"
+        },
+        {
+          "label": "Grill Board README (verdict words), Dashboard branch",
+          "path": "workbench/grill-board/README.md",
+          "ref": "179fdc4f"
+        },
+        {
+          "label": "Wiki: recurring results are visual",
+          "path": "workbench/wiki/recurring-results-are-visual.md",
+          "ref": "179fdc4f"
+        }
+      ],
+      "tags": [
+        "wiki",
+        "chat",
+        "owner-preferences"
+      ],
+      "revision": 1,
+      "status": "open",
+      "applied": null,
+      "history": [
+        {
+          "revision": 1,
+          "at": "2026-10-10T05:09:18.547Z",
+          "by": "claude",
+          "reason": "Owner request 2026-10-10: put every memory-guidance finding (Claude audit plus the Codex review of 2026-10-09) on the board as pending readbacks and two real choices"
+        },
+        {
+          "revision": 1,
+          "gradeRevision": 1,
+          "at": "2026-10-10T05:09:18.753Z",
+          "by": "claude",
+          "reason": "graded: Agent grades for the memory-guidance batch, 2026-10-10: P2 for standing rules the owner asked to land, P3 for the agent-knowledge batch, V1 quick wins, V2 for the import-default choice"
+        }
+      ],
+      "brief": {
+        "scope": "BLUEPRINT",
+        "summary": "A single Wiki page carries how agents write to you, so each new session does not relearn it.",
+        "why": "Your words, 2026-10-07: \"to me correct means I am telling you its good to go\". Your words, 2026-09-05: \"I dont want to be looking at markdown files and reading big long summaries ... I want to visualize it.\" The identifier rule you have corrected several times, most recently 2026-10-01.",
+        "recommendation": "Agent proposal: confirm the page; strike any writing rule in it that is not yours.",
+        "impact": "Fewer misread verdicts and fewer SKU-number messages. The page is curated context, not instruction authority.",
+        "changes": "New page workbench/wiki/how-agents-write-to-the-owner.md routed from MEMORY.md Agent Operating Knowledge; the pointer in AGENTS Documentation Ownership stays as it is.",
+        "history": "The identifier rule reached AGENTS on 2026-10-01 to 02. The Correct rule and the Dashboard verdicts were set 2026-10-07 while designing the Dashboard buttons. The Codex review of 2026-10-09 proposed the same page.",
+        "artifacts": "AGENTS Documentation Ownership And Proof; Grill Board README; Wiki MEMORY.md router."
+      },
+      "priority": {
+        "grade": "P2",
+        "reason": "You asked on 2026-10-10 for these findings to go on the board; each is one answer that lets a standing rule land."
+      },
+      "value": {
+        "grade": "V1",
+        "reason": "One confirmation, one small edit in one owner; prevents a repeat of a recorded failure."
+      },
+      "gradeRevision": 1
+    },
+    {
+      "id": "GB-0219",
+      "key": "tax-note-is-a-board-defect",
+      "group": "owner-decisions",
+      "kind": "owner-decision",
+      "title": "A \"Tax\" note on a board card means the card was too hard to read; agents revise it and never treat it as a verdict",
+      "question": "Should the Grill Board README say this in its agent rules?",
+      "current": "The Dashboard branch README quotes you once (\"the filters are all tax\") about the navigation. It does not tell agents what a Tax note on a card means or what to do with it.",
+      "proposal": "Agent proposal (readback of your words, 2026-10-08): add a rule to the README agent section. A note of Tax means the question was too hard to understand, in its layout or its wording, and made the board harder to use. It is never a verdict. The agent revises the card plainer (shorter brief, fewer identifiers) and puts it back in a later round, and checks the other pending cards for the same pattern first.",
+      "draft": "## Proposed rule, Grill Board README agent section\n\nA note of **Tax** means the card cost the owner more attention than it gave back: the question or its layout was too hard to understand. It is never a verdict. Revise the card in plainer words with a shorter brief and fewer identifiers, look for the same pattern in the other pending cards, and put it back in a later round.",
+      "options": null,
+      "sources": [
+        {
+          "label": "Grill Board README, Dashboard branch",
+          "path": "workbench/grill-board/README.md",
+          "ref": "179fdc4f"
+        }
+      ],
+      "tags": [
+        "grill-board",
+        "README"
+      ],
+      "revision": 1,
+      "status": "open",
+      "applied": null,
+      "history": [
+        {
+          "revision": 1,
+          "at": "2026-10-10T05:09:18.547Z",
+          "by": "claude",
+          "reason": "Owner request 2026-10-10: put every memory-guidance finding (Claude audit plus the Codex review of 2026-10-09) on the board as pending readbacks and two real choices"
+        },
+        {
+          "revision": 1,
+          "gradeRevision": 1,
+          "at": "2026-10-10T05:09:18.753Z",
+          "by": "claude",
+          "reason": "graded: Agent grades for the memory-guidance batch, 2026-10-10: P2 for standing rules the owner asked to land, P3 for the agent-knowledge batch, V1 quick wins, V2 for the import-default choice"
+        }
+      ],
+      "brief": {
+        "scope": "SPEC",
+        "summary": "Tax notes are board defects to revise, not answers to carry.",
+        "why": "Your words, 2026-10-08, starting agent-managed rounds: a Tax note means the item was too hard to understand and made the board harder to use, not easier.",
+        "recommendation": "Agent proposal: confirm the rule.",
+        "impact": "Agents stop carrying a Tax as a decision; cards get plainer over rounds.",
+        "changes": "One rule in the Grill Board README agent section on the Dashboard branch.",
+        "history": "Stated 2026-10-08; applied in the 2026-10-09 reconcile where 12 kept questions were rewritten in plain words.",
+        "artifacts": "Grill Board README; Shared Interactive Workbench Board Spec (S-004D)."
+      },
+      "priority": {
+        "grade": "P2",
+        "reason": "You asked on 2026-10-10 for these findings to go on the board; each is one answer that lets a standing rule land."
+      },
+      "value": {
+        "grade": "V1",
+        "reason": "One confirmation, one small edit in one owner; prevents a repeat of a recorded failure."
+      },
+      "gradeRevision": 1
+    },
+    {
+      "id": "GB-0220",
+      "key": "dashboard-colors-are-guidelines",
+      "group": "owner-decisions",
+      "kind": "owner-decision",
+      "title": "The five Dashboard hues are guidelines: pick the hue by what a thing means to you, never grey because none is listed",
+      "question": "Should the color decision record and its Wiki page carry this before the open color PR merges?",
+      "current": "The open PR \"Record the owner-confirmed Dashboard color system\" (#451) records five hues, each answering one question, strong or soft, with grey as the page. Neither its decision record nor its Wiki page says the mapping is a guide, nor records your two corrections: the why is a value (yellow), errors are heat (orange).",
+      "proposal": "Agent proposal (readback of your words, 2026-10-09): add a consequences paragraph to the color decision record and the Wiki page. The colors guide the owner's eye and are not a lookup table; for anything unlisted, ask which of the five questions it answers and use that hue, and flag the choice in the result rather than defaulting to grey. Record the two corrections as examples. Your floated reframing \"Green is confirmed\" stays out until you decide it.",
+      "draft": "## Proposed consequences paragraph (color DDR and Wiki page)\n\nThe five hues are guidelines that help the owner's eye, not hard rules. When something on the page has no listed color, reason from what it means to him: which of the five questions does it answer (how soon, how much worth, mine, agents', came back) and wear that hue. Two owner corrections set the precedent: \"Why this choice matters\" is a value, so Value yellow; an error message is urgent, \"heat, friction, fires\", so Priority orange. Never fall back to grey or ink because no hue is defined for a case; flag the choice in the result instead.",
+      "options": null,
+      "sources": [
+        {
+          "label": "Dashboard color decision record (DDR-001Q), PR #451 branch",
+          "path": "workbench/docs/ddr/001Q-the-dashboard-colors-by-five-questions-each-strong-or-soft.md",
+          "ref": "3629626e"
+        },
+        {
+          "label": "Wiki: Dashboard color system, PR #451 branch",
+          "path": "workbench/wiki/design-concepts/dashboard-color-system.md",
+          "ref": "3629626e"
+        }
+      ],
+      "tags": [
+        "dashboard",
+        "colors",
+        "DDR-001Q",
+        "S-004D"
+      ],
+      "revision": 1,
+      "status": "open",
+      "applied": null,
+      "history": [
+        {
+          "revision": 1,
+          "at": "2026-10-10T05:09:18.547Z",
+          "by": "claude",
+          "reason": "Owner request 2026-10-10: put every memory-guidance finding (Claude audit plus the Codex review of 2026-10-09) on the board as pending readbacks and two real choices"
+        },
+        {
+          "revision": 1,
+          "gradeRevision": 1,
+          "at": "2026-10-10T05:09:18.753Z",
+          "by": "claude",
+          "reason": "graded: Agent grades for the memory-guidance batch, 2026-10-10: P2 for standing rules the owner asked to land, P3 for the agent-knowledge batch, V1 quick wins, V2 for the import-default choice"
+        }
+      ],
+      "brief": {
+        "scope": "SPEC",
+        "summary": "The color record says the hues are guidelines and records how to pick one for an unlisted case.",
+        "why": "Your words, 2026-10-09: \"The colors are guide lines that help guide me, not hard rules.\" You corrected the why to yellow (a value) and errors to orange (\"heat, friction, fires\") after I had applied the table literally.",
+        "recommendation": "Agent proposal: confirm the paragraph and have it added to PR #451 before merge, so the record lands complete.",
+        "impact": "Future Dashboard work colors new elements by meaning instead of leaving them grey; the record matches what you said.",
+        "changes": "A consequences paragraph in the color DDR and a matching paragraph in the Wiki color page, both on the PR #451 branch.",
+        "history": "Five hues confirmed on the design canvas 2026-10-09; PR #451 opened the same morning; your two corrections came that evening after the first board pass (PR #455 applied them to the page).",
+        "artifacts": "Dashboard color decision record (DDR-001Q); Wiki Dashboard color system page; PR #451; PR #455."
+      },
+      "priority": {
+        "grade": "P2",
+        "reason": "PR #451 is open now; the paragraph is cheapest before it merges."
+      },
+      "value": {
+        "grade": "V1",
+        "reason": "One confirmation, one small edit in one owner; prevents a repeat of a recorded failure."
+      },
+      "gradeRevision": 1
+    },
+    {
+      "id": "GB-0221",
+      "key": "ddr-why-is-the-design-reason",
+      "group": "owner-decisions",
+      "kind": "owner-decision",
+      "title": "A decision record's why states the design reason you reason from, not the incident; your metaphors are destination content",
+      "question": "Should the to-docs decision-records procedure tell authors this, as drafted?",
+      "current": "The to-docs skill says a confirmed Question / Answer / Why / Impact readback locks the decision and the ADR records the confirmed answer. It does not say what a good why is. One record (a project is a room and the Workbench is the table in it) quotes your metaphor line, but no procedure tells authors to treat metaphors as requirements or to keep fog out.",
+      "proposal": "Agent proposal (readback of your words, 2026-10-02 and 2026-10-03): add a short paragraph to the to-docs decision-records section. The why answers \"what about the finished product makes this the right direction?\", in the owner's words; the incident that raised the question is provenance, not the why. The owner's metaphors are requirements to carry into the destination, not colour. Anything the owner calls still in the fog stays out of decision text and is recorded as aligning.",
+      "draft": "## Proposed paragraph, to-docs skill, Decision records\n\nWrite the why as the design reason the owner reasons from: what about the finished product makes this the right direction, in his words. The incident or ledger row that raised the question is provenance and belongs in Provenance, not in the why. The owner's metaphors are destination content to implement, not decoration. Anything he marks as still in the fog stays out of decision text and is recorded as aligning.",
+      "options": null,
+      "sources": [
+        {
+          "label": "to-docs skill, Decision records",
+          "path": "workbench/skills/to-docs/SKILL.md",
+          "ref": "179fdc4f"
+        },
+        {
+          "label": "Decision record: a project is a room and the Workbench is the table in it (DDR-000U)",
+          "path": "workbench/docs/ddr/000U-a-project-is-a-room-and-the-workbench-is-the-table-in-it.md",
+          "ref": "179fdc4f"
+        }
+      ],
+      "tags": [
+        "to-docs",
+        "DDR",
+        "authoring"
+      ],
+      "revision": 1,
+      "status": "open",
+      "applied": null,
+      "history": [
+        {
+          "revision": 1,
+          "at": "2026-10-10T05:09:18.547Z",
+          "by": "claude",
+          "reason": "Owner request 2026-10-10: put every memory-guidance finding (Claude audit plus the Codex review of 2026-10-09) on the board as pending readbacks and two real choices"
+        },
+        {
+          "revision": 1,
+          "gradeRevision": 1,
+          "at": "2026-10-10T05:09:18.753Z",
+          "by": "claude",
+          "reason": "graded: Agent grades for the memory-guidance batch, 2026-10-10: P2 for standing rules the owner asked to land, P3 for the agent-knowledge batch, V1 quick wins, V2 for the import-default choice"
+        }
+      ],
+      "brief": {
+        "scope": "BLUEPRINT",
+        "summary": "Decision-record authors write the destination logic, carry your metaphors as requirements, and keep fog out.",
+        "why": "On 2026-10-03 you marked three DDR whys wrong because they restated the incident (\"the owner couldn't read a JSON handoff\") instead of the design reason (Markdown is what agents read, JSON is machinery). On 2026-10-02: \"This was all metaphor. A metaphor I want to implement and make part of the destination.\"",
+        "recommendation": "Agent proposal: confirm the paragraph.",
+        "impact": "Fewer DDRs sent back for a wrong why; metaphors stop being dropped as colour.",
+        "changes": "One paragraph in the to-docs skill Decision records section; the promote-decision skill points at it.",
+        "history": "Blueprint teardown DDR review 2026-10-03; room-and-table record accepted with your metaphor quote.",
+        "artifacts": "to-docs skill; promote-decision skill; DDR collection."
+      },
+      "priority": {
+        "grade": "P2",
+        "reason": "You asked on 2026-10-10 for these findings to go on the board; each is one answer that lets a standing rule land."
+      },
+      "value": {
+        "grade": "V1",
+        "reason": "One confirmation, one small edit in one owner; prevents a repeat of a recorded failure."
+      },
+      "gradeRevision": 1
+    },
+    {
+      "id": "GB-0222",
+      "key": "create-the-specs-is-the-map-step",
+      "group": "owner-decisions",
+      "kind": "owner-decision",
+      "title": "\"Create the specs\" is the Map step: planned Specs with no Tasks and no implementation",
+      "question": "Should the to-spec skill say this, including the count-verification rule, as drafted?",
+      "current": "The workflow verbs decision says Specs and decision records are written at Map and Tasks at Plan. The to-spec skill does not say what an owner request to \"create the specs and get started\" authorizes, and nothing warns that every count in a planned Spec's Current Verified State is a review risk.",
+      "proposal": "Agent proposal (readback of your words, 2026-10-02): add to the to-spec skill. \"Create the specs\" authorizes Map only: author each Spec as planned with an empty tasks folder, record unresolved owner choices as blockers without answering them, land through the normal route, and cut no Tasks and start no implementation. Verify every count and file list in the Spec at the final tree.",
+      "draft": "## Proposed addition, to-spec skill\n\nWhen the owner says \"create the specs\", that is the Map step and nothing more: author each Spec as planned with only a tasks/.gitkeep, say \"No Tasks cut\" under its slices, record unresolved owner choices as blockers in Decisions And Contracts without answering them, and land the Specs through the normal route. Do not activate, claim or plan them afterwards. Every count or file list in Current Verified State is verified at the final tree; drop counts the Spec does not need, and never attribute a claim to a decision record without reading it.",
+      "options": null,
+      "sources": [
+        {
+          "label": "to-spec skill",
+          "path": "workbench/skills/to-spec/SKILL.md",
+          "ref": "179fdc4f"
+        },
+        {
+          "label": "Wiki: workflow verbs",
+          "path": "workbench/wiki/design-concepts/workflow-verbs.md",
+          "ref": "179fdc4f"
+        }
+      ],
+      "tags": [
+        "to-spec",
+        "Map",
+        "workflow-verbs"
+      ],
+      "revision": 1,
+      "status": "open",
+      "applied": null,
+      "history": [
+        {
+          "revision": 1,
+          "at": "2026-10-10T05:09:18.547Z",
+          "by": "claude",
+          "reason": "Owner request 2026-10-10: put every memory-guidance finding (Claude audit plus the Codex review of 2026-10-09) on the board as pending readbacks and two real choices"
+        },
+        {
+          "revision": 1,
+          "gradeRevision": 1,
+          "at": "2026-10-10T05:09:18.753Z",
+          "by": "claude",
+          "reason": "graded: Agent grades for the memory-guidance batch, 2026-10-10: P2 for standing rules the owner asked to land, P3 for the agent-knowledge batch, V1 quick wins, V2 for the import-default choice"
+        }
+      ],
+      "brief": {
+        "scope": "BLUEPRINT",
+        "summary": "The to-spec skill bounds \"create the specs\" to the Map step and names the count trap.",
+        "why": "Your words, 2026-10-02, mid-run: \"You are only authoring the specs, not implementing the specs. This is a Map step, not a plan or implement.\" Eight review rounds on that batch then failed on miscounts and an unsupported attribution.",
+        "recommendation": "Agent proposal: confirm the addition.",
+        "impact": "Map-step requests stop turning into builds; planned Specs pass review sooner.",
+        "changes": "One paragraph in the to-spec skill; a sentence in the Wiki workflow-verbs page.",
+        "history": "Six follow-up Specs authored at Map and landed 2026-10-02 after nine candidates.",
+        "artifacts": "to-spec skill; Wiki workflow verbs page; workflow-verbs decision (ADR-000X)."
+      },
+      "priority": {
+        "grade": "P2",
+        "reason": "You asked on 2026-10-10 for these findings to go on the board; each is one answer that lets a standing rule land."
+      },
+      "value": {
+        "grade": "V1",
+        "reason": "One confirmation, one small edit in one owner; prevents a repeat of a recorded failure."
+      },
+      "gradeRevision": 1
+    },
+    {
+      "id": "GB-0223",
+      "key": "retire-and-remap-stale-specs",
+      "group": "owner-decisions",
+      "kind": "owner-decision",
+      "title": "A stale Spec is retired like a Task: superseded with a design why and a new map, never relayed to you as an open gate",
+      "question": "Should the director skill's closure section say this, as drafted?",
+      "current": "AGENTS and the director skill cover retirement after verified delivery and say owner escalations are product tradeoffs. Nothing says what to do with a Spec whose header gate was written before your grilling answers overtook it, and the retire command accepts only completed Specs.",
+      "proposal": "Agent proposal (readback of your words, 2026-10-04): add to the director skill. Before listing any owner gate, check it against the grilling ledger, the decision records and the board answers. When the landscape has moved past a Spec, supersede it with a written design why and author the replacement at Map; a stale Spec header is evidence, not a live question.",
+      "draft": "## Proposed addition, director skill, Owner closure and reconciliation\n\nA Spec header written before the owner's later answers is evidence, not a live question. Before relaying any owner gate, check it against the grilling ledger, the decision records and the Grill Board answers. When the destination has moved past a Spec, retire it the way a Task is retired: mark it superseded, write the design why, and author the replacement Spec at the Map step. The retire command accepts only completed Specs, so supersession is a records change on the Spec header.",
+      "options": null,
+      "sources": [
+        {
+          "label": "Director skill",
+          "path": "workbench/skills/director/SKILL.md",
+          "ref": "179fdc4f"
+        },
+        {
+          "label": "AGENTS.md (the always-loaded contract)",
+          "path": "AGENTS.md",
+          "ref": "179fdc4f"
+        }
+      ],
+      "tags": [
+        "director",
+        "specs",
+        "retire"
+      ],
+      "revision": 1,
+      "status": "open",
+      "applied": null,
+      "history": [
+        {
+          "revision": 1,
+          "at": "2026-10-10T05:09:18.547Z",
+          "by": "claude",
+          "reason": "Owner request 2026-10-10: put every memory-guidance finding (Claude audit plus the Codex review of 2026-10-09) on the board as pending readbacks and two real choices"
+        },
+        {
+          "revision": 1,
+          "gradeRevision": 1,
+          "at": "2026-10-10T05:09:18.753Z",
+          "by": "claude",
+          "reason": "graded: Agent grades for the memory-guidance batch, 2026-10-10: P2 for standing rules the owner asked to land, P3 for the agent-knowledge batch, V1 quick wins, V2 for the import-default choice"
+        }
+      ],
+      "brief": {
+        "scope": "BLUEPRINT",
+        "summary": "Overtaken Specs get superseded and remapped instead of being surfaced as your to-do.",
+        "why": "Your words, 2026-10-04, after I relayed a stale release-Spec gate as yours: \"We retire things all of the time. why would a spec be any different than a task? Create a new map to the correct destination, document the 'why' for us retiring the old one.\"",
+        "recommendation": "Agent proposal: confirm the addition.",
+        "impact": "Fewer stale asks; Spec headers stop outliving their answers.",
+        "changes": "One paragraph in the director skill; the Wiki finish-authorized-work page gains a line.",
+        "history": "Related rule, finish authorized work, promoted 2026-09-26; this case arose 2026-10-04.",
+        "artifacts": "Director skill; Wiki finish-authorized-work page; Spec header fields."
+      },
+      "priority": {
+        "grade": "P2",
+        "reason": "You asked on 2026-10-10 for these findings to go on the board; each is one answer that lets a standing rule land."
+      },
+      "value": {
+        "grade": "V1",
+        "reason": "One confirmation, one small edit in one owner; prevents a repeat of a recorded failure."
+      },
+      "gradeRevision": 1
+    },
+    {
+      "id": "GB-0224",
+      "key": "director-reviews-on-hand-back",
+      "group": "owner-decisions",
+      "kind": "owner-decision",
+      "title": "The Director runs the Spec review the moment the Dispatcher hands back; wording routed elsewhere is a gap, not a blocker",
+      "question": "Should the director skill say this, as drafted?",
+      "current": "The dispatcher skill's hand-back already lists \"any wording routed to another owner\" as a gap. The director skill arranges separate-context review of each assembled candidate but does not say that routed or blocked wording never holds the review.",
+      "proposal": "Agent proposal (readback of your words, 2026-10-06): add one sentence to the director skill. When a Dispatcher's Tasks are merged and the candidate is assembled, run the separate-context review straight away; routed or blocked wording goes in the gap list and the verdict findings, never in front of the review.",
+      "draft": "## Proposed sentence, director skill\n\nWhen the Dispatcher hands back an assembled candidate, run the separate-context review at once. Wording routed to another writer or blocked on another Spec is a recorded gap in the hand-back and a finding in the verdict; it is never a reason to hold the review.",
+      "options": null,
+      "sources": [
+        {
+          "label": "Director skill",
+          "path": "workbench/skills/director/SKILL.md",
+          "ref": "179fdc4f"
+        },
+        {
+          "label": "Dispatcher skill (hand-back gaps)",
+          "path": "workbench/skills/dispatcher/SKILL.md",
+          "ref": "179fdc4f"
+        }
+      ],
+      "tags": [
+        "director",
+        "review"
+      ],
+      "revision": 1,
+      "status": "open",
+      "applied": null,
+      "history": [
+        {
+          "revision": 1,
+          "at": "2026-10-10T05:09:18.547Z",
+          "by": "claude",
+          "reason": "Owner request 2026-10-10: put every memory-guidance finding (Claude audit plus the Codex review of 2026-10-09) on the board as pending readbacks and two real choices"
+        },
+        {
+          "revision": 1,
+          "gradeRevision": 1,
+          "at": "2026-10-10T05:09:18.753Z",
+          "by": "claude",
+          "reason": "graded: Agent grades for the memory-guidance batch, 2026-10-10: P2 for standing rules the owner asked to land, P3 for the agent-knowledge batch, V1 quick wins, V2 for the import-default choice"
+        }
+      ],
+      "brief": {
+        "scope": "BLUEPRINT",
+        "summary": "Routed wording never delays the Director's Spec review.",
+        "why": "Your words, 2026-10-06, when I held a Spec review on Lexicon lines routed to a stalled PR: \"You are a director, why would you not review the spec?\"",
+        "recommendation": "Agent proposal: confirm the sentence.",
+        "impact": "Reviews run when candidates are ready; one fewer manufactured gate.",
+        "changes": "One sentence in the director skill.",
+        "history": "Arose on 2026-10-06 with the LANDMARK runtime Spec (S-003Z).",
+        "artifacts": "Director skill; dispatcher skill hand-back."
+      },
+      "priority": {
+        "grade": "P2",
+        "reason": "You asked on 2026-10-10 for these findings to go on the board; each is one answer that lets a standing rule land."
+      },
+      "value": {
+        "grade": "V1",
+        "reason": "One confirmation, one small edit in one owner; prevents a repeat of a recorded failure."
+      },
+      "gradeRevision": 1
+    },
+    {
+      "id": "GB-0225",
+      "key": "never-read-env-secret-files",
+      "group": "owner-decisions",
+      "kind": "owner-decision",
+      "title": "Agents never read .env secret files, and the host hook blocks any shell command whose text contains that token",
+      "question": "Should AGENTS Read Scope carry this, as drafted?",
+      "current": "AGENTS Read Scope says to read anything in the repository and to surface a committed secret. Safety says never commit secrets or .env files. Nothing says agents must not read them, and nothing warns that your hook rejects a whole shell command when its text mentions .env, even a documentation edit.",
+      "proposal": "Agent proposal (readback of your words, 2026-06): add to Read Scope. Never read or open a .env secret file; .env.example and variable names are fine. If a real secret value is needed, the owner edits it himself. On this host a hook blocks any shell command whose text contains the token, so edits to files that mention it go through the file tools, not a shell heredoc.",
+      "draft": "## Proposed addition, AGENTS Read Scope\n\nNever read or open a .env secret file; .env.example and variable names are enough. When a real secret value or a .env edit is genuinely needed, the owner does it himself. Reading a secret file sends its contents into the transcript and the API logs, which is exposure outside a secret store. On the owner's hosts a hook rejects any shell command whose text contains the token, so edit files that merely mention it through the file tools.",
+      "options": null,
+      "sources": [
+        {
+          "label": "AGENTS.md (the always-loaded contract)",
+          "path": "AGENTS.md",
+          "ref": "179fdc4f"
+        }
+      ],
+      "tags": [
+        "AGENTS",
+        "secrets",
+        "safety"
+      ],
+      "revision": 1,
+      "status": "open",
+      "applied": null,
+      "history": [
+        {
+          "revision": 1,
+          "at": "2026-10-10T05:09:18.547Z",
+          "by": "claude",
+          "reason": "Owner request 2026-10-10: put every memory-guidance finding (Claude audit plus the Codex review of 2026-10-09) on the board as pending readbacks and two real choices"
+        },
+        {
+          "revision": 1,
+          "gradeRevision": 1,
+          "at": "2026-10-10T05:09:18.753Z",
+          "by": "claude",
+          "reason": "graded: Agent grades for the memory-guidance batch, 2026-10-10: P2 for standing rules the owner asked to land, P3 for the agent-knowledge batch, V1 quick wins, V2 for the import-default choice"
+        }
+      ],
+      "brief": {
+        "scope": "BLUEPRINT",
+        "summary": "Agents never read secret env files, and know the hook that enforces it.",
+        "why": "You chose this in June 2026 after asking whether reading a secret file forces a key rotation each time; you would rather the agent never touch the secret. Agents in other rooms have since lost calls to the hook without knowing why.",
+        "recommendation": "Agent proposal: confirm the addition.",
+        "impact": "One fewer way to leak a key; fewer mystery hook rejections.",
+        "changes": "One paragraph in AGENTS Read Scope and templates/AGENTS.md.",
+        "history": "Hook and deny rule installed in the global settings 2026-06-15; a Supabase key had been exposed the same day.",
+        "artifacts": "AGENTS Read Scope; templates/AGENTS.md."
+      },
+      "priority": {
+        "grade": "P2",
+        "reason": "You asked on 2026-10-10 for these findings to go on the board; each is one answer that lets a standing rule land."
+      },
+      "value": {
+        "grade": "V1",
+        "reason": "One confirmation, one small edit in one owner; prevents a repeat of a recorded failure."
+      },
+      "gradeRevision": 1
+    },
+    {
+      "id": "GB-0226",
+      "key": "verification-runs-in-the-foreground",
+      "group": "owner-decisions",
+      "kind": "owner-decision",
+      "title": "Verification runs in the foreground; an agent never spawns a waiter to poll its own command or reads silence as \"still running\"",
+      "question": "Should AGENTS Long Session Control say this for every room, as drafted?",
+      "current": "The Wiki page on parallel lane dispatch tells builders to run the suite in the foreground because a builder that waits for a background notification may never resume. AGENTS says nothing about it, so the rule reaches only dispatch lanes.",
+      "proposal": "Agent proposal (readback of your words, 2026-07-07): add one bullet to AGENTS Long Session Control. Run every verification in the foreground with a bounded timeout and watch the exit code. Never spawn a separate task to wait on a command you started, and never read a missing notification as \"still running\". If a run is backgrounded anyway, write its output to an inspectable log and check the process is alive before waiting.",
+      "draft": "## Proposed bullet, AGENTS Long Session Control\n\n- Run verification in the foreground with a bounded timeout and read the exit code directly. Never spawn a polling waiter on a command you started, and never treat a missing notification as \"still running\". If the host backgrounds a run anyway, redirect its output to a log you can inspect, check that the process is alive before waiting, and stop both the run and any waiter the moment the log stays empty.",
+      "options": null,
+      "sources": [
+        {
+          "label": "AGENTS.md (the always-loaded contract)",
+          "path": "AGENTS.md",
+          "ref": "179fdc4f"
+        },
+        {
+          "label": "Wiki: parallel lane dispatch",
+          "path": "workbench/wiki/parallel-lane-dispatch.md",
+          "ref": "179fdc4f"
+        }
+      ],
+      "tags": [
+        "AGENTS",
+        "verification",
+        "long-session"
+      ],
+      "revision": 1,
+      "status": "open",
+      "applied": null,
+      "history": [
+        {
+          "revision": 1,
+          "at": "2026-10-10T05:09:18.547Z",
+          "by": "claude",
+          "reason": "Owner request 2026-10-10: put every memory-guidance finding (Claude audit plus the Codex review of 2026-10-09) on the board as pending readbacks and two real choices"
+        },
+        {
+          "revision": 1,
+          "gradeRevision": 1,
+          "at": "2026-10-10T05:09:18.753Z",
+          "by": "claude",
+          "reason": "graded: Agent grades for the memory-guidance batch, 2026-10-10: P2 for standing rules the owner asked to land, P3 for the agent-knowledge batch, V1 quick wins, V2 for the import-default choice"
+        }
+      ],
+      "brief": {
+        "scope": "BLUEPRINT",
+        "summary": "Foreground verification is a room-wide rule, not a dispatch note.",
+        "why": "You reported waiting about 13 hours on background checks that never delivered a result in the Dungeon Friends room (2026-07-07). The same pattern stalled Sonnet builders in the v4 dispatcher lanes.",
+        "recommendation": "Agent proposal: confirm the bullet.",
+        "impact": "Hung runs are caught in minutes, not hours.",
+        "changes": "One bullet in AGENTS Long Session Control and templates/AGENTS.md.",
+        "history": "Root cause of one hang fixed in that room 2026-07-07; the harness behavior was confirmed again 2026-07-09 and 2026-09-17.",
+        "artifacts": "AGENTS Long Session Control; Wiki parallel-lane-dispatch page."
+      },
+      "priority": {
+        "grade": "P2",
+        "reason": "You asked on 2026-10-10 for these findings to go on the board; each is one answer that lets a standing rule land."
+      },
+      "value": {
+        "grade": "V1",
+        "reason": "One confirmation, one small edit in one owner; prevents a repeat of a recorded failure."
+      },
+      "gradeRevision": 1
+    },
+    {
+      "id": "GB-0227",
+      "key": "answer-at-the-requested-endpoint",
+      "group": "owner-decisions",
+      "kind": "owner-decision",
+      "title": "Answer the question at the endpoint you asked for; a \"can we\" question is not an assignment to do it or to audit readiness",
+      "question": "Should the Runbook Behavior Selection route say this, as drafted?",
+      "current": "AGENTS defines authority and the Runbook Behavior Selection route picks a stance. Neither says that a question about whether an action is possible calls for an answer first, and that a wider readiness audit starts only when the request authorizes it.",
+      "proposal": "Agent proposal (from the Codex review of 2026-10-09; I do not hold your original words for this one, so the wording is agent restatement): add to Runbook Behavior Selection. A question about whether something is possible or reasonable gets an answer at that endpoint. It does not assign the action or a readiness audit; start additional work when the request actually authorizes it.",
+      "draft": "## Proposed addition, Runbook Behavior Selection\n\nA question about whether an action is possible or reasonable calls for an answer, not for the action. Explain the asked issue first; begin further work, including a readiness audit, only when the request authorizes it.",
+      "options": null,
+      "sources": [
+        {
+          "label": "Runbook",
+          "path": "RUNBOOK.md",
+          "ref": "179fdc4f"
+        },
+        {
+          "label": "AGENTS.md (the always-loaded contract)",
+          "path": "AGENTS.md",
+          "ref": "179fdc4f"
+        }
+      ],
+      "tags": [
+        "RUNBOOK",
+        "behavior-selection",
+        "codex-review"
+      ],
+      "revision": 1,
+      "status": "open",
+      "applied": null,
+      "history": [
+        {
+          "revision": 1,
+          "at": "2026-10-10T05:09:18.547Z",
+          "by": "claude",
+          "reason": "Owner request 2026-10-10: put every memory-guidance finding (Claude audit plus the Codex review of 2026-10-09) on the board as pending readbacks and two real choices"
+        },
+        {
+          "revision": 1,
+          "gradeRevision": 1,
+          "at": "2026-10-10T05:09:18.753Z",
+          "by": "claude",
+          "reason": "graded: Agent grades for the memory-guidance batch, 2026-10-10: P2 for standing rules the owner asked to land, P3 for the agent-knowledge batch, V1 quick wins, V2 for the import-default choice"
+        }
+      ],
+      "brief": {
+        "scope": "BLUEPRINT",
+        "summary": "Questions get answers; they do not silently become assignments.",
+        "why": "The Codex review of 2026-10-09 records a session where an authorization question was replaced by an unwanted readiness audit. I do not hold your words for it; please confirm or change the reason.",
+        "recommendation": "Agent proposal: confirm the addition if the lesson is yours.",
+        "impact": "Fewer surprise audits in reply to a simple question.",
+        "changes": "One paragraph in Runbook Behavior Selection and templates/RUNBOOK.md.",
+        "history": "Codex review 2026-10-09, item 1.",
+        "artifacts": "Runbook Behavior Selection; AGENTS Assigned Work And Stances."
+      },
+      "priority": {
+        "grade": "P2",
+        "reason": "You asked on 2026-10-10 for these findings to go on the board; each is one answer that lets a standing rule land."
+      },
+      "value": {
+        "grade": "V1",
+        "reason": "One confirmation, one small edit in one owner; prevents a repeat of a recorded failure."
+      },
+      "gradeRevision": 1
+    },
+    {
+      "id": "GB-0228",
+      "key": "follow-a-supplied-format-exactly",
+      "group": "owner-decisions",
+      "kind": "owner-decision",
+      "title": "Follow a format you supply exactly, and keep your original beside any labeled interpretation",
+      "question": "Should the writing-for-agents route carry this, without changing the imported upstream text?",
+      "current": "The Workflow Canon Rework Spec records preserving one particular arrow-and-brace map. No reusable guidance says to preserve requested headings, ordering, notation and nesting, or to keep your representation beside a labeled interpretation instead of redesigning it.",
+      "proposal": "Agent proposal (from the Codex review of 2026-10-09; I do not hold your original words for this one, so the wording is agent restatement): add a Workbench-authored note beside the writing-for-agents skill, reached through its existing route. Preserve the owner's headings, ordering, notation and nesting; when explaining, show his original and a labeled interpretation side by side; do not redesign the format because another structure seems cleaner.",
+      "draft": "## Proposed Workbench note beside writing-for-agents (upstream text untouched)\n\nWhen the owner supplies a format, follow it exactly: his headings, ordering, notation and nesting. When you need to explain it, keep his original representation beside a clearly labeled interpretation. Never redesign the requested format because another structure seems cleaner.",
+      "options": null,
+      "sources": [
+        {
+          "label": "writing-for-agents skill",
+          "path": "workbench/skills/writing-for-agents/SKILL.md",
+          "ref": "179fdc4f"
+        },
+        {
+          "label": "Workflow Canon Rework Spec (S-00P)",
+          "path": "workbench/specs/S-00P-workflow-canon-rework/SPEC.md",
+          "ref": "179fdc4f"
+        }
+      ],
+      "tags": [
+        "writing-for-agents",
+        "authoring",
+        "codex-review"
+      ],
+      "revision": 1,
+      "status": "open",
+      "applied": null,
+      "history": [
+        {
+          "revision": 1,
+          "at": "2026-10-10T05:09:18.547Z",
+          "by": "claude",
+          "reason": "Owner request 2026-10-10: put every memory-guidance finding (Claude audit plus the Codex review of 2026-10-09) on the board as pending readbacks and two real choices"
+        },
+        {
+          "revision": 1,
+          "gradeRevision": 1,
+          "at": "2026-10-10T05:09:18.753Z",
+          "by": "claude",
+          "reason": "graded: Agent grades for the memory-guidance batch, 2026-10-10: P2 for standing rules the owner asked to land, P3 for the agent-knowledge batch, V1 quick wins, V2 for the import-default choice"
+        }
+      ],
+      "brief": {
+        "scope": "BLUEPRINT",
+        "summary": "Supplied formats are preserved, not redesigned.",
+        "why": "The Codex review of 2026-10-09 records your preference from a session where a supplied map was restructured. I do not hold your words; confirm or change the reason.",
+        "recommendation": "Agent proposal: confirm as a room-authored note; leave the imported skill body unchanged under its license.",
+        "impact": "Your diagrams and maps come back in your shape.",
+        "changes": "A short Workbench-authored file beside the writing-for-agents skill, pointed to from its SKILL-MECHANICS route or the Wiki skill page.",
+        "history": "Codex review 2026-10-09, item 2; one arrow-and-brace map preserved in S-00P.",
+        "artifacts": "writing-for-agents skill and NOTICE; Wiki skill page."
+      },
+      "priority": {
+        "grade": "P2",
+        "reason": "You asked on 2026-10-10 for these findings to go on the board; each is one answer that lets a standing rule land."
+      },
+      "value": {
+        "grade": "V1",
+        "reason": "One confirmation, one small edit in one owner; prevents a repeat of a recorded failure."
+      },
+      "gradeRevision": 1
+    },
+    {
+      "id": "GB-0229",
+      "key": "upstream-skill-import-default",
+      "group": "owner-decisions",
+      "kind": "choice",
+      "title": "Imported upstream skills: keep the pinned text unchanged by default, or rewrite them into Workbench vocabulary?",
+      "question": "Which is the default for future skill imports?",
+      "current": "Two of your past directions point different ways. On 2026-07-14 you endorsed \"if the tools aren't yours you won't know how to fix them\" and chose to rewrite the Pocock skills into Workbench nouns rather than adopt them verbatim. The writing-for-agents import (2026-10) keeps the upstream entrypoint and mechanics unchanged under their MIT notice, with Workbench controls governing around them, and the domain-modeling Wiki page separates upstream method from Workbench adapters. No guidance states the default for the next import.",
+      "proposal": "Agent proposal: make \"keep the upstream text unchanged, add Workbench adapters beside it, and record every substantive departure in the skill's notice\" the default (alternative A), because it is what the two most recent imports did and it keeps license and attribution intact. The July rewrite direction stays true for skills that are adopted as Workbench core behavior rather than carried as upstream method. Codex's review proposed the same default; my July record is the dissent.",
+      "draft": null,
+      "options": [
+        {
+          "value": "keep_upstream_adapters",
+          "label": "A. Keep upstream text unchanged; adapters beside it; departures in the notice",
+          "recommended": true
+        },
+        {
+          "value": "rewrite_into_workbench",
+          "label": "B. Rewrite imports into Workbench vocabulary; upstream is reference only"
+        },
+        {
+          "value": "per_skill_in_notice",
+          "label": "C. Decide per skill at import; the choice is recorded in that skill's notice"
+        }
+      ],
+      "sources": [
+        {
+          "label": "writing-for-agents NOTICE (upstream kept unchanged)",
+          "path": "workbench/skills/writing-for-agents/NOTICE.md",
+          "ref": "179fdc4f"
+        },
+        {
+          "label": "Wiki: Domain Modeling skill (upstream method vs adapters)",
+          "path": "workbench/wiki/skill-domain-modeling.md",
+          "ref": "179fdc4f"
+        },
+        {
+          "label": "Wiki: skill adoption",
+          "path": "workbench/wiki/skill-adoption.md",
+          "ref": "179fdc4f"
+        }
+      ],
+      "tags": [
+        "skills",
+        "adoption",
+        "license",
+        "codex-review",
+        "conflict"
+      ],
+      "revision": 1,
+      "status": "open",
+      "applied": null,
+      "history": [
+        {
+          "revision": 1,
+          "at": "2026-10-10T05:09:18.547Z",
+          "by": "claude",
+          "reason": "Owner request 2026-10-10: put every memory-guidance finding (Claude audit plus the Codex review of 2026-10-09) on the board as pending readbacks and two real choices"
+        },
+        {
+          "revision": 1,
+          "gradeRevision": 1,
+          "at": "2026-10-10T05:09:18.753Z",
+          "by": "claude",
+          "reason": "graded: Agent grades for the memory-guidance batch, 2026-10-10: P2 for standing rules the owner asked to land, P3 for the agent-knowledge batch, V1 quick wins, V2 for the import-default choice"
+        }
+      ],
+      "brief": {
+        "scope": "BLUEPRINT",
+        "summary": "One default for how an upstream skill enters the room: preserved, rewritten, or decided per skill.",
+        "why": "Your words, 2026-07-14: \"if the tools aren't yours you won't know how to fix them\", choosing to rewrite rather than adopt verbatim. The 2026-10 imports kept upstream text unchanged under license. Both cannot be the default.",
+        "recommendation": "Agent proposal: A, with the notice recording departures; B remains the route when a skill becomes Workbench core behavior.",
+        "impact": "A keeps attribution and upstream diffs easy and localizes change in adapters. B keeps every tool yours but loses the upstream diff. C spreads the choice across notices.",
+        "changes": "A sentence in the Wiki skill-adoption page and the adoption procedure; the notice template gains a departures line.",
+        "history": "Pocock skills curation Spec (S-011) July 2026; writing-for-agents and domain-modeling imports October 2026; Codex review item 3 on 2026-10-09.",
+        "artifacts": "Wiki skill-adoption page; skill NOTICE files; adoption skill."
+      },
+      "priority": {
+        "grade": "P2",
+        "reason": "You asked on 2026-10-10 for these findings to go on the board; each is one answer that lets a standing rule land."
+      },
+      "value": {
+        "grade": "V2",
+        "reason": "Settles the default for every future skill import; the choice reaches the adoption procedure and every notice."
+      },
+      "gradeRevision": 1
+    },
+    {
+      "id": "GB-0230",
+      "key": "report-progress-as-observable-states",
+      "group": "owner-decisions",
+      "kind": "owner-decision",
+      "title": "Progress reports name each capability as implemented, partial, specified or blocked, with the evidence for the state",
+      "question": "Should the evidence and continuation guidance carry this reporting shape, as drafted?",
+      "current": "The controls distinguish accepted design, verified implementation and delivery, and the Tracker has its own distributions. No guidance tells an agent how to report progress to you item by item, or when a percentage is allowed.",
+      "proposal": "Agent proposal (from the Codex review of 2026-10-09; I do not hold your original words for this one, so the wording is agent restatement): add to the Runbook Evidence And Continuation Practices. For each requested capability, say whether it is implemented, partial, specified or planned, or blocked; what remains; and what evidence supports the state. Use a percentage only when its basis is defined; otherwise describe the work left.",
+      "draft": "## Proposed addition, Runbook Evidence And Continuation Practices\n\nReport progress as observable work. For each requested capability name its state, implemented, partial, specified or planned, or blocked, what remains, and the evidence for the state. Use a percentage only when its basis is defined; otherwise describe the work left. The Tracker's own distributions are not changed by this.",
+      "options": null,
+      "sources": [
+        {
+          "label": "Runbook",
+          "path": "RUNBOOK.md",
+          "ref": "179fdc4f"
+        }
+      ],
+      "tags": [
+        "RUNBOOK",
+        "reporting",
+        "codex-review"
+      ],
+      "revision": 1,
+      "status": "open",
+      "applied": null,
+      "history": [
+        {
+          "revision": 1,
+          "at": "2026-10-10T05:09:18.547Z",
+          "by": "claude",
+          "reason": "Owner request 2026-10-10: put every memory-guidance finding (Claude audit plus the Codex review of 2026-10-09) on the board as pending readbacks and two real choices"
+        },
+        {
+          "revision": 1,
+          "gradeRevision": 1,
+          "at": "2026-10-10T05:09:18.753Z",
+          "by": "claude",
+          "reason": "graded: Agent grades for the memory-guidance batch, 2026-10-10: P2 for standing rules the owner asked to land, P3 for the agent-knowledge batch, V1 quick wins, V2 for the import-default choice"
+        }
+      ],
+      "brief": {
+        "scope": "BLUEPRINT",
+        "summary": "A fixed four-state vocabulary for progress reports.",
+        "why": "The Codex review of 2026-10-09 records your preference for item-by-item states over summaries or undefined percentages. I do not hold your words; confirm or change the reason.",
+        "recommendation": "Agent proposal: confirm; it pairs with the visual-results rule for recurring reports.",
+        "impact": "Progress answers become comparable across sessions.",
+        "changes": "One paragraph in Runbook Evidence And Continuation Practices and templates/RUNBOOK.md.",
+        "history": "Codex review 2026-10-09, item 4.",
+        "artifacts": "Runbook Evidence And Continuation Practices; Wiki recurring-results-are-visual page."
+      },
+      "priority": {
+        "grade": "P2",
+        "reason": "You asked on 2026-10-10 for these findings to go on the board; each is one answer that lets a standing rule land."
+      },
+      "value": {
+        "grade": "V1",
+        "reason": "One confirmation, one small edit in one owner; prevents a repeat of a recorded failure."
+      },
+      "gradeRevision": 1
+    },
+    {
+      "id": "GB-0231",
+      "key": "stop-polishing-a-clear-diagram",
+      "group": "owner-decisions",
+      "kind": "owner-decision",
+      "title": "An explanatory diagram is done when you say it is clear enough to work from; further polish needs a stated need",
+      "question": "Should the idea-to-delivery Wiki explanation carry this, as drafted?",
+      "current": "The Runbook workflow reference and the Wiki idea-to-delivery page explain the workflow. No guidance says when an explanatory diagram is finished.",
+      "proposal": "Agent proposal (from the Codex review of 2026-10-09; I do not hold your original words for this one, so the wording is agent restatement): add one sentence to the idea-to-delivery Wiki page. Prioritize correct flow, nesting and relationships; once the owner says the model is clear enough to work from, move to the next agreed step, and polish further only for a stated need. This is about explanatory drafts, not accepting unfinished product design.",
+      "draft": "## Proposed sentence, Wiki idea-to-delivery page\n\nAn explanatory diagram is finished when its flow, nesting and relationships are right and the owner says it is clear enough to work from. Move to the next agreed step then; further visual polish needs a stated need. This concerns explanatory drafts, not acceptance of unfinished product design.",
+      "options": null,
+      "sources": [
+        {
+          "label": "Wiki: idea-to-delivery workflow",
+          "path": "workbench/wiki/design-concepts/idea-to-delivery-workflow.md",
+          "ref": "179fdc4f"
+        },
+        {
+          "label": "Runbook",
+          "path": "RUNBOOK.md",
+          "ref": "179fdc4f"
+        }
+      ],
+      "tags": [
+        "wiki",
+        "diagrams",
+        "codex-review"
+      ],
+      "revision": 1,
+      "status": "open",
+      "applied": null,
+      "history": [
+        {
+          "revision": 1,
+          "at": "2026-10-10T05:09:18.547Z",
+          "by": "claude",
+          "reason": "Owner request 2026-10-10: put every memory-guidance finding (Claude audit plus the Codex review of 2026-10-09) on the board as pending readbacks and two real choices"
+        },
+        {
+          "revision": 1,
+          "gradeRevision": 1,
+          "at": "2026-10-10T05:09:18.753Z",
+          "by": "claude",
+          "reason": "graded: Agent grades for the memory-guidance batch, 2026-10-10: P2 for standing rules the owner asked to land, P3 for the agent-knowledge batch, V1 quick wins, V2 for the import-default choice"
+        }
+      ],
+      "brief": {
+        "scope": "BLUEPRINT",
+        "summary": "A stopping rule for explanatory diagrams.",
+        "why": "The Codex review of 2026-10-09 records your stopping preference from a diagram session. I do not hold your words; confirm or change the reason.",
+        "recommendation": "Agent proposal: confirm the sentence.",
+        "impact": "Less time spent on polish you did not ask for.",
+        "changes": "One sentence in the Wiki idea-to-delivery page.",
+        "history": "Codex review 2026-10-09, item 6.",
+        "artifacts": "Wiki idea-to-delivery page."
+      },
+      "priority": {
+        "grade": "P2",
+        "reason": "You asked on 2026-10-10 for these findings to go on the board; each is one answer that lets a standing rule land."
+      },
+      "value": {
+        "grade": "V1",
+        "reason": "One confirmation, one small edit in one owner; prevents a repeat of a recorded failure."
+      },
+      "gradeRevision": 1
+    },
+    {
+      "id": "GB-0232",
+      "key": "landmark-or-spec-test",
+      "group": "owner-decisions",
+      "kind": "owner-decision",
+      "title": "The Landmark-or-Spec test: do several completed Specs together show the direction is reached, or can one bounded delivery satisfy it?",
+      "question": "Should the landmarks Wiki page carry this test, as drafted?",
+      "current": "The Wiki page on landmarks one size above Specs explains the artifact and its scale. It does not give a short test for choosing between a Landmark and a Spec, and the to-spec skill does not point to one.",
+      "proposal": "Agent proposal (readback of your words, 2026-09-24, with the Spec side from the Codex review of 2026-10-09; I do not hold your original words for this one, so the wording is agent restatement): add to the landmarks page. Ask whether several completed Specs together would show a direction has been reached; then it is Landmark-shaped. If one bounded delivery can satisfy and verify its acceptance, it is Spec-shaped. A Spec may stay under the Blueprint when no Landmark fits.",
+      "draft": "## Proposed test, Wiki landmarks page\n\nAsk whether several completed Specs together would show that a direction has been reached. If so, it is Landmark-shaped: the confirmed design-concept rung, larger than a Spec, the thing several Specs together reach. If one bounded delivery effort can satisfy and verify its acceptance, it is Spec-shaped. A Spec can remain under the Blueprint when no Landmark fits.",
+      "options": null,
+      "sources": [
+        {
+          "label": "Wiki: landmarks one size above Specs",
+          "path": "workbench/wiki/design-concepts/landmarks-one-size-above-specs.md",
+          "ref": "179fdc4f"
+        },
+        {
+          "label": "to-spec skill",
+          "path": "workbench/skills/to-spec/SKILL.md",
+          "ref": "179fdc4f"
+        }
+      ],
+      "tags": [
+        "landmarks",
+        "specs",
+        "wiki",
+        "codex-review"
+      ],
+      "revision": 1,
+      "status": "open",
+      "applied": null,
+      "history": [
+        {
+          "revision": 1,
+          "at": "2026-10-10T05:09:18.547Z",
+          "by": "claude",
+          "reason": "Owner request 2026-10-10: put every memory-guidance finding (Claude audit plus the Codex review of 2026-10-09) on the board as pending readbacks and two real choices"
+        },
+        {
+          "revision": 1,
+          "gradeRevision": 1,
+          "at": "2026-10-10T05:09:18.753Z",
+          "by": "claude",
+          "reason": "graded: Agent grades for the memory-guidance batch, 2026-10-10: P2 for standing rules the owner asked to land, P3 for the agent-knowledge batch, V1 quick wins, V2 for the import-default choice"
+        }
+      ],
+      "brief": {
+        "scope": "BLUEPRINT",
+        "summary": "One operational test for Landmark versus Spec.",
+        "why": "Your words, 2026-09-24: landmarks are the destinations that emerge from repeated grilling, larger than a Spec, the thing several Specs together reach. The Spec half of the test comes from the Codex review.",
+        "recommendation": "Agent proposal: confirm the test.",
+        "impact": "Fewer mis-sized records at Map.",
+        "changes": "One paragraph in the landmarks Wiki page; a pointer from the to-spec skill.",
+        "history": "Landmark rung stated 2026-09-24; landmark artifact accepted (ADR-000U) 2026-10-02; Codex review item 7.",
+        "artifacts": "Wiki landmarks page; to-spec skill."
+      },
+      "priority": {
+        "grade": "P2",
+        "reason": "You asked on 2026-10-10 for these findings to go on the board; each is one answer that lets a standing rule land."
+      },
+      "value": {
+        "grade": "V1",
+        "reason": "One confirmation, one small edit in one owner; prevents a repeat of a recorded failure."
+      },
+      "gradeRevision": 1
+    },
+    {
+      "id": "GB-0233",
+      "key": "smallest-correct-change-fixes-the-cause",
+      "group": "owner-decisions",
+      "kind": "owner-decision",
+      "title": "\"Smallest correct change\" means the complete correction of the cause within scope, never a wording patch that leaves the problem",
+      "question": "Should the implement skill's engineering guidance say this, as drafted?",
+      "current": "AGENTS requires the smallest correct change, dependency tracing and root-cause escalation after repeated failures. It does not say that when you ask for the durable fix, a small patch that leaves the cause is the wrong reading of \"smallest\".",
+      "proposal": "Agent proposal (from the Codex review of 2026-10-09; I do not hold your original words for this one, so the wording is agent restatement): add one sentence to the implement skill, Engineering and verification. When the owner asks for the durable correction, trace and fix the cause and its affected dependencies within scope; do not substitute a wording patch. If the cause needs broader authority, name the concrete scope change.",
+      "draft": "## Proposed sentence, implement skill, Engineering and verification\n\n\"Smallest correct change\" is measured by the required outcome. When the owner asks for the durable correction, trace the cause and fix it with its affected dependencies within scope; a small wording patch that leaves the problem is not the smallest correct change. When the cause needs broader authority, name the concrete scope change instead of patching around it.",
+      "options": null,
+      "sources": [
+        {
+          "label": "Implement skill",
+          "path": "workbench/skills/implement/SKILL.md",
+          "ref": "179fdc4f"
+        },
+        {
+          "label": "AGENTS.md (the always-loaded contract)",
+          "path": "AGENTS.md",
+          "ref": "179fdc4f"
+        }
+      ],
+      "tags": [
+        "implement",
+        "engineering",
+        "codex-review"
+      ],
+      "revision": 1,
+      "status": "open",
+      "applied": null,
+      "history": [
+        {
+          "revision": 1,
+          "at": "2026-10-10T05:09:18.547Z",
+          "by": "claude",
+          "reason": "Owner request 2026-10-10: put every memory-guidance finding (Claude audit plus the Codex review of 2026-10-09) on the board as pending readbacks and two real choices"
+        },
+        {
+          "revision": 1,
+          "gradeRevision": 1,
+          "at": "2026-10-10T05:09:18.753Z",
+          "by": "claude",
+          "reason": "graded: Agent grades for the memory-guidance batch, 2026-10-10: P2 for standing rules the owner asked to land, P3 for the agent-knowledge batch, V1 quick wins, V2 for the import-default choice"
+        }
+      ],
+      "brief": {
+        "scope": "BLUEPRINT",
+        "summary": "A clarification of \"smallest correct change\".",
+        "why": "The Codex review of 2026-10-09 records your explicit preference for a complete correction over a shortcut. I do not hold your words; confirm or change the reason.",
+        "recommendation": "Agent proposal: confirm; it grants no authority for unrelated redesign.",
+        "impact": "Fewer fixes that need a second fix.",
+        "changes": "One sentence in the implement skill.",
+        "history": "Codex review 2026-10-09, item 9.",
+        "artifacts": "Implement skill; AGENTS Engineering And Verification."
+      },
+      "priority": {
+        "grade": "P2",
+        "reason": "You asked on 2026-10-10 for these findings to go on the board; each is one answer that lets a standing rule land."
+      },
+      "value": {
+        "grade": "V1",
+        "reason": "One confirmation, one small edit in one owner; prevents a repeat of a recorded failure."
+      },
+      "gradeRevision": 1
+    },
+    {
+      "id": "GB-0234",
+      "key": "diagnose-clutter-before-deleting",
+      "group": "owner-decisions",
+      "kind": "owner-decision",
+      "title": "Diagnose apparent clutter before proposing deletion: stale, duplicated, or a lifecycle that has not caught up?",
+      "question": "Should the director skill's retirement and recovery guidance carry this diagnostic, as drafted?",
+      "current": "Lifecycle and recovery controls protect evidence and gate cleanup. No guidance tells an agent to classify clutter before proposing to remove it.",
+      "proposal": "Agent proposal (from the Codex review of 2026-10-09; I do not hold your original words for this one, so the wording is agent restatement): add to the director skill, Documentation: feature capture, retirement and recovery. Before proposing a deletion, decide whether the material is stale information, duplication, or an intended lifecycle that has not caught up; trace consumers, unresolved obligations and retained knowledge first.",
+      "draft": "## Proposed paragraph, director skill, retirement and recovery\n\nBefore proposing to remove anything, name what it is: stale information, duplication, or an intended lifecycle that has not caught up yet. Trace its consumers, any unresolved obligation it carries and the knowledge it retains. Only then say what can go and what must be moved first.",
+      "options": null,
+      "sources": [
+        {
+          "label": "Director skill",
+          "path": "workbench/skills/director/SKILL.md",
+          "ref": "179fdc4f"
+        }
+      ],
+      "tags": [
+        "director",
+        "cleanup",
+        "codex-review"
+      ],
+      "revision": 1,
+      "status": "open",
+      "applied": null,
+      "history": [
+        {
+          "revision": 1,
+          "at": "2026-10-10T05:09:18.547Z",
+          "by": "claude",
+          "reason": "Owner request 2026-10-10: put every memory-guidance finding (Claude audit plus the Codex review of 2026-10-09) on the board as pending readbacks and two real choices"
+        },
+        {
+          "revision": 1,
+          "gradeRevision": 1,
+          "at": "2026-10-10T05:09:18.753Z",
+          "by": "claude",
+          "reason": "graded: Agent grades for the memory-guidance batch, 2026-10-10: P2 for standing rules the owner asked to land, P3 for the agent-knowledge batch, V1 quick wins, V2 for the import-default choice"
+        }
+      ],
+      "brief": {
+        "scope": "BLUEPRINT",
+        "summary": "A three-way diagnosis before any deletion proposal.",
+        "why": "The Codex review of 2026-10-09 records this judgment from cleanup sessions. I do not hold your words; confirm or change the reason.",
+        "recommendation": "Agent proposal: confirm.",
+        "impact": "Cleanup proposals come with the reason the thing exists.",
+        "changes": "One paragraph in the director skill.",
+        "history": "Codex review 2026-10-09, item 10; related owner review of 2026-10-01: no mass deletion, clean up done work and loose worktrees.",
+        "artifacts": "Director skill retirement and recovery section."
+      },
+      "priority": {
+        "grade": "P2",
+        "reason": "You asked on 2026-10-10 for these findings to go on the board; each is one answer that lets a standing rule land."
+      },
+      "value": {
+        "grade": "V1",
+        "reason": "One confirmation, one small edit in one owner; prevents a repeat of a recorded failure."
+      },
+      "gradeRevision": 1
+    },
+    {
+      "id": "GB-0235",
+      "key": "authorization-provenance-in-handoffs",
+      "group": "owner-decisions",
+      "kind": "owner-decision",
+      "title": "A handoff carries who authorized the work, the approved action, endpoint and exclusions, and the original message when available",
+      "question": "Should the handoff skill's obligation say this, without adding a new approval gate?",
+      "current": "The handoff skill already requires attributed inherited authorization and an exact endpoint. It does not say to keep the original human message or a stable source reference, or to record missing provenance rather than invent it.",
+      "proposal": "Agent proposal (from the Codex review of 2026-10-09; I do not hold your original words for this one, so the wording is agent restatement, and consistent with the 2026-09-26 finding that the auto-mode classifier refuses commits whose authority traces only to a handoff file): extend the handoff obligation. Retain who authorized the work, the approved action, destination, endpoint and exclusions, plus the original owner message or a stable source reference when available. Record missing provenance; never invent it. A citation recovers scope and creates no authority.",
+      "draft": "## Proposed addition, handoff skill, author obligations\n\nCarry the authorization's provenance: who authorized the work, the approved action, its destination, endpoint and exclusions, and the owner's original message or a stable reference to it when available. Record provenance that is missing; never invent it. The citation lets the recipient recover the scope; it creates no authority of its own.",
+      "options": null,
+      "sources": [
+        {
+          "label": "Handoff skill",
+          "path": "workbench/skills/handoff/SKILL.md",
+          "ref": "179fdc4f"
+        },
+        {
+          "label": "AGENTS.md (the always-loaded contract)",
+          "path": "AGENTS.md",
+          "ref": "179fdc4f"
+        }
+      ],
+      "tags": [
+        "handoff",
+        "authority",
+        "codex-review"
+      ],
+      "revision": 1,
+      "status": "open",
+      "applied": null,
+      "history": [
+        {
+          "revision": 1,
+          "at": "2026-10-10T05:09:18.547Z",
+          "by": "claude",
+          "reason": "Owner request 2026-10-10: put every memory-guidance finding (Claude audit plus the Codex review of 2026-10-09) on the board as pending readbacks and two real choices"
+        },
+        {
+          "revision": 1,
+          "gradeRevision": 1,
+          "at": "2026-10-10T05:09:18.753Z",
+          "by": "claude",
+          "reason": "graded: Agent grades for the memory-guidance batch, 2026-10-10: P2 for standing rules the owner asked to land, P3 for the agent-knowledge batch, V1 quick wins, V2 for the import-default choice"
+        }
+      ],
+      "brief": {
+        "scope": "BLUEPRINT",
+        "summary": "Handoffs keep the trail back to the owner's authorization.",
+        "why": "The Codex review of 2026-10-09 records the source-message lesson from a later retro. On this side, the auto-mode classifier refused a Worker commit on 2026-09-26 because its authority traced only to a handoff file.",
+        "recommendation": "Agent proposal: confirm; this adds no approval gate.",
+        "impact": "Recipients can verify scope without re-asking you; classifier refusals drop.",
+        "changes": "One paragraph in the handoff skill obligations; the handoff template gains a provenance line.",
+        "history": "Handoff skill rebuilt (S-01A) 2026-10-03; Codex review item 11.",
+        "artifacts": "Handoff skill and its bundled HANDOFF template."
+      },
+      "priority": {
+        "grade": "P2",
+        "reason": "You asked on 2026-10-10 for these findings to go on the board; each is one answer that lets a standing rule land."
+      },
+      "value": {
+        "grade": "V1",
+        "reason": "One confirmation, one small edit in one owner; prevents a repeat of a recorded failure."
+      },
+      "gradeRevision": 1
+    },
+    {
+      "id": "GB-0236",
+      "key": "tool-traps-land-in-wiki-without-cards",
+      "group": "owner-decisions",
+      "kind": "owner-decision",
+      "title": "Fourteen tool traps, two troubleshooting notes, one stale Wiki title and one missing pointer: may they land directly in the Wiki and owning skills?",
+      "question": "May these agent-knowledge items land directly in the lifecycle-tool-behaviors Wiki page and their owning skills, under the operation's own Wiki authority, without a card each?",
+      "current": "The Wiki page lifecycle-tool-behaviors holds verified tool behaviors and AGENTS says the operation's own authority covers its Wiki update with no per-page approval. The items in the draft are verified behaviors and incidents from my sessions and two from the Codex review; none is on that page or in its owning skill today.",
+      "proposal": "Agent proposal: these are Actuality, not your intent, so they need no readback each. Confirm that one records PR may add them, re-verified against source, to the lifecycle-tool-behaviors Wiki page, the implement, to-docs, notepad and spec-planner skills, the Grill Board README and the Runbook troubleshooting table; rename the Wiki page that still carries Codex in its title; and add the Master_Workbench pointer to the release skill. Your \"Change\" with a note removes any line you do not want.",
+      "draft": "## The items (each re-verified against source before landing)\n\n**Lifecycle tools**\n1. Workers never use git stash; the stash is shared across every worktree and a drop on 2026-10-08 orphaned two candidates.\n2. claim overwrites the Spec Owner header; claim and close replace Latest event and Next gate with a one-line stamp. Restore the rich header in a records commit right after.\n3. Always render last: a header edit after render leaves TASKBOARD stale and doctor fails render-drift in four suites.\n4. Check a named-verification acceptance box only after its evidence row exists; the box is inside the review digest, the row is not.\n5. A verdict finding can hold no semicolon; the tool splits findings on it.\n6. convert-tasks --activate refuses a Spec header lacking Priority or Owner.\n7. next-id for Specs counts only folders holding a SPEC.md; write the file before asking for the next ID.\n8. A new skill directory fails invalid-bundled-core until declared; keep source install and Core declaration in one Task.\n9. After a merged Task branch's remote is deleted, local -d refuses from the shared checkout; set its upstream to origin/integration, then -d. Never -D.\n10. adr accept rewrites Markdown links but not a Wiki page's frontmatter source_paths; grep for the proposed path after every accept.\n11. Grill Board: grade rows need the current gradeRevision; revise cannot change sources; relative links in drafts fail the board test; shrinking the board means updating the real-board test pins.\n12. Notepad trim and delete fail closed for every note while five pre-runtime records exist; reconcile, verify retention, remove directly and say so.\n13. To prove a test is date-fragile, run it under a Date preload via NODE_OPTIONS so spawned CLIs shift too.\n14. A test loop over suite commands as strings reports every command failing under zsh unless each is run with eval.\n\n**Troubleshooting (Codex review)**\n15. Before pushing an intended merge commit, check its parents; a repair once produced a one-parent intermediate commit after leaving detached HEAD.\n16. The guardrail audit can hit Invalid string length while traversing old ignored worktrees; run it on a clean tracked clone or snapshot and name the input with the result.\n\n**Drift and pointers**\n17. The Wiki page \"Separate-context review with Codex\" still carries the forbidden route in its title; rename it to separate-context-review and keep the owner-requested notes.\n18. Master_Workbench publishes the per-version upstream fix list release planning reads first; the workbench-release skill should point at it.",
+      "options": null,
+      "sources": [
+        {
+          "label": "Wiki: lifecycle tool behaviors",
+          "path": "workbench/wiki/lifecycle-tool-behaviors.md",
+          "ref": "179fdc4f"
+        },
+        {
+          "label": "Wiki: separate-context review (title still names Codex)",
+          "path": "workbench/wiki/separate-context-review-with-codex.md",
+          "ref": "179fdc4f"
+        },
+        {
+          "label": "Implement skill",
+          "path": "workbench/skills/implement/SKILL.md",
+          "ref": "179fdc4f"
+        },
+        {
+          "label": "Grill Board README, Dashboard branch",
+          "path": "workbench/grill-board/README.md",
+          "ref": "179fdc4f"
+        },
+        {
+          "label": "Runbook Troubleshooting",
+          "path": "RUNBOOK.md",
+          "ref": "179fdc4f"
+        },
+        {
+          "label": "Workbench release skill",
+          "path": "workbench/skills/workbench-release/SKILL.md",
+          "ref": "179fdc4f"
+        }
+      ],
+      "tags": [
+        "wiki",
+        "tools",
+        "troubleshooting",
+        "drift",
+        "codex-review"
+      ],
+      "revision": 1,
+      "status": "open",
+      "applied": null,
+      "history": [
+        {
+          "revision": 1,
+          "at": "2026-10-10T05:09:18.547Z",
+          "by": "claude",
+          "reason": "Owner request 2026-10-10: put every memory-guidance finding (Claude audit plus the Codex review of 2026-10-09) on the board as pending readbacks and two real choices"
+        },
+        {
+          "revision": 1,
+          "gradeRevision": 1,
+          "at": "2026-10-10T05:09:18.753Z",
+          "by": "claude",
+          "reason": "graded: Agent grades for the memory-guidance batch, 2026-10-10: P2 for standing rules the owner asked to land, P3 for the agent-knowledge batch, V1 quick wins, V2 for the import-default choice"
+        }
+      ],
+      "brief": {
+        "scope": "TASK",
+        "summary": "A batch of verified tool behaviors and repairs that agents keep rediscovering, landing in their owners without a card each.",
+        "why": "Each item cost at least one failed review or PR cycle in September and October 2026. They are verified behavior, not your intent, so AGENTS already lets the operation update the Wiki; this card asks once rather than eighteen times.",
+        "recommendation": "Agent proposal: confirm the batch; strike lines with a Change note.",
+        "impact": "The next Dispatcher or Worker reads the trap before hitting it. One records PR.",
+        "changes": "Wiki lifecycle-tool-behaviors page; implement, to-docs, notepad, spec-planner and workbench-release skills; Grill Board README; Runbook Troubleshooting; one Wiki page rename.",
+        "history": "Nine host memories were promoted to the Wiki on 2026-09-26; everything here was learned after that, plus two Codex troubleshooting notes dated 2026-10-09.",
+        "artifacts": "Wiki lifecycle-tool-behaviors; the named skills; Grill Board README; Runbook Troubleshooting table."
+      },
+      "priority": {
+        "grade": "P3",
+        "reason": "Agent knowledge, not your intent; it can land whenever committed work allows."
+      },
+      "value": {
+        "grade": "V1",
+        "reason": "One yes lands eighteen verified repairs in one records PR."
+      },
+      "gradeRevision": 1
+    },
+    {
+      "id": "GB-0237",
+      "key": "uncontained-candidates-and-cdr-backup",
+      "group": "owner-decisions",
+      "kind": "choice",
+      "title": "Two stash-dropped candidates and the CDR work that lives only on a backup branch: restore, record, or let go?",
+      "question": "What should happen to the work that exists only in dropped stash objects and on the backup branch?",
+      "current": "On 2026-10-08 a Worker ran git stash drop in the shared repository; two candidates are uncontained: a test-wiki change from the S-004O lane and early retro-guardrail Spec drafts. They can still be restored by SHA while the objects survive. The same day about fifty uncommitted files from the main checkout (the Consequential Decision Record feature, an AGENTS rebuild, ADR tool changes, a DDR draft) were snapshotted to the pushed branch backup/agents-standing-brief-wip-2026-10-08, 203 commits behind integration; only the 32 board items from it landed. No Spec records either risk.",
+      "proposal": "Agent proposal: alternative A. Record both risks in their owning Specs (the Dashboard Spec for the CDR feature, the S-004O lane for the test-wiki change), restore the two stash objects to named branches so they stop depending on garbage collection, and leave the backup branch for its own rebase decision. Nothing is deleted.",
+      "draft": null,
+      "options": [
+        {
+          "value": "record_and_restore",
+          "label": "A. Record in the owning Specs and restore the stash objects to named branches",
+          "recommended": true
+        },
+        {
+          "value": "record_only",
+          "label": "B. Record the risks in the Specs; leave the objects and branch as they are"
+        },
+        {
+          "value": "let_go",
+          "label": "C. Let the stash objects go; the backup branch stays as the only copy"
+        }
+      ],
+      "sources": [
+        {
+          "label": "Shared Interactive Workbench Board Spec (S-004D)",
+          "path": "workbench/specs/S-004D-shared-interactive-board/SPEC.md",
+          "ref": "179fdc4f"
+        },
+        {
+          "label": "Wiki: parallel lane dispatch",
+          "path": "workbench/wiki/parallel-lane-dispatch.md",
+          "ref": "179fdc4f"
+        }
+      ],
+      "tags": [
+        "risk",
+        "git",
+        "S-004D",
+        "S-004O",
+        "cdr"
+      ],
+      "revision": 1,
+      "status": "open",
+      "applied": null,
+      "history": [
+        {
+          "revision": 1,
+          "at": "2026-10-10T05:09:18.547Z",
+          "by": "claude",
+          "reason": "Owner request 2026-10-10: put every memory-guidance finding (Claude audit plus the Codex review of 2026-10-09) on the board as pending readbacks and two real choices"
+        },
+        {
+          "revision": 1,
+          "gradeRevision": 1,
+          "at": "2026-10-10T05:09:18.753Z",
+          "by": "claude",
+          "reason": "graded: Agent grades for the memory-guidance batch, 2026-10-10: P2 for standing rules the owner asked to land, P3 for the agent-knowledge batch, V1 quick wins, V2 for the import-default choice"
+        }
+      ],
+      "brief": {
+        "scope": "SPEC",
+        "summary": "Two pieces of work exist only outside any branch or far behind integration; decide their fate.",
+        "why": "A pushed branch is recoverable, a dropped stash is not once garbage collected, and no owner records either. You said on 2026-10-01: no mass deletion; keep in-progress work current and clean up done work.",
+        "recommendation": "Agent proposal: A. It costs two branch names and two Spec rows and loses nothing.",
+        "impact": "A makes both recoverable and visible. B keeps them visible but fragile. C accepts the loss of the two candidates.",
+        "changes": "Two evidence rows; two restore branches; a Spec note on the backup branch's rebase need.",
+        "history": "Stash drop 2026-10-08 during the Dashboard director run; backup branch pushed 2026-10-08 before the main checkout moved to integration.",
+        "artifacts": "S-004D Spec; the S-004O lane records; branch backup/agents-standing-brief-wip-2026-10-08."
+      },
+      "priority": {
+        "grade": "P2",
+        "reason": "The stash objects depend on garbage collection not running; sooner is safer."
+      },
+      "value": {
+        "grade": "V1",
+        "reason": "Two branch names and two Spec rows recover work that would otherwise be lost."
+      },
+      "gradeRevision": 1
     }
   ]
 }
