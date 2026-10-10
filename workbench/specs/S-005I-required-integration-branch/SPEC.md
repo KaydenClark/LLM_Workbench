@@ -23,7 +23,7 @@ All project workflows stage through integration before owner promotion to main.
 
 ## Current Verified State
 
-At baseline `bcb8cfa0a685b67d151e5102d3f2cc855a13613b`, adoption reported a missing branch as residue, setup skills allowed an omission reason, and the AGENTS template allowed the same default and integration branch. Genesis derivation already created local main and integration branches. The corrected runtime is delivered on integration through PR 453; linked setup Wiki guidance is being reconciled under the recorded review findings.
+At baseline `bcb8cfa0a685b67d151e5102d3f2cc855a13613b`, adoption reported a missing branch as residue, setup skills allowed an omission reason, and the AGENTS template allowed the same default and integration branch. Genesis derivation already created local main and integration branches. The corrected runtime is delivered on integration through PR 453; linked setup Wiki guidance now reflects the rule. The recorded failed Review still requires a fresh assembled Review after corrective delivery.
 
 ## Desired Behavior
 
