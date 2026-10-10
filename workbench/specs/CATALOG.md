@@ -188,6 +188,7 @@ Derived from stable specs; includes completed history.
 | [S-005F - Maintained Workflow Reference](S-005F-workflow-reference/SPEC.md) | RUNBOOK.md is the easy-to-reference home for existing workflows expressed as ordered verbs, with scenario and skill pointers. | active |
 | [S-005G - Repository CI And Fast Hooks](S-005G-repository-ci-and-fast-hooks/SPEC.md) | Integration PRs and integration updates run the canonical required suite; this repository alone has fast offline staged whitespace and JavaScript syntax checks at commit. | active |
 | [S-005H - Optional project Grilling Board deployment](S-005H-optional-project-grill-board/SPEC.md) | Deploy the existing Grilling Board optionally into an adopted project with safe initialization, project framing, links and isolated owner answers. | active |
+| [S-005I - Required Integration Branch](S-005I-required-integration-branch/SPEC.md) | Every Workbench stages work on a distinct integration branch created during genesis or adoption. | active |
 
 ### Retired
 

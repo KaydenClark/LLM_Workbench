@@ -3,13 +3,13 @@
 **Spec ID:** S-005I
 **Status:** active
 **Priority:** 0
-**Owner:** Kayden
+**Owner:** codex
 **Stance:** Builder
-**Updated:** 2026-10-09
+**Updated:** 2026-10-10
 **Catalog description:** Every Workbench stages work on a distinct integration branch created during genesis or adoption.
 **Blockers:** none
-**Latest event:** Owner reported the missing project staging branch during Ringworld deployment.
-**Next gate:** Activate one setup correction Task.
+**Latest event:** TK-008Q claimed by codex.
+**Next gate:** Close TK-008Q with verification and documentation proof.
 
 ## Outcome
 
