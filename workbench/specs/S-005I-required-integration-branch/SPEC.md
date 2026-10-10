@@ -8,8 +8,8 @@
 **Updated:** 2026-10-10
 **Catalog description:** Every Workbench stages work on a distinct integration branch created during genesis or adoption.
 **Blockers:** none
-**Latest event:** Self-QA found branch failure status mismatch; the same Task continues with an adjusted handoff.
-**Next gate:** Claim the continued Task and correct the refusal path before submission.
+**Latest event:** TK-008Q claimed by codex.
+**Next gate:** Close TK-008Q with verification and documentation proof.
 
 ## Outcome
 

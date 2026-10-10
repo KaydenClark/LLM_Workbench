@@ -3,7 +3,7 @@
 **Task ID:** TK-008Q
 **Spec ID:** S-005I
 **Slice:** Require project staging during setup
-**Status:** ready
+**Status:** in-progress
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: Adoption creates a missing integration branch from the default branch without switching HEAD or changing an existing branch.
