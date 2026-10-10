@@ -136,6 +136,27 @@ test('tracked paths never differ only by case, and lanes must be lowercase witho
   assert.equal(isSafeRelative('workbench/specs'), true);
 });
 
+// The suite and doctor read tracked files directly, so a Windows clone with
+// core.autocrlf must still check text out as LF. Three evidence artifacts were
+// committed with CRLF and two have recorded SHA-256s; they keep their bytes.
+const CRLF_EVIDENCE = [
+  'workbench/feedback/REPORT-notepad-json-definition-2026-09-12.md',
+  'workbench/feedback/decision-triage-2026-09-07.csv',
+  'workbench/feedback/decision-triage-second-pass-2026-09-07/decision-ledger.csv'
+];
+
+test('text checks out as LF on every host while committed CRLF evidence keeps its bytes', () => {
+  const sample = ['AGENTS.md', 'tools/test-wiki.mjs', 'workbench/wiki/SCHEMA.md', 'templates/wiki/SCHEMA.md', 'workbench/specs/CATALOG.md'];
+  const attrs = execFileSync('git', ['check-attr', 'text', 'eol', '--', ...sample, ...CRLF_EVIDENCE], { cwd: root, encoding: 'utf8' });
+  for (const file of sample) assert.ok(attrs.includes(`${file}: eol: lf\n`), `${file} must check out as LF`);
+  for (const file of CRLF_EVIDENCE) assert.ok(attrs.includes(`${file}: text: unset\n`), `${file} must keep its committed bytes`);
+  const crlf = execFileSync('git', ['ls-files', '--eol', '-z'], { cwd: root, encoding: 'utf8' })
+    .split('\0').filter(Boolean)
+    .filter((entry) => /^i\/(crlf|mixed)\s/.test(entry))
+    .map((entry) => entry.slice(entry.indexOf('\t') + 1));
+  assert.deepEqual(crlf.sort(), [...CRLF_EVIDENCE].sort(), 'only the preserved evidence is stored with CRLF');
+});
+
 test('a manifest with a backslash or capitalised lane is rejected before any lane is read', () => {
   const project = fs.mkdtempSync(path.join(os.tmpdir(), 'workbench-matrix-'));
   try {
