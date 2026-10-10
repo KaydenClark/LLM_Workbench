@@ -3,13 +3,13 @@
 **Task ID:** TK-008Q
 **Spec ID:** S-005I
 **Slice:** Require project staging during setup
-**Status:** in-progress
+**Status:** done
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: Adoption creates a missing integration branch from the default branch without switching HEAD or changing an existing branch.
 **Planned verification:** Adoption and layout regression tests red then green, Runbook Full suite, touched Wiki lint, pre/post guardrail and self-drift.
 **Claimed by:** codex
-**Proof:** Run 2: canonical Full suite 57/57 locally at aae2f71a in 930.2 seconds and canonical CI run 38015157081 SUCCESS; actual CLI refusal red then green with no layout writes; verification.md#corrected-task-run-2 records scope and limits; Wiki validation, small lint and diff checks pass
+**Proof:** Documentation correction: Full suite 57/57 at b168b7fb in 821.0 seconds; Wiki validation, branch regression, small lint and diff checks pass; verification.md#review-documentation-correction records exact scope and limits
 
 ## Receipt
 
@@ -20,6 +20,7 @@
 | 3 | codex/required-integration-branch | aae2f71a11db88c71703d4bcf81a9b807f49b112 | ahead 0 behind 0 | 3 | Run 2: node tools/verify.mjs passed all 57 commands in 930.2s at aae2f71a; canonical CI run 38015157081 SUCCESS. Actual adoption CLI refusal regression red then green, before layout writes. | Corrected verification record and Spec evidence, branch Wiki source anchor; earlier proof and continued handoff preserved | Final Task submission, assembled Spec Review and owner gates; no consumer upgrade; unchanged pre-existing room-wide drift | 72718ce71aa8c0461fe4e1c3afb179aadc5a03096ee97f5874e1c442d877e2ae |
 | 4 | codex/required-integration-branch | f9cf83185abe952d9ffea143c9a6b5e22dc217cb | ahead 0 behind 0 | 0 | Run 2: canonical Full suite 57/57 locally at aae2f71a in 930.2 seconds and canonical CI run 38015157081 SUCCESS; actual CLI refusal red then green with no layout writes; verification.md#corrected-task-run-2 records scope and limits; Wiki validation, small lint and diff checks pass | Setup controls and protocols, skills, branch decision and Wiki; corrected run-2 verification and source anchors | Assembled Spec Review, owner Human QA and main promotion; no consumer repository upgrade; existing room-wide drift | a66e1b3e44ed952537b5c2a5e8becdd7bc31166b2a87350636bf93feedb13631 |
 | 5 | codex/required-integration-review | b168b7fb3a201fc1768efc6333930cb201ef76fd | ahead 1 behind 0 | 2 | Documentation corrective Journey: canonical Full suite 57/57 at b168b7fb in 821.0 seconds, Wiki validation, branch regression and diff checks pass. Subsequent evidence/state sentence checked with Wiki validation and diff check; no runtime changes. | Genesis and Adoption Wiki current guidance, explicit Spec baseline, verification record; prior history and failed Review preserved | Corrective Task integration delivery then fresh assembled Review; owner/main gates, unchanged room drift and unrelated notepad race; no consumer upgrade | 14c0bc97633cf26d168a9b835720d49099027897b61af28462ea0b12df6d151b |
+| 6 | codex/required-integration-review | ec72432e52512dc07fb1eecc6081b787bb906840 | ahead 0 behind 0 | 0 | Documentation correction: Full suite 57/57 at b168b7fb in 821.0 seconds; Wiki validation, branch regression, small lint and diff checks pass; verification.md#review-documentation-correction records exact scope and limits | Setup Wiki, explicit Spec baseline and correction verification; failed Review and dated evidence retained | Corrective Task merge then fresh assembled Spec Review; owner approval/main, unchanged room drift and notepad race; no consumer upgrade | 842231c71176a57d195faf30f0f89b6802b0d2109026e8b80dfdcac1b311acf0 |
 
 ## Continuation
 

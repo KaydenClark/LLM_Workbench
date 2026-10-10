@@ -8,8 +8,8 @@
 **Updated:** 2026-10-10
 **Catalog description:** Every Workbench stages work on a distinct integration branch created during genesis or adoption.
 **Blockers:** none
-**Latest event:** TK-008Q claimed by codex.
-**Next gate:** Close TK-008Q with verification and documentation proof.
+**Latest event:** Setup documentation correction closed with proof; submission pending.
+**Next gate:** Corrective Task integration delivery, then fresh assembled Review; owner/main gates remain open.
 
 > **Citation anchors.** pre=`bcb8cfa0a685b67d151e5102d3f2cc855a13613b` post=`aae2f71a11db88c71703d4bcf81a9b807f49b112`.
 
@@ -23,7 +23,7 @@ All project workflows stage through integration before owner promotion to main.
 
 ## Current Verified State
 
-At baseline `bcb8cfa0a685b67d151e5102d3f2cc855a13613b`, adoption reported a missing branch as residue, setup skills allowed an omission reason, and the AGENTS template allowed the same default and integration branch. Genesis derivation already created local main and integration branches. The corrected runtime is delivered on integration through PR 453; linked setup Wiki guidance now reflects the rule. The recorded failed Review still requires a fresh assembled Review after corrective delivery.
+At baseline `bcb8cfa0a685b67d151e5102d3f2cc855a13613b`, adoption reported a missing branch as residue, setup skills allowed an omission reason, and the AGENTS template allowed the same default and integration branch. Genesis derivation already created local main and integration branches. The corrected runtime is delivered on integration through PR 453; linked setup Wiki guidance now reflects the rule.
 
 ## Desired Behavior
 
@@ -82,6 +82,7 @@ AGENTS root/template, Genesis and Adoption protocols and skills, upgrade complet
 
 | 2026-10-10 | TK-008Q | Corrected Task delivered to integration | PR 453 MERGED at acc318fecddc8b4d3a0cccb3e5e2884d06ee377a; fresh origin/integration contains exact submitted 5f6dd2a1d297a993704ff15395111f8932bc86eb; CI 38017004701 attempt 2 SUCCESS | Real assembled result prepared; [delivery and CI record](verification.md#integration-delivery) | Fresh assembled-Spec Review, owner approval and main verification; existing notepad CI race observed on attempt 1 remains outside this capability |
 | 2026-10-10 | review | Review verdict: fail at f8ccf5c26cad18751462f280d9d1e2a38850a1bd [a867734916f9] #1 | continue TK-008Q: setup Wiki permits incomplete branch setup and retains a partly resolved default-detection gap, so update current guidance and preserve dated history; continue TK-008Q: anchor the Spec old state explicitly to baseline bcb8cfa and distinguish current delivery | Codex fresh context /root/integration_spec_review, inherited session model, review-only | 2 |
+| 2026-10-10 | TK-008Q | Task closed (run 3) | Documentation correction: Full suite 57/57 at b168b7fb in 821.0 seconds; Wiki validation, branch regression, small lint and diff checks pass; verification.md#review-documentation-correction records exact scope and limits | Setup Wiki, explicit Spec baseline and correction verification; failed Review and dated evidence retained | Corrective Task merge then fresh assembled Spec Review; owner approval/main, unchanged room drift and notepad race; no consumer upgrade |
 
 ## Completion Result
 
@@ -89,7 +90,7 @@ Implemented the required integration staging rule in producer setup tools,
 shared controls, protocols and skills. Adoption creates a missing branch from
 the resolved default branch, preserves existing refs and HEAD, and refuses
 failed branch setup before layout writes. All 57 canonical commands passed
-locally, and the submitted Task passed CI on retry without changing runtime
+locally, and the runtime Task submission passed CI on retry without changing runtime
 code or test criteria. Integration at `acc318fecddc8b4d3a0cccb3e5e2884d06ee377a`
 contains submitted head `5f6dd2a1d297a993704ff15395111f8932bc86eb`.
 
