@@ -3,7 +3,7 @@
 **Task ID:** TK-008Q
 **Spec ID:** S-005I
 **Slice:** Require project staging during setup
-**Status:** done
+**Status:** ready
 **Stance:** Builder
 **Blockers:** none
 **Destination:** spec-acceptance: Adoption creates a missing integration branch from the default branch without switching HEAD or changing an existing branch.
@@ -25,3 +25,5 @@
 | Run | Date | Answers | Adjusted handoff |
 |---|---|---|---|
 | 1 | 2026-10-10 | Required Integration Branch Spec evidence: Self-QA found branch failure status mismatch | Self-QA found that adoption tests for blocked, while the layout helper returns invalid on failure. Accept only created or existing branch setup; refuse not-in-Git and missing-default errors before writing layout. Run the CLI regression red then green and repeat required verification. |
+| 2 | 2026-10-10 | evidence row 8 (fail verdict at f8ccf5c26cad18751462f280d9d1e2a38850a1bd on 2026-10-10) | setup Wiki permits incomplete branch setup and retains a partly resolved default-detection gap, so update current guidance and preserve dated history |
+| 3 | 2026-10-10 | evidence row 8 (fail verdict at f8ccf5c26cad18751462f280d9d1e2a38850a1bd on 2026-10-10) | anchor the Spec old state explicitly to baseline bcb8cfa and distinguish current delivery |
