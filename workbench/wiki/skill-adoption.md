@@ -14,6 +14,8 @@ source_paths:
   - tools/test-workbench-adoption.mjs
   - tools/test-skill-catalog.mjs
   - workbench/specs/S-01D-adoption-skill-rebuild/SPEC.md
+  - workbench/specs/S-005I-required-integration-branch/SPEC.md
+  - tools/test-integration-setup.mjs
   - RUNBOOK.md
 last_verified: 2026-09-26
 ---
@@ -22,7 +24,7 @@ last_verified: 2026-09-26
 
 Use `adoption` when a project that already has code, history and its own steering documents joins the Workbench for the first time. Adoption keeps what the project already knows. It reconciles the project's own rules into the seven root controls, moves known legacy folders into the `workbench/` support root, and leaves a pushed branch the owner can resume from. It happens once per room. A room that is already adopted goes to `update-harness`. A new project with no code or history goes to `genesis`.
 
-**Inputs:** an existing Git project with a remote, the owner's authorization for branch and push operations, and a checked-out Workbench release. **Output:** seven filled root controls, a `workbench/` support root with its manifest, runtime tools and core skills, the local recovery record `workbench/sessions/recovery/adoption-recovery.json`, an owning Spec holding provenance and evidence, and a pushed task branch. **Done when:** every box in the protocol's "What A Finished Adoption Must Prove" checklist in `templates/ADOPTION.md` is checked or named as unchecked with a reason, the project's own tests match the baseline, and the report names the pushed recovery ref and the remaining owner gates.
+**Inputs:** an existing Git project with a remote, the owner's authorization for branch and push operations, and a checked-out Workbench release. **Output:** seven filled root controls, a `workbench/` support root with its manifest, runtime tools and core skills, the local recovery record `workbench/sessions/recovery/adoption-recovery.json`, an owning Spec holding provenance and evidence, a pushed task branch, and a distinct integration branch published and verified on the remote. **Done when:** every box in the protocol's "What A Finished Adoption Must Prove" checklist in `templates/ADOPTION.md` holds, the project's own tests match the baseline, and the report names the pushed recovery ref and the remaining owner gates.
 
 ## How it works
 
@@ -30,7 +32,7 @@ The [skill](../skills/adoption/SKILL.md) is a short entry point into the full pr
 
 1. **Check the checkout.** Look at branch, dirty/ahead/diverged state, remote and nearest controls. If the tree is dirty, commit the owned work on a prefixed task branch or move the migration into a clean worktree. A dirty tree is not a reason to give up.
 2. **Inventory before anything is installed.** Run `node tools/workbench-classify.mjs classify --project …` from the release. It reads and writes nothing. Continue only if the verdict is `adoption`. An `upgrade` verdict goes to `/update-harness` and a `genesis` verdict goes to `/genesis`. If the verdict is `unclassifiable`, find the answer from the room's history, its remote or the owner. Then take the code baseline, or record it `unavailable` in the Spec's `**Baseline:**` field. List the existing steering documents. Record the release's source remote, ref and resolved commit in the owning Spec. Confirm that the clean commit you branch from is on the project's remote.
-3. **Reconcile, then migrate.** Fill the seven root controls from the project's own truth, never by copying a template over an existing control. Then run `node tools/workbench-adoption.mjs migrate --project … --home … --version v3.2.1` from the release. The helper moves only known durable v2 paths (`specs/`, `Wiki/`, root `MEMORY.md`, `feedback/`, `grilling diary/`, `handoffs/`, a root feedback file). It keeps a project-local `skills/` folder under recovery. It installs the receipt-backed runtime tools into `workbench/tools/` and the core skills into the room's own `workbench/skills` lane with discovery adapters. It declares the integration branch, writes the recovery record, renders projections and runs doctor. It never reads or writes a skill in the provider home; `--home` is still a required argument.
+3. **Reconcile, then migrate.** Fill the seven root controls from the project's own truth, never by copying a template over an existing control. Then run `node tools/workbench-adoption.mjs migrate --project … --home … --version v3.2.1` from the release. The helper moves only known durable v2 paths (`specs/`, `Wiki/`, root `MEMORY.md`, `feedback/`, `grilling diary/`, `handoffs/`, a root feedback file). It keeps a project-local `skills/` folder under recovery. It installs the receipt-backed runtime tools into `workbench/tools/` and the core skills into the room's own `workbench/skills` lane with discovery adapters. It declares a distinct integration branch and creates it from the resolved default branch when absent, without switching HEAD or rewriting existing refs. The protocol then requires publishing and verifying that branch before setup is complete. The helper writes the recovery record, renders projections and runs doctor. It never reads or writes a skill in the provider home; `--home` is still a required argument.
 4. **Preserve, commit, record.** Port live truth into its owners and archive retired documents instead of deleting them. Commit and push each coherent step on a prefixed task branch. Put the executed self-tests and fresh-clone commands next to the provenance, and report the pushed recovery ref.
 
 The helper refuses before changing anything when a `workbench/` root already exists (`support-root-exists`), when a legacy path collides, or when any root control is missing or still has a `[BRACKETED]` placeholder (`unreconciled-controls`, naming every failing control at once). The `support-root-exists` refusal is what stops a second adoption. The skill routes an already-adopted room to `/update-harness`, which records lifecycle `upgrade` instead of a second `adoption` ([V3 Adoption migration check](../../RUNBOOK.md#v3-adoption-migration-check)).
@@ -68,7 +70,9 @@ Installed personal copies of the skill are not changed by this Spec.
 
 ## Remaining intended behavior
 
-Owner Human QA of the conversational fidelity of an adoption on `integration` remains, together with the four protocol and helper gaps above, which need their own owner.
+Owner Human QA of the conversational fidelity of an adoption on `integration` remains. The recovery portability, pre-support-root Spec placement and control-stamp/identifier guidance gaps observed in 2026-09-26 remain in their original owner.
+
+The historical default-branch detection gap above is partly resolved by Required Integration Branch (S-005I): without `origin/HEAD`, the helper now checks existing `main` or `master` refs before the checked-out branch. Repositories with another default name still need an explicit declaration when it cannot be inferred. The same change requires a distinct, published integration branch; an unchecked completion box or an omission reason leaves setup incomplete.
 
 ## Sources
 
@@ -81,3 +85,5 @@ Owner Human QA of the conversational fidelity of an adoption on `integration` re
 ## History
 
 - 2026-09-26: Created by S-01D (adoption skill rebuild Spec) TK-00U (Deliver the adoption skill destination Task) after a source audit that reordered the pre-migration inventory, with one fresh-context scenario.
+
+- 2026-10-09: Required Integration Branch (S-005I), Require project staging during setup Task (TK-008Q), reconciled current setup guidance with the mandatory distinct, published integration branch and preserved prior dated observations. Source and branch tests checked; prior conversational scenario was not rerun.

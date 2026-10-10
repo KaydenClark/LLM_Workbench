@@ -17,6 +17,8 @@ source_paths:
   - tools/test-skill-catalog.mjs
   - tools/test-workbench-layout.mjs
   - workbench/specs/S-01G-genesis-skill-rebuild/SPEC.md
+  - workbench/specs/S-005I-required-integration-branch/SPEC.md
+  - tools/test-integration-setup.mjs
   - RUNBOOK.md
 last_verified: 2026-09-26
 ---
@@ -25,7 +27,7 @@ last_verified: 2026-09-26
 
 Use `genesis` when the owner wants a brand-new project from a founding prompt, or from an explicitly chosen fresh copy of the Workbench Template. The result is a room a second agent could pick up cold. It has its own identity, seven filled root controls, the declared support lanes with the managed tools and skills, one actionable first Spec, a smallest running scaffold, and a pushed recovery point. The skill is the conversational entry. [`templates/GENESIS.md`](../../templates/GENESIS.md) is the procedure it follows.
 
-**Inputs:** the founding prompt (kept word for word), an empty target path inside the authorized workspace, the owner's answers to the few questions that change architecture, privacy, money, credentials or destructive risk, and a private remote. **Output:** a committed room on a prefixed task branch, pushed to the remote, with the declared integration branch created or its omission recorded. **Done when:** every completion box in `templates/GENESIS.md` holds, including `validate --genesis` and doctor passing on the generated room.
+**Inputs:** the founding prompt (kept word for word), an empty target path inside the authorized workspace, the owner's answers to the few questions that change architecture, privacy, money, credentials or destructive risk, and a private remote. **Output:** a committed room on a prefixed task branch, pushed to the remote, with a distinct integration branch created, pushed and verified on the remote. A missing branch or failed publication keeps setup incomplete. **Done when:** every completion box in `templates/GENESIS.md` holds, including `validate --genesis` and doctor passing on the generated room.
 
 ## When not to use it
 
@@ -48,7 +50,7 @@ A Template copy is still greenfield: it starts a new identity and does not inher
 2. Prepare owner questions from the prompt. Ask only the ones that change something expensive to reverse. A prepared question or a working assumption is never recorded as an owner decision.
 3. Record locked owner decisions, with ADRs for cross-cutting choices. Verify Actuality with the smallest thing that runs, then derive the first scoped Spec from those inputs.
 4. Build the room. On the manual path that means the seven controls, `workbench-layout.mjs init` (lanes, collections, wiki contract, Git branch declaration), `workbench-tools.mjs install` (runtime tools with a receipt), `workbench-skills.mjs install` (the 30 core skills in `workbench/skills` with a receipt and the `.agents/skills` and `.claude/skills` links), the filled wiki router and one active first Spec. The fresh-Template path does the equivalent through `derive`.
-5. Commit on a `claude/`, `codex/` or `backup/` branch and push it to a private remote. Genesis never infers public visibility or overwrites an existing remote. Create and push the declared integration branch when authorized, or record why not.
+5. Commit on a `claude/`, `codex/` or `backup/` branch and push it to a private remote. Genesis never infers public visibility or overwrites an existing remote. Create the declared integration branch when absent, then push it and verify the remote ref. Keep it distinct from the default branch. Record a failed creation or publication as a setup blocker; a reason cannot satisfy completion.
 6. Run the room's verification, render, doctor and the readiness gate `validate --project PATH --genesis`, then report the recovery ref and a one-minute demo.
 
 ### Example, from the verification run
@@ -96,3 +98,5 @@ None is claimed. At the pinned `mattpocock/skills@c55ee46` there is no genesis, 
 - 2026-10-07: Core skill count in the manual build step updated from 28 to 29 for the Required Domain Modeling Skill Spec (S-004J), Task TK-00JC (Wiki reconciliation), after `domain-modeling` joined the bundle; no other claim re-verified.
 
 - 2026-10-07: PR #415 integration conflict repair reconciled the combined `domain-modeling` and `pr` bundle count to thirty; prior dated count observations remain history.
+
+- 2026-10-09: Required Integration Branch (S-005I), Require project staging during setup Task (TK-008Q), reconciled current setup guidance with the mandatory distinct, published integration branch and preserved prior dated observations. Source and branch tests checked; prior conversational scenario was not rerun.

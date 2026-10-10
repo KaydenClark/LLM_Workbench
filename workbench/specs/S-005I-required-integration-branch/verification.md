@@ -29,3 +29,43 @@ Runtime candidate: `aae2f71a11db88c71703d4bcf81a9b807f49b112`.
 - The post-correction self-drift result still has the same 24 baseline findings and does not certify a clean whole-Workbench update. Scope, consumer-installation limits and owner gates above remain in force.
 
 The run-2 results replace the first run's sufficiency claim for the refusal path. Later Task/Spec receipt and closure changes are administrative state, verified with render, doctor, Wiki validation and diff checks; they change no runtime code.
+
+## Integration delivery
+
+[Task PR 453](https://github.com/KaydenClark/LLM_Workbench/pull/453) merged into integration at `acc318fecddc8b4d3a0cccb3e5e2884d06ee377a`. A fresh fetch and `git merge-base --is-ancestor 5f6dd2a1d297a993704ff15395111f8932bc86eb origin/integration` proved exact submitted-head containment.
+
+[Final submission CI run 38017004701](https://github.com/KaydenClark/LLM_Workbench/actions/runs/38017004701) attempt 1 failed in the unchanged notepad mixed-writer barrier test, returning retained-dependency instead of stale-revision. That test and notepad implementation have no diff from the integration base. Its isolated local probe passed 1/1. Attempt 2 passed the canonical full suite on the same head. No notepad code or test criterion was changed. This records an observed timing-dependent CI failure; it does not claim that the underlying notepad race is resolved.
+
+Main and consumer repositories remain unchanged. Assembled Spec review and owner gates are separately recorded in the Spec.
+
+## Review documentation correction
+
+Fresh Codex context `/root/integration_spec_review` failed assembled candidate
+`f8ccf5c26cad18751462f280d9d1e2a38850a1bd`, digest
+`a867734916f93948cd2b355f1677ce02f1dda378be705a5c96bdd66a2404e92b`.
+The runtime checks passed, but linked Genesis and Adoption Wiki pages still
+allowed incomplete setup and retained a partly resolved default-detection gap.
+The Spec also described its old state at an incorrect relative tree. Native
+`verdict` preserved that failure and continued the same Task for both findings.
+
+Correction tree `b168b7fb3a201fc1768efc6333930cb201ef76fd` passed the canonical
+`node tools/verify.mjs`: all 57 commands, 821.0 seconds. Wiki validation, the
+branch setup regression and diff checks passed. The one-command demo remains
+`node tools/test-integration-setup.mjs`. Small lint read both setup articles
+against their tracked skill/protocol, branch feature, Spec and Wiki router.
+Dated prior trials remain history; neither trial was rerun. Runtime, tools,
+templates and skills have no changes after verified runtime `aae2f71a`.
+
+After that run, only receipt/evidence/state updates and a Spec sentence marking
+the Wiki correction as present were added. These were read back and checked
+with Wiki validation and diff checks. The prior failed Review is not cleared
+by tests: fresh assembled Review remains required after this Task lands.
+
+Review Wiki coverage was bounded: all-Wiki branch-policy searches and reading
+of matching setup, readiness, installation and workflow articles. This does
+not prove exhaustive whole-Wiki cleanliness. Pre/post self-drift retains the
+same 24 known findings (12 blocked slices, 6 stale claims, 5 stale seeds, one
+unverified provenance); machineResult is blocked and cleanUpdate is false.
+Primary checkout fast-forward pre/post has the same findings and preserves
+its unrelated untracked folder. Owner approval, main verification and consumer
+upgrades remain outside this delivery.
