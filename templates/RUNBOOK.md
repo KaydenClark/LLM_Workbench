@@ -85,6 +85,11 @@ Contract change.
 
 ## Workflows
 
+All Workbench project workflows stage through the manifest-declared integration
+branch before owner promotion to the default branch. Genesis and Adoption
+establish that distinct branch when absent; an omission note leaves setup
+incomplete.
+
 Maintain this reference with the project's confirmed workflows. It lines up
 verbs, scenarios and skill pointers; definitions and governing decisions stay
 with their existing owners. The reference adds no authority or new gate.

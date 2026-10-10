@@ -61,9 +61,10 @@ artifacts labeled complete.
 ## Why It Matters
 
 A review gate is meaningful only against a merge destination that exists and is
-named exactly, and a stale dispatch is easy to follow by accident. Reporting the
-gap, rather than silently picking a branch or changing the checkout, keeps the
-boundary visible without blocking deliberately pinned work.
+named exactly, and a stale dispatch is easy to follow by accident. Setup
+establishes that staging branch while preserving the working checkout and
+existing refs. Read-only diagnostics keep unresolved setup and stale dispatch
+visible without blocking deliberately pinned work.
 
 ## Limits
 
