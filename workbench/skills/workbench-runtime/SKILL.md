@@ -57,7 +57,7 @@ in the manifest's runtime surface. `legibility-unconfirmed` reports its
 run, operate, inspect, see errors, exercise the journey and measure the product,
 use `workbench-layout.mjs declare-legibility` with all six entries and without
 `--pending`. A declared command is a pointer, not authority to execute it.
-| `none` (error) | reported, exit 0, never hides work; the Genesis gate fails closed on the same condition | `integration-branch-undeclared`, `integration-branch-missing` (scope `git`), and the error-severity ADR and wiki findings |
+| `none` (error) | reported, exit 0, never hides work; setup refuses unresolved branch creation or identical branch names | `integration-branch-undeclared`, `integration-branch-missing`, `integration-branch-not-distinct`, `default-branch-missing` (scope `git`), and the error-severity ADR and wiki findings |
 
 The two attention codes in scope `git` surface the repository state a
 completion claim can hide. `detached-head` reports a detached HEAD, a
@@ -99,7 +99,11 @@ from configured-host invocation.
 `integration-branch-missing` (scope `git`, effect `none`) until
 `workbench/manifest.json` `git.integrationBranch` names a branch that
 resolves locally or on a remote; the Genesis readiness gate fails closed on
-the same two conditions. When that branch resolves and the spec `next` would
+the same two conditions. Setup also refuses `integration-branch-not-distinct`
+when the default and integration names match, and `default-branch-missing`
+when creating integration has no resolved default ref to start from. Those
+registered Git errors retain effect `none`; the setup command itself refuses
+completion. When that branch resolves and the spec `next` would
 select is already complete there, `doctor` reports `complete-on-integration`
 (attention) without hiding the work. `doctor`
 reports `detached-head` and `untracked-controls` (scope `git`, attention,
