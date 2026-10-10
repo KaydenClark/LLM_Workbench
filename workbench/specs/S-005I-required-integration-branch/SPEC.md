@@ -8,8 +8,8 @@
 **Updated:** 2026-10-10
 **Catalog description:** Every Workbench stages work on a distinct integration branch created during genesis or adoption.
 **Blockers:** none
-**Latest event:** Setup correction implemented; required commands pass with the documented fidelity rerun.
-**Next gate:** Submit and close the verified Task, then assembled-Spec Review.
+**Latest event:** TK-008Q closed with proof.
+**Next gate:** Confirm acceptance criteria and completion result.
 
 ## Outcome
 
@@ -73,6 +73,7 @@ AGENTS root/template, Genesis and Adoption protocols and skills, upgrade complet
 |---|---|---|---|---|---|
 | 2026-10-09 | planning | Owner direction captured; isolated from unrelated dirty work | Read setup source, protocols and branch capability Wiki at parent integration tree | Spec created | Implementation and checks pending |
 | 2026-10-09 | TK-008Q | Required integration staging implemented | [Verification record](verification.md): Full suite 56/57 plus corrected fidelity 39/39; focused branch regression green; Wiki validation and small lint; diff check; guardrail 73 to 73; unchanged 24 self-drift findings | Root and generic controls, setup skills/protocols, active branch decision amendment and branch feature Wiki | Task submission; assembled Spec Review; owner Human QA and main promotion; existing room-wide drift remains |
+| 2026-10-10 | TK-008Q | Task closed | Setup runtime regression red then green; required suite all commands have passing results through 56/57 full run plus corrected fidelity 39/39; verification.md records exact candidates and limits; Wiki validation, small lint and diff check passed | Root and generic controls, setup and diagnostic procedure skills, ADR amendment, branch capability Wiki and verification.md | Assembled Spec Review, owner Human QA and main promotion; no consumer repository upgrade; pre-existing room-wide drift |
 
 ## Completion Result
 
