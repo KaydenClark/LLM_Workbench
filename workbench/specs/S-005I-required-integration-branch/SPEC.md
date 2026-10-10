@@ -6,12 +6,12 @@
 **Owner:** codex
 **Stance:** Builder
 **Updated:** 2026-10-10
-
-> **Citation anchors.** pre=`bcb8cfa0a685b67d151e5102d3f2cc855a13613b` post=`aae2f71a11db88c71703d4bcf81a9b807f49b112`.
 **Catalog description:** Every Workbench stages work on a distinct integration branch created during genesis or adoption.
 **Blockers:** none
-**Latest event:** TK-008Q claimed by codex.
-**Next gate:** Close TK-008Q with verification and documentation proof.
+**Latest event:** TK-008Q closed with proof.
+**Next gate:** Assembled-Spec Review after Task integration; owner Human QA and main promotion remain open.
+
+> **Citation anchors.** pre=`bcb8cfa0a685b67d151e5102d3f2cc855a13613b` post=`aae2f71a11db88c71703d4bcf81a9b807f49b112`.
 
 ## Outcome
 
@@ -77,8 +77,8 @@ AGENTS root/template, Genesis and Adoption protocols and skills, upgrade complet
 | 2026-10-09 | TK-008Q | Required integration staging implemented | [Verification record](verification.md): Full suite 56/57 plus corrected fidelity 39/39; focused branch regression green; Wiki validation and small lint; diff check; guardrail 73 to 73; unchanged 24 self-drift findings | Root and generic controls, setup skills/protocols, active branch decision amendment and branch feature Wiki | Task submission; assembled Spec Review; owner Human QA and main promotion; existing room-wide drift remains |
 | 2026-10-10 | TK-008Q | Task closed | Setup runtime regression red then green; required suite all commands have passing results through 56/57 full run plus corrected fidelity 39/39; verification.md records exact candidates and limits; Wiki validation, small lint and diff check passed | Root and generic controls, setup and diagnostic procedure skills, ADR amendment, branch capability Wiki and verification.md | Assembled Spec Review, owner Human QA and main promotion; no consumer repository upgrade; pre-existing room-wide drift |
 | 2026-10-10 | TK-008Q | Self-QA found branch failure status mismatch | New adoption CLI refusal regression is red: missing integration returns migration-failed after layout writes because caller accepts the layout helper invalid status | Same Task continuation records the adjusted handoff; earlier proof retained | Correct caller success-state check and reverify before submission |
-
 | 2026-10-10 | TK-008Q | Corrected refusal path verified in Task run 2 | Runtime candidate aae2f71a11db88c71703d4bcf81a9b807f49b112: canonical local Full suite 57/57 in 930.2 seconds; CI run 38015157081 SUCCESS; CLI refusal red then green before layout writes | [Corrected verification](verification.md#corrected-task-run-2); earlier close and self-QA correction retained | Final Task submission, assembled-Spec Review, owner Human QA and main promotion; no consumer upgrade |
+| 2026-10-10 | TK-008Q | Task closed (run 2) | Run 2: canonical Full suite 57/57 locally at aae2f71a in 930.2 seconds and canonical CI run 38015157081 SUCCESS; actual CLI refusal red then green with no layout writes; verification.md#corrected-task-run-2 records scope and limits; Wiki validation, small lint and diff checks pass | Setup controls and protocols, skills, branch decision and Wiki; corrected run-2 verification and source anchors | Assembled Spec Review, owner Human QA and main promotion; no consumer repository upgrade; existing room-wide drift |
 
 ## Completion Result
 
