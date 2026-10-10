@@ -310,10 +310,14 @@ moves a root `WORKBENCH_FEEDBACK.md` (or legacy `HARNESS_FEEDBACK.md`) into
 checks doctor before reporting completion. It also declares the integration
 branch in the manifest (`git.integrationBranch`, by the exact case of an
 existing integration-named branch, else `integration`; `git.defaultBranch`
-from `origin/HEAD`) and lists an unresolved one as
-`residue.missingIntegrationBranch` without blocking. When authorization
-permits, create that branch from the default branch and push it; otherwise
-record the omission reason in the owning spec.
+from `origin/HEAD`, then existing `main` or `master`, then the current branch).
+The helper creates a missing local integration branch from the default branch
+without switching HEAD and preserves an existing local or remote branch.
+Pass `--default-branch NAME` and `--integration-branch NAME` when the project
+uses other names. Identical branch names or an unresolved default branch block
+setup before layout migration. Push the integration branch and verify the
+remote ref as part of completion. A creation or publication blocker belongs in
+the owning Spec and leaves Adoption incomplete.
 
 An existing `workbench/` root, a legacy path collision, or unfilled controls
 block before migration; inspect and reconcile
@@ -367,8 +371,8 @@ than a competing rulebook.
       left untracked is `in-progress`, not `done`.
 - [ ] The declared integration branch (`git.integrationBranch` in
       `workbench/manifest.json`) exists on the default remote at the migration
-      commit, or the owning spec records the explicit reason it was omitted;
-      `doctor` reports `integration-branch-missing` until it resolves.
+      commit, is distinct from the default branch, and is verified remotely.
+      A creation or publication blocker leaves Adoption incomplete.
 
 If any box is unchecked, adoption is `in-progress`, not `done`. State which box
 failed and why.

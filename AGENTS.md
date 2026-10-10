@@ -383,6 +383,9 @@ The release owner records this bounded exception.
 - Branch per spec/task from the current PR target; the default staging base is
   `integration`. Prefixes: `codex/`, `claude/`, or `backup/`. Never commit
   directly to `main` or `integration`.
+- Every Workbench project stages work on a distinct integration branch before
+  its owner-controlled default branch. Genesis and Adoption create it from the
+  default branch when absent; setup cannot finish without it.
 - Default PR target is `integration`. Agents may merge below `integration` when
   safe; only the owner merges `integration` into `main`.
 - `workbench/manifest.json` declares `integration` (`git.integrationBranch`) as this

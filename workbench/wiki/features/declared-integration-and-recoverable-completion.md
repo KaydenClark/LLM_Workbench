@@ -17,7 +17,9 @@ source_paths:
   - RUNBOOK.md
   - tools/test-diagnostics.mjs
   - tools/test-workbench-layout.mjs
-last_verified: 2026-10-04
+  - tools/test-integration-setup.mjs
+  - workbench/specs/S-005I-required-integration-branch/SPEC.md
+last_verified: 2026-10-09
 ---
 
 # Declared Integration And Recoverable Completion
@@ -39,8 +41,14 @@ artifacts labeled complete.
 - **Additive Git block.** An older manifest can remain readable without it.
   Steady-state doctor reports an undeclared or missing integration branch with
   nonblocking effect. Genesis readiness fails on the same unresolved boundary.
-  Adoption reports missing branch setup as residue, while the owning completion
-  procedure requires the declared branch or an explicit omission reason.
+  The owner amended setup on 2026-10-09: every room requires a distinct
+  integration branch as its default staging branch. Adoption creates a missing
+  local branch from the resolved default branch without switching HEAD; existing
+  local or remote integration refs remain intact. Genesis and Adoption require
+  the published branch before completion. An omission note records an incomplete
+  setup blocker. The [Required Integration Branch correction (S-005I)](../../specs/S-005I-required-integration-branch/SPEC.md)
+  owns candidate verification and delivery; its status distinguishes this branch's
+  source changes from integrated delivery.
 - **Committed work on a prefixed branch.** Generation and adoption must leave
   committed work on a prefixed branch, not just untracked artifacts labeled
   complete.
@@ -76,12 +84,14 @@ boundary visible without blocking deliberately pinned work.
 - [workbench/tools/workbench-paths.mjs](../../tools/workbench-paths.mjs) - the shared binding resolver.
 - [workbench/tools/spec-workbench.mjs](../../tools/spec-workbench.mjs) - the Spec lifecycle tool.
 - [workbench/tools/workbench-layout.mjs](../../tools/workbench-layout.mjs) - the installed-layout owner.
-- [tools/workbench-adoption.mjs](../../../tools/workbench-adoption.mjs) - Adoption's branch residue reporting.
+- [tools/workbench-adoption.mjs](../../../tools/workbench-adoption.mjs) - Adoption's integration branch creation and recovery record.
 - [The integration branch is a manifest-declared fact (ADR-0039)](../../docs/adr/0039-the-integration-branch-is-a-manifest-declared-fact.md)
 - [RUNBOOK.md](../../../RUNBOOK.md) - branch closeout and worktree practices.
 - [tools/test-diagnostics.mjs](../../../tools/test-diagnostics.mjs) and [tools/test-workbench-layout.mjs](../../../tools/test-workbench-layout.mjs) - the verification seams.
 
 ## History
+
+- 2026-10-09: Recorded the owner amendment requiring distinct integration staging and removing omission as a completed setup path. Candidate source is on the Required Integration Branch correction (S-005I) branch; its Spec retains test and delivery gates.
 
 - 2026-09-19: Created on owner direction as one article for this legacy Spec after reading its full record and checking named live sources. Evolved or superseded claims are identified explicitly. No Spec was moved, retired or discarded, and no retrospective Human QA is asserted.
 - 2026-10-04: Moved from `design-concepts/spec-S-029-declared-integration-branch.md` into the features collection under this name with `wiki.mjs move-note`, retyped `feature` and restructured into the four feature sections from its existing prose, for the Wiki Evolving-Synthesis Migration Spec (S-003W) Task TK-002 (Move And Retype The Remaining Per-Spec Articles). Every live link to it was rewritten by the move; no claim was changed. This move checked that the named current source paths (the first entry names the Spec's eventual retired route, which does not exist yet) and the immutable commit exist, not the behavior of the capability itself.

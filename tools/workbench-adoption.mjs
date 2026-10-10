@@ -4,7 +4,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { collections, controls, coreSkills, initialize, resolveBranchRefs, seedWiki, lanes, validateManifest } from '../workbench/tools/workbench-layout.mjs';
+import { collections, controls, coreSkills, initialize, ensureIntegrationBranch, gitDeclaration, seedWiki, lanes, validateManifest } from '../workbench/tools/workbench-layout.mjs';
 import { doctor, render } from '../workbench/tools/spec-workbench.mjs';
 import { blocksSelection } from '../workbench/tools/diagnostics.mjs';
 import { writeSafeFile } from '../workbench/tools/workbench-paths.mjs';
@@ -273,6 +273,10 @@ function migrate(options) {
   if (failure) return failure;
   let source;
   try { source = sourceIdentity(); } catch (error) { return fail('invalid-source-identity', error.message); }
+  const declaration = gitDeclaration(project, options);
+  if (declaration.status !== 'declared') return declaration;
+  const integration = ensureIntegrationBranch(project, declaration.git);
+  if (integration.status === 'blocked') return integration;
   const residue = {
     rootManagedTools: RUNTIME_TOOLS.filter((name) => Boolean(lstatOrNull(path.join(project, 'tools', name)))),
     movedExternalLinks: movedExternalLinks(project)
@@ -283,13 +287,13 @@ function migrate(options) {
     '--version': options['--version'],
     '--source-repository': source.repository,
     '--source-commit': source.commit,
+    '--default-branch': options['--default-branch'],
+    '--integration-branch': options['--integration-branch'],
     deferWikiSeed: Boolean(lstatOrNull(path.join(project, 'Wiki')))
   });
   if (initialized.status !== 'initialized') return fail('layout-initialization-failed', initialized.error?.message ?? 'Could not initialize the v3 support root.');
-  // The declared integration branch is reported, never created or required:
-  // the protocol completion checklist decides whether its absence is recorded.
-  const integrationBranch = initialized.manifest.git.integrationBranch;
-  residue.missingIntegrationBranch = resolveBranchRefs(project, integrationBranch).length ? null : integrationBranch;
+  residue.missingIntegrationBranch = null;
+  residue.integrationBranch = integration;
   const moved = [];
   try {
     for (const { source, destination } of legacyLanes) {
